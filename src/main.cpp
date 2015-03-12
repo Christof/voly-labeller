@@ -1,8 +1,12 @@
 #include <QtGui/QGuiApplication>
+#include "window.h"
 
 int main(int argc, char **argv)
 {
-    QGuiApplication application(argc, argv);
+  QGuiApplication application(argc, argv);
+  Window window;
 
-    return application.exec();
+  window.show();
+
+  return application.exec();
 }

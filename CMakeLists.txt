@@ -17,7 +17,7 @@ include_directories(${Qt5Gui_INCLUDE_DIRS})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
-add_executable(voly-labeller src/main.cpp)
+add_executable(voly-labeller src/window.cpp src/main.cpp)
 
 target_link_libraries(voly-labeller
   Qt5::Core
