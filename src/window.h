@@ -3,7 +3,9 @@
 #define SRC_WINDOW_H_
 
 #include <QWindow>
-#include <QScopedPointer>
+#include <memory>
+
+class AbstractScene;
 
 /**
  * \brief
@@ -14,8 +16,8 @@ class Window : public QWindow
 {
   Q_OBJECT
  public:
-  Window(QScreen *screen = 0);
-  virtual ~Window();
+  Window(std::shared_ptr<AbstractScene> scene, QScreen *screen = 0);
+  ~Window();
  protected slots:
   void resizeOpenGL();
   void render();
@@ -25,7 +27,7 @@ class Window : public QWindow
   void initializeOpenGL();
 
   QOpenGLContext *context;
-  // QScopedPointer<AbstractScene> scene;
+  std::shared_ptr<AbstractScene> scene;
 };
 
 #endif  // SRC_WINDOW_H_

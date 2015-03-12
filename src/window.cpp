@@ -1,7 +1,10 @@
 #include "./window.h"
+#include "./abstract_scene.h"
 #include <QOpenGLContext>
+#include <QTimer>
 
-Window::Window(QScreen *screen) : QWindow(screen)
+Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
+  : QWindow(screen), scene(scene)
 {
   setSurfaceType(OpenGLSurface);
 
@@ -19,7 +22,7 @@ Window::Window(QScreen *screen) : QWindow(screen)
   context->setFormat(format);
   context->create();
 
-  // scene->setContext(context);
+  scene->setContext(context);
 
   initializeOpenGL();
 
@@ -27,6 +30,10 @@ Window::Window(QScreen *screen) : QWindow(screen)
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
+
+  QTimer *timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+  timer->start(16);
 }
 
 Window::~Window()
@@ -36,6 +43,7 @@ Window::~Window()
 void Window::initializeOpenGL()
 {
   context->makeCurrent(this);
+  scene->initialize();
 }
 
 void Window::render()
@@ -43,18 +51,19 @@ void Window::render()
   if (!isExposed())
     return;
   context->makeCurrent(this);
-  // scene->render();
+  scene->render();
   context->swapBuffers(this);
 }
 
 void Window::resizeOpenGL()
 {
   context->makeCurrent(this);
-  // scene->resize(width(), height());
+  scene->resize(width(), height());
 }
 
 void Window::update()
 {
-  // scene->update(0.0f);
+  scene->update(0.0f);
   render();
 }
+
