@@ -2,7 +2,11 @@
 
 #define SRC_ABSTRACT_SCENE_H_
 
-class QOpenGLContext;
+#include <QOpenGLContext>
+#include <QOpenGLFunctions_4_3_Core>
+#include <QtDebug>
+
+#include "./gl_assert.h"
 
 class AbstractScene
 {
@@ -17,6 +21,13 @@ class AbstractScene
   void setContext(QOpenGLContext *context)
   {
     mContext = context;
+    gl = context->versionFunctions<QOpenGLFunctions_4_3_Core>();
+    if (!gl) {
+        qWarning() << "Could not obtain required OpenGL context version";
+        exit(1);
+    }
+    gl->initializeOpenGLFunctions();
+    glCheckError();
   }
 
   QOpenGLContext *context() const
@@ -34,6 +45,7 @@ class AbstractScene
 
  protected:
   QOpenGLContext *mContext;
+  QOpenGLFunctions_4_3_Core *gl;
 };
 
 #endif  // SRC_ABSTRACT_SCENE_H_
