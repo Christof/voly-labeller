@@ -81,6 +81,10 @@ flags = [
 '/usr/local/Qt/5.4/gcc_64/include/QtOpenGL',
 '-isystem',
 '/usr/local/Qt/5.4/gcc_64/include/QtOpenGLExtensions',
+'-isystem',
+'/usr/local/Qt/5.4/gcc_64/include/QtCore',
+'-isystem',
+'/usr/local/include/eigen3/',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
