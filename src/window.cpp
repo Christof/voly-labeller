@@ -11,7 +11,7 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
   QSurfaceFormat format;
   format.setDepthBufferSize(24);
   format.setMajorVersion(4);
-  format.setMinorVersion(4);
+  format.setMinorVersion(3);
   format.setSamples(4);
   format.setProfile(QSurfaceFormat::CoreProfile);
 
