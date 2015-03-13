@@ -16,6 +16,12 @@ if(NOT OPENGL_FOUND)
   message(ERROR "OPENGL not found!")
 endif(NOT OPENGL_FOUND)
 
+find_package(PkgConfig)
+pkg_check_modules(EIGEN3 REQUIRED eigen3)
+include_directories(${EIGEN3_INCLUDE_DIRS})
+#find_package(Eigen3 REQUIRED)
+
+
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories(${Qt5OpenGL_INCLUDE_DIRS})
