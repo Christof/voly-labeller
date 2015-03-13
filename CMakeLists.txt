@@ -36,11 +36,10 @@ set(CMAKE_AUTOMOC ON)
 qt5_add_resources(RESOURCES src/resources.qrc)
 
 set(SOURCES
-  src/window.h
   src/window.cpp
+  src/camera.cpp
   src/main.cpp
   src/abstract_scene.h
-  src/demo_scene.h
   src/demo_scene.cpp
   ${RESOURCES})
 

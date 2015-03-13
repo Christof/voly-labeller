@@ -3,6 +3,7 @@
 #define SRC_DEMO_SCENE_H_
 
 #include "./abstract_scene.h"
+#include "./camera.h"
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
@@ -24,6 +25,8 @@ class DemoScene : public AbstractScene
   QOpenGLVertexArrayObject vertexArrayObject;
   QOpenGLBuffer positionBuffer;
   QOpenGLBuffer colorBuffer;
+
+  Camera camera;
 
   void prepareShaderProgram();
   void prepareVertexBuffers();

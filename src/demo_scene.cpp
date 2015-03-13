@@ -32,11 +32,9 @@ void DemoScene::render()
   glAssert(glClear(GL_COLOR_BUFFER_BIT));
 
   shaderProgram.bind();
-  Eigen::Affine3f transform(Eigen::Translation3f(0.5, 0, 0));
-  Eigen::Matrix4f trans = transform.matrix();
   auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
 
-  gl->glUniformMatrix4fv(location, 1, GL_FALSE, trans.data());
+  gl->glUniformMatrix4fv(location, 1, GL_FALSE, camera.GetViewMatrix().data());
 
   vertexArrayObject.bind();
 
