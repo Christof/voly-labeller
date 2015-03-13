@@ -22,9 +22,9 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
   context->setFormat(format);
   context->create();
 
-  scene->setContext(context);
-
   initializeOpenGL();
+
+  scene->setContext(context);
 
   resize(QSize(1280, 720));
 
