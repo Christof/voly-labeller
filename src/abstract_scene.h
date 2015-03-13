@@ -3,36 +3,23 @@
 #define SRC_ABSTRACT_SCENE_H_
 
 #include <QOpenGLContext>
-#include <QOpenGLFunctions_4_3_Core>
 #include <QtDebug>
-
-#include "./gl_assert.h"
+#include <QOpenGLFunctions_4_3_Core>
 
 class AbstractScene
 {
  public:
-  AbstractScene() : mContext(0)
+  AbstractScene() : context(0)
   {
   }
   virtual ~AbstractScene()
   {
   }
 
-  void setContext(QOpenGLContext *context)
+  void setContext(QOpenGLContext *context, QOpenGLFunctions_4_3_Core *gl)
   {
-    mContext = context;
-    gl = context->versionFunctions<QOpenGLFunctions_4_3_Core>();
-    if (!gl) {
-        qWarning() << "Could not obtain required OpenGL context version";
-        exit(1);
-    }
-    gl->initializeOpenGLFunctions();
-    glCheckError();
-  }
-
-  QOpenGLContext *context() const
-  {
-    return mContext;
+    this->context = context;
+    this->gl = gl;
   }
 
   virtual void initialize() = 0;
@@ -44,7 +31,7 @@ class AbstractScene
   virtual void resize(int width, int height) = 0;
 
  protected:
-  QOpenGLContext *mContext;
+  QOpenGLContext *context;
   QOpenGLFunctions_4_3_Core *gl;
 };
 

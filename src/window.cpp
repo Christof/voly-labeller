@@ -1,7 +1,9 @@
 #include "./window.h"
 #include "./abstract_scene.h"
 #include <QOpenGLContext>
+#include <QOpenGLFunctions_4_3_Core>
 #include <QTimer>
+#include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
   : QWindow(screen), scene(scene)
@@ -24,7 +26,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
 
   initializeOpenGL();
 
-  scene->setContext(context);
+  scene->setContext(context, gl);
+  scene->initialize();
 
   resize(QSize(1280, 720));
 
@@ -43,7 +46,14 @@ Window::~Window()
 void Window::initializeOpenGL()
 {
   context->makeCurrent(this);
-  scene->initialize();
+  gl = context->versionFunctions<QOpenGLFunctions_4_3_Core>();
+  if (!gl)
+  {
+    qWarning() << "Could not obtain required OpenGL context version";
+    exit(1);
+  }
+  gl->initializeOpenGLFunctions();
+  glCheckError();
 }
 
 void Window::render()

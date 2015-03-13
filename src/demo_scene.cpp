@@ -4,6 +4,7 @@
 #include <QOpenGLContext>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include "./gl_assert.h"
 
 DemoScene::DemoScene()
   : shaderProgram(), positionBuffer(QOpenGLBuffer::VertexBuffer),
