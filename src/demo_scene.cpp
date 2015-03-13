@@ -1,9 +1,9 @@
 #include "./demo_scene.h"
 
-#include "./gl_assert.h"
-
 #include <QObject>
 #include <QOpenGLContext>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 
 DemoScene::DemoScene()
   : shaderProgram(), positionBuffer(QOpenGLBuffer::VertexBuffer),
@@ -31,6 +31,12 @@ void DemoScene::render()
   glAssert(glClear(GL_COLOR_BUFFER_BIT));
 
   shaderProgram.bind();
+  Eigen::Affine3f transform(Eigen::Translation3f(0.5, 0, 0));
+  Eigen::Matrix4f trans = transform.matrix();
+  auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
+
+  gl->glUniformMatrix4fv(location, 1, GL_FALSE, trans.data());
+
   vertexArrayObject.bind();
 
   glAssert(glDrawArrays(GL_TRIANGLES, 0, 3));
@@ -44,12 +50,12 @@ void DemoScene::resize(int width, int height)
 void DemoScene::prepareShaderProgram()
 {
   if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                              ":shader/phong.vert"))
+                                             ":shader/phong.vert"))
   {
     qCritical() << "error";
   }
   if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                              ":shader/phong.frag"))
+                                             ":shader/phong.frag"))
   {
     qCritical() << "error";
   }
