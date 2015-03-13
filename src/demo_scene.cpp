@@ -3,7 +3,6 @@
 #include <QObject>
 #include <QOpenGLContext>
 #include <Eigen/Core>
-#include <Eigen/Geometry>
 #include "./gl_assert.h"
 
 DemoScene::DemoScene()
@@ -33,8 +32,10 @@ void DemoScene::render()
 
   shaderProgram.bind();
   auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
+  Eigen::Matrix4f modelViewProjection = camera.getProjectionMatrix() *
+    camera.getViewMatrix();
 
-  gl->glUniformMatrix4fv(location, 1, GL_FALSE, camera.GetViewMatrix().data());
+  gl->glUniformMatrix4fv(location, 1, GL_FALSE, modelViewProjection.data());
 
   vertexArrayObject.bind();
 

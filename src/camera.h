@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 
 /**
- * \brief Camera which can be moved around and uses perspective projeciton.
+ * \brief Camera which can be moved around and uses perspective projection.
  *
  *
  */
@@ -15,11 +15,14 @@ class Camera
   Camera();
   virtual ~Camera();
 
-  Eigen::Matrix4f GetProjectionMatrix();
-  Eigen::Matrix4f GetViewMatrix();
+  Eigen::Matrix4f getProjectionMatrix();
+  Eigen::Matrix4f getViewMatrix();
 
  private:
-  /* data */
+  Eigen::Matrix4f projection;
+  Eigen::Matrix4f view;
+
+  Eigen::Matrix4f createProjection(float fov, float aspectRatio, float nearPlane, float farPlane);
 };
 
 #endif  // SRC_CAMERA_H_
