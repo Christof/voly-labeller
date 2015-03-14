@@ -3,6 +3,7 @@
 #define SRC_WINDOW_H_
 
 #include <QWindow>
+#include <QElapsedTimer>
 #include <memory>
 
 class AbstractScene;
@@ -34,6 +35,7 @@ class Window : public QWindow
   void initializeOpenGL();
   void renderLater();
 
+  QElapsedTimer timer;
   QOpenGLContext *context;
   QOpenGLFunctions_4_3_Core *gl;
   std::shared_ptr<AbstractScene> scene;

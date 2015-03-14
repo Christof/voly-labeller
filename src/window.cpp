@@ -34,6 +34,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
+
+  timer.start();
 }
 
 Window::~Window()
@@ -117,6 +119,6 @@ void Window::resizeOpenGL()
 
 void Window::update()
 {
-  scene->update(0.0f);
+  scene->update(timer.restart() / 1000.0);
 }
 

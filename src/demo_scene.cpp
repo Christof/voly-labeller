@@ -21,9 +21,9 @@ void DemoScene::initialize()
   prepareVertexBuffers();
 }
 
-void DemoScene::update(float t)
+void DemoScene::update(double frameTime)
 {
-  Q_UNUSED(t);
+  this->frameTime = frameTime;
 }
 
 void DemoScene::render()
@@ -52,8 +52,8 @@ void DemoScene::keyPressEvent(QKeyEvent *event)
   auto key = event->key();
   switch (key)
   {
-    case Qt::Key_W: camera.moveForward(0.1f); break;
-    case Qt::Key_S: camera.moveBackward(0.1f); break;
+    case Qt::Key_W: camera.moveForward(frameTime * cameraSpeed); break;
+    case Qt::Key_S: camera.moveBackward(frameTime * cameraSpeed); break;
   }
 }
 

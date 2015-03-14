@@ -25,7 +25,7 @@ class AbstractScene
 
   virtual void initialize() = 0;
 
-  virtual void update(float t) = 0;
+  virtual void update(double frameTime) = 0;
 
   virtual void render() = 0;
 

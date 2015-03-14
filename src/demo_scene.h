@@ -16,7 +16,7 @@ class DemoScene : public AbstractScene
   ~DemoScene();
 
   virtual void initialize();
-  virtual void update(float t);
+  virtual void update(double frameTime);
   virtual void render();
   virtual void resize(int width, int height);
   virtual void keyPressEvent(QKeyEvent *event);
@@ -28,6 +28,8 @@ class DemoScene : public AbstractScene
   QOpenGLBuffer colorBuffer;
 
   Camera camera;
+  double frameTime;
+  double cameraSpeed = 10.0f;
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
