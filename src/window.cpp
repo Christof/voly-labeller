@@ -7,7 +7,7 @@
 #include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
-  : QWindow(screen), scene(scene)
+  : QWindow(screen), scene(scene), frameCount(0)
 {
   setSurfaceType(OpenGLSurface);
 
@@ -111,6 +111,7 @@ void Window::render()
   context->swapBuffers(this);
 
   renderLater();
+  ++frameCount;
 }
 
 void Window::resizeOpenGL()

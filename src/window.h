@@ -41,6 +41,7 @@ class Window : public QWindow
   QOpenGLFunctions_4_3_Core *gl;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
+  long frameCount;
   QSet<Qt::Key> keysPressed;
 };
 
