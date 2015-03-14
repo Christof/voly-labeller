@@ -18,9 +18,17 @@ class Camera
   Eigen::Matrix4f getProjectionMatrix();
   Eigen::Matrix4f getViewMatrix();
 
+ public:
+  void moveForward(float distance);
+  void moveBackward(float distance);
+
  private:
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
+
+  Eigen::Vector3f position;
+  Eigen::Vector3f direction;
+  Eigen::Vector3f up;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio, float nearPlane, float farPlane);
 };

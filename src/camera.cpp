@@ -3,7 +3,7 @@
 #include <iostream>
 #include <math.h>
 
-Camera::Camera()
+Camera::Camera() : position(1, 0, -4), direction(0, 0, 1), up(0, 1, 0)
 {
   projection = createProjection(M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 
@@ -29,8 +29,30 @@ Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
   return result;
 }
 
+void Camera::moveForward(float distance)
+{
+  position += distance * direction;
+}
+
+void Camera::moveBackward(float distance)
+{
+  position -= distance * direction;
+}
+
 Eigen::Matrix4f Camera::getViewMatrix()
 {
+  auto n = direction.normalized();
+  auto u = up.cross(n).normalized();
+  auto v = n.cross(u);
+  auto e = position;
+
+  view << u.x(), u.y(), u.z(), u.dot(e),
+       v.x(), v.y(), v.z(), v.dot(e),
+       n.x(), n.y(), n.z(), n.dot(e),
+       0, 0, 0, 1;
+
+  std::cout << view << std::endl;
+
   return view;
 }
 
@@ -38,3 +60,4 @@ Eigen::Matrix4f Camera::getProjectionMatrix()
 {
   return projection;
 }
+
