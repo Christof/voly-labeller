@@ -9,6 +9,22 @@ DemoScene::DemoScene()
   : shaderProgram(), positionBuffer(QOpenGLBuffer::VertexBuffer),
     colorBuffer(QOpenGLBuffer::VertexBuffer)
 {
+  keyPressedActions[Qt::Key_W] = [this]
+  {
+    this->camera.moveForward(this->frameTime * this->cameraSpeed);
+  };
+  keyPressedActions[Qt::Key_S] = [this]
+  {
+    this->camera.moveBackward(this->frameTime * this->cameraSpeed);
+  };
+  keyPressedActions[Qt::Key_A] = [this]
+  {
+    this->camera.strafeLeft(this->frameTime * this->cameraSpeed);
+  };
+  keyPressedActions[Qt::Key_D] = [this]
+  {
+    this->camera.strafeRight(this->frameTime * this->cameraSpeed);
+  };
 }
 
 DemoScene::~DemoScene()
@@ -26,23 +42,8 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
   this->frameTime = frameTime;
   for (Qt::Key key : keysPressed)
   {
-    switch (key)
-    {
-    case Qt::Key_W:
-      camera.moveForward(frameTime * cameraSpeed);
-      break;
-    case Qt::Key_S:
-      camera.moveBackward(frameTime * cameraSpeed);
-      break;
-    case Qt::Key_A:
-      camera.strafeLeft(frameTime * cameraSpeed);
-      break;
-    case Qt::Key_D:
-      camera.strafeRight(frameTime * cameraSpeed);
-      break;
-    default:
-      continue;
-    }
+    if (keyPressedActions.count(key))
+      keyPressedActions[key]();
   }
 }
 

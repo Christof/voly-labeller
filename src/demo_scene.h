@@ -8,6 +8,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <map>
 
 class DemoScene : public AbstractScene
 {
@@ -32,6 +33,7 @@ class DemoScene : public AbstractScene
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
+  std::map<Qt::Key, std::function<void ()>> keyPressedActions;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
