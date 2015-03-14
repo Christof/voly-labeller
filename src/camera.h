@@ -21,6 +21,8 @@ class Camera
  public:
   void moveForward(float distance);
   void moveBackward(float distance);
+  void strafeLeft(float distance);
+  void strafeRight(float distance);
 
  private:
   Eigen::Matrix4f projection;

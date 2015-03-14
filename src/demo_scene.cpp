@@ -54,6 +54,8 @@ void DemoScene::keyPressEvent(QKeyEvent *event)
   {
     case Qt::Key_W: camera.moveForward(frameTime * cameraSpeed); break;
     case Qt::Key_S: camera.moveBackward(frameTime * cameraSpeed); break;
+    case Qt::Key_A: camera.strafeLeft(frameTime * cameraSpeed); break;
+    case Qt::Key_D: camera.strafeRight(frameTime * cameraSpeed); break;
   }
 }
 
