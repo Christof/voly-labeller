@@ -16,10 +16,9 @@ class DemoScene : public AbstractScene
   ~DemoScene();
 
   virtual void initialize();
-  virtual void update(double frameTime);
+  virtual void update(double frameTime, QSet<Qt::Key> keysPressed);
   virtual void render();
   virtual void resize(int width, int height);
-  virtual void keyPressEvent(QKeyEvent *event);
 
  private:
   QOpenGLShaderProgram shaderProgram;

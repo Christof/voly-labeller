@@ -21,9 +21,29 @@ void DemoScene::initialize()
   prepareVertexBuffers();
 }
 
-void DemoScene::update(double frameTime)
+void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
+  for (Qt::Key key : keysPressed)
+  {
+    switch (key)
+    {
+    case Qt::Key_W:
+      camera.moveForward(frameTime * cameraSpeed);
+      break;
+    case Qt::Key_S:
+      camera.moveBackward(frameTime * cameraSpeed);
+      break;
+    case Qt::Key_A:
+      camera.strafeLeft(frameTime * cameraSpeed);
+      break;
+    case Qt::Key_D:
+      camera.strafeRight(frameTime * cameraSpeed);
+      break;
+    default:
+      continue;
+    }
+  }
 }
 
 void DemoScene::render()
@@ -32,8 +52,8 @@ void DemoScene::render()
 
   shaderProgram.bind();
   auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
-  Eigen::Matrix4f modelViewProjection = camera.getProjectionMatrix() *
-    camera.getViewMatrix();
+  Eigen::Matrix4f modelViewProjection =
+      camera.getProjectionMatrix() * camera.getViewMatrix();
 
   gl->glUniformMatrix4fv(location, 1, GL_FALSE, modelViewProjection.data());
 
@@ -45,18 +65,6 @@ void DemoScene::render()
 void DemoScene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
-}
-
-void DemoScene::keyPressEvent(QKeyEvent *event)
-{
-  auto key = event->key();
-  switch (key)
-  {
-    case Qt::Key_W: camera.moveForward(frameTime * cameraSpeed); break;
-    case Qt::Key_S: camera.moveBackward(frameTime * cameraSpeed); break;
-    case Qt::Key_A: camera.strafeLeft(frameTime * cameraSpeed); break;
-    case Qt::Key_D: camera.strafeRight(frameTime * cameraSpeed); break;
-  }
 }
 
 void DemoScene::prepareShaderProgram()

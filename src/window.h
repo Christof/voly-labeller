@@ -4,6 +4,7 @@
 
 #include <QWindow>
 #include <QElapsedTimer>
+#include <QSet>
 #include <memory>
 
 class AbstractScene;
@@ -40,6 +41,7 @@ class Window : public QWindow
   QOpenGLFunctions_4_3_Core *gl;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
+  QSet<Qt::Key> keysPressed;
 };
 
 #endif  // SRC_WINDOW_H_

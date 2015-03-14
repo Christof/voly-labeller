@@ -91,11 +91,13 @@ void Window::keyReleaseEvent(QKeyEvent *event)
   {
     close();
   }
+
+  keysPressed -= static_cast<Qt::Key>(event->key());
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
-  scene->keyPressEvent(event);
+  keysPressed += static_cast<Qt::Key>(event->key());
 }
 
 void Window::render()
@@ -119,6 +121,6 @@ void Window::resizeOpenGL()
 
 void Window::update()
 {
-  scene->update(timer.restart() / 1000.0);
+  scene->update(timer.restart() / 1000.0, keysPressed);
 }
 

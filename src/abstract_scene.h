@@ -25,13 +25,11 @@ class AbstractScene
 
   virtual void initialize() = 0;
 
-  virtual void update(double frameTime) = 0;
+  virtual void update(double frameTime, QSet<Qt::Key> keysPressed) = 0;
 
   virtual void render() = 0;
 
   virtual void resize(int width, int height) = 0;
-
-  virtual void keyPressEvent(QKeyEvent *event) = 0;
 
  protected:
   QOpenGLContext *context;
