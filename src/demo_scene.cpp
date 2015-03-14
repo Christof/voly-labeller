@@ -47,6 +47,16 @@ void DemoScene::resize(int width, int height)
   glAssert(glViewport(0, 0, width, height));
 }
 
+void DemoScene::keyPressEvent(QKeyEvent *event)
+{
+  auto key = event->key();
+  switch (key)
+  {
+    case Qt::Key_W: camera.moveForward(0.1f); break;
+    case Qt::Key_S: camera.moveBackward(0.1f); break;
+  }
+}
+
 void DemoScene::prepareShaderProgram()
 {
   if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,

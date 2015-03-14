@@ -91,6 +91,11 @@ void Window::keyReleaseEvent(QKeyEvent *event)
   }
 }
 
+void Window::keyPressEvent(QKeyEvent *event)
+{
+  scene->keyPressEvent(event);
+}
+
 void Window::render()
 {
   if (!isExposed())

@@ -28,6 +28,7 @@ class Window : public QWindow
   bool event(QEvent *event) Q_DECL_OVERRIDE;
   void exposeEvent(QExposeEvent *event) Q_DECL_OVERRIDE;
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+  void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
 
  private:
   void initializeOpenGL();

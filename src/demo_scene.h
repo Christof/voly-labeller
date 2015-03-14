@@ -19,6 +19,7 @@ class DemoScene : public AbstractScene
   virtual void update(float t);
   virtual void render();
   virtual void resize(int width, int height);
+  virtual void keyPressEvent(QKeyEvent *event);
 
  private:
   QOpenGLShaderProgram shaderProgram;

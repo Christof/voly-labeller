@@ -4,6 +4,7 @@
 
 #include <QOpenGLContext>
 #include <QtDebug>
+#include <QKeyEvent>
 #include <QOpenGLFunctions_4_3_Core>
 
 class AbstractScene
@@ -29,6 +30,8 @@ class AbstractScene
   virtual void render() = 0;
 
   virtual void resize(int width, int height) = 0;
+
+  virtual void keyPressEvent(QKeyEvent *event) = 0;
 
  protected:
   QOpenGLContext *context;
