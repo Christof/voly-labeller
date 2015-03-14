@@ -24,12 +24,18 @@ class Window : public QWindow
   void render();
   void update();
 
+ protected:
+  bool event(QEvent *event) Q_DECL_OVERRIDE;
+  void exposeEvent(QExposeEvent *event) Q_DECL_OVERRIDE;
+
  private:
   void initializeOpenGL();
+  void renderLater();
 
   QOpenGLContext *context;
   QOpenGLFunctions_4_3_Core *gl;
   std::shared_ptr<AbstractScene> scene;
+  bool updatePending;
 };
 
 #endif  // SRC_WINDOW_H_

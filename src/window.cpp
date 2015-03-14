@@ -2,7 +2,7 @@
 #include "./abstract_scene.h"
 #include <QOpenGLContext>
 #include <QOpenGLFunctions_4_3_Core>
-#include <QTimer>
+#include <QCoreApplication>
 #include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
@@ -33,10 +33,6 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
-
-  QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-  timer->start(16);
 }
 
 Window::~Window()
@@ -56,13 +52,47 @@ void Window::initializeOpenGL()
   glCheckError();
 }
 
+void Window::renderLater()
+{
+  if (!updatePending)
+  {
+    updatePending = true;
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+  }
+}
+
+bool Window::event(QEvent *event)
+{
+  switch (event->type())
+  {
+  case QEvent::UpdateRequest:
+    updatePending = false;
+    render();
+    return true;
+  default:
+    return QWindow::event(event);
+  }
+}
+
+void Window::exposeEvent(QExposeEvent *event)
+{
+  Q_UNUSED(event);
+
+  if (isExposed())
+    render();
+}
+
 void Window::render()
 {
   if (!isExposed())
     return;
+
+  update();
   context->makeCurrent(this);
   scene->render();
   context->swapBuffers(this);
+
+  renderLater();
 }
 
 void Window::resizeOpenGL()
@@ -74,6 +104,5 @@ void Window::resizeOpenGL()
 void Window::update()
 {
   scene->update(0.0f);
-  render();
 }
 
