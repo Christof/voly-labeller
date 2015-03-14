@@ -3,6 +3,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QCoreApplication>
+#include <QKeyEvent>
 #include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
@@ -80,6 +81,14 @@ void Window::exposeEvent(QExposeEvent *event)
 
   if (isExposed())
     render();
+}
+
+void Window::keyReleaseEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Escape)
+  {
+    close();
+  }
 }
 
 void Window::render()
