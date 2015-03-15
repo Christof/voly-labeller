@@ -1,17 +1,20 @@
 #include "./window.h"
 #include "./abstract_scene.h"
 #include <QOpenGLContext>
-#include <QTimer>
+#include <QOpenGLFunctions_4_3_Core>
+#include <QCoreApplication>
+#include <QKeyEvent>
+#include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
-  : QWindow(screen), scene(scene)
+  : QWindow(screen), scene(scene), frameCount(0)
 {
   setSurfaceType(OpenGLSurface);
 
   QSurfaceFormat format;
   format.setDepthBufferSize(24);
   format.setMajorVersion(4);
-  format.setMinorVersion(4);
+  format.setMinorVersion(3);
   format.setSamples(4);
   format.setProfile(QSurfaceFormat::CoreProfile);
 
@@ -22,18 +25,17 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
   context->setFormat(format);
   context->create();
 
-  scene->setContext(context);
-
   initializeOpenGL();
+
+  scene->setContext(context, gl);
+  scene->initialize();
 
   resize(QSize(1280, 720));
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
 
-  QTimer *timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-  timer->start(16);
+  timer.start();
 }
 
 Window::~Window()
@@ -43,16 +45,73 @@ Window::~Window()
 void Window::initializeOpenGL()
 {
   context->makeCurrent(this);
-  scene->initialize();
+  gl = context->versionFunctions<QOpenGLFunctions_4_3_Core>();
+  if (!gl)
+  {
+    qWarning() << "Could not obtain required OpenGL context version";
+    exit(1);
+  }
+  gl->initializeOpenGLFunctions();
+  glCheckError();
+}
+
+void Window::renderLater()
+{
+  if (!updatePending)
+  {
+    updatePending = true;
+    QCoreApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
+  }
+}
+
+bool Window::event(QEvent *event)
+{
+  switch (event->type())
+  {
+  case QEvent::UpdateRequest:
+    updatePending = false;
+    render();
+    return true;
+  default:
+    return QWindow::event(event);
+  }
+}
+
+void Window::exposeEvent(QExposeEvent *event)
+{
+  Q_UNUSED(event);
+
+  if (isExposed())
+    render();
+}
+
+void Window::keyReleaseEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Escape)
+  {
+    close();
+  }
+
+  keysPressed -= static_cast<Qt::Key>(event->key());
+}
+
+void Window::keyPressEvent(QKeyEvent *event)
+{
+  keysPressed += static_cast<Qt::Key>(event->key());
 }
 
 void Window::render()
 {
   if (!isExposed())
     return;
+
+  update();
   context->makeCurrent(this);
   scene->render();
   context->swapBuffers(this);
+
+  renderLater();
+  ++frameCount;
 }
 
 void Window::resizeOpenGL()
@@ -63,7 +122,6 @@ void Window::resizeOpenGL()
 
 void Window::update()
 {
-  scene->update(0.0f);
-  render();
+  scene->update(timer.restart() / 1000.0, keysPressed);
 }
 

@@ -3,10 +3,12 @@
 #define SRC_DEMO_SCENE_H_
 
 #include "./abstract_scene.h"
+#include "./camera.h"
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <map>
 
 class DemoScene : public AbstractScene
 {
@@ -15,7 +17,7 @@ class DemoScene : public AbstractScene
   ~DemoScene();
 
   virtual void initialize();
-  virtual void update(float t);
+  virtual void update(double frameTime, QSet<Qt::Key> keysPressed);
   virtual void render();
   virtual void resize(int width, int height);
 
@@ -25,8 +27,13 @@ class DemoScene : public AbstractScene
   QOpenGLBuffer positionBuffer;
   QOpenGLBuffer colorBuffer;
 
+  Camera camera;
+  double frameTime;
+  double cameraSpeed = 10.0f;
+
   void prepareShaderProgram();
   void prepareVertexBuffers();
+  std::map<Qt::Key, std::function<void ()>> keyPressedActions;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
