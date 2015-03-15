@@ -4,11 +4,13 @@
 
 #include "./abstract_scene.h"
 #include "./camera.h"
+#include "./mesh.h"
 
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <map>
+#include <memory>
 
 class DemoScene : public AbstractScene
 {
@@ -22,11 +24,6 @@ class DemoScene : public AbstractScene
   virtual void resize(int width, int height);
 
  private:
-  QOpenGLShaderProgram shaderProgram;
-  QOpenGLVertexArrayObject vertexArrayObject;
-  QOpenGLBuffer positionBuffer;
-  QOpenGLBuffer colorBuffer;
-
   Camera camera;
   double frameTime;
   double cameraSpeed = 10.0f;
@@ -35,7 +32,7 @@ class DemoScene : public AbstractScene
   void prepareVertexBuffers();
   std::map<Qt::Key, std::function<void ()>> keyPressedActions;
 
-  int numVerts;
+  std::unique_ptr<Mesh> mesh;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
