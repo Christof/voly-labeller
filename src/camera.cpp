@@ -1,6 +1,5 @@
 #include "./camera.h"
 #include <Eigen/Geometry>
-#include <iostream>
 #include <math.h>
 
 Camera::Camera()
@@ -82,7 +81,6 @@ void Camera::update()
 
 Eigen::Matrix4f Camera::getViewMatrix()
 {
-  std::cout << "pos: " << position << std::endl;
   auto n = direction.normalized();
   auto u = up.cross(n).normalized();
   auto v = n.cross(u);
@@ -92,8 +90,6 @@ Eigen::Matrix4f Camera::getViewMatrix()
        v.x(), v.y(), v.z(), v.dot(e),
        n.x(), n.y(), n.z(), n.dot(e),
        0, 0, 0, 1;
-
-  std::cout << view << std::endl;
 
   return view;
 }
