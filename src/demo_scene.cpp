@@ -25,6 +25,22 @@ DemoScene::DemoScene()
   {
     this->camera.strafeRight(this->frameTime * this->cameraSpeed);
   };
+  keyPressedActions[Qt::Key_Q] = [this]
+  {
+    this->camera.changeAzimuth(this->frameTime);
+  };
+  keyPressedActions[Qt::Key_E] = [this]
+  {
+    this->camera.changeAzimuth(-this->frameTime);
+  };
+  keyPressedActions[Qt::Key_R] = [this]
+  {
+    this->camera.changeDeclination(-this->frameTime);
+  };
+  keyPressedActions[Qt::Key_F] = [this]
+  {
+    this->camera.changeDeclination(this->frameTime);
+  };
 }
 
 DemoScene::~DemoScene()

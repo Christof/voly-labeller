@@ -24,6 +24,10 @@ class Camera
   void strafeLeft(float distance);
   void strafeRight(float distance);
 
+  void changeAzimuth(float deltaAngle);
+  void changeDeclination(float deltaAngle);
+  void changeRadius(float deltaRadius);
+
  private:
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
@@ -32,7 +36,13 @@ class Camera
   Eigen::Vector3f direction;
   Eigen::Vector3f up;
 
-  Eigen::Matrix4f createProjection(float fov, float aspectRatio, float nearPlane, float farPlane);
+  float radius;
+  float azimuth;
+  float declination;
+
+  Eigen::Matrix4f createProjection(float fov, float aspectRatio,
+                                   float nearPlane, float farPlane);
+  void update();
 };
 
 #endif  // SRC_CAMERA_H_
