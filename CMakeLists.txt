@@ -21,6 +21,8 @@ pkg_check_modules(EIGEN3 REQUIRED eigen3)
 include_directories(${EIGEN3_INCLUDE_DIRS})
 #find_package(Eigen3 REQUIRED)
 
+pkg_check_modules(ASSIMP REQUIRED assimp)
+include_directories(${ASSIMP_INCLUDE_DIRS})
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
@@ -51,6 +53,7 @@ target_link_libraries(voly-labeller
   Qt5::OpenGL
   Qt5::Gui
   ${OPENGL_LIBRARIES}
+  ${ASSIMP_LIBRARIES}
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
