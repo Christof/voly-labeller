@@ -1,11 +1,11 @@
 #version 330
 
 in vec3 vertexPosition;
-in vec3 vertexColor;
+in vec4 vertexColor;
 
 uniform mat4 viewProjectionMatrix;
 
-out vec3 outColor;
+out vec4 outColor;
 
 void main()
 {

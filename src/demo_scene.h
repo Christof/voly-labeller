@@ -34,6 +34,8 @@ class DemoScene : public AbstractScene
   void prepareShaderProgram();
   void prepareVertexBuffers();
   std::map<Qt::Key, std::function<void ()>> keyPressedActions;
+
+  int numVerts;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
