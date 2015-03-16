@@ -21,6 +21,8 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
 
   auto positionData = new float[mesh->mNumFaces * 3 * 3];
   float *positionInsertPoint = positionData;
+  auto normalData = new float[mesh->mNumFaces * 3 * 3];
+  float *normalInsertPoint = normalData;
   auto colorData = new float[mesh->mNumFaces * 3 * 4];
   auto colorInsertPoint = colorData;
   // normalArray = new float[mesh->mNumFaces * 3 * 3];
@@ -36,6 +38,10 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
       aiVector3D pos = mesh->mVertices[face.mIndices[j]];
       memcpy(positionInsertPoint, &pos, sizeof(float) * 3);
       positionInsertPoint += 3;
+
+      aiVector3D normal = mesh->mNormals[face.mIndices[j]];
+      memcpy(normalInsertPoint, &normal, sizeof(float) * 3);
+      normalInsertPoint += 3;
 
       *(colorInsertPoint++) = 1.0f;
       *(colorInsertPoint++) = 0.0f;
@@ -61,6 +67,7 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   shaderProgram.bind();
 
   createBuffer(positionData, "vertexPosition", 3, numVerts);
+  createBuffer(normalData, "vertexNormal", 3, numVerts);
   createBuffer(colorData, "vertexColor", 4, numVerts);
 }
 
