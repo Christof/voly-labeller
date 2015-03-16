@@ -53,6 +53,8 @@ void Window::initializeOpenGL()
   }
   gl->initializeOpenGLFunctions();
   glCheckError();
+
+  gl->glEnable(GL_DEPTH_TEST);
 }
 
 void Window::renderLater()

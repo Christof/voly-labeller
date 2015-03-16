@@ -79,7 +79,7 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void DemoScene::render()
 {
-  glAssert(glClear(GL_COLOR_BUFFER_BIT));
+  glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   mesh->render(camera.getProjectionMatrix(), camera.getViewMatrix());
 }
