@@ -58,6 +58,7 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
 Mesh::~Mesh()
 {
 }
+
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
                                               aiMaterial *material)
 {
@@ -70,6 +71,18 @@ Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
   }
 
   return Eigen::Vector4f(values[0], values[1], values[2], values[3]);
+}
+
+float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
+{
+  float result;
+  if (material->Get(key, 0, 0, result) != 0)
+  {
+    qCritical() << "Could not load " << key << " from material";
+    exit(1);
+  }
+
+  return result;
 }
 
 void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,

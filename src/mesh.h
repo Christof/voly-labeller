@@ -34,6 +34,7 @@ class Mesh
                     int numberOfVertices);
 
   Eigen::Vector4f loadVector4FromMaterial(const char *key, aiMaterial *material);
+  float loadFloatFromMaterial(const char *key, aiMaterial *material);
 
   int numVerts;
   Eigen::Vector4f ambientColor;
