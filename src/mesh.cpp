@@ -1,6 +1,7 @@
 #include "./mesh.h"
 #include "./gl_assert.h"
 #include <QOpenGLFunctions_4_3_Core>
+#include <QDebug>
 
 Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl)
@@ -15,9 +16,20 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   }
   float color[4] = { 0, 0, 0, 0 };
   unsigned int size = 4;
-  auto result = material->Get(AI_MATKEY_COLOR_AMBIENT, color, &size);
-  std::cout << result << ":" << color[0] << "," << color[1] << "," << color[2]
-            << "," << color[3] << std::endl;
+  if (material->Get(AI_MATKEY_COLOR_AMBIENT, color, &size) != 0)
+  {
+    qCritical() << "Could not load material";
+    exit(1);
+  }
+  ambientColor = Eigen::Vector4f(color[0], color[1], color[2], color[3]);
+  if (material->Get(AI_MATKEY_COLOR_DIFFUSE, color, &size) != 0)
+  {
+    qCritical() << "Could not load material";
+    exit(1);
+  }
+  diffuseColor = Eigen::Vector4f(color[0], color[1], color[2], color[3]);
+
+  std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor << std::endl;
 
   auto positionData = new float[mesh->mNumFaces * 3 * 3];
   float *positionInsertPoint = positionData;
@@ -114,12 +126,18 @@ void Mesh::prepareShaderProgram()
 void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
   shaderProgram.bind();
+
   auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
   Eigen::Matrix4f modelViewProjection = projection * view;
-
   gl->glUniformMatrix4fv(location, 1, GL_FALSE, modelViewProjection.data());
+
+  location = shaderProgram.uniformLocation("ambientColor");
+  glAssert(gl->glUniform4fv(location, 1, ambientColor.data()));
+
+  location = shaderProgram.uniformLocation("diffuseColor");
+  glAssert(gl->glUniform4fv(location, 1, diffuseColor.data()));
 
   vertexArrayObject.bind();
 
-  glAssert(glDrawArrays(GL_TRIANGLES, 0, numVerts));
+  glAssert(gl->glDrawArrays(GL_TRIANGLES, 0, numVerts));
 }

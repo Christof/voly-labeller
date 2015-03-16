@@ -17,21 +17,25 @@ class QOpenGLFunctions_4_3_Core;
  */
 class Mesh
 {
-public:
+ public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
   void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);
 
-private:
+ private:
   QOpenGLFunctions_4_3_Core *gl;
   QOpenGLShaderProgram shaderProgram;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
 
-  void createBuffer(float* data, std::string usage, int perVertexElements, int numberOfVertices);
+  void createBuffer(float *data, std::string usage, int perVertexElements,
+                    int numberOfVertices);
 
   int numVerts;
+  Eigen::Vector4f ambientColor;
+  Eigen::Vector4f diffuseColor;
 
   void prepareShaderProgram();
 };
