@@ -29,6 +29,8 @@ private:
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
 
+  void createBuffer(float* data, std::string usage, int perVertexElements, int numberOfVertices);
+
   int numVerts;
 
   void prepareShaderProgram();

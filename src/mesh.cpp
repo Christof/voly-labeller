@@ -45,35 +45,29 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh)
   vertexArrayObject.create();
   vertexArrayObject.bind();
 
-  QOpenGLBuffer positionBuffer(QOpenGLBuffer::VertexBuffer);
-  positionBuffer.create();
-  positionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  positionBuffer.bind();
-  positionBuffer.allocate(positionData, numVerts * 3 * sizeof(float));
-
-  QOpenGLBuffer colorBuffer(QOpenGLBuffer::VertexBuffer);
-  colorBuffer.create();
-  colorBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  colorBuffer.bind();
-  colorBuffer.allocate(colorData, numVerts * 4 * sizeof(float));
-
   shaderProgram.bind();
 
-  positionBuffer.bind();
-  shaderProgram.enableAttributeArray("vertexPosition");
-  shaderProgram.setAttributeBuffer("vertexPosition", GL_FLOAT, 0, 3);
-
-  colorBuffer.bind();
-  shaderProgram.enableAttributeArray("vertexColor");
-  shaderProgram.setAttributeBuffer("vertexColor", GL_FLOAT, 0, 4);
-  glCheckError();
-
-  buffers.push_back(positionBuffer);
-  buffers.push_back(colorBuffer);
+  createBuffer(positionData, "vertexPosition", 3, numVerts);
+  createBuffer(colorData, "vertexColor", 4, numVerts);
 }
 
 Mesh::~Mesh()
 {
+}
+
+void Mesh::createBuffer(float* data, std::string usage, int perVertexElements, int numberOfVertices)
+{
+  QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
+  buffer.create();
+  buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
+  buffer.bind();
+  buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(float));
+
+  shaderProgram.enableAttributeArray(usage.c_str());
+  shaderProgram.setAttributeBuffer(usage.c_str(), GL_FLOAT, 0, perVertexElements);
+  glCheckError();
+
+  buffers.push_back(buffer);
 }
 
 void Mesh::prepareShaderProgram()
