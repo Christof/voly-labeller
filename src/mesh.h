@@ -36,6 +36,11 @@ class Mesh
   Eigen::Vector4f loadVector4FromMaterial(const char *key, aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);
 
+  void setUniform(const char* name, Eigen::Matrix4f matrix);
+  void setUniform(const char* name, Eigen::Vector4f vector);
+  void setUniform(const char* name, Eigen::Vector3f vector);
+  void setUniform(const char* name, float value);
+
   int numVerts;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;

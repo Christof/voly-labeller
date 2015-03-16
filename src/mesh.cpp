@@ -104,6 +104,30 @@ void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,
   buffers.push_back(buffer);
 }
 
+void Mesh::setUniform(const char *name, Eigen::Matrix4f matrix)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniformMatrix4fv(location, 1, GL_FALSE, matrix.data()));
+}
+
+void Mesh::setUniform(const char *name, Eigen::Vector4f vector)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniform4fv(location, 1, vector.data()));
+}
+
+void Mesh::setUniform(const char *name, Eigen::Vector3f vector)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniform3fv(location, 1, vector.data()));
+}
+
+void Mesh::setUniform(const char *name, float value)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniform1f(location, value));
+}
+
 void Mesh::prepareShaderProgram()
 {
   if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
@@ -127,24 +151,14 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
   shaderProgram.bind();
 
-  auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
   Eigen::Matrix4f modelViewProjection = projection * view;
-  gl->glUniformMatrix4fv(location, 1, GL_FALSE, modelViewProjection.data());
-
-  location = shaderProgram.uniformLocation("ambientColor");
-  glAssert(gl->glUniform4fv(location, 1, ambientColor.data()));
-
-  location = shaderProgram.uniformLocation("diffuseColor");
-  glAssert(gl->glUniform4fv(location, 1, diffuseColor.data()));
-
-  location = shaderProgram.uniformLocation("specularColor");
-  glAssert(gl->glUniform4fv(location, 1, specularColor.data()));
-
-  location = shaderProgram.uniformLocation("cameraDirection");
-  glAssert(gl->glUniform3f(location, view(2, 0), view(2, 1), view(2, 2)));
-
-  location = shaderProgram.uniformLocation("shininess");
-  glAssert(gl->glUniform1f(location, shininess));
+  setUniform("viewProjectionMatrix", modelViewProjection);
+  setUniform("ambientColor", ambientColor);
+  setUniform("diffuseColor", diffuseColor);
+  setUniform("specularColor", specularColor);
+  setUniform("cameraDirection",
+             Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
+  setUniform("shininess", shininess);
 
   vertexArrayObject.bind();
 
