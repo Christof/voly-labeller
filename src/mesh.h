@@ -40,6 +40,7 @@ class Mesh
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
+  float shininess;
 
   void prepareShaderProgram();
 };

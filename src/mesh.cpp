@@ -18,9 +18,11 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   ambientColor = loadVector4FromMaterial("$clr.ambient", material);
   diffuseColor = loadVector4FromMaterial("$clr.diffuse", material);
   specularColor = loadVector4FromMaterial("$clr.specular", material);
+  shininess = loadFloatFromMaterial("$mat.shininess", material);
 
   std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
-            << " specular: " << specularColor << std::endl;
+            << " specular: " << specularColor << " shininess: " << shininess
+            << std::endl;
 
   auto positionData = new float[mesh->mNumFaces * 3 * 3];
   float *positionInsertPoint = positionData;
@@ -140,6 +142,9 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 
   location = shaderProgram.uniformLocation("cameraDirection");
   glAssert(gl->glUniform3f(location, view(2, 0), view(2, 1), view(2, 2)));
+
+  location = shaderProgram.uniformLocation("shininess");
+  glAssert(gl->glUniform1f(location, shininess));
 
   vertexArrayObject.bind();
 
