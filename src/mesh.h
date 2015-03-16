@@ -7,18 +7,18 @@
 #include <QOpenGLBuffer>
 #include <vector>
 #include <assimp/scene.h>
+#include <assimp/material.h>
 #include <Eigen/Core>
 
 class QOpenGLFunctions_4_3_Core;
 /**
- * \brief 
+ * \brief Encapsulates a single mesh including its material.
  *
- * 
  */
 class Mesh
 {
 public:
-  Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh);
+  Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
   void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);

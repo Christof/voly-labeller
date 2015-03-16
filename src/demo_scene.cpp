@@ -63,7 +63,8 @@ void DemoScene::initialize()
     exit(1);
   }
 
-  mesh = std::unique_ptr<Mesh>(new Mesh(gl, scene->mMeshes[0]));
+  auto importedMesh = scene->mMeshes[0];
+  mesh = std::unique_ptr<Mesh>(new Mesh(gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)

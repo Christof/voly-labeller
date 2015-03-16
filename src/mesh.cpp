@@ -2,17 +2,29 @@
 #include "./gl_assert.h"
 #include <QOpenGLFunctions_4_3_Core>
 
-Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh)
+Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl)
 {
   numVerts = mesh->mNumFaces * 3;
 
+  for (unsigned int i = 0; i < material->mNumProperties; ++i)
+  {
+    auto property = material->mProperties[i];
+    std::cout << property->mKey.C_Str() << ": " << property->mType << "|"
+              << property->mDataLength << std::endl;
+  }
+  float color[4] = { 0, 0, 0, 0 };
+  unsigned int size = 4;
+  auto result = material->Get(AI_MATKEY_COLOR_AMBIENT, color, &size);
+  std::cout << result << ":" << color[0] << "," << color[1] << "," << color[2]
+            << "," << color[3] << std::endl;
+
   auto positionData = new float[mesh->mNumFaces * 3 * 3];
-  float* positionInsertPoint = positionData;
+  float *positionInsertPoint = positionData;
   auto colorData = new float[mesh->mNumFaces * 3 * 4];
   auto colorInsertPoint = colorData;
-  //normalArray = new float[mesh->mNumFaces * 3 * 3];
-  //uvArray = new float[mesh->mNumFaces * 3 * 2];
+  // normalArray = new float[mesh->mNumFaces * 3 * 3];
+  // uvArray = new float[mesh->mNumFaces * 3 * 2];
 
   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
   {
@@ -40,7 +52,8 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh)
 
   prepareShaderProgram();
   // prepareVertexBuffers();
-  // float colorData[] = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+  // float colorData[] = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+  // };
 
   vertexArrayObject.create();
   vertexArrayObject.bind();
@@ -55,7 +68,8 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::createBuffer(float* data, std::string usage, int perVertexElements, int numberOfVertices)
+void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,
+                        int numberOfVertices)
 {
   QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
   buffer.create();
@@ -64,7 +78,8 @@ void Mesh::createBuffer(float* data, std::string usage, int perVertexElements, i
   buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(float));
 
   shaderProgram.enableAttributeArray(usage.c_str());
-  shaderProgram.setAttributeBuffer(usage.c_str(), GL_FLOAT, 0, perVertexElements);
+  shaderProgram.setAttributeBuffer(usage.c_str(), GL_FLOAT, 0,
+                                   perVertexElements);
   glCheckError();
 
   buffers.push_back(buffer);
