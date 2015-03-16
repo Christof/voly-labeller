@@ -14,20 +14,9 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
     std::cout << property->mKey.C_Str() << ": " << property->mType << "|"
               << property->mDataLength << std::endl;
   }
-  float color[4] = { 0, 0, 0, 0 };
-  unsigned int size = 4;
-  if (material->Get(AI_MATKEY_COLOR_AMBIENT, color, &size) != 0)
-  {
-    qCritical() << "Could not load material";
-    exit(1);
-  }
-  ambientColor = Eigen::Vector4f(color[0], color[1], color[2], color[3]);
-  if (material->Get(AI_MATKEY_COLOR_DIFFUSE, color, &size) != 0)
-  {
-    qCritical() << "Could not load material";
-    exit(1);
-  }
-  diffuseColor = Eigen::Vector4f(color[0], color[1], color[2], color[3]);
+
+  ambientColor = loadVector4FromMaterial("$clr.ambient", material);
+  diffuseColor = loadVector4FromMaterial("$clr.diffuse", material);
 
   std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor << std::endl;
 
@@ -85,6 +74,18 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
+}
+Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key, aiMaterial *material)
+{
+  float values[4];
+  unsigned int size = 4;
+  if (material->Get(key, 0, 0, values, &size) != 0)
+  {
+    qCritical() << "Could not load " << key << " from material";
+    exit(1);
+  }
+
+  return Eigen::Vector4f(values[0], values[1], values[2], values[3]);
 }
 
 void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,

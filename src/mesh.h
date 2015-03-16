@@ -33,6 +33,8 @@ class Mesh
   void createBuffer(float *data, std::string usage, int perVertexElements,
                     int numberOfVertices);
 
+  Eigen::Vector4f loadVector4FromMaterial(const char *key, aiMaterial *material);
+
   int numVerts;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
