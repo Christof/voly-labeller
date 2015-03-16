@@ -38,6 +38,7 @@ class Mesh
   int numVerts;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
+  Eigen::Vector4f specularColor;
 
   void prepareShaderProgram();
 };
