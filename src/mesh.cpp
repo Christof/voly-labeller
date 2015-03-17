@@ -85,14 +85,15 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
   return result;
 }
 
-void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,
+template <class ElementType>
+void Mesh::createBuffer(ElementType *data, std::string usage, int perVertexElements,
                         int numberOfVertices)
 {
   QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
   buffer.create();
   buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
   buffer.bind();
-  buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(float));
+  buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(ElementType));
   glCheckError();
 
   shaderProgram.enableAndSetAttributes(usage, perVertexElements);
