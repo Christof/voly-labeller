@@ -32,13 +32,16 @@ class Mesh
   ShaderProgram shaderProgram;
 
   template <class ElementType>
-  void createBuffer(ElementType *data, std::string usage, int perVertexElements,
+  void createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
+                    std::string usage, int perVertexElements,
                     int numberOfVertices);
 
-  Eigen::Vector4f loadVector4FromMaterial(const char *key, aiMaterial *material);
+  Eigen::Vector4f loadVector4FromMaterial(const char *key,
+                                          aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);
 
   int vertexCount;
+  int indexCount;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;

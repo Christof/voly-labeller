@@ -6,7 +6,6 @@
 Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
-  vertexCount = mesh->mNumFaces * 3;
 
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
@@ -24,35 +23,38 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
             << " specular: " << specularColor << " shininess: " << shininess
             << std::endl;
 
-  auto positionData = new float[mesh->mNumFaces * 3 * 3];
-  float *positionInsertPoint = positionData;
-  auto normalData = new float[mesh->mNumFaces * 3 * 3];
-  float *normalInsertPoint = normalData;
+  unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
+  indexCount = indicesPerFace * mesh->mNumFaces;
 
+  unsigned int *indexData = new unsigned int[indexCount];
+  auto indexInsertPoint = indexData;
   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
   {
     const aiFace &face = mesh->mFaces[i];
-
-    for (int j = 0; j < 3; j++)
-    {
-
-      aiVector3D pos = mesh->mVertices[face.mIndices[j]];
-      memcpy(positionInsertPoint, &pos, sizeof(float) * 3);
-      positionInsertPoint += 3;
-
-      aiVector3D normal = mesh->mNormals[face.mIndices[j]];
-      memcpy(normalInsertPoint, &normal, sizeof(float) * 3);
-      normalInsertPoint += 3;
-    }
+    assert(face.mNumIndices == indicesPerFace);
+    memcpy(indexInsertPoint, face.mIndices,
+           sizeof(unsigned int) * face.mNumIndices);
+    indexInsertPoint += face.mNumIndices;
   }
+
+  vertexCount = mesh->mNumVertices;
+  auto positionData = new float[mesh->mNumVertices * 3];
+  memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
+  auto normalData = new float[mesh->mNumVertices * 3];
+  memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
 
   vertexArrayObject.create();
   vertexArrayObject.bind();
 
   shaderProgram.bind();
 
-  createBuffer(positionData, "vertexPosition", 3, vertexCount);
-  createBuffer(normalData, "vertexNormal", 3, vertexCount);
+  createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData, "index", 1,
+               indexCount);
+
+  createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
+               "vertexPosition", 3, vertexCount);
+  createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData, "vertexNormal", 3,
+               vertexCount);
 }
 
 Mesh::~Mesh()
@@ -86,17 +88,20 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 }
 
 template <class ElementType>
-void Mesh::createBuffer(ElementType *data, std::string usage, int perVertexElements,
+void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
+                        std::string usage, int perVertexElements,
                         int numberOfVertices)
 {
-  QOpenGLBuffer buffer(QOpenGLBuffer::VertexBuffer);
+  QOpenGLBuffer buffer(bufferType);
   buffer.create();
   buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
   buffer.bind();
-  buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(ElementType));
+  buffer.allocate(data,
+                  numberOfVertices * perVertexElements * sizeof(ElementType));
   glCheckError();
 
-  shaderProgram.enableAndSetAttributes(usage, perVertexElements);
+  if (bufferType != QOpenGLBuffer::Type::IndexBuffer)
+    shaderProgram.enableAndSetAttributes(usage, perVertexElements);
 
   buffers.push_back(buffer);
 }
@@ -111,11 +116,11 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
   shaderProgram.setUniform("diffuseColor", diffuseColor);
   shaderProgram.setUniform("specularColor", specularColor);
   shaderProgram.setUniform("cameraDirection",
-             Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
+                           Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
   shaderProgram.setUniform("shininess", shininess);
 
   vertexArrayObject.bind();
 
-  glAssert(gl->glDrawArrays(GL_TRIANGLES, 0, vertexCount));
+  glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
