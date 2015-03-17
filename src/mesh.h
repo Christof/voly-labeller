@@ -42,8 +42,6 @@ class Mesh
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
   float shininess;
-
-  void prepareShaderProgram();
 };
 
 #endif  // SRC_MESH_H_

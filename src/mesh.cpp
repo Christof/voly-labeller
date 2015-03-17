@@ -100,10 +100,6 @@ void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,
   buffers.push_back(buffer);
 }
 
-void Mesh::prepareShaderProgram()
-{
-}
-
 void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
   shaderProgram.bind();
