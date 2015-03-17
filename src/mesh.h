@@ -9,6 +9,7 @@
 #include <assimp/scene.h>
 #include <assimp/material.h>
 #include <Eigen/Core>
+#include "./shader_program.h"
 
 class QOpenGLFunctions_4_3_Core;
 /**
@@ -26,20 +27,15 @@ class Mesh
 
  private:
   QOpenGLFunctions_4_3_Core *gl;
-  QOpenGLShaderProgram shaderProgram;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
+  ShaderProgram shaderProgram;
 
   void createBuffer(float *data, std::string usage, int perVertexElements,
                     int numberOfVertices);
 
   Eigen::Vector4f loadVector4FromMaterial(const char *key, aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);
-
-  void setUniform(const char* name, Eigen::Matrix4f matrix);
-  void setUniform(const char* name, Eigen::Vector4f vector);
-  void setUniform(const char* name, Eigen::Vector3f vector);
-  void setUniform(const char* name, float value);
 
   int numVerts;
   Eigen::Vector4f ambientColor;

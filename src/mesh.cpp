@@ -4,7 +4,7 @@
 #include <QDebug>
 
 Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
-  : gl(gl)
+  : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
   numVerts = mesh->mNumFaces * 3;
 
@@ -45,8 +45,6 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
       normalInsertPoint += 3;
     }
   }
-
-  prepareShaderProgram();
 
   vertexArrayObject.create();
   vertexArrayObject.bind();
@@ -95,56 +93,15 @@ void Mesh::createBuffer(float *data, std::string usage, int perVertexElements,
   buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
   buffer.bind();
   buffer.allocate(data, numberOfVertices * perVertexElements * sizeof(float));
-
-  shaderProgram.enableAttributeArray(usage.c_str());
-  shaderProgram.setAttributeBuffer(usage.c_str(), GL_FLOAT, 0,
-                                   perVertexElements);
   glCheckError();
+
+  shaderProgram.enableAndSetAttributes(usage, perVertexElements);
 
   buffers.push_back(buffer);
 }
 
-void Mesh::setUniform(const char *name, Eigen::Matrix4f matrix)
-{
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniformMatrix4fv(location, 1, GL_FALSE, matrix.data()));
-}
-
-void Mesh::setUniform(const char *name, Eigen::Vector4f vector)
-{
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform4fv(location, 1, vector.data()));
-}
-
-void Mesh::setUniform(const char *name, Eigen::Vector3f vector)
-{
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform3fv(location, 1, vector.data()));
-}
-
-void Mesh::setUniform(const char *name, float value)
-{
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform1f(location, value));
-}
-
 void Mesh::prepareShaderProgram()
 {
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                             ":shader/phong.vert"))
-  {
-    qCritical() << "error";
-  }
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                             ":shader/phong.frag"))
-  {
-    qCritical() << "error";
-  }
-  if (!shaderProgram.link())
-  {
-    qCritical() << "error";
-  }
-  glCheckError();
 }
 
 void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
@@ -152,13 +109,13 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
   shaderProgram.bind();
 
   Eigen::Matrix4f modelViewProjection = projection * view;
-  setUniform("viewProjectionMatrix", modelViewProjection);
-  setUniform("ambientColor", ambientColor);
-  setUniform("diffuseColor", diffuseColor);
-  setUniform("specularColor", specularColor);
-  setUniform("cameraDirection",
+  shaderProgram.setUniform("viewProjectionMatrix", modelViewProjection);
+  shaderProgram.setUniform("ambientColor", ambientColor);
+  shaderProgram.setUniform("diffuseColor", diffuseColor);
+  shaderProgram.setUniform("specularColor", specularColor);
+  shaderProgram.setUniform("cameraDirection",
              Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  setUniform("shininess", shininess);
+  shaderProgram.setUniform("shininess", shininess);
 
   vertexArrayObject.bind();
 

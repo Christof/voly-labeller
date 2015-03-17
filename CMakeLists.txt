@@ -40,6 +40,7 @@ qt5_add_resources(RESOURCES src/resources.qrc)
 set(SOURCES
   src/window.cpp
   src/camera.cpp
+  src/shader_program.cpp
   src/mesh.cpp
   src/main.cpp
   src/abstract_scene.h
