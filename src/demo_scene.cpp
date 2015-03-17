@@ -65,8 +65,13 @@ void DemoScene::initialize()
     exit(1);
   }
 
-  auto importedMesh = scene->mMeshes[0];
-  mesh = std::unique_ptr<Mesh>(new Mesh(gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+  for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
+  {
+    auto importedMesh = scene->mMeshes[meshIndex];
+    auto mesh = std::unique_ptr<Mesh>(new Mesh(
+        gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+    meshes.push_back(std::move(mesh));
+  }
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -83,7 +88,8 @@ void DemoScene::render()
 {
   glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  mesh->render(camera.getProjectionMatrix(), camera.getViewMatrix());
+  for (auto &mesh : meshes)
+    mesh->render(camera.getProjectionMatrix(), camera.getViewMatrix());
 }
 
 void DemoScene::resize(int width, int height)

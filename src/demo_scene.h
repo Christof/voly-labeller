@@ -10,6 +10,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <map>
+#include <vector>
 #include <memory>
 
 class DemoScene : public AbstractScene
@@ -30,9 +31,9 @@ class DemoScene : public AbstractScene
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
-  std::map<Qt::Key, std::function<void ()>> keyPressedActions;
+  std::map<Qt::Key, std::function<void()>> keyPressedActions;
 
-  std::unique_ptr<Mesh> mesh;
+  std::vector<std::unique_ptr<Mesh>> meshes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
