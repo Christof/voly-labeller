@@ -6,7 +6,7 @@
 Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
-  numVerts = mesh->mNumFaces * 3;
+  vertexCount = mesh->mNumFaces * 3;
 
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
@@ -51,8 +51,8 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
 
   shaderProgram.bind();
 
-  createBuffer(positionData, "vertexPosition", 3, numVerts);
-  createBuffer(normalData, "vertexNormal", 3, numVerts);
+  createBuffer(positionData, "vertexPosition", 3, vertexCount);
+  createBuffer(normalData, "vertexNormal", 3, vertexCount);
 }
 
 Mesh::~Mesh()
@@ -119,5 +119,6 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 
   vertexArrayObject.bind();
 
-  glAssert(gl->glDrawArrays(GL_TRIANGLES, 0, numVerts));
+  glAssert(gl->glDrawArrays(GL_TRIANGLES, 0, vertexCount));
 }
+
