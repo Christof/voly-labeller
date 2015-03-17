@@ -51,6 +51,8 @@ DemoScene::~DemoScene()
 
 void DemoScene::initialize()
 {
+  glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
+
   Assimp::Importer importer;
   const std::string filename = "../assets/assets.dae";
   const aiScene *scene = importer.ReadFile(
