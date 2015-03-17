@@ -1,0 +1,6 @@
+{
+   ignore_cond_jumps_nvidia_unversioned_libs
+   Memcheck:Cond
+   fun:*
+   obj:*/lib*nvidia*/lib*.so.*
+}
