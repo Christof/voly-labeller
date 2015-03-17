@@ -54,3 +54,4 @@ target_link_libraries(voly-labeller
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
+add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
