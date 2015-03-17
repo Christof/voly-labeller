@@ -1,7 +1,7 @@
 #include <QtGui/QGuiApplication>
 #include <memory>
-#include "window.h"
-#include "demo_scene.h"
+#include "./window.h"
+#include "./demo_scene.h"
 
 int main(int argc, char **argv)
 {

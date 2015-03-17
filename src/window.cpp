@@ -1,9 +1,9 @@
 #include "./window.h"
-#include "./abstract_scene.h"
 #include <QOpenGLContext>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include "./abstract_scene.h"
 #include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)

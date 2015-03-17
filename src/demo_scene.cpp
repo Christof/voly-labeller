@@ -1,12 +1,13 @@
 #include "./demo_scene.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <QObject>
 #include <QOpenGLContext>
 #include <QDebug>
 #include <Eigen/Core>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <string>
 #include "./gl_assert.h"
 
 DemoScene::DemoScene()

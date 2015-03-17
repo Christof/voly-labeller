@@ -2,13 +2,13 @@
 
 #define SRC_MESH_H_
 
-#include <QOpenGLShaderProgram>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
-#include <vector>
 #include <assimp/scene.h>
 #include <assimp/material.h>
 #include <Eigen/Core>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+#include <vector>
+#include <string>
 #include "./shader_program.h"
 
 class QOpenGLFunctions_4_3_Core;

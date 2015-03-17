@@ -2,16 +2,13 @@
 
 #define SRC_DEMO_SCENE_H_
 
-#include "./abstract_scene.h"
-#include "./camera.h"
-#include "./mesh.h"
-
-#include <QOpenGLShaderProgram>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
 #include <map>
 #include <vector>
 #include <memory>
+
+#include "./abstract_scene.h"
+#include "./camera.h"
+#include "./mesh.h"
 
 class DemoScene : public AbstractScene
 {

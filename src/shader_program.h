@@ -2,9 +2,9 @@
 
 #define SRC_SHADER_PROGRAM_H_
 
-#include <string>
 #include <QOpenGLShaderProgram>
 #include <Eigen/Core>
+#include <string>
 
 class QOpenGLFunctions_4_3_Core;
 

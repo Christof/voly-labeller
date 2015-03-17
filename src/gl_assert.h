@@ -1,5 +1,5 @@
-#ifndef GL_ASSERT_H
-#define GL_ASSERT_H
+#ifndef SRC_GL_ASSERT_H_
+#define SRC_GL_ASSERT_H_
 
 /**
  * OpenGL error management class.
@@ -44,4 +44,5 @@
 #define glCheckError()
 #endif
 
-#endif  // GL_ASSERT_H
+#endif  // SRC_GL_ASSERT_H_
+

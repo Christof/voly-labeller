@@ -1,5 +1,6 @@
 #include "./shader_program.h"
 #include <QOpenGLFunctions_4_3_Core>
+#include <string>
 #include "./gl_assert.h"
 
 ShaderProgram::ShaderProgram(QOpenGLFunctions_4_3_Core *gl,
@@ -33,7 +34,8 @@ void ShaderProgram::bind()
   shaderProgram.bind();
 }
 
-void ShaderProgram::enableAndSetAttributes(std::string usage, int perVertexElements)
+void ShaderProgram::enableAndSetAttributes(std::string usage,
+                                           int perVertexElements)
 {
   shaderProgram.enableAttributeArray(usage.c_str());
   shaderProgram.setAttributeBuffer(usage.c_str(), GL_FLOAT, 0,
