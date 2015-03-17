@@ -57,4 +57,4 @@ add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all -
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
 # Analyzers
 add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --root=${CMAKE_CURRENT_SOURCE_DIR} --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int ${CMAKE_CURRENT_SOURCE_DIR}/src/*.* ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.*)
-
+add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all VERBATIM)
