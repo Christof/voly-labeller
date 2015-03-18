@@ -2,13 +2,13 @@
 
 #define SRC_DEMO_SCENE_H_
 
+#include <map>
+#include <vector>
+#include <memory>
+
 #include "./abstract_scene.h"
 #include "./camera.h"
-
-#include <QOpenGLShaderProgram>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
-#include <map>
+#include "./mesh.h"
 
 class DemoScene : public AbstractScene
 {
@@ -22,18 +22,15 @@ class DemoScene : public AbstractScene
   virtual void resize(int width, int height);
 
  private:
-  QOpenGLShaderProgram shaderProgram;
-  QOpenGLVertexArrayObject vertexArrayObject;
-  QOpenGLBuffer positionBuffer;
-  QOpenGLBuffer colorBuffer;
-
   Camera camera;
   double frameTime;
   double cameraSpeed = 10.0f;
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
-  std::map<Qt::Key, std::function<void ()>> keyPressedActions;
+  std::map<Qt::Key, std::function<void()>> keyPressedActions;
+
+  std::vector<std::unique_ptr<Mesh>> meshes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_

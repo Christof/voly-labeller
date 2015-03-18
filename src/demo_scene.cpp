@@ -1,13 +1,16 @@
 #include "./demo_scene.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <QObject>
 #include <QOpenGLContext>
+#include <QDebug>
 #include <Eigen/Core>
+#include <string>
 #include "./gl_assert.h"
 
 DemoScene::DemoScene()
-  : shaderProgram(), positionBuffer(QOpenGLBuffer::VertexBuffer),
-    colorBuffer(QOpenGLBuffer::VertexBuffer)
 {
   keyPressedActions[Qt::Key_W] = [this]
   {
@@ -49,8 +52,27 @@ DemoScene::~DemoScene()
 
 void DemoScene::initialize()
 {
-  prepareShaderProgram();
-  prepareVertexBuffers();
+  glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
+
+  Assimp::Importer importer;
+  const std::string filename = "../assets/assets.dae";
+  const aiScene *scene = importer.ReadFile(
+      filename, aiProcess_CalcTangentSpace | aiProcess_Triangulate |
+                    aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+
+  if (!scene)
+  {
+    qCritical() << "Could not load " << filename.c_str();
+    exit(1);
+  }
+
+  for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
+  {
+    auto importedMesh = scene->mMeshes[meshIndex];
+    auto mesh = std::unique_ptr<Mesh>(new Mesh(
+        gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+    meshes.push_back(std::move(mesh));
+  }
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -65,72 +87,14 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void DemoScene::render()
 {
-  glAssert(glClear(GL_COLOR_BUFFER_BIT));
+  glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  shaderProgram.bind();
-  auto location = shaderProgram.uniformLocation("viewProjectionMatrix");
-  Eigen::Matrix4f modelViewProjection =
-      camera.getProjectionMatrix() * camera.getViewMatrix();
-
-  gl->glUniformMatrix4fv(location, 1, GL_FALSE, modelViewProjection.data());
-
-  vertexArrayObject.bind();
-
-  glAssert(glDrawArrays(GL_TRIANGLES, 0, 3));
+  for (auto &mesh : meshes)
+    mesh->render(camera.getProjectionMatrix(), camera.getViewMatrix());
 }
 
 void DemoScene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
-}
-
-void DemoScene::prepareShaderProgram()
-{
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                             ":shader/phong.vert"))
-  {
-    qCritical() << "error";
-  }
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                             ":shader/phong.frag"))
-  {
-    qCritical() << "error";
-  }
-  if (!shaderProgram.link())
-  {
-    qCritical() << "error";
-  }
-  glCheckError();
-}
-
-void DemoScene::prepareVertexBuffers()
-{
-  float positionData[] = { -0.8f, -0.8f, 0.0f, 0.8f, -0.8f,
-                           0.0f,  0.0f,  0.8f, 0.0f };
-  float colorData[] = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f };
-
-  vertexArrayObject.create();
-  vertexArrayObject.bind();
-
-  positionBuffer.create();
-  positionBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  positionBuffer.bind();
-  positionBuffer.allocate(positionData, 3 * 3 * sizeof(float));
-
-  colorBuffer.create();
-  colorBuffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  colorBuffer.bind();
-  colorBuffer.allocate(colorData, 3 * 3 * sizeof(float));
-
-  shaderProgram.bind();
-
-  positionBuffer.bind();
-  shaderProgram.enableAttributeArray("vertexPosition");
-  shaderProgram.setAttributeBuffer("vertexPosition", GL_FLOAT, 0, 3);
-
-  colorBuffer.bind();
-  shaderProgram.enableAttributeArray("vertexColor");
-  shaderProgram.setAttributeBuffer("vertexColor", GL_FLOAT, 0, 3);
-  glCheckError();
 }
 

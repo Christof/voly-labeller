@@ -34,3 +34,5 @@ Makefile*
 *.qmlproject.user.*
 
 .ycm_extra_conf.pyc
+
+/assets
