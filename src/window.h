@@ -3,6 +3,7 @@
 #define SRC_WINDOW_H_
 
 #include <QWindow>
+#include <QtQuick/QQuickView>
 #include <QElapsedTimer>
 #include <QSet>
 #include <memory>
@@ -15,11 +16,11 @@ class QOpenGLFunctions_4_3_Core;
  *
  *
  */
-class Window : public QWindow
+class Window : public QQuickView
 {
   Q_OBJECT
  public:
-  explicit Window(std::shared_ptr<AbstractScene> scene, QScreen *screen = 0);
+  explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
  protected slots:
   void resizeOpenGL();

@@ -6,8 +6,8 @@
 #include "./abstract_scene.h"
 #include "./gl_assert.h"
 
-Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
-  : QWindow(screen), scene(scene), frameCount(0)
+Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
+  : QQuickView(parent), scene(scene), frameCount(0)
 {
   setSurfaceType(OpenGLSurface);
 
