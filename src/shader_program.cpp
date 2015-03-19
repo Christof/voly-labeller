@@ -34,6 +34,11 @@ void ShaderProgram::bind()
   shaderProgram.bind();
 }
 
+void ShaderProgram::release()
+{
+  shaderProgram.release();
+}
+
 void ShaderProgram::enableAndSetAttributes(std::string usage,
                                            int perVertexElements)
 {
