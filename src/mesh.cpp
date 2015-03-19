@@ -55,6 +55,11 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
                "vertexPosition", 3, vertexCount);
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData, "vertexNormal", 3,
                vertexCount);
+
+  vertexArrayObject.release();
+  for (auto &buffer : buffers)
+    buffer.release();
+  shaderProgram.release();
 }
 
 Mesh::~Mesh()
@@ -122,5 +127,8 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
   vertexArrayObject.bind();
 
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+
+  vertexArrayObject.release();
+  shaderProgram.release();
 }
 
