@@ -11,20 +11,11 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
 {
   setSurfaceType(OpenGLSurface);
 
-  QSurfaceFormat format;
-  format.setDepthBufferSize(24);
-  format.setMajorVersion(4);
-  format.setMinorVersion(3);
-  format.setSamples(4);
-  format.setProfile(QSurfaceFormat::CoreProfile);
-
+  auto format = createSurfaceFormat();
   setFormat(format);
   create();
 
-  context = new QOpenGLContext();
-  context->setFormat(format);
-  context->create();
-
+  initializeContext(format);
   initializeOpenGL();
 
   scene->setContext(context, gl);
@@ -40,6 +31,24 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QScreen *screen)
 
 Window::~Window()
 {
+}
+
+QSurfaceFormat Window::createSurfaceFormat()
+{
+  QSurfaceFormat format;
+  format.setDepthBufferSize(24);
+  format.setMajorVersion(4);
+  format.setMinorVersion(3);
+  format.setSamples(4);
+
+  return format;
+}
+
+void Window::initializeContext(QSurfaceFormat format)
+{
+  context = new QOpenGLContext();
+  context->setFormat(format);
+  context->create();
 }
 
 void Window::initializeOpenGL()

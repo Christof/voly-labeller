@@ -33,6 +33,8 @@ class Window : public QWindow
   void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
 
  private:
+  QSurfaceFormat createSurfaceFormat();
+  void initializeContext(QSurfaceFormat format);
   void initializeOpenGL();
   void renderLater();
 
