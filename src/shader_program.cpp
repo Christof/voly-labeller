@@ -1,10 +1,7 @@
 #include "./shader_program.h"
-#include <QOpenGLFunctions_4_3_Core>
 #include <string>
-#include "./gl_assert.h"
 
-ShaderProgram::ShaderProgram(QOpenGLFunctions_4_3_Core *gl,
-                             std::string vertexShaderPath,
+ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
   : gl(gl)
 {

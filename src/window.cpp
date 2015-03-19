@@ -1,10 +1,8 @@
 #include "./window.h"
 #include <QOpenGLContext>
-#include <QOpenGLFunctions_4_3_Core>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include "./abstract_scene.h"
-#include "./gl_assert.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene), frameCount(0)
@@ -54,7 +52,7 @@ void Window::initializeContext(QSurfaceFormat format)
 void Window::initializeOpenGL()
 {
   context->makeCurrent(this);
-  gl = context->versionFunctions<QOpenGLFunctions_4_3_Core>();
+  gl = context->versionFunctions<Gl>();
   if (!gl)
   {
     qWarning() << "Could not obtain required OpenGL context version";

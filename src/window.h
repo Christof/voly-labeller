@@ -7,9 +7,9 @@
 #include <QElapsedTimer>
 #include <QSet>
 #include <memory>
+#include "./gl.h"
 
 class AbstractScene;
-class QOpenGLFunctions_4_3_Core;
 
 /**
  * \brief
@@ -41,7 +41,7 @@ class Window : public QQuickView
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  QOpenGLFunctions_4_3_Core *gl;
+  Gl *gl;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
   long frameCount;

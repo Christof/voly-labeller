@@ -1,10 +1,9 @@
 #include "./mesh.h"
-#include <QOpenGLFunctions_4_3_Core>
 #include <QDebug>
 #include <string>
-#include "./gl_assert.h"
+#include "./gl.h"
 
-Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
+Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
