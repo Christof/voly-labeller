@@ -12,7 +12,7 @@
 class AbstractScene;
 
 /**
- * \brief
+ * \brief Main window which draws the 3D scene before Qt Gui is drawn
  *
  *
  */
@@ -28,15 +28,14 @@ class Window : public QQuickView
   void update();
 
  protected:
-  bool event(QEvent *event) Q_DECL_OVERRIDE;
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
 
  private:
   QSurfaceFormat createSurfaceFormat();
+  void handleLazyInitialization();
   void initializeContext(QSurfaceFormat format);
   void initializeOpenGL();
-  void renderLater();
 
   QElapsedTimer timer;
   QOpenGLContext *context;
