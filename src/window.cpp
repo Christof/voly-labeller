@@ -7,22 +7,29 @@
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene), frameCount(0)
 {
-  setSurfaceType(OpenGLSurface);
+  setClearBeforeRendering(false);
+  // setSurfaceType(OpenGLSurface);
 
-  auto format = createSurfaceFormat();
-  setFormat(format);
-  create();
+  // create();
 
-  initializeContext(format);
+  // initializeContext(format);
+  /*
   initializeOpenGL();
 
   scene->setContext(context, gl);
   scene->initialize();
+  */
 
   resize(QSize(1280, 720));
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
+
+  connect(this, SIGNAL(beforeRendering()), this, SLOT(render()),
+          Qt::DirectConnection);
+
+  auto format = createSurfaceFormat();
+  setFormat(format);
 
   timer.start();
 }
@@ -44,15 +51,18 @@ QSurfaceFormat Window::createSurfaceFormat()
 
 void Window::initializeContext(QSurfaceFormat format)
 {
-  context = new QOpenGLContext();
+  setPersistentOpenGLContext(true);
+  context = new QOpenGLContext(this);
   context->setFormat(format);
   context->create();
 }
 
 void Window::initializeOpenGL()
 {
-  context->makeCurrent(this);
+  context = openglContext();
+  // context->makeCurrent(this);
   gl = context->versionFunctions<Gl>();
+  // context->makeCurrent(this);
   if (!gl)
   {
     qWarning() << "Could not obtain required OpenGL context version";
@@ -77,21 +87,15 @@ bool Window::event(QEvent *event)
 {
   switch (event->type())
   {
-  case QEvent::UpdateRequest:
-    updatePending = false;
-    render();
-    return true;
+  /*
+case QEvent::UpdateRequest:
+  updatePending = false;
+  render();
+  return true;
+  */
   default:
     return QWindow::event(event);
   }
-}
-
-void Window::exposeEvent(QExposeEvent *event)
-{
-  Q_UNUSED(event);
-
-  if (isExposed())
-    render();
 }
 
 void Window::keyReleaseEvent(QKeyEvent *event)
@@ -111,21 +115,36 @@ void Window::keyPressEvent(QKeyEvent *event)
 
 void Window::render()
 {
+  static bool initialized = false;
+  if (!initialized)
+  {
+    initializeOpenGL();
+
+    scene->setContext(context, gl);
+    scene->initialize();
+    initialized = true;
+  }
+
+  /*
   if (!isExposed())
     return;
+    */
 
   update();
-  context->makeCurrent(this);
+  // context->makeCurrent(this);
   scene->render();
-  context->swapBuffers(this);
+  // context->swapBuffers(this);
+  // resetOpenGLState();
 
-  renderLater();
+  // renderLater();
   ++frameCount;
+
+  QQuickView::update();
 }
 
 void Window::resizeOpenGL()
 {
-  context->makeCurrent(this);
+  // context->makeCurrent(this);
   scene->resize(width(), height());
 }
 
