@@ -1,10 +1,9 @@
 #include "./mesh.h"
-#include <QOpenGLFunctions_4_3_Core>
 #include <QDebug>
 #include <string>
-#include "./gl_assert.h"
+#include "./gl.h"
 
-Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
+Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
@@ -55,6 +54,11 @@ Mesh::Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material)
                "vertexPosition", 3, vertexCount);
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData, "vertexNormal", 3,
                vertexCount);
+
+  vertexArrayObject.release();
+  for (auto &buffer : buffers)
+    buffer.release();
+  shaderProgram.release();
 }
 
 Mesh::~Mesh()
@@ -122,5 +126,8 @@ void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
   vertexArrayObject.bind();
 
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+
+  vertexArrayObject.release();
+  shaderProgram.release();
 }
 

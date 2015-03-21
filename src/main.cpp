@@ -8,6 +8,7 @@ int main(int argc, char **argv)
   QGuiApplication application(argc, argv);
   auto scene = std::make_shared<DemoScene>();
   Window window(scene);
+  window.setSource(QUrl("qrc:ui.qml"));
 
   window.show();
 

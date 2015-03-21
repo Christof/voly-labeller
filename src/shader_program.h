@@ -5,8 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <Eigen/Core>
 #include <string>
-
-class QOpenGLFunctions_4_3_Core;
+#include "./gl.h"
 
 /**
  * \brief Encapsulates a shader program consisting of a vertex and a fragment
@@ -17,11 +16,12 @@ class QOpenGLFunctions_4_3_Core;
 class ShaderProgram
 {
  public:
-  ShaderProgram(QOpenGLFunctions_4_3_Core *gl, std::string vertexShaderPath,
+  ShaderProgram(Gl *gl, std::string vertexShaderPath,
       std::string fragmentShaderPath);
   virtual ~ShaderProgram();
 
   void bind();
+  void release();
   void enableAndSetAttributes(std::string usage, int perVertexElements);
 
   void setUniform(const char* name, Eigen::Matrix4f matrix);
@@ -30,7 +30,7 @@ class ShaderProgram
   void setUniform(const char* name, float value);
 
  private:
-  QOpenGLFunctions_4_3_Core *gl;
+  Gl *gl;
   QOpenGLShaderProgram shaderProgram;
 };
 

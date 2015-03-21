@@ -3,23 +3,24 @@
 #define SRC_WINDOW_H_
 
 #include <QWindow>
+#include <QtQuick/QQuickView>
 #include <QElapsedTimer>
 #include <QSet>
 #include <memory>
+#include "./gl.h"
 
 class AbstractScene;
-class QOpenGLFunctions_4_3_Core;
 
 /**
- * \brief
+ * \brief Main window which draws the 3D scene before Qt Gui is drawn
  *
  *
  */
-class Window : public QWindow
+class Window : public QQuickView
 {
   Q_OBJECT
  public:
-  explicit Window(std::shared_ptr<AbstractScene> scene, QScreen *screen = 0);
+  explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
  protected slots:
   void resizeOpenGL();
@@ -27,18 +28,18 @@ class Window : public QWindow
   void update();
 
  protected:
-  bool event(QEvent *event) Q_DECL_OVERRIDE;
-  void exposeEvent(QExposeEvent *event) Q_DECL_OVERRIDE;
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
 
  private:
+  QSurfaceFormat createSurfaceFormat();
+  void handleLazyInitialization();
+  void initializeContext(QSurfaceFormat format);
   void initializeOpenGL();
-  void renderLater();
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  QOpenGLFunctions_4_3_Core *gl;
+  Gl *gl;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
   long frameCount;

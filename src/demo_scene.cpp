@@ -4,11 +4,10 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <QObject>
-#include <QOpenGLContext>
 #include <QDebug>
 #include <Eigen/Core>
 #include <string>
-#include "./gl_assert.h"
+#include "./gl.h"
 
 DemoScene::DemoScene()
 {

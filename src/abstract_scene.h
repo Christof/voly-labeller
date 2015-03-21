@@ -5,7 +5,7 @@
 #include <QOpenGLContext>
 #include <QtDebug>
 #include <QKeyEvent>
-#include <QOpenGLFunctions_4_3_Core>
+#include "./gl.h"
 
 class AbstractScene
 {
@@ -17,7 +17,7 @@ class AbstractScene
   {
   }
 
-  void setContext(QOpenGLContext *context, QOpenGLFunctions_4_3_Core *gl)
+  void setContext(QOpenGLContext *context, Gl *gl)
   {
     this->context = context;
     this->gl = gl;
@@ -33,7 +33,7 @@ class AbstractScene
 
  protected:
   QOpenGLContext *context;
-  QOpenGLFunctions_4_3_Core *gl;
+  Gl *gl;
 };
 
 #endif  // SRC_ABSTRACT_SCENE_H_

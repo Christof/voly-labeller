@@ -7,6 +7,7 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5OpenGL REQUIRED)
+find_package(Qt5Quick REQUIRED)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
@@ -28,6 +29,7 @@ include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
 include_directories(${Qt5OpenGL_INCLUDE_DIRS})
 include_directories(${Qt5Gui_INCLUDE_DIRS})
+include_directories(${Qt5Quick_INCLUDE_DIRS})
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
 
@@ -54,6 +56,7 @@ target_link_libraries(voly-labeller
   Qt5::Widgets
   Qt5::OpenGL
   Qt5::Gui
+  Qt5::Quick
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
 )
@@ -61,5 +64,5 @@ target_link_libraries(voly-labeller
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
 # Analyzers
-add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --root=${CMAKE_CURRENT_SOURCE_DIR} --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int ${CMAKE_CURRENT_SOURCE_DIR}/src/*.* ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.*)
+add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --root=${CMAKE_CURRENT_SOURCE_DIR} --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int,-whitespace/indent ${CMAKE_CURRENT_SOURCE_DIR}/src/*.* ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.*)
 add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all VERBATIM)

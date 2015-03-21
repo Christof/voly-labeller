@@ -10,8 +10,8 @@
 #include <vector>
 #include <string>
 #include "./shader_program.h"
+#include "./gl.h"
 
-class QOpenGLFunctions_4_3_Core;
 /**
  * \brief Encapsulates a single mesh including its material.
  *
@@ -20,13 +20,13 @@ class Mesh
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  Mesh(QOpenGLFunctions_4_3_Core *gl, aiMesh *mesh, aiMaterial *material);
+  Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
   void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);
 
  private:
-  QOpenGLFunctions_4_3_Core *gl;
+  Gl *gl;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
   ShaderProgram shaderProgram;
