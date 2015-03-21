@@ -12,7 +12,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
 
-  connect(reinterpret_cast<QObject*>(engine()), SIGNAL(quit()), this, SLOT(close()));
+  connect(reinterpret_cast<QObject *>(engine()), SIGNAL(quit()), this,
+          SLOT(close()));
 
   connect(this, SIGNAL(beforeRendering()), this, SLOT(render()),
           Qt::DirectConnection);

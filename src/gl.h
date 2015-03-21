@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <string>
 
 #ifndef __TO_STR
 #define __TO_STR(x) __EVAL_STR(x)
