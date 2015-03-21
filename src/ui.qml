@@ -8,18 +8,26 @@ Item {
   width: 1280
   height: 720
 
+  function toggleVisibility() {
+      root.visible = !root.visible;
+  }
+
   Item {
     id: menuWrapper
     anchors.fill: parent
 
-
     MenuBar {
       id: myTopMenu
       Menu {
-        title: "Window"
+        title: "File"
         MenuItem {
           text: "Open"
           shortcut: "Ctrl+o"
+        }
+        MenuItem {
+          text: "Hide user interface"
+          shortcut: "F1"
+          onTriggered: toggleVisibility();
         }
         MenuItem {
           text: "Exit"
