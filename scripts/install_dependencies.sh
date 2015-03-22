@@ -12,4 +12,4 @@ cd $USER_HOME
 
 mkdir -p USER_SOURCES
 
-sudo apt-get install libassimp-dev -y
+sudo apt-get install libassimp-dev doxygen graphviz -y
