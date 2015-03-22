@@ -36,3 +36,4 @@ Makefile*
 .ycm_extra_conf.pyc
 
 /assets
+/doc
