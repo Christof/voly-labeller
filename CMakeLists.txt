@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+option(test "Build all tests." ON)
+if(test)
+  enable_testing()
+  add_subdirectory(test)
+endif(test)
+
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
@@ -70,3 +76,4 @@ add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all
 # Documentation
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
 add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
+
