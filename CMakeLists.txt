@@ -18,6 +18,7 @@ set(SOURCES
   src/main.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
+  src/input/scxml_importer.cpp
   ${RESOURCES})
 
 add_executable(voly-labeller ${SOURCES})
