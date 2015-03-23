@@ -45,6 +45,7 @@ ScxmlImporter::ScxmlImporter(QUrl url)
 
   QXmlStreamReader reader(file.readAll());
   State *state;
+  QString initialState;
   while (!reader.atEnd() && !reader.hasError())
   {
     QXmlStreamReader::TokenType token = reader.readNext();
@@ -52,13 +53,21 @@ ScxmlImporter::ScxmlImporter(QUrl url)
     {
       continue;
     }
+
     if (token == QXmlStreamReader::StartElement)
     {
+      if (reader.name() == "scxml")
+      {
+        initialState = reader.attributes().value("initialstate").toString();
+      }
       if (reader.name() == "state")
       {
-        state =
-            new State(reader.attributes().value("id").toString().toStdString());
+        auto stateName = reader.attributes().value("id").toString();
+        state = new State(stateName.toStdString());
         stateMachine->addState(state);
+
+        if (stateName == initialState)
+          stateMachine->setInitialState(state);
 
         std::cout << "state: " << state->name << std::endl;
         // reader.readElementText(QXmlStreamReader::IncludeChildElements).toStdString()
