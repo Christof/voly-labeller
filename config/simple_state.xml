@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.coin3d.org/scxml/coin/1.0" initialstate="idle">
+  <state id="base">
+    <transition event="DOWN.LEFT_ALT" target="interact"/>
+    <transition event="UP.LEFT_ALT" target="idle"/>
+    <transition event="navigation.ViewAll">
+      <invoke targettype="voly-labeller" src="ViewAll"/>
+    </transition>
+  </state>
+  <final id="exit"/>
+</scxml>
