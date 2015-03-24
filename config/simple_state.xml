@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scxml xmlns="http://www.coin3d.org/scxml/coin/1.0" initialstate="idle">
+  <state id="idle">
+    <transition event="KeyboardEvent.DOWN.A" target="exit"/>
+  </state>
   <state id="base">
     <transition event="KeyboardEvent.DOWN.Alt" target="interact"/>
     <transition event="KeyboardEvent.UP.Ctrl" target="idle"/>
