@@ -81,26 +81,18 @@ ScxmlImporter::~ScxmlImporter()
 
 void ScxmlImporter::readElement()
 {
-  if (reader->name() == "scxml")
-  {
+  auto elementName = reader->name();
+  if (elementName == "scxml")
     initialState = attributeAsString("initialstate");
-  }
-  if (reader->name() == "state")
-  {
+
+  if (elementName == "state")
     readState();
-  }
-  if (reader->name() == "transition")
-  {
+
+  if (elementName == "transition")
     readTransition();
-  }
-  if (reader->name() == "final")
-  {
-    auto stateName = attributeAsString("id");
-    auto finalState = new QFinalState();
-    finalState->setProperty("name", stateName);
-    stateMachine->addState(finalState);
-    states[stateName] = finalState;
-  }
+
+  if (elementName == "final")
+    readFinalState();
 }
 
 void ScxmlImporter::readState()
@@ -125,6 +117,15 @@ void ScxmlImporter::readState()
             << std::endl;
 
   states[stateName] = state;
+}
+
+void ScxmlImporter::readFinalState()
+{
+  auto stateName = attributeAsString("id");
+  auto finalState = new QFinalState();
+  finalState->setProperty("name", stateName);
+  stateMachine->addState(finalState);
+  states[stateName] = finalState;
 }
 
 void ScxmlImporter::readTransition()
@@ -159,3 +160,4 @@ std::shared_ptr<QStateMachine> ScxmlImporter::getStateMachine()
 {
   return stateMachine;
 }
+
