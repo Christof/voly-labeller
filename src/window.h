@@ -28,6 +28,8 @@ class Window : public QQuickView
   void render();
   void update();
 
+  void printCurrentState();
+
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
