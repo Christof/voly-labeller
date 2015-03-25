@@ -67,7 +67,7 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver)
   for (auto &transitionTuple : transitions)
   {
     auto transition = std::get<0>(transitionTuple);
-    auto targetStateName = std::get<1>(transitionTuple);//transition->property("targetState").toString();
+    auto targetStateName = std::get<1>(transitionTuple);
     std::cout
         << "from "
         << transition->sourceState()->property("name").toString().toStdString()
@@ -157,10 +157,7 @@ void ScxmlImporter::readTransition()
     auto keyCode = toKey(keyAsString);
     auto transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
                                               keyCode, state);
-    transition->setProperty("targetState", target);
-    state->addTransition(transition);
     std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
-              << std::to_string(Qt::Key_A)
               << " target: " << target.toStdString() << std::endl;
 
     transitions.push_back(std::make_tuple(transition, target));
