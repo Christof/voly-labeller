@@ -1,8 +1,13 @@
 #include "./window.h"
+#include <iostream>
 #include <QOpenGLContext>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QStateMachine>
+#include <QAbstractState>
+#include <QAbstractTransition>
 #include "./abstract_scene.h"
+#include "./input/scxml_importer.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene), frameCount(0)
@@ -20,6 +25,11 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
   auto format = createSurfaceFormat();
   setFormat(format);
+
+  ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
+                         this);
+  stateMachine = importer.getStateMachine();
+  stateMachine->start();
 
   timer.start();
 }

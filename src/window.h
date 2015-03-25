@@ -10,6 +10,7 @@
 #include "./gl.h"
 
 class AbstractScene;
+class QStateMachine;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -41,6 +42,7 @@ class Window : public QQuickView
   QOpenGLContext *context;
   Gl *gl;
   std::shared_ptr<AbstractScene> scene;
+  std::shared_ptr<QStateMachine> stateMachine;
   bool updatePending;
   long frameCount;
   QSet<Qt::Key> keysPressed;
