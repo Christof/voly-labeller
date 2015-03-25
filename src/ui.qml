@@ -30,6 +30,11 @@ Item {
           onTriggered: toggleVisibility();
         }
         MenuItem {
+          text: "Display state machine state"
+          shortcut: "l"
+          onTriggered: window.printCurrentState();
+        }
+        MenuItem {
           text: "Exit"
           shortcut: "Esc"
           onTriggered: Qt.quit();
