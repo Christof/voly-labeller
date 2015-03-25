@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scxml xmlns="http://www.coin3d.org/scxml/coin/1.0" initialstate="idle">
   <state id="idle">
-    <transition event="KeyboardEvent.DOWN.A" target="exit"/>
+    <transition event="KeyboardEvent.DOWN.B" target="exit"/>
+    <transition event="KeyboardEvent.DOWN.V" target="base"/>
   </state>
   <state id="base">
-    <transition event="KeyboardEvent.DOWN.Alt" target="interact"/>
-    <transition event="KeyboardEvent.UP.Ctrl" target="idle"/>
-    <transition event="KeyboardEvent.DOWN.A" target="idle"/>
+    <transition event="KeyboardEvent.UP.I" target="idle"/>
+    <transition event="KeyboardEvent.DOWN.Alt" target="idle"/>
     <transition event="navigation.ViewAll">
       <invoke targettype="voly-labeller" src="ViewAll"/>
     </transition>
