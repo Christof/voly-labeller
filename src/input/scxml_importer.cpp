@@ -133,7 +133,7 @@ void ScxmlImporter::readFinalState()
   states[stateName] = finalState;
 
   auto currentState = finalState;
-  connect(state, &QState::entered, [currentState]()
+  connect(finalState, &QState::entered, [currentState]()
           {
     std::cout << "entered: "
               << currentState->property("name").toString().toStdString()
