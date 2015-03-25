@@ -139,8 +139,8 @@ void ScxmlImporter::readTransition()
     auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
     auto keyCode = toKey(keyAsString);
     auto transition =
-        new QKeyEventTransition(keyboardEventReceiver, eventType, keyCode);
-    transition->setProperty("targetStae", target);
+        new QKeyEventTransition(keyboardEventReceiver, eventType, Qt::Key_B, state);
+    transition->setProperty("targetState", target);
     state->addTransition(transition);
     std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
               << std::to_string(Qt::Key_A) << std::endl;
