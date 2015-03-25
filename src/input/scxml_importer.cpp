@@ -61,6 +61,9 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver)
 
     if (token == QXmlStreamReader::StartElement)
       readElement();
+
+    if (token == QXmlStreamReader::EndElement)
+      finishElement();
   }
 
   qRegisterMetaType<QAbstractState *>("QAbstractState*");
@@ -87,6 +90,7 @@ ScxmlImporter::~ScxmlImporter()
 void ScxmlImporter::readElement()
 {
   auto elementName = reader->name();
+  activeElement = elementName.toString();
   if (elementName == "scxml")
     initialState = attributeAsString("initialstate");
 
@@ -105,6 +109,12 @@ void ScxmlImporter::readElement()
               << std::endl;
     std::cout << "src: " << attributeAsString("src").toStdString() << std::endl;
   }
+}
+
+void ScxmlImporter::finishElement()
+{
+  if (reader->name() != activeElement)
+    std::cout << "not finishing active element" << std::endl;
 }
 
 void ScxmlImporter::readState()

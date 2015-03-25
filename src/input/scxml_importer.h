@@ -33,6 +33,7 @@ class ScxmlImporter : public QObject
  private:
   QObject *keyboardEventReceiver;
   QString initialState;
+  QString activeElement;
   QState *state;
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
@@ -41,6 +42,7 @@ class ScxmlImporter : public QObject
   std::vector<std::tuple<QAbstractTransition *, QString>> transitions;
 
   void readElement();
+  void finishElement();
   void readState();
   void readFinalState();
   void readTransition();
