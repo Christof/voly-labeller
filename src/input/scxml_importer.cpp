@@ -64,9 +64,14 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver)
   }
 
   qRegisterMetaType<QAbstractState *>("QAbstractState*");
-  for (auto transition : transitions)
+  for (auto &transitionTuple : transitions)
   {
-    auto targetStateName = transition->property("targetState").toString();
+    auto transition = std::get<0>(transitionTuple);
+    auto targetStateName = std::get<1>(transitionTuple);//transition->property("targetState").toString();
+    std::cout
+        << "from "
+        << transition->sourceState()->property("name").toString().toStdString()
+        << " to " << targetStateName.toStdString() << std::endl;
     transition->setTargetState(states[targetStateName]);
   }
 
@@ -126,6 +131,18 @@ void ScxmlImporter::readFinalState()
   finalState->setProperty("name", stateName);
   stateMachine->addState(finalState);
   states[stateName] = finalState;
+
+  auto currentState = finalState;
+  connect(state, &QState::entered, [currentState]()
+          {
+    std::cout << "entered: "
+              << currentState->property("name").toString().toStdString()
+              << std::endl;
+  });
+
+  std::cout << "state (final): "
+            << finalState->property("name").toString().toStdString()
+            << std::endl;
 }
 
 void ScxmlImporter::readTransition()
@@ -138,14 +155,15 @@ void ScxmlImporter::readTransition()
     QEvent::Type eventType = QEvent::KeyPress;
     auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
     auto keyCode = toKey(keyAsString);
-    auto transition =
-        new QKeyEventTransition(keyboardEventReceiver, eventType, Qt::Key_B, state);
+    auto transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
+                                              Qt::Key_B, state);
     transition->setProperty("targetState", target);
     state->addTransition(transition);
     std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
-              << std::to_string(Qt::Key_A) << std::endl;
+              << std::to_string(Qt::Key_A)
+              << " target: " << target.toStdString() << std::endl;
 
-    transitions.push_back(transition);
+    transitions.push_back(std::make_tuple(transition, target));
   }
   std::cout << "transition: " << event.toStdString() << " | "
             << target.toStdString() << std::endl;

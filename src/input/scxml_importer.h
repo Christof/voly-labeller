@@ -8,6 +8,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <tuple>
 
 class QStateMachine;
 class QAbstractState;
@@ -36,7 +37,8 @@ class ScxmlImporter : public QObject
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
   std::map<QString, QAbstractState *> states;
-  std::vector<QAbstractTransition *> transitions;
+  // transition and target state name
+  std::vector<std::tuple<QAbstractTransition *, QString>> transitions;
 
   void readElement();
   void readState();
