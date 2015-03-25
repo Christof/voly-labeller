@@ -98,6 +98,13 @@ void ScxmlImporter::readElement()
 
   if (elementName == "final")
     readFinalState();
+
+  if (elementName == "invoke")
+  {
+    std::cout << "targettype: " << attributeAsString("targettype").toStdString()
+              << std::endl;
+    std::cout << "src: " << attributeAsString("src").toStdString() << std::endl;
+  }
 }
 
 void ScxmlImporter::readState()
