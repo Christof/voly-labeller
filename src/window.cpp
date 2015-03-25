@@ -1,11 +1,11 @@
 #include "./window.h"
-#include <iostream>
 #include <QOpenGLContext>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
+#include <iostream>
 #include "./abstract_scene.h"
 #include "./input/scxml_importer.h"
 
