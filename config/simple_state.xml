@@ -7,8 +7,8 @@
   <state id="base">
     <transition event="KeyboardEvent.UP.I" target="idle"/>
     <transition event="KeyboardEvent.DOWN.Alt" target="idle"/>
-    <transition event="navigation.ViewAll">
-      <invoke targettype="voly-labeller" src="ViewAll"/>
+    <transition event="KeyboardEvent.DOWN.y" target="idle">
+      <invoke targettype="voly-labeller" src="renderWireframe"/>
     </transition>
   </state>
   <final id="exit"/>
