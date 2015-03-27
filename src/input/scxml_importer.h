@@ -9,6 +9,7 @@
 #include <map>
 #include <vector>
 #include <tuple>
+#include "./invoke_manager.h"
 
 class QStateMachine;
 class QAbstractState;
@@ -25,7 +26,8 @@ class ScxmlImporter : public QObject
 {
   Q_OBJECT
  public:
-  ScxmlImporter(QUrl url, QObject *keyboardEventReceiver);
+  ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
+                std::shared_ptr<InvokeManager> invokeManager);
   virtual ~ScxmlImporter();
 
   std::shared_ptr<QStateMachine> getStateMachine();
@@ -35,11 +37,13 @@ class ScxmlImporter : public QObject
   QString initialState;
   QString activeElement;
   QState *state;
+  QAbstractTransition *currentTransition;
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
   std::map<QString, QAbstractState *> states;
   // transition and target state name
   std::vector<std::tuple<QAbstractTransition *, QString>> transitions;
+  std::shared_ptr<InvokeManager> invokeManager;
 
   void readElement();
   void finishElement();

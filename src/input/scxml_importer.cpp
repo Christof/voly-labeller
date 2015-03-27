@@ -10,6 +10,7 @@
 #include <QKeyEventTransition>
 #include <iostream>
 #include <cassert>
+#include "./invoke.h"
 
 // from
 // http://stackoverflow.com/questions/14034209/convert-string-representation-of-keycode-to-qtkey-or-any-int-and-back
@@ -38,8 +39,9 @@ uint toKey(QString const &str)
   return keyCode;
 }
 
-ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver)
-  : keyboardEventReceiver(keyboardEventReceiver)
+ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
+    std::shared_ptr<InvokeManager> invokeManager)
+  : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager)
 {
   QFile file(url.toLocalFile());
   file.open(QFile::OpenModeFlag::ReadOnly);
@@ -108,6 +110,8 @@ void ScxmlImporter::readElement()
     std::cout << "targettype: " << attributeAsString("targettype").toStdString()
               << std::endl;
     std::cout << "src: " << attributeAsString("src").toStdString() << std::endl;
+    invokeManager->addFor(currentTransition, attributeAsString("targettype"),
+                          attributeAsString("src"));
   }
 }
 
@@ -167,13 +171,14 @@ void ScxmlImporter::readTransition()
   auto event = attributeAsString("event");
   auto target = attributeAsString("target");
   QString keyboardEvent = "KeyboardEvent";
+  QAbstractTransition *transition = nullptr;
   if (event.startsWith(keyboardEvent))
   {
     QEvent::Type eventType = QEvent::KeyPress;
     auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
     auto keyCode = toKey(keyAsString);
-    auto transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
-                                              keyCode, state);
+    transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
+                                         keyCode, state);
     std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
               << " target: " << target.toStdString() << std::endl;
 
@@ -181,6 +186,8 @@ void ScxmlImporter::readTransition()
   }
   std::cout << "transition: " << event.toStdString() << " | "
             << target.toStdString() << std::endl;
+
+  currentTransition = transition;
 }
 
 QString ScxmlImporter::attributeAsString(const char *name)

@@ -26,8 +26,9 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   auto format = createSurfaceFormat();
   setFormat(format);
 
+  invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
-                         this);
+                         this, invokeManager);
   stateMachine = importer.getStateMachine();
   stateMachine->start();
 
