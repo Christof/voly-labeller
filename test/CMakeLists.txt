@@ -21,6 +21,7 @@ set(SOURCES
   ../src/abstract_scene.h
   ../src/demo_scene.cpp
   ../src/input/scxml_importer.cpp
+  ../src/input/invoke_manager.cpp
   ${RESOURCES})
 
 message(sources: ${SOURCES})
