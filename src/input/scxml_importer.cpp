@@ -73,10 +73,6 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
   {
     auto transition = std::get<0>(transitionTuple);
     auto targetStateName = std::get<1>(transitionTuple);
-    std::cout
-        << "from "
-        << transition->sourceState()->property("name").toString().toStdString()
-        << " to " << targetStateName.toStdString() << std::endl;
     transition->setTargetState(states[targetStateName]);
   }
 
