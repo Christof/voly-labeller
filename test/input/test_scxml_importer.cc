@@ -13,11 +13,11 @@ class Test_ScxmlImporter : public ::testing::Test
  protected:
   virtual void SetUp()
   {
-  int zero = 0;
+    int zero = 0;
     application = new QCoreApplication(zero, static_cast<char **>(nullptr));
     eventSender = new QObject();
 
-    auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+    invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
     ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
                            eventSender, invokeManager);
     stateMachine = importer.getStateMachine();
@@ -35,7 +35,9 @@ class Test_ScxmlImporter : public ::testing::Test
 
   QCoreApplication *application;
   QObject *eventSender;
+  ScxmlImporter *importer;
   std::shared_ptr<QStateMachine> stateMachine;
+  std::shared_ptr<InvokeManager> invokeManager;
 };
 
 TEST_F(Test_ScxmlImporter, SwitchFromInitialToFinalStateWithKeyPress)
@@ -57,3 +59,42 @@ TEST_F(Test_ScxmlImporter, SwitchFromInitialToFinalStateWithKeyPress)
   EXPECT_FALSE(stateMachine->isRunning());
 }
 
+class MockHandler : public QObject
+{
+  Q_OBJECT
+ public slots:
+  void printCurrentState()
+  {
+    wasPrintCurrentStateCalled = true;
+  }
+
+ public:
+  bool wasPrintCurrentStateCalled = false;
+};
+
+TEST_F(Test_ScxmlImporter,
+       SwitchFromInitialToAnotherStateAndInvokeWithStateChange)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  application->sendEvent(
+      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
+  application->processEvents();
+
+  auto configuration = stateMachine->configuration();
+  EXPECT_EQ(1, configuration.size());
+  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+
+  application->sendEvent(
+      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_Y, Qt::NoModifier));
+  application->processEvents();
+
+  configuration = stateMachine->configuration();
+  EXPECT_EQ(1, configuration.size());
+  EXPECT_EQ("idle", (*configuration.begin())->property("name").toString());
+
+  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+}
+
+#include "test_scxml_importer.moc"
