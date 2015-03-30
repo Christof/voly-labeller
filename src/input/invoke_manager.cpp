@@ -36,10 +36,15 @@ void InvokeManager::invokeFor(QAbstractTransition *transition)
   }
 }
 
+void InvokeManager::addHandler(QString targetType, QObject* handlerObject)
+{
+  std::cout << "Add handler " << targetType.toStdString() << std::endl;
+  handlers[targetType] = handlerObject;
+}
+
 void InvokeManager::addHandler(QObject *handlerObject)
 {
   auto className = handlerObject->metaObject()->className();
-  std::cout << "Add handler " << className << std::endl;
-  handlers[className] = handlerObject;
+  addHandler(className, handlerObject);
 }
 

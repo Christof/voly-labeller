@@ -28,6 +28,7 @@ class InvokeManager : public QObject
   void invokeFor(QAbstractTransition *transition);
 
   void addHandler(QObject* handlerObject);
+  void addHandler(QString targetType, QObject* handlerObject);
 
  private:
   std::map<QAbstractTransition *, std::vector<Invoke>> invokes;
