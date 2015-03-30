@@ -12,17 +12,12 @@ set(CMAKE_AUTOMOC ON)
 
 qt5_add_resources(RESOURCES ../src/resources.qrc)
 
-set(SOURCES
-  ../src/window.cpp
-  ../src/camera.cpp
-  ../src/shader_program.cpp
-  ../src/mesh.cpp
-  ../src/abstract_scene.h
-  ../src/demo_scene.cpp
-  ${RESOURCES})
-
 file(GLOB_RECURSE TESTS ${CMAKE_CURRENT_SOURCE_DIR}**/*.cc)
-add_executable(tests ${TESTS} ${SOURCES} $<TARGET_OBJECTS:input>)
+add_executable(tests ${TESTS} ${SOURCES}
+  $<TARGET_OBJECTS:voly-labeller-lib>
+  $<TARGET_OBJECTS:input>
+  )
+
 target_link_libraries(tests
   ${GTEST_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}

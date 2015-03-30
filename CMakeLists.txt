@@ -24,12 +24,17 @@ set(SOURCES
   src/camera.cpp
   src/shader_program.cpp
   src/mesh.cpp
-  src/main.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
   ${RESOURCES})
 
-add_executable(voly-labeller ${SOURCES} $<TARGET_OBJECTS:input>)
+add_library(voly-labeller-lib OBJECT ${SOURCES})
+
+add_executable(voly-labeller
+  src/main.cpp
+  $<TARGET_OBJECTS:voly-labeller-lib>
+  $<TARGET_OBJECTS:input>
+  )
 
 target_link_libraries(voly-labeller
   Qt5::Core
