@@ -33,6 +33,13 @@ class Test_ScxmlImporter : public ::testing::Test
     delete application;
   }
 
+  inline void expectSingleStateWithName(QString name)
+  {
+    auto configuration = stateMachine->configuration();
+    EXPECT_EQ(1, configuration.size());
+    EXPECT_EQ(name, (*configuration.begin())->property("name").toString());
+  }
+
   QCoreApplication *application;
   QObject *eventSender;
   ScxmlImporter *importer;
@@ -44,17 +51,13 @@ TEST_F(Test_ScxmlImporter, SwitchFromInitialToFinalStateWithKeyPress)
 {
   EXPECT_TRUE(stateMachine->isRunning());
 
-  auto configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("idle", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("idle");
 
   application->sendEvent(
       eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_B, Qt::NoModifier));
   application->processEvents();
 
-  configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("exit", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("exit");
 
   EXPECT_FALSE(stateMachine->isRunning());
 }
@@ -82,17 +85,13 @@ TEST_F(Test_ScxmlImporter,
       eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
   application->processEvents();
 
-  auto configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("base");
 
   application->sendEvent(
       eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_Y, Qt::NoModifier));
   application->processEvents();
 
-  configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("idle", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("idle");
 
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
@@ -107,18 +106,15 @@ TEST_F(Test_ScxmlImporter,
       eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
   application->processEvents();
 
-  auto configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("base");
 
   application->sendEvent(
       eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_N, Qt::NoModifier));
   application->processEvents();
 
-  configuration = stateMachine->configuration();
-  EXPECT_EQ(1, configuration.size());
-  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+  expectSingleStateWithName("base");
 
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
+
 #include "test_scxml_importer.moc"
