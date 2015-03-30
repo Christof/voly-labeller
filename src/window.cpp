@@ -144,9 +144,10 @@ void Window::printCurrentState()
                        .toString()
                        .toStdString() << std::endl;
       auto targetState = transition->targetState();
-      std::cout << "\t\ttarget: "
-                << targetState->property("name").toString().toStdString()
-                << std::endl;
+      if (targetState)
+        std::cout << "\t\ttarget: "
+                  << targetState->property("name").toString().toStdString()
+                  << std::endl;
     }
   }
 }
