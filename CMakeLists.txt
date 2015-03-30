@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+add_subdirectory(src/input)
+
 option(test "Build all tests." ON)
 if(test)
   enable_testing()
@@ -25,11 +27,9 @@ set(SOURCES
   src/main.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
-  src/input/scxml_importer.cpp
-  src/input/invoke_manager.cpp
   ${RESOURCES})
 
-add_executable(voly-labeller ${SOURCES})
+add_executable(voly-labeller ${SOURCES} $<TARGET_OBJECTS:input>)
 
 target_link_libraries(voly-labeller
   Qt5::Core

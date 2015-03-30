@@ -28,7 +28,7 @@ include_directories(${Qt5Gui_INCLUDE_DIRS})
 include_directories(${Qt5Quick_INCLUDE_DIRS})
 
 
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g")
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(CMAKE_AUTORCC ON) needs cmake 3.2.1
