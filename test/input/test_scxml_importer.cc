@@ -33,11 +33,14 @@ class Test_ScxmlImporter : public ::testing::Test
     delete application;
   }
 
-  inline void expectSingleStateWithName(QString name)
+  QAbstractState* expectSingleStateWithName(std::string name)
   {
     auto configuration = stateMachine->configuration();
     EXPECT_EQ(1, configuration.size());
-    EXPECT_EQ(name, (*configuration.begin())->property("name").toString());
+    auto state = (*configuration.begin());
+    EXPECT_EQ(name, state->property("name").toString().toStdString());
+
+    return state;
   }
 
   void sendKeyPressEvent(Qt::Key key)
