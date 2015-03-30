@@ -40,6 +40,14 @@ class Test_ScxmlImporter : public ::testing::Test
     EXPECT_EQ(name, (*configuration.begin())->property("name").toString());
   }
 
+  void sendKeyPressEvent(Qt::Key key)
+  {
+    application->sendEvent(
+        eventSender,
+        new QKeyEvent(QEvent::KeyPress, key, Qt::NoModifier));
+    application->processEvents();
+  }
+
   QCoreApplication *application;
   QObject *eventSender;
   ScxmlImporter *importer;
@@ -50,15 +58,11 @@ class Test_ScxmlImporter : public ::testing::Test
 TEST_F(Test_ScxmlImporter, SwitchFromInitialToFinalStateWithKeyPress)
 {
   EXPECT_TRUE(stateMachine->isRunning());
-
   expectSingleStateWithName("idle");
 
-  application->sendEvent(
-      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_B, Qt::NoModifier));
-  application->processEvents();
+  sendKeyPressEvent(Qt::Key_B);
 
   expectSingleStateWithName("exit");
-
   EXPECT_FALSE(stateMachine->isRunning());
 }
 
@@ -81,18 +85,13 @@ TEST_F(Test_ScxmlImporter,
   MockHandler handler;
   invokeManager->addHandler("Window", &handler);
 
-  application->sendEvent(
-      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
-  application->processEvents();
+  sendKeyPressEvent(Qt::Key_V);
 
   expectSingleStateWithName("base");
 
-  application->sendEvent(
-      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_Y, Qt::NoModifier));
-  application->processEvents();
+  sendKeyPressEvent(Qt::Key_Y);
 
   expectSingleStateWithName("idle");
-
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
@@ -102,18 +101,13 @@ TEST_F(Test_ScxmlImporter,
   MockHandler handler;
   invokeManager->addHandler("Window", &handler);
 
-  application->sendEvent(
-      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
-  application->processEvents();
+  sendKeyPressEvent(Qt::Key_V);
 
   expectSingleStateWithName("base");
 
-  application->sendEvent(
-      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_N, Qt::NoModifier));
-  application->processEvents();
+  sendKeyPressEvent(Qt::Key_N);
 
   expectSingleStateWithName("base");
-
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
