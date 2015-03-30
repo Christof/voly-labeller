@@ -97,4 +97,28 @@ TEST_F(Test_ScxmlImporter,
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
+TEST_F(Test_ScxmlImporter,
+       SwitchFromInitialToAnotherStateAndInvokeWithoutStateChange)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  application->sendEvent(
+      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_V, Qt::NoModifier));
+  application->processEvents();
+
+  auto configuration = stateMachine->configuration();
+  EXPECT_EQ(1, configuration.size());
+  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+
+  application->sendEvent(
+      eventSender, new QKeyEvent(QEvent::KeyPress, Qt::Key_N, Qt::NoModifier));
+  application->processEvents();
+
+  configuration = stateMachine->configuration();
+  EXPECT_EQ(1, configuration.size());
+  EXPECT_EQ("base", (*configuration.begin())->property("name").toString());
+
+  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+}
 #include "test_scxml_importer.moc"

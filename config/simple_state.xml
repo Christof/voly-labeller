@@ -10,6 +10,9 @@
     <transition event="KeyboardEvent.DOWN.y" target="idle">
       <invoke targettype="Window" src="printCurrentState"/>
     </transition>
+    <transition event="KeyboardEvent.DOWN.n">
+      <invoke targettype="Window" src="printCurrentState"/>
+    </transition>
   </state>
   <final id="exit"/>
 </scxml>
