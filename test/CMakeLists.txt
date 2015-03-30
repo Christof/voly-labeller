@@ -8,7 +8,6 @@ include_directories(${GTEST_INCLUDE_DIRS})
 include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_AUTORCC ON) needs cmake 3.2.1
 set(CMAKE_AUTOMOC ON)
 
 qt5_add_resources(RESOURCES ../src/resources.qrc)
@@ -24,7 +23,6 @@ set(SOURCES
   ../src/input/invoke_manager.cpp
   ${RESOURCES})
 
-message(sources: ${SOURCES})
 file(GLOB_RECURSE TESTS ${CMAKE_CURRENT_SOURCE_DIR}**/*.cc)
 add_executable(tests ${TESTS} ${SOURCES})
 target_link_libraries(tests
