@@ -103,11 +103,11 @@ void ScxmlImporter::readElement()
 
   if (elementName == "invoke")
   {
-    std::cout << "targettype: " << attributeAsString("targettype").toStdString()
-              << std::endl;
-    std::cout << "src: " << attributeAsString("src").toStdString() << std::endl;
-    invokeManager->addFor(currentTransition, attributeAsString("targettype"),
-                          attributeAsString("src"));
+    auto targetType = attributeAsString("targettype");
+    auto source = attributeAsString("src");
+    std::cout << "targettype: " << targetType.toStdString() << std::endl;
+    std::cout << "src: " << source.toStdString() << std::endl;
+    invokeManager->addFor(currentTransition, targetType, source);
   }
 }
 
