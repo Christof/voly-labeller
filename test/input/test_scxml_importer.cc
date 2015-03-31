@@ -46,8 +46,7 @@ class Test_ScxmlImporter : public ::testing::Test
   void sendKeyPressEvent(Qt::Key key)
   {
     application->sendEvent(
-        eventSender,
-        new QKeyEvent(QEvent::KeyPress, key, Qt::NoModifier));
+        eventSender, new QKeyEvent(QEvent::KeyPress, key, Qt::NoModifier));
     application->processEvents();
   }
 
@@ -112,6 +111,20 @@ TEST_F(Test_ScxmlImporter,
 
   expectSingleStateWithName("base");
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+}
+
+TEST_F(Test_ScxmlImporter, SwitchToNestedState)
+{
+  sendKeyPressEvent(Qt::Key_N);
+
+  auto configuration = stateMachine->configuration();
+  EXPECT_EQ(2, configuration.size());
+
+  for (auto state : configuration)
+  {
+    auto name = state->property("name").toString().toStdString();
+    EXPECT_TRUE(name == "nested" || name == "with-nesting");
+  }
 }
 
 #include "test_scxml_importer.moc"

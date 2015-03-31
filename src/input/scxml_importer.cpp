@@ -40,7 +40,7 @@ uint toKey(QString const &str)
 }
 
 ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
-    std::shared_ptr<InvokeManager> invokeManager)
+                             std::shared_ptr<InvokeManager> invokeManager)
   : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager)
 {
   QFile file(url.toLocalFile());
@@ -76,6 +76,12 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
     transition->setTargetState(states[targetStateName]);
   }
 
+  for (auto &initialPair : initialStateTransitions)
+  {
+    std::cout << "set initial state for " << initialPair.second.toStdString() << std::endl;
+    initialPair.first->setInitialState(states[initialPair.second]);
+  }
+
   if (reader->hasError())
     std::cerr << "Error while parsing: " << reader->errorString().toStdString()
               << std::endl;
@@ -109,6 +115,9 @@ void ScxmlImporter::readElement()
     std::cout << "src: " << source.toStdString() << std::endl;
     invokeManager->addFor(currentTransition, targetType, source);
   }
+
+  if (elementName == "initial")
+    isReadingInitial = true;
 }
 
 void ScxmlImporter::finishElement()
@@ -119,6 +128,9 @@ void ScxmlImporter::finishElement()
 
   if (elementName == "state")
     stateStack.pop();
+
+  if (elementName == "initial")
+    isReadingInitial = false;
 }
 
 void ScxmlImporter::readState()
@@ -184,6 +196,10 @@ void ScxmlImporter::readTransition()
 
     transitions.push_back(std::make_tuple(transition, target));
   }
+
+  if (isReadingInitial)
+    initialStateTransitions[stateStack.top()] = target;
+
   std::cout << "transition: " << event.toStdString() << " | "
             << target.toStdString() << std::endl;
 
