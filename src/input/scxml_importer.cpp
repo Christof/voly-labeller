@@ -113,31 +113,35 @@ void ScxmlImporter::readElement()
 
 void ScxmlImporter::finishElement()
 {
-  if (reader->name() != activeElement)
+  auto elementName = reader->name();
+  if (elementName != activeElement)
     std::cout << "not finishing active element" << std::endl;
+
+  if (elementName == "state")
+    stateStack.pop();
 }
 
 void ScxmlImporter::readState()
 {
   auto stateName = attributeAsString("id");
-  state = new QState();
+  auto state = new QState(stateStack.empty() ? 0 : stateStack.top());
   state->setProperty("name", stateName);
-  stateMachine->addState(state);
+  if (stateStack.empty())
+    stateMachine->addState(state);
 
   if (stateName == initialState)
     stateMachine->setInitialState(state);
 
-  auto currentState = state;
-  connect(state, &QState::entered, [currentState]()
+  connect(state, &QState::entered, [state]()
           {
-    std::cout << "entered: "
-              << currentState->property("name").toString().toStdString()
+    std::cout << "entered: " << state->property("name").toString().toStdString()
               << std::endl;
   });
 
   std::cout << "state: " << state->property("name").toString().toStdString()
             << std::endl;
 
+  stateStack.push(state);
   states[stateName] = state;
 }
 
@@ -174,7 +178,7 @@ void ScxmlImporter::readTransition()
     auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
     auto keyCode = toKey(keyAsString);
     transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
-                                         keyCode, state);
+                                         keyCode, stateStack.top());
     std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
               << " target: " << target.toStdString() << std::endl;
 
