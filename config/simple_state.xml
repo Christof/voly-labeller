@@ -3,6 +3,7 @@
   <state id="idle">
     <transition event="KeyboardEvent.DOWN.B" target="exit"/>
     <transition event="KeyboardEvent.DOWN.V" target="base"/>
+    <transition event="KeyboardEvent.UP.N" target="with-nesting"/>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.UP.I" target="idle"/>
@@ -13,6 +14,13 @@
     <transition event="KeyboardEvent.DOWN.n">
       <invoke targettype="Window" src="printCurrentState"/>
     </transition>
+  </state>
+  <state id="with-nesting">
+    <initial id="with-nesting-init">
+      <transition target="nested"/>
+    </initial>
+    <state id="nested">
+    </state>
   </state>
   <final id="exit"/>
 </scxml>
