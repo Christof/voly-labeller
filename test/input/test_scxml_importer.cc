@@ -74,7 +74,7 @@ class MockHandler : public QObject
  public slots:
   void printCurrentState()
   {
-    wasPrintCurrentStateCalled++;
+    printCurrentStateCallCount++;
   }
 
   void somethingElse()
@@ -83,7 +83,7 @@ class MockHandler : public QObject
   }
 
  public:
-  int wasPrintCurrentStateCalled = 0;
+  int printCurrentStateCallCount = 0;
   int somethingElseCallCount = 0;
 };
 
@@ -100,7 +100,7 @@ TEST_F(Test_ScxmlImporter,
   sendKeyPressEvent(Qt::Key_Y);
 
   expectSingleStateWithName("idle");
-  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+  EXPECT_TRUE(handler.printCurrentStateCallCount);
 }
 
 TEST_F(Test_ScxmlImporter,
@@ -116,7 +116,7 @@ TEST_F(Test_ScxmlImporter,
   sendKeyPressEvent(Qt::Key_N);
 
   expectSingleStateWithName("base");
-  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+  EXPECT_TRUE(handler.printCurrentStateCallCount);
 }
 
 TEST_F(Test_ScxmlImporter, SwitchToNestedStateWithInitialElement)
@@ -149,7 +149,7 @@ TEST_F(Test_ScxmlImporter, SwitchToNestedStateWithInitialElementAndInvoke)
     EXPECT_TRUE(name == "nested-invoke" || name == "with-nesting-invoke");
   }
 
-  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+  EXPECT_TRUE(handler.printCurrentStateCallCount);
 }
 
 TEST_F(Test_ScxmlImporter, OnEntryInNestedState)
@@ -161,7 +161,7 @@ TEST_F(Test_ScxmlImporter, OnEntryInNestedState)
 
   expectSingleStateWithName("on-entry");
 
-  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+  EXPECT_TRUE(handler.printCurrentStateCallCount);
 }
 
 TEST_F(Test_ScxmlImporter, MultipleInvokesInOneTransition)
@@ -171,7 +171,7 @@ TEST_F(Test_ScxmlImporter, MultipleInvokesInOneTransition)
 
   sendKeyPressEvent(Qt::Key_J);
 
-  EXPECT_EQ(1, handler.wasPrintCurrentStateCalled);
+  EXPECT_EQ(1, handler.printCurrentStateCallCount);
   EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
