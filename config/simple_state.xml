@@ -6,6 +6,10 @@
     <transition event="KeyboardEvent.UP.N" target="with-nesting"/>
     <transition event="KeyboardEvent.UP.I" target="with-nesting-invoke"/>
     <transition event="KeyboardEvent.UP.E" target="on-entry"/>
+    <transition event="KeyboardEvent.DOWN.J" target="exit">
+      <invoke targettype="Window" src="printCurrentState"/>
+      <invoke targettype="Window" src="somethingElse"/>
+    </transition>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.UP.I" target="idle"/>

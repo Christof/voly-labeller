@@ -74,11 +74,17 @@ class MockHandler : public QObject
  public slots:
   void printCurrentState()
   {
-    wasPrintCurrentStateCalled = true;
+    wasPrintCurrentStateCalled++;
+  }
+
+  void somethingElse()
+  {
+    somethingElseCallCount++;
   }
 
  public:
-  bool wasPrintCurrentStateCalled = false;
+  int wasPrintCurrentStateCalled = 0;
+  int somethingElseCallCount = 0;
 };
 
 TEST_F(Test_ScxmlImporter,
@@ -156,6 +162,17 @@ TEST_F(Test_ScxmlImporter, OnEntryInNestedState)
   expectSingleStateWithName("on-entry");
 
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+}
+
+TEST_F(Test_ScxmlImporter, MultipleInvokesInOneTransition)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  sendKeyPressEvent(Qt::Key_J);
+
+  EXPECT_EQ(1, handler.wasPrintCurrentStateCalled);
+  EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
 #include "test_scxml_importer.moc"

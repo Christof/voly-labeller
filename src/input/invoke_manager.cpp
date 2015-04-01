@@ -15,10 +15,11 @@ InvokeManager::~InvokeManager()
 void InvokeManager::addFor(QAbstractTransition *transition, QString targetType,
                            QString source)
 {
-  invokes[transition].push_back(Invoke(targetType, source));
+  if (invokes.count(transition) == 0)
+    connect(transition, &QAbstractTransition::triggered,
+            std::bind(&InvokeManager::invokeFor, this, transition));
 
-  connect(transition, &QAbstractTransition::triggered,
-          std::bind(&InvokeManager::invokeFor, this, transition));
+  invokes[transition].push_back(Invoke(targetType, source));
 }
 
 void InvokeManager::invokeFor(QAbstractTransition *transition)
