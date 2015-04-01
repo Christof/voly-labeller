@@ -78,7 +78,8 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
 
   for (auto &initialPair : initialStateTransitions)
   {
-    std::cout << "set initial state for " << initialPair.second.toStdString() << std::endl;
+    std::cout << "set initial state for " << initialPair.second.toStdString()
+              << std::endl;
     initialPair.first->setInitialState(states[initialPair.second]);
   }
 
@@ -108,13 +109,7 @@ void ScxmlImporter::readElement()
     readFinalState();
 
   if (elementName == "invoke")
-  {
-    auto targetType = attributeAsString("targettype");
-    auto source = attributeAsString("src");
-    std::cout << "targettype: " << targetType.toStdString() << std::endl;
-    std::cout << "src: " << source.toStdString() << std::endl;
-    invokeManager->addFor(currentTransition, targetType, source);
-  }
+    readInvoke();
 
   if (elementName == "initial")
     isReadingInitial = true;
@@ -204,6 +199,15 @@ void ScxmlImporter::readTransition()
             << target.toStdString() << std::endl;
 
   currentTransition = transition;
+}
+
+void ScxmlImporter::readInvoke()
+{
+  auto targetType = attributeAsString("targettype");
+  auto source = attributeAsString("src");
+  std::cout << "targettype: " << targetType.toStdString() << std::endl;
+  std::cout << "src: " << source.toStdString() << std::endl;
+  invokeManager->addFor(currentTransition, targetType, source);
 }
 
 QString ScxmlImporter::attributeAsString(const char *name)

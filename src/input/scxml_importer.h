@@ -53,6 +53,7 @@ class ScxmlImporter : public QObject
   void readState();
   void readFinalState();
   void readTransition();
+  void readInvoke();
 
   QString attributeAsString(const char *name);
 };
