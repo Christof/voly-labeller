@@ -114,6 +114,9 @@ void ScxmlImporter::readElement()
 
   if (elementName == "initial")
     isReadingInitial = true;
+
+  if (elementName == "onentry")
+    isOnEntry = true;
 }
 
 void ScxmlImporter::finishElement()
@@ -127,6 +130,9 @@ void ScxmlImporter::finishElement()
 
   if (elementName == "initial")
     isReadingInitial = false;
+
+  if (elementName == "onentry")
+    isOnEntry = false;
 }
 
 void ScxmlImporter::readState()
@@ -217,6 +223,14 @@ void ScxmlImporter::readInvoke()
   auto source = attributeAsString("src");
   std::cout << "targettype: " << targetType.toStdString() << std::endl;
   std::cout << "src: " << source.toStdString() << std::endl;
+
+  if (isOnEntry)
+  {
+    invokeManager->addForSignal(stateStack.top(), &QState::entered, targetType,
+                                source);
+    return;
+  }
+
   invokeManager->addFor(currentTransition, targetType, source);
 }
 

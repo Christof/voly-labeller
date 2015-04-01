@@ -146,4 +146,16 @@ TEST_F(Test_ScxmlImporter, SwitchToNestedStateWithInitialElementAndInvoke)
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
+TEST_F(Test_ScxmlImporter, OnEntryInNestedState)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  sendKeyPressEvent(Qt::Key_E);
+
+  expectSingleStateWithName("on-entry");
+
+  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
+}
+
 #include "test_scxml_importer.moc"

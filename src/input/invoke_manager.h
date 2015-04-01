@@ -4,11 +4,13 @@
 
 #include <QString>
 #include <QObject>
+#include <functional>
 #include <map>
 #include <vector>
 #include "invoke.h"
 
 class QAbstractTransition;
+class QAbstractState;
 
 /**
  * \brief
@@ -24,6 +26,14 @@ class InvokeManager : public QObject
 
   void addFor(QAbstractTransition *transition, QString targetType,
               QString source);
+
+  template <typename Signal>
+  void addForSignal(const QAbstractState *sender, Signal signal, QString targetType,
+                    QString source)
+  {
+    connect(sender, signal,
+            std::bind(&InvokeManager::invokeMethod, this, targetType, source));
+  }
 
   void invokeFor(QAbstractTransition *transition);
 
