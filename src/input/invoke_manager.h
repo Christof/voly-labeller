@@ -13,8 +13,8 @@ class QAbstractTransition;
 class QAbstractState;
 
 /**
- * \brief
- *
+ * \brief Manages SCXML invoke calls by storing handler objects which
+ * have methods that are invoked by state transitions.
  *
  */
 class InvokeManager : public QObject
@@ -28,8 +28,8 @@ class InvokeManager : public QObject
               QString source);
 
   template <typename Signal>
-  void addForSignal(const QAbstractState *sender, Signal signal, QString targetType,
-                    QString source)
+  void addForSignal(const QAbstractState *sender, Signal signal,
+                    QString targetType, QString source)
   {
     connect(sender, signal,
             std::bind(&InvokeManager::invokeMethod, this, targetType, source));
