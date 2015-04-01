@@ -175,4 +175,15 @@ TEST_F(Test_ScxmlImporter, MultipleInvokesInOneTransition)
   EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
+TEST_F(Test_ScxmlImporter, OnEntryWithMultipleInvokes)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  sendKeyPressEvent(Qt::Key_F);
+
+  EXPECT_EQ(1, handler.printCurrentStateCallCount);
+  EXPECT_EQ(1, handler.somethingElseCallCount);
+}
+
 #include "test_scxml_importer.moc"

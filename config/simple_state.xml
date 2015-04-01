@@ -6,6 +6,7 @@
     <transition event="KeyboardEvent.UP.N" target="with-nesting"/>
     <transition event="KeyboardEvent.UP.I" target="with-nesting-invoke"/>
     <transition event="KeyboardEvent.UP.E" target="on-entry"/>
+    <transition event="KeyboardEvent.UP.F" target="on-entry-double"/>
     <transition event="KeyboardEvent.DOWN.J" target="exit">
       <invoke targettype="Window" src="printCurrentState"/>
       <invoke targettype="Window" src="somethingElse"/>
@@ -40,6 +41,12 @@
   <state id="on-entry">
     <onentry>
       <invoke targettype="Window" src="printCurrentState"/>
+    </onentry>
+  </state>
+  <state id="on-entry-double">
+    <onentry>
+      <invoke targettype="Window" src="printCurrentState"/>
+      <invoke targettype="Window" src="somethingElse"/>
     </onentry>
   </state>
   <final id="exit"/>
