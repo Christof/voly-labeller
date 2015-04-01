@@ -186,4 +186,18 @@ TEST_F(Test_ScxmlImporter, OnEntryWithMultipleInvokes)
   EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
+TEST_F(Test_ScxmlImporter, OnExitInNestedState)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  sendKeyPressEvent(Qt::Key_G);
+
+  expectSingleStateWithName("on-exit");
+
+  sendKeyPressEvent(Qt::Key_G);
+
+  EXPECT_EQ(1, handler.somethingElseCallCount);
+}
+
 #include "test_scxml_importer.moc"
