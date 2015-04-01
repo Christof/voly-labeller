@@ -8,6 +8,7 @@
 #include <QEvent>
 #include <QKeySequence>
 #include <QKeyEventTransition>
+#include <QSignalTransition>
 #include <iostream>
 #include <cassert>
 #include "./invoke.h"
@@ -192,8 +193,17 @@ void ScxmlImporter::readTransition()
     transitions.push_back(std::make_tuple(transition, target));
   }
 
-  if (isReadingInitial)
+  if (event.isEmpty() && isReadingInitial)
+  {
+    std::cout << "#Add QSignalTransition for "
+              << stateStack.top()->property("name").toString().toStdString()
+              << std::endl;
+    transition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
+                                       stateStack.top());
+    // just add target as initial state and don't set it for the transition,
+    // because otherwise it would result in an infinite loop.
     initialStateTransitions[stateStack.top()] = target;
+  }
 
   std::cout << "transition: " << event.toStdString() << " | "
             << target.toStdString() << std::endl;
