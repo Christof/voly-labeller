@@ -26,17 +26,13 @@ void InvokeManager::invokeFor(QAbstractTransition *transition)
   for (auto &invoke : invokes[transition])
   {
     std::cout << invoke.targetType.toStdString()
-              << " src=" << invoke.source.toStdString();
-    auto object = handlers[invoke.targetType];
+              << " src=" << invoke.source.toStdString() << " ";
     std::cout << "handler size: " << handlers.size() << std::endl;
-    std::cout << (long)object << std::endl;
-
-    QMetaObject::invokeMethod(object, invoke.source.toStdString().c_str(),
-                              Qt::AutoConnection);
+    invokeMethod(invoke.targetType, invoke.source);
   }
 }
 
-void InvokeManager::addHandler(QString targetType, QObject* handlerObject)
+void InvokeManager::addHandler(QString targetType, QObject *handlerObject)
 {
   std::cout << "Add handler " << targetType.toStdString() << std::endl;
   handlers[targetType] = handlerObject;
@@ -46,5 +42,12 @@ void InvokeManager::addHandler(QObject *handlerObject)
 {
   auto className = handlerObject->metaObject()->className();
   addHandler(className, handlerObject);
+}
+
+void InvokeManager::invokeMethod(QString targetType, QString source)
+{
+  auto object = handlers[targetType];
+  QMetaObject::invokeMethod(object, source.toStdString().c_str(),
+                            Qt::AutoConnection);
 }
 
