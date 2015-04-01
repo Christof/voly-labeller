@@ -50,6 +50,13 @@ class Test_ScxmlImporter : public ::testing::Test
     application->processEvents();
   }
 
+  void sendKeyReleaseEvent(Qt::Key key)
+  {
+    application->sendEvent(
+        eventSender, new QKeyEvent(QEvent::KeyRelease, key, Qt::NoModifier));
+    application->processEvents();
+  }
+
   QCoreApplication *application;
   QObject *eventSender;
   ScxmlImporter *importer;
@@ -198,6 +205,17 @@ TEST_F(Test_ScxmlImporter, OnExitInNestedState)
   sendKeyPressEvent(Qt::Key_G);
 
   EXPECT_EQ(1, handler.somethingElseCallCount);
+}
+
+TEST_F(Test_ScxmlImporter, TransitionOnKeyReleaseEvent)
+{
+  expectSingleStateWithName("idle");
+  sendKeyPressEvent(Qt::Key_A);
+  expectSingleStateWithName("idle");
+
+  sendKeyReleaseEvent(Qt::Key_A);
+
+  expectSingleStateWithName("exit");
 }
 
 #include "test_scxml_importer.moc"

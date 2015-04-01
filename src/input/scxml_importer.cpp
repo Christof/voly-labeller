@@ -194,8 +194,14 @@ void ScxmlImporter::readTransition()
   QAbstractTransition *transition = nullptr;
   if (event.startsWith(keyboardEvent))
   {
-    QEvent::Type eventType = QEvent::KeyPress;
-    auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
+    auto lastDotIndex = event.lastIndexOf(".");
+    auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
+    auto typeString = event.mid(secondLastDotIndex + 1,
+                                lastDotIndex - secondLastDotIndex - 1);
+    QEvent::Type eventType =
+        typeString == "DOWN" ? QEvent::KeyPress : QEvent::KeyRelease;
+
+    auto keyAsString = event.mid(lastDotIndex + 1);
     auto keyCode = toKey(keyAsString);
     transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
                                          keyCode, stateStack.top());
