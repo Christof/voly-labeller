@@ -4,6 +4,7 @@
     <transition event="KeyboardEvent.DOWN.B" target="exit"/>
     <transition event="KeyboardEvent.DOWN.V" target="base"/>
     <transition event="KeyboardEvent.UP.N" target="with-nesting"/>
+    <transition event="KeyboardEvent.UP.I" target="with-nesting-invoke"/>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.UP.I" target="idle"/>
@@ -20,6 +21,15 @@
       <transition target="nested"/>
     </initial>
     <state id="nested">
+    </state>
+  </state>
+  <state id="with-nesting-invoke">
+    <initial id="with-nesting-invoke-init">
+      <transition target="nested-invoke">
+        <invoke targettype="Window" src="printCurrentState"/>
+      </transition>
+    </initial>
+    <state id="nested-invoke">
     </state>
   </state>
   <final id="exit"/>

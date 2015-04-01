@@ -113,7 +113,7 @@ TEST_F(Test_ScxmlImporter,
   EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
-TEST_F(Test_ScxmlImporter, SwitchToNestedState)
+TEST_F(Test_ScxmlImporter, SwitchToNestedStateWithInitialElement)
 {
   sendKeyPressEvent(Qt::Key_N);
 
@@ -125,6 +125,25 @@ TEST_F(Test_ScxmlImporter, SwitchToNestedState)
     auto name = state->property("name").toString().toStdString();
     EXPECT_TRUE(name == "nested" || name == "with-nesting");
   }
+}
+
+TEST_F(Test_ScxmlImporter, SwitchToNestedStateWithInitialElementAndInvoke)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+
+  sendKeyPressEvent(Qt::Key_I);
+
+  auto configuration = stateMachine->configuration();
+  EXPECT_EQ(2, configuration.size());
+
+  for (auto state : configuration)
+  {
+    auto name = state->property("name").toString().toStdString();
+    EXPECT_TRUE(name == "nested-invoke" || name == "with-nesting-invoke");
+  }
+
+  EXPECT_TRUE(handler.wasPrintCurrentStateCalled);
 }
 
 #include "test_scxml_importer.moc"
