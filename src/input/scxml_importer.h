@@ -13,7 +13,6 @@
 #include <tuple>
 #include "./invoke_manager.h"
 #include "./signal_manager.h"
-#include "./scxml_element.h"
 
 class QStateMachine;
 class QAbstractState;
@@ -38,13 +37,23 @@ class ScxmlImporter : public QObject
 
   std::shared_ptr<QStateMachine> getStateMachine();
 
+  enum ScxmlElement
+  {
+    scxml,
+    state,
+    transition,
+    initial,
+    onentry,
+    onexit,
+    invoke,
+    final
+  };
  private:
   QObject *keyboardEventReceiver;
   QString initialState;
-  QString activeElement;
   QMetaEnum metaScxmlElement;
   std::stack<ScxmlElement> elementStack;
-  std::stack<QState*> stateStack;
+  std::stack<QState *> stateStack;
   QAbstractTransition *currentTransition;
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
@@ -52,7 +61,7 @@ class ScxmlImporter : public QObject
   bool isReadingInitial = false;
   bool isOnEntry = false;
   bool isOnExit = false;
-  std::map<QState*, QString> initialStateTransitions;
+  std::map<QState *, QString> initialStateTransitions;
   // transition and target state name
   std::vector<std::tuple<QAbstractTransition *, QString>> transitions;
   std::shared_ptr<InvokeManager> invokeManager;

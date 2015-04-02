@@ -247,10 +247,16 @@ QString ScxmlImporter::attributeAsString(const char *name)
   return reader->attributes().value(name).toString();
 }
 
-ScxmlElement ScxmlImporter::elementFromString(QString name)
+ScxmlImporter::ScxmlElement ScxmlImporter::elementFromString(QString name)
 {
-  return static_cast<ScxmlElement>(
-      metaScxmlElement.keyToValue(name.toStdString().c_str()));
+  bool couldConvert = false;
+  auto result =  static_cast<ScxmlImporter::ScxmlElement>(
+      metaScxmlElement.keyToValue(name.toStdString().c_str(), &couldConvert));
+
+  if (!couldConvert)
+    throw std::runtime_error("Could not convert " + name.toStdString());
+
+  return result;
 }
 
 std::shared_ptr<QStateMachine> ScxmlImporter::getStateMachine()
