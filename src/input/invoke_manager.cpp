@@ -2,7 +2,6 @@
 #include <QAbstractTransition>
 #include <QAbstractState>
 #include <QVariant>
-#include <iostream>
 
 InvokeManager::InvokeManager()
 {
@@ -26,16 +25,12 @@ void InvokeManager::invokeFor(QAbstractTransition *transition)
 {
   for (auto &invoke : invokes[transition])
   {
-    std::cout << invoke.targetType.toStdString()
-              << " src=" << invoke.source.toStdString() << " ";
-    std::cout << "handler size: " << handlers.size() << std::endl;
     invokeMethod(invoke.targetType, invoke.source);
   }
 }
 
 void InvokeManager::addHandler(QString targetType, QObject *handlerObject)
 {
-  std::cout << "Add handler " << targetType.toStdString() << std::endl;
   handlers[targetType] = handlerObject;
 }
 
