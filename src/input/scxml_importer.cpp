@@ -124,8 +124,7 @@ void ScxmlImporter::finishElement()
 {
   auto elementName = reader->name().toString();
   auto element = elementFromString(elementName);
-  auto expectedElement = elementStack.top();
-  elementStack.pop();
+  auto expectedElement = elementStack.pop();
 
   if (element != expectedElement)
     std::cout << "not finishing active element. Expected: "

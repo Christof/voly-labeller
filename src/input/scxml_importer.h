@@ -6,6 +6,7 @@
 #include <QString>
 #include <QObject>
 #include <QMetaEnum>
+#include <QStack>
 #include <memory>
 #include <map>
 #include <stack>
@@ -52,7 +53,7 @@ class ScxmlImporter : public QObject
   QObject *keyboardEventReceiver;
   QString initialState;
   QMetaEnum metaScxmlElement;
-  std::stack<ScxmlElement> elementStack;
+  QStack<ScxmlElement> elementStack;
   std::stack<QState *> stateStack;
   QAbstractTransition *currentTransition;
   std::unique_ptr<QXmlStreamReader> reader;
