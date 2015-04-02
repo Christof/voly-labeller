@@ -13,6 +13,9 @@
       <invoke targettype="Window" src="printCurrentState"/>
       <invoke targettype="Window" src="somethingElse"/>
     </transition>
+    <transition event="SignalSender.signal" target="exit">
+      <invoke targettype="Window" src="somethingElse"/>
+    </transition>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.DOWN.I" target="idle"/>
