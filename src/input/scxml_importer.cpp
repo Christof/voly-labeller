@@ -46,6 +46,10 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
   : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager),
     signalManager(signalManager)
 {
+  const QMetaObject &mo = ScxmlImporter::staticMetaObject;
+  int index = mo.indexOfEnumerator("ScxmlElement");
+  metaScxmlElement = mo.enumerator(index);
+
   QFile file(url.toLocalFile());
   file.open(QFile::OpenModeFlag::ReadOnly);
 
@@ -89,8 +93,8 @@ ScxmlImporter::~ScxmlImporter()
 
 void ScxmlImporter::readElement()
 {
-  auto elementName = reader->name();
-  activeElement = elementName.toString();
+  auto elementName = reader->name().toString();
+  elementStack.push(elementFromString(elementName));
   if (elementName == "scxml")
     initialState = attributeAsString("initialstate");
 
@@ -118,9 +122,16 @@ void ScxmlImporter::readElement()
 
 void ScxmlImporter::finishElement()
 {
-  auto elementName = reader->name();
-  if (elementName != activeElement)
-    std::cout << "not finishing active element" << std::endl;
+  auto elementName = reader->name().toString();
+  auto element = elementFromString(elementName);
+  auto expectedElement = elementStack.top();
+  elementStack.pop();
+
+  if (element != expectedElement)
+    std::cout << "not finishing active element. Expected: "
+              << metaScxmlElement.valueToKey(expectedElement)
+              << " but was: " << metaScxmlElement.valueToKey(element)
+              << std::endl;
 
   if (elementName == "state")
     stateStack.pop();
@@ -234,6 +245,12 @@ void ScxmlImporter::readInvoke()
 QString ScxmlImporter::attributeAsString(const char *name)
 {
   return reader->attributes().value(name).toString();
+}
+
+ScxmlElement ScxmlImporter::elementFromString(QString name)
+{
+  return static_cast<ScxmlElement>(
+      metaScxmlElement.keyToValue(name.toStdString().c_str()));
 }
 
 std::shared_ptr<QStateMachine> ScxmlImporter::getStateMachine()

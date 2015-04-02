@@ -5,6 +5,7 @@
 #include <QUrl>
 #include <QString>
 #include <QObject>
+#include <QMetaEnum>
 #include <memory>
 #include <map>
 #include <stack>
@@ -12,6 +13,7 @@
 #include <tuple>
 #include "./invoke_manager.h"
 #include "./signal_manager.h"
+#include "./scxml_element.h"
 
 class QStateMachine;
 class QAbstractState;
@@ -27,6 +29,7 @@ class QState;
 class ScxmlImporter : public QObject
 {
   Q_OBJECT
+  Q_ENUMS(ScxmlElement)
  public:
   ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
                 std::shared_ptr<InvokeManager> invokeManager,
@@ -39,6 +42,8 @@ class ScxmlImporter : public QObject
   QObject *keyboardEventReceiver;
   QString initialState;
   QString activeElement;
+  QMetaEnum metaScxmlElement;
+  std::stack<ScxmlElement> elementStack;
   std::stack<QState*> stateStack;
   QAbstractTransition *currentTransition;
   std::unique_ptr<QXmlStreamReader> reader;
@@ -61,6 +66,7 @@ class ScxmlImporter : public QObject
   void readInvoke();
 
   QString attributeAsString(const char *name);
+  ScxmlElement elementFromString(QString name);
 };
 
 #endif  // SRC_INPUT_SCXML_IMPORTER_H_
