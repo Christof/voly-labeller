@@ -8,6 +8,14 @@
 #include <chrono>
 #include "../../src/input/scxml_importer.h"
 
+class SignalSender : public QObject
+{
+  Q_OBJECT
+
+signals:
+  void signal();
+};
+
 class Test_ScxmlImporter : public ::testing::Test
 {
  protected:
@@ -18,8 +26,10 @@ class Test_ScxmlImporter : public ::testing::Test
     eventSender = new QObject();
 
     invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+    signalManager = std::shared_ptr<SignalManager>(new SignalManager());
+    signalManager->addSender(&sender);
     ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
-                           eventSender, invokeManager);
+                           eventSender, invokeManager, signalManager);
     stateMachine = importer.getStateMachine();
 
     stateMachine->start();
@@ -33,7 +43,7 @@ class Test_ScxmlImporter : public ::testing::Test
     delete application;
   }
 
-  QAbstractState* expectSingleStateWithName(std::string name)
+  QAbstractState *expectSingleStateWithName(std::string name)
   {
     auto configuration = stateMachine->configuration();
     EXPECT_EQ(1, configuration.size());
@@ -60,8 +70,10 @@ class Test_ScxmlImporter : public ::testing::Test
   QCoreApplication *application;
   QObject *eventSender;
   ScxmlImporter *importer;
+  SignalSender sender;
   std::shared_ptr<QStateMachine> stateMachine;
   std::shared_ptr<InvokeManager> invokeManager;
+  std::shared_ptr<SignalManager> signalManager;
 };
 
 TEST_F(Test_ScxmlImporter, SwitchFromInitialToFinalStateWithKeyPress)
@@ -216,6 +228,18 @@ TEST_F(Test_ScxmlImporter, TransitionOnKeyReleaseEvent)
   sendKeyReleaseEvent(Qt::Key_A);
 
   expectSingleStateWithName("exit");
+}
+
+TEST_F(Test_ScxmlImporter, EventFromCustomSignal)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+  expectSingleStateWithName("idle");
+
+  emit sender.signal();
+
+  expectSingleStateWithName("exit");
+  EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
 #include "test_scxml_importer.moc"

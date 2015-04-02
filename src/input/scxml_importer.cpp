@@ -212,8 +212,7 @@ void ScxmlImporter::readTransition()
 
     transitions.push_back(std::make_tuple(transition, target));
   }
-
-  if (event.isEmpty() && isReadingInitial)
+  else if (event.isEmpty() && isReadingInitial)
   {
     std::cout << "#Add QSignalTransition for "
               << stateStack.top()->property("name").toString().toStdString()
@@ -223,6 +222,18 @@ void ScxmlImporter::readTransition()
     // just add target as initial state and don't set it for the transition,
     // because otherwise it would result in an infinite loop.
     initialStateTransitions[stateStack.top()] = target;
+  }
+  else
+  {
+    auto dotPosition = event.indexOf(".");
+    auto name = event.left(dotPosition);
+    QString signal = "2" + event.mid(dotPosition + 1) + "()";
+    std::cout << "Add " << name.toStdString() << "::" << signal.toStdString()
+              << std::endl;
+    transition =
+        new QSignalTransition(signalManager->getFor(name),
+                              signal.toStdString().c_str(), stateStack.top());
+    transitions.push_back(std::make_tuple(transition, target));
   }
 
   std::cout << "transition: " << event.toStdString() << " | "
