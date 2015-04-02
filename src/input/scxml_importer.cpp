@@ -113,9 +113,6 @@ void ScxmlImporter::readElement()
   if (elementName == "initial")
     isReadingInitial = true;
 
-  if (elementName == "onentry")
-    isOnEntry = true;
-
   if (elementName == "onexit")
     isOnExit = true;
 }
@@ -137,9 +134,6 @@ void ScxmlImporter::finishElement()
 
   if (elementName == "initial")
     isReadingInitial = false;
-
-  if (elementName == "onentry")
-    isOnEntry = false;
 
   if (elementName == "onexit")
     isOnExit = false;
@@ -224,7 +218,7 @@ void ScxmlImporter::readInvoke()
   auto targetType = attributeAsString("targettype");
   auto source = attributeAsString("src");
 
-  if (isOnEntry)
+  if (elementStack[elementStack.size() - 2] == ScxmlElement::onentry)
   {
     invokeManager->addForSignal(stateStack.top(), &QState::entered, targetType,
                                 source);
