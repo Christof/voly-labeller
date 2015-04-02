@@ -59,7 +59,6 @@ class ScxmlImporter : public QObject
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
   std::map<QString, QAbstractState *> states;
-  bool isReadingInitial = false;
   std::map<QState *, QString> initialStateTransitions;
   // transition and target state name
   std::vector<std::tuple<QAbstractTransition *, QString>> transitions;

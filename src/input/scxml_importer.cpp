@@ -109,9 +109,6 @@ void ScxmlImporter::readElement()
 
   if (elementName == "invoke")
     readInvoke();
-
-  if (elementName == "initial")
-    isReadingInitial = true;
 }
 
 void ScxmlImporter::finishElement()
@@ -128,9 +125,6 @@ void ScxmlImporter::finishElement()
 
   if (elementName == "state")
     stateStack.pop();
-
-  if (elementName == "initial")
-    isReadingInitial = false;
 }
 
 void ScxmlImporter::readState()
@@ -185,7 +179,8 @@ void ScxmlImporter::readTransition()
 
     transitions.push_back(std::make_tuple(transition, target));
   }
-  else if (event.isEmpty() && isReadingInitial)
+  else if (event.isEmpty() &&
+           elementStack[elementStack.size() - 2] == ScxmlElement::initial)
   {
     transition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
                                        stateStack.top());
@@ -237,7 +232,7 @@ QString ScxmlImporter::attributeAsString(const char *name)
 ScxmlImporter::ScxmlElement ScxmlImporter::elementFromString(QString name)
 {
   bool couldConvert = false;
-  auto result =  static_cast<ScxmlImporter::ScxmlElement>(
+  auto result = static_cast<ScxmlImporter::ScxmlElement>(
       metaScxmlElement.keyToValue(name.toStdString().c_str(), &couldConvert));
 
   if (!couldConvert)
