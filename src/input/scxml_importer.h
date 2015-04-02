@@ -11,6 +11,7 @@
 #include <vector>
 #include <tuple>
 #include "./invoke_manager.h"
+#include "./signal_manager.h"
 
 class QStateMachine;
 class QAbstractState;
@@ -28,7 +29,8 @@ class ScxmlImporter : public QObject
   Q_OBJECT
  public:
   ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
-                std::shared_ptr<InvokeManager> invokeManager);
+                std::shared_ptr<InvokeManager> invokeManager,
+                std::shared_ptr<SignalManager> signalManager);
   virtual ~ScxmlImporter();
 
   std::shared_ptr<QStateMachine> getStateMachine();
@@ -49,6 +51,7 @@ class ScxmlImporter : public QObject
   // transition and target state name
   std::vector<std::tuple<QAbstractTransition *, QString>> transitions;
   std::shared_ptr<InvokeManager> invokeManager;
+  std::shared_ptr<SignalManager> signalManager;
 
   void readElement();
   void finishElement();

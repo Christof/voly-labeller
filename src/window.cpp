@@ -28,8 +28,9 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
   invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   invokeManager->addHandler(this);
+  signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
-                         this, invokeManager);
+                         this, invokeManager, signalManager);
   stateMachine = importer.getStateMachine();
   stateMachine->start();
 

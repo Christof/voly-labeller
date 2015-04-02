@@ -41,8 +41,10 @@ uint toKey(QString const &str)
 }
 
 ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
-                             std::shared_ptr<InvokeManager> invokeManager)
-  : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager)
+                             std::shared_ptr<InvokeManager> invokeManager,
+                             std::shared_ptr<SignalManager> signalManager)
+  : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager),
+    signalManager(signalManager)
 {
   QFile file(url.toLocalFile());
   file.open(QFile::OpenModeFlag::ReadOnly);
