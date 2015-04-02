@@ -50,10 +50,6 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
   file.open(QFile::OpenModeFlag::ReadOnly);
 
   stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
-  connect(stateMachine.get(), &QStateMachine::finished, []
-          {
-    std::cout << "finished" << std::endl;
-  });
 
   reader =
       std::unique_ptr<QXmlStreamReader>(new QXmlStreamReader(file.readAll()));
@@ -80,11 +76,7 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
   }
 
   for (auto &initialPair : initialStateTransitions)
-  {
-    std::cout << "set initial state for " << initialPair.second.toStdString()
-              << std::endl;
     initialPair.first->setInitialState(states[initialPair.second]);
-  }
 
   if (reader->hasError())
     std::cerr << "Error while parsing: " << reader->errorString().toStdString()
@@ -160,9 +152,6 @@ void ScxmlImporter::readState()
               << std::endl;
   });
 
-  std::cout << "state: " << state->property("name").toString().toStdString()
-            << std::endl;
-
   stateStack.push(state);
   states[stateName] = state;
 }
@@ -174,18 +163,6 @@ void ScxmlImporter::readFinalState()
   finalState->setProperty("name", stateName);
   stateMachine->addState(finalState);
   states[stateName] = finalState;
-
-  auto currentState = finalState;
-  connect(finalState, &QState::entered, [currentState]()
-          {
-    std::cout << "entered: "
-              << currentState->property("name").toString().toStdString()
-              << std::endl;
-  });
-
-  std::cout << "state (final): "
-            << finalState->property("name").toString().toStdString()
-            << std::endl;
 }
 
 void ScxmlImporter::readTransition()
@@ -207,16 +184,11 @@ void ScxmlImporter::readTransition()
     auto keyCode = toKey(keyAsString);
     transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
                                          keyCode, stateStack.top());
-    std::cout << keyAsString.toStdString() << ": " << keyCode << "|"
-              << " target: " << target.toStdString() << std::endl;
 
     transitions.push_back(std::make_tuple(transition, target));
   }
   else if (event.isEmpty() && isReadingInitial)
   {
-    std::cout << "#Add QSignalTransition for "
-              << stateStack.top()->property("name").toString().toStdString()
-              << std::endl;
     transition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
                                        stateStack.top());
     // just add target as initial state and don't set it for the transition,
@@ -228,16 +200,11 @@ void ScxmlImporter::readTransition()
     auto dotPosition = event.indexOf(".");
     auto name = event.left(dotPosition);
     QString signal = "2" + event.mid(dotPosition + 1) + "()";
-    std::cout << "Add " << name.toStdString() << "::" << signal.toStdString()
-              << std::endl;
     transition =
         new QSignalTransition(signalManager->getFor(name),
                               signal.toStdString().c_str(), stateStack.top());
     transitions.push_back(std::make_tuple(transition, target));
   }
-
-  std::cout << "transition: " << event.toStdString() << " | "
-            << target.toStdString() << std::endl;
 
   currentTransition = transition;
 }
@@ -246,8 +213,6 @@ void ScxmlImporter::readInvoke()
 {
   auto targetType = attributeAsString("targettype");
   auto source = attributeAsString("src");
-  std::cout << "targettype: " << targetType.toStdString() << std::endl;
-  std::cout << "src: " << source.toStdString() << std::endl;
 
   if (isOnEntry)
   {
