@@ -9,9 +9,11 @@
 #include <QKeySequence>
 #include <QKeyEventTransition>
 #include <QSignalTransition>
-#include <iostream>
+#include <QLoggingCategory>
 #include <cassert>
 #include "./invoke.h"
+
+QLoggingCategory channel("Input::ScxmlImporter");
 
 // from
 // http://stackoverflow.com/questions/14034209/convert-string-representation-of-keycode-to-qtkey-or-any-int-and-back
@@ -52,6 +54,7 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
 
   QFile file(url.toLocalFile());
   file.open(QFile::OpenModeFlag::ReadOnly);
+  qCDebug(channel) << "Import scxml" << url;
 
   stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
 
@@ -71,6 +74,9 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
       finishElement();
   }
 
+  if (reader->hasError())
+    qCCritical(channel) << "Error while parsing:" << reader->errorString();
+
   qRegisterMetaType<QAbstractState *>("QAbstractState*");
   for (auto &transitionTuple : transitions)
   {
@@ -81,10 +87,6 @@ ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
 
   for (auto &initialPair : initialStateTransitions)
     initialPair.first->setInitialState(states[initialPair.second]);
-
-  if (reader->hasError())
-    std::cerr << "Error while parsing: " << reader->errorString().toStdString()
-              << std::endl;
 }
 
 ScxmlImporter::~ScxmlImporter()
@@ -118,10 +120,9 @@ void ScxmlImporter::finishElement()
   auto expectedElement = elementStack.pop();
 
   if (element != expectedElement)
-    std::cout << "not finishing active element. Expected: "
-              << metaScxmlElement.valueToKey(expectedElement)
-              << " but was: " << metaScxmlElement.valueToKey(element)
-              << std::endl;
+    qCWarning(channel) << "not finishing active element. Expected:"
+                       << metaScxmlElement.valueToKey(expectedElement)
+                       << "but was:" << metaScxmlElement.valueToKey(element);
 
   if (elementName == "state")
     stateStack.pop();
@@ -139,9 +140,8 @@ void ScxmlImporter::readState()
     stateMachine->setInitialState(state);
 
   connect(state, &QState::entered, [state]()
-          {
-    std::cout << "entered: " << state->property("name").toString().toStdString()
-              << std::endl;
+  {
+    qCDebug(channel) << "entered:" << state->property("name").toString();
   });
 
   stateStack.push(state);
