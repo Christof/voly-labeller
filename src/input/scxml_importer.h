@@ -9,7 +9,6 @@
 #include <QStack>
 #include <memory>
 #include <map>
-#include <stack>
 #include <vector>
 #include <tuple>
 #include "./invoke_manager.h"
@@ -58,7 +57,7 @@ class ScxmlImporter : public QObject
   QString initialState;
   QMetaEnum metaScxmlElement;
   QStack<ScxmlElement> elementStack;
-  std::stack<QState *> stateStack;
+  QStack<QState *> stateStack;
   QAbstractTransition *currentTransition;
   std::unique_ptr<QXmlStreamReader> reader;
   std::shared_ptr<QStateMachine> stateMachine;
