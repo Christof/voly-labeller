@@ -10,6 +10,7 @@
 #include "./gl.h"
 
 class AbstractScene;
+class QStateMachine;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -22,10 +23,14 @@ class Window : public QQuickView
  public:
   explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
+
+  std::shared_ptr<QStateMachine> stateMachine;
  protected slots:
   void resizeOpenGL();
   void render();
   void update();
+
+  void printCurrentState();
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;

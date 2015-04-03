@@ -2,54 +2,39 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+add_subdirectory(src/input)
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
-find_package(Qt5Quick REQUIRED)
+option(test "Build all tests." ON)
+if(test)
+  enable_testing()
+  add_subdirectory(test)
+endif(test)
 
-find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
-link_directories(${OpenGL_LIBRARY_DIRS})
-add_definitions(${OpenGL_DEFINITIONS})
-if(NOT OPENGL_FOUND)
-  message(ERROR "OPENGL not found!")
-endif(NOT OPENGL_FOUND)
 
-find_package(PkgConfig)
-pkg_check_modules(EIGEN3 REQUIRED eigen3)
-include_directories(${EIGEN3_INCLUDE_DIRS})
-#find_package(Eigen3 REQUIRED)
+include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
-pkg_check_modules(ASSIMP REQUIRED assimp)
-include_directories(${ASSIMP_INCLUDE_DIRS})
+set(CMAKE_CXX_FLAGS_MEMORY "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=memory -fno-omit-frame-pointer" CACHE STRING
+  "Flags used by the C++ compiler during memory sanitization builds." FORCE)
 
-include_directories(${Qt5Core_INCLUDE_DIRS})
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
-include_directories(${Qt5OpenGL_INCLUDE_DIRS})
-include_directories(${Qt5Gui_INCLUDE_DIRS})
-include_directories(${Qt5Quick_INCLUDE_DIRS})
-
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror")
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-#set(CMAKE_AUTORCC ON) needs cmake 3.2.1
-set(CMAKE_AUTOMOC ON)
-
-qt5_add_resources(RESOURCES src/resources.qrc)
+set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsanitize-blacklist=${CMAKE_SOURCE_DIR}/blacklist.txt -fno-omit-frame-pointer" CACHE STRING # -stdlib=libc++
+  "Flags used by the C++ compiler during address sanitization builds." FORCE)
 
 set(SOURCES
   src/window.cpp
   src/camera.cpp
   src/shader_program.cpp
   src/mesh.cpp
-  src/main.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
   ${RESOURCES})
 
-add_executable(voly-labeller ${SOURCES})
+add_library(voly-labeller-lib OBJECT ${SOURCES})
+
+add_executable(voly-labeller
+  src/main.cpp
+  $<TARGET_OBJECTS:voly-labeller-lib>
+  $<TARGET_OBJECTS:input>
+  )
 
 target_link_libraries(voly-labeller
   Qt5::Core
@@ -70,3 +55,4 @@ add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all
 # Documentation
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
 add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
+

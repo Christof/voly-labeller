@@ -6,21 +6,25 @@
 Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
   : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
 {
+  /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
     auto property = material->mProperties[i];
     std::cout << property->mKey.C_Str() << ": " << property->mType << "|"
               << property->mDataLength << std::endl;
   }
+  */
 
   ambientColor = loadVector4FromMaterial("$clr.ambient", material);
   diffuseColor = loadVector4FromMaterial("$clr.diffuse", material);
   specularColor = loadVector4FromMaterial("$clr.specular", material);
   shininess = loadFloatFromMaterial("$mat.shininess", material);
 
+  /*
   std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
             << " specular: " << specularColor << " shininess: " << shininess
             << std::endl;
+            */
 
   unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
   indexCount = indicesPerFace * mesh->mNumFaces;

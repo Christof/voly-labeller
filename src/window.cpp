@@ -2,6 +2,10 @@
 #include <QOpenGLContext>
 #include <QCoreApplication>
 #include <QKeyEvent>
+#include <QStateMachine>
+#include <QAbstractState>
+#include <QAbstractTransition>
+#include <iostream>
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
@@ -20,6 +24,7 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
   auto format = createSurfaceFormat();
   setFormat(format);
+
 
   timer.start();
 }
@@ -108,5 +113,35 @@ void Window::resizeOpenGL()
 void Window::update()
 {
   scene->update(timer.restart() / 1000.0, keysPressed);
+}
+
+void Window::printCurrentState()
+{
+  auto currentState = stateMachine->configuration();
+  std::cout << "current state(s): " << std::endl;
+  for (auto state : currentState)
+  {
+    std::cout << "\t" << state->property("name").toString().toStdString()
+              << std::endl;
+    auto castState = dynamic_cast<QState *>(state);
+    if (!castState)
+      continue;
+
+    auto transitions = castState->transitions();
+    std::cout << "\t\ttransition count: " << transitions.length() << std::endl;
+    for (auto transition : transitions)
+    {
+      std::cout << "\t\tsource: "
+                << transition->sourceState()
+                       ->property("name")
+                       .toString()
+                       .toStdString() << std::endl;
+      auto targetState = transition->targetState();
+      if (targetState)
+        std::cout << "\t\ttarget: "
+                  << targetState->property("name").toString().toStdString()
+                  << std::endl;
+    }
+  }
 }
 
