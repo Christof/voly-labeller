@@ -9,6 +9,9 @@
     <transition event="KeyboardEvent.DOWN.E" target="on-entry"/>
     <transition event="KeyboardEvent.DOWN.F" target="on-entry-double"/>
     <transition event="KeyboardEvent.DOWN.G" target="on-exit"/>
+    <transition event="KeyboardEvent.DOWN.W">
+      <invoke targettype="cam" src="moveForward"/>
+    </transition>
     <transition event="KeyboardEvent.DOWN.ALT" target="alt"/>
     <transition event="KeyboardEvent.DOWN.J" target="exit">
       <invoke targettype="Window" src="printCurrentState"/>
