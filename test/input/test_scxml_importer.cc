@@ -242,4 +242,13 @@ TEST_F(Test_ScxmlImporter, EventFromCustomSignal)
   EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
+TEST_F(Test_ScxmlImporter, StateChangeWithControlKey)
+{
+  expectSingleStateWithName("idle");
+
+  sendKeyPressEvent(Qt::Key_Alt);
+
+  expectSingleStateWithName("alt");
+}
+
 #include "test_scxml_importer.moc"

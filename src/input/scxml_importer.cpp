@@ -17,29 +17,36 @@ QLoggingCategory channel("Input::ScxmlImporter");
 
 // from
 // http://stackoverflow.com/questions/14034209/convert-string-representation-of-keycode-to-qtkey-or-any-int-and-back
-uint toKey(QString const &str)
+Qt::Key toKey(QString const &str)
 {
   QKeySequence seq(str);
-  uint keyCode;
+
+  if (QString::compare(str, "ctrl", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Control;
+  if (QString::compare(str, "space", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Space;
+  if (QString::compare(str, "alt", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Alt;
+  if (QString::compare(str, "up_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Up;
+  if (QString::compare(str, "down_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Down;
+  if (QString::compare(str, "left_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Left;
+  if (QString::compare(str, "right_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Right;
+  if (QString::compare(str, "shift", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Shift;
+  if (QString::compare(str, "esc", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Escape;
+  if (QString::compare(str, "delete", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Delete;
+  if (QString::compare(str, "backspace", Qt::CaseSensitivity::CaseInsensitive) == 0)
+    return Qt::Key_Backspace;
 
   // We should only working with a single key here
-  if (seq.count() == 1)
-    keyCode = seq[0];
-  else
-  {
-    // Should be here only if a modifier key (e.g. Ctrl, Alt) is pressed.
-    assert(seq.count() == 0);
-
-    // Add a non-modifier key "A" to the picture because QKeySequence
-    // seems to need that to acknowledge the modifier. We know that A has
-    // a keyCode of 65 (or 0x41 in hex)
-    seq = QKeySequence(str + "+A");
-    assert(seq.count() == 1);
-    assert(seq[0] > 65);
-    keyCode = seq[0] - 65;
-  }
-
-  return keyCode;
+  assert(seq.count() == 1);
+  return static_cast<Qt::Key>(seq[0]);
 }
 
 ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
@@ -140,7 +147,7 @@ void ScxmlImporter::readState()
     stateMachine->setInitialState(state);
 
   connect(state, &QState::entered, [state]()
-  {
+          {
     qCDebug(channel) << "entered:" << state->property("name").toString();
   });
 

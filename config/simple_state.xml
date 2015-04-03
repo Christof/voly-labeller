@@ -9,6 +9,7 @@
     <transition event="KeyboardEvent.DOWN.E" target="on-entry"/>
     <transition event="KeyboardEvent.DOWN.F" target="on-entry-double"/>
     <transition event="KeyboardEvent.DOWN.G" target="on-exit"/>
+    <transition event="KeyboardEvent.DOWN.ALT" target="alt"/>
     <transition event="KeyboardEvent.DOWN.J" target="exit">
       <invoke targettype="Window" src="printCurrentState"/>
       <invoke targettype="Window" src="somethingElse"/>
@@ -17,9 +18,10 @@
       <invoke targettype="Window" src="somethingElse"/>
     </transition>
   </state>
+  <state id="alt">
+  </state>
   <state id="base">
     <transition event="KeyboardEvent.DOWN.I" target="idle"/>
-    <transition event="KeyboardEvent.DOWN.Alt" target="idle"/>
     <transition event="KeyboardEvent.DOWN.y" target="idle">
       <invoke targettype="Window" src="printCurrentState"/>
     </transition>
