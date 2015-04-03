@@ -22,17 +22,20 @@ class QXmlStreamReader;
 class QState;
 
 /**
- * \brief
+ * \brief Import a SCXML file and converts it into a QStateMachine.
  *
+ * The given InvokeManager is used to call arbitrary slots.
+ * The given SignalManager is used to react to arbitrary signals.
  *
+ * To handle events from the keyboards a `"KeyboardEventSender"` must
+ * be registered in the SignalManager.
  */
 class ScxmlImporter : public QObject
 {
   Q_OBJECT
   Q_ENUMS(ScxmlElement)
  public:
-  ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
-                std::shared_ptr<InvokeManager> invokeManager,
+  ScxmlImporter(QUrl url, std::shared_ptr<InvokeManager> invokeManager,
                 std::shared_ptr<SignalManager> signalManager);
   virtual ~ScxmlImporter();
 
@@ -52,7 +55,6 @@ class ScxmlImporter : public QObject
 
  private:
   QUrl url;
-  QObject *keyboardEventReceiver;
   QString initialState;
   QMetaEnum metaScxmlElement;
   QStack<ScxmlElement> elementStack;

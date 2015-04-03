@@ -54,11 +54,10 @@ Qt::Key toKey(QString const &str)
   return static_cast<Qt::Key>(seq[0]);
 }
 
-ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
+ScxmlImporter::ScxmlImporter(QUrl url,
                              std::shared_ptr<InvokeManager> invokeManager,
                              std::shared_ptr<SignalManager> signalManager)
-  : url(url), keyboardEventReceiver(keyboardEventReceiver),
-    invokeManager(invokeManager), signalManager(signalManager)
+  : url(url), invokeManager(invokeManager), signalManager(signalManager)
 {
   const QMetaObject &mo = ScxmlImporter::staticMetaObject;
   int index = mo.indexOfEnumerator("ScxmlElement");
@@ -145,8 +144,8 @@ void ScxmlImporter::readTransition()
   else if (event.isEmpty() &&
            elementStack[elementStack.size() - 2] == ScxmlElement::initial)
   {
-    currentTransition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
-                                       stateStack.top());
+    currentTransition = new QSignalTransition(
+        stateStack.top(), SIGNAL(entered()), stateStack.top());
     // just add target as initial state and don't set it for the transition,
     // because otherwise it would result in an infinite loop.
     initialStateTransitions[stateStack.top()] = target;
@@ -248,8 +247,8 @@ ScxmlImporter::createKeyEventTransition(const QString &event)
 
   auto keyAsString = event.mid(lastDotIndex + 1);
   auto keyCode = toKey(keyAsString);
-  return new QKeyEventTransition(keyboardEventReceiver, eventType, keyCode,
-                                 stateStack.top());
+  return new QKeyEventTransition(signalManager->getFor("KeyboardEventSender"),
+                                 eventType, keyCode, stateStack.top());
 }
 
 QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)
