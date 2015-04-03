@@ -26,6 +26,7 @@ set(SOURCES
   src/mesh.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
+  src/camera_controller.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
