@@ -141,18 +141,7 @@ void ScxmlImporter::readTransition()
   QAbstractTransition *transition = nullptr;
   if (event.startsWith(keyboardEvent))
   {
-    auto lastDotIndex = event.lastIndexOf(".");
-    auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
-    auto typeString = event.mid(secondLastDotIndex + 1,
-                                lastDotIndex - secondLastDotIndex - 1);
-    QEvent::Type eventType =
-        typeString == "DOWN" ? QEvent::KeyPress : QEvent::KeyRelease;
-
-    auto keyAsString = event.mid(lastDotIndex + 1);
-    auto keyCode = toKey(keyAsString);
-    transition = new QKeyEventTransition(keyboardEventReceiver, eventType,
-                                         keyCode, stateStack.top());
-
+    transition = createKeyEventTransition(event);
     transitions.push_back(std::make_tuple(transition, target));
   }
   else if (event.isEmpty() &&
@@ -254,6 +243,22 @@ void ScxmlImporter::setInitialStates()
 {
   for (auto &initialPair : initialStateTransitions)
     initialPair.first->setInitialState(states[initialPair.second]);
+}
+
+QAbstractTransition *
+ScxmlImporter::createKeyEventTransition(QString const &event)
+{
+  auto lastDotIndex = event.lastIndexOf(".");
+  auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
+  auto typeString =
+      event.mid(secondLastDotIndex + 1, lastDotIndex - secondLastDotIndex - 1);
+  QEvent::Type eventType =
+      typeString == "DOWN" ? QEvent::KeyPress : QEvent::KeyRelease;
+
+  auto keyAsString = event.mid(lastDotIndex + 1);
+  auto keyCode = toKey(keyAsString);
+  return new QKeyEventTransition(keyboardEventReceiver, eventType, keyCode,
+                                 stateStack.top());
 }
 
 QString ScxmlImporter::attributeAsString(const char *name)
