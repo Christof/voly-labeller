@@ -203,11 +203,21 @@ void ScxmlImporter::readInvoke()
 
 std::shared_ptr<QStateMachine> ScxmlImporter::import()
 {
+
+  stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
+
+  parse();
+  addTransitions();
+  setInitialStates();
+
+  return stateMachine;
+}
+
+void ScxmlImporter::parse()
+{
   QFile file(url.toLocalFile());
   file.open(QFile::OpenModeFlag::ReadOnly);
   qCDebug(channel) << "Import scxml" << url;
-
-  stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
 
   reader =
       std::unique_ptr<QXmlStreamReader>(new QXmlStreamReader(file.readAll()));
@@ -215,6 +225,7 @@ std::shared_ptr<QStateMachine> ScxmlImporter::import()
   while (!reader->atEnd() && !reader->hasError())
   {
     QXmlStreamReader::TokenType token = reader->readNext();
+
     if (token == QXmlStreamReader::StartDocument)
       continue;
 
@@ -227,7 +238,10 @@ std::shared_ptr<QStateMachine> ScxmlImporter::import()
 
   if (reader->hasError())
     qCCritical(channel) << "Error while parsing:" << reader->errorString();
+}
 
+void ScxmlImporter::addTransitions()
+{
   qRegisterMetaType<QAbstractState *>("QAbstractState*");
   for (auto &transitionTuple : transitions)
   {
@@ -235,11 +249,12 @@ std::shared_ptr<QStateMachine> ScxmlImporter::import()
     auto targetStateName = std::get<1>(transitionTuple);
     transition->setTargetState(states[targetStateName]);
   }
+}
 
+void ScxmlImporter::setInitialStates()
+{
   for (auto &initialPair : initialStateTransitions)
     initialPair.first->setInitialState(states[initialPair.second]);
-
-  return stateMachine;
 }
 
 QString ScxmlImporter::attributeAsString(const char *name)
