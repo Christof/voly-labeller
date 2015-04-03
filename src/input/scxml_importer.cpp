@@ -137,17 +137,15 @@ void ScxmlImporter::readTransition()
 {
   auto event = attributeAsString("event");
   auto target = attributeAsString("target");
-  QString keyboardEvent = "KeyboardEvent";
-  QAbstractTransition *transition = nullptr;
-  if (event.startsWith(keyboardEvent))
+  if (event.startsWith("KeyboardEvent"))
   {
-    transition = createKeyEventTransition(event);
-    transitions.push_back(std::make_tuple(transition, target));
+    currentTransition = createKeyEventTransition(event);
+    transitions.push_back(std::make_tuple(currentTransition, target));
   }
   else if (event.isEmpty() &&
            elementStack[elementStack.size() - 2] == ScxmlElement::initial)
   {
-    transition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
+    currentTransition = new QSignalTransition(stateStack.top(), SIGNAL(entered()),
                                        stateStack.top());
     // just add target as initial state and don't set it for the transition,
     // because otherwise it would result in an infinite loop.
@@ -155,16 +153,9 @@ void ScxmlImporter::readTransition()
   }
   else
   {
-    auto dotPosition = event.indexOf(".");
-    auto name = event.left(dotPosition);
-    QString signal = "2" + event.mid(dotPosition + 1) + "()";
-    transition =
-        new QSignalTransition(signalManager->getFor(name),
-                              signal.toStdString().c_str(), stateStack.top());
-    transitions.push_back(std::make_tuple(transition, target));
+    currentTransition = createSignalTransition(event);
+    transitions.push_back(std::make_tuple(currentTransition, target));
   }
-
-  currentTransition = transition;
 }
 
 void ScxmlImporter::readInvoke()
@@ -246,7 +237,7 @@ void ScxmlImporter::setInitialStates()
 }
 
 QAbstractTransition *
-ScxmlImporter::createKeyEventTransition(QString const &event)
+ScxmlImporter::createKeyEventTransition(const QString &event)
 {
   auto lastDotIndex = event.lastIndexOf(".");
   auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
@@ -259,6 +250,15 @@ ScxmlImporter::createKeyEventTransition(QString const &event)
   auto keyCode = toKey(keyAsString);
   return new QKeyEventTransition(keyboardEventReceiver, eventType, keyCode,
                                  stateStack.top());
+}
+
+QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)
+{
+  auto dotPosition = event.indexOf(".");
+  auto name = event.left(dotPosition);
+  QString signal = "2" + event.mid(dotPosition + 1) + "()";
+  return new QSignalTransition(signalManager->getFor(name),
+                               signal.toStdString().c_str(), stateStack.top());
 }
 
 QString ScxmlImporter::attributeAsString(const char *name)

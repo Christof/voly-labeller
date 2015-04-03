@@ -77,7 +77,8 @@ class ScxmlImporter : public QObject
   void parse();
   void addTransitions();
   void setInitialStates();
-  QAbstractTransition *createKeyEventTransition(QString const &event);
+  QAbstractTransition *createKeyEventTransition(const QString &event);
+  QAbstractTransition *createSignalTransition(const QString &event);
   QString attributeAsString(const char *name);
   ScxmlElement elementFromString(QString name);
 };
