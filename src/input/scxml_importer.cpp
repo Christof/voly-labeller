@@ -15,39 +15,38 @@
 
 QLoggingCategory channel("Input::ScxmlImporter");
 
+bool equalIgnoreCase(QString const &a, QString const &b)
+{
+  return QString::compare(a, b, Qt::CaseSensitivity::CaseInsensitive) == 0;
+}
+
 // from
 // http://stackoverflow.com/questions/14034209/convert-string-representation-of-keycode-to-qtkey-or-any-int-and-back
 Qt::Key toKey(QString const &str)
 {
   QKeySequence seq(str);
 
-  if (QString::compare(str, "ctrl", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "ctrl"))
     return Qt::Key_Control;
-  if (QString::compare(str, "space", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "space"))
     return Qt::Key_Space;
-  if (QString::compare(str, "alt", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "alt"))
     return Qt::Key_Alt;
-  if (QString::compare(str, "up_arrow", Qt::CaseSensitivity::CaseInsensitive) ==
-      0)
+  if (equalIgnoreCase(str, "up_arrow"))
     return Qt::Key_Up;
-  if (QString::compare(str, "down_arrow",
-                       Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "down_arrow"))
     return Qt::Key_Down;
-  if (QString::compare(str, "left_arrow",
-                       Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "left_arrow"))
     return Qt::Key_Left;
-  if (QString::compare(str, "right_arrow",
-                       Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "right_arrow"))
     return Qt::Key_Right;
-  if (QString::compare(str, "shift", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "shift"))
     return Qt::Key_Shift;
-  if (QString::compare(str, "esc", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "esc"))
     return Qt::Key_Escape;
-  if (QString::compare(str, "delete", Qt::CaseSensitivity::CaseInsensitive) ==
-      0)
+  if (equalIgnoreCase(str, "delete"))
     return Qt::Key_Delete;
-  if (QString::compare(str, "backspace",
-                       Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (equalIgnoreCase(str, "backspace"))
     return Qt::Key_Backspace;
 
   // We should only working with a single key here
