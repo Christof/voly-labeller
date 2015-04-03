@@ -31,7 +31,7 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
                          this, invokeManager, signalManager);
-  stateMachine = importer.getStateMachine();
+  stateMachine = importer.import();
   stateMachine->start();
 
   timer.start();

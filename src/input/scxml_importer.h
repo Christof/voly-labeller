@@ -36,7 +36,7 @@ class ScxmlImporter : public QObject
                 std::shared_ptr<SignalManager> signalManager);
   virtual ~ScxmlImporter();
 
-  std::shared_ptr<QStateMachine> getStateMachine();
+  std::shared_ptr<QStateMachine> import();
 
   enum ScxmlElement
   {
@@ -49,7 +49,9 @@ class ScxmlImporter : public QObject
     invoke,
     final
   };
+
  private:
+  QUrl url;
   QObject *keyboardEventReceiver;
   QString initialState;
   QMetaEnum metaScxmlElement;

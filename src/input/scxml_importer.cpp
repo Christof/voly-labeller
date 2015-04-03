@@ -27,21 +27,27 @@ Qt::Key toKey(QString const &str)
     return Qt::Key_Space;
   if (QString::compare(str, "alt", Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Alt;
-  if (QString::compare(str, "up_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "up_arrow", Qt::CaseSensitivity::CaseInsensitive) ==
+      0)
     return Qt::Key_Up;
-  if (QString::compare(str, "down_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "down_arrow",
+                       Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Down;
-  if (QString::compare(str, "left_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "left_arrow",
+                       Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Left;
-  if (QString::compare(str, "right_arrow", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "right_arrow",
+                       Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Right;
   if (QString::compare(str, "shift", Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Shift;
   if (QString::compare(str, "esc", Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Escape;
-  if (QString::compare(str, "delete", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "delete", Qt::CaseSensitivity::CaseInsensitive) ==
+      0)
     return Qt::Key_Delete;
-  if (QString::compare(str, "backspace", Qt::CaseSensitivity::CaseInsensitive) == 0)
+  if (QString::compare(str, "backspace",
+                       Qt::CaseSensitivity::CaseInsensitive) == 0)
     return Qt::Key_Backspace;
 
   // We should only working with a single key here
@@ -52,48 +58,12 @@ Qt::Key toKey(QString const &str)
 ScxmlImporter::ScxmlImporter(QUrl url, QObject *keyboardEventReceiver,
                              std::shared_ptr<InvokeManager> invokeManager,
                              std::shared_ptr<SignalManager> signalManager)
-  : keyboardEventReceiver(keyboardEventReceiver), invokeManager(invokeManager),
-    signalManager(signalManager)
+  : url(url), keyboardEventReceiver(keyboardEventReceiver),
+    invokeManager(invokeManager), signalManager(signalManager)
 {
   const QMetaObject &mo = ScxmlImporter::staticMetaObject;
   int index = mo.indexOfEnumerator("ScxmlElement");
   metaScxmlElement = mo.enumerator(index);
-
-  QFile file(url.toLocalFile());
-  file.open(QFile::OpenModeFlag::ReadOnly);
-  qCDebug(channel) << "Import scxml" << url;
-
-  stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
-
-  reader =
-      std::unique_ptr<QXmlStreamReader>(new QXmlStreamReader(file.readAll()));
-
-  while (!reader->atEnd() && !reader->hasError())
-  {
-    QXmlStreamReader::TokenType token = reader->readNext();
-    if (token == QXmlStreamReader::StartDocument)
-      continue;
-
-    if (token == QXmlStreamReader::StartElement)
-      readElement();
-
-    if (token == QXmlStreamReader::EndElement)
-      finishElement();
-  }
-
-  if (reader->hasError())
-    qCCritical(channel) << "Error while parsing:" << reader->errorString();
-
-  qRegisterMetaType<QAbstractState *>("QAbstractState*");
-  for (auto &transitionTuple : transitions)
-  {
-    auto transition = std::get<0>(transitionTuple);
-    auto targetStateName = std::get<1>(transitionTuple);
-    transition->setTargetState(states[targetStateName]);
-  }
-
-  for (auto &initialPair : initialStateTransitions)
-    initialPair.first->setInitialState(states[initialPair.second]);
 }
 
 ScxmlImporter::~ScxmlImporter()
@@ -231,6 +201,47 @@ void ScxmlImporter::readInvoke()
   invokeManager->addFor(currentTransition, targetType, source);
 }
 
+std::shared_ptr<QStateMachine> ScxmlImporter::import()
+{
+  QFile file(url.toLocalFile());
+  file.open(QFile::OpenModeFlag::ReadOnly);
+  qCDebug(channel) << "Import scxml" << url;
+
+  stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
+
+  reader =
+      std::unique_ptr<QXmlStreamReader>(new QXmlStreamReader(file.readAll()));
+
+  while (!reader->atEnd() && !reader->hasError())
+  {
+    QXmlStreamReader::TokenType token = reader->readNext();
+    if (token == QXmlStreamReader::StartDocument)
+      continue;
+
+    if (token == QXmlStreamReader::StartElement)
+      readElement();
+
+    if (token == QXmlStreamReader::EndElement)
+      finishElement();
+  }
+
+  if (reader->hasError())
+    qCCritical(channel) << "Error while parsing:" << reader->errorString();
+
+  qRegisterMetaType<QAbstractState *>("QAbstractState*");
+  for (auto &transitionTuple : transitions)
+  {
+    auto transition = std::get<0>(transitionTuple);
+    auto targetStateName = std::get<1>(transitionTuple);
+    transition->setTargetState(states[targetStateName]);
+  }
+
+  for (auto &initialPair : initialStateTransitions)
+    initialPair.first->setInitialState(states[initialPair.second]);
+
+  return stateMachine;
+}
+
 QString ScxmlImporter::attributeAsString(const char *name)
 {
   return reader->attributes().value(name).toString();
@@ -246,10 +257,5 @@ ScxmlImporter::ScxmlElement ScxmlImporter::elementFromString(QString name)
     throw std::runtime_error("Could not convert " + name.toStdString());
 
   return result;
-}
-
-std::shared_ptr<QStateMachine> ScxmlImporter::getStateMachine()
-{
-  return stateMachine;
 }
 

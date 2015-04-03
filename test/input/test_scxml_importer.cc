@@ -30,7 +30,7 @@ class Test_ScxmlImporter : public ::testing::Test
     signalManager->addSender(&sender);
     ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
                            eventSender, invokeManager, signalManager);
-    stateMachine = importer.getStateMachine();
+    stateMachine = importer.import();
 
     stateMachine->start();
 
