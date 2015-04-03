@@ -7,7 +7,7 @@
 #include <functional>
 #include <map>
 #include <vector>
-#include "invoke.h"
+#include "./invoke.h"
 
 class QAbstractTransition;
 class QAbstractState;

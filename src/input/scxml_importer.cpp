@@ -181,7 +181,6 @@ void ScxmlImporter::readInvoke()
 
 std::shared_ptr<QStateMachine> ScxmlImporter::import()
 {
-
   stateMachine = std::shared_ptr<QStateMachine>(new QStateMachine());
 
   parse();
