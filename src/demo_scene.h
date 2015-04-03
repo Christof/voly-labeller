@@ -8,12 +8,15 @@
 
 #include "./abstract_scene.h"
 #include "./camera.h"
+#include "./camera_controller.h"
 #include "./mesh.h"
+
+class InvokeManager;
 
 class DemoScene : public AbstractScene
 {
  public:
-  DemoScene();
+  DemoScene(std::shared_ptr<InvokeManager> invokeManager);
   ~DemoScene();
 
   virtual void initialize();
@@ -23,6 +26,7 @@ class DemoScene : public AbstractScene
 
  private:
   Camera camera;
+  std::shared_ptr<CameraController> cameraController;
   double frameTime;
   double cameraSpeed = 10.0f;
 

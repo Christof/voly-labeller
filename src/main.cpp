@@ -12,12 +12,12 @@ int main(int argc, char **argv)
 {
   QGuiApplication application(argc, argv);
 
-  auto scene = std::make_shared<DemoScene>();
+  auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+  auto scene = std::make_shared<DemoScene>(invokeManager);
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
   window.setSource(QUrl("qrc:ui.qml"));
 
-  auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
                          invokeManager, signalManager);

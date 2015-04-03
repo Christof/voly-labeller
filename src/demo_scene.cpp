@@ -8,8 +8,9 @@
 #include <Eigen/Core>
 #include <string>
 #include "./gl.h"
+#include "./input/invoke_manager.h"
 
-DemoScene::DemoScene()
+DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
   keyPressedActions[Qt::Key_W] = [this]
   {
