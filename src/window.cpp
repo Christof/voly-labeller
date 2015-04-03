@@ -7,7 +7,6 @@
 #include <QAbstractTransition>
 #include <iostream>
 #include "./abstract_scene.h"
-#include "./input/scxml_importer.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene), frameCount(0)
@@ -26,14 +25,6 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   auto format = createSurfaceFormat();
   setFormat(format);
 
-  invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
-  invokeManager->addHandler(this);
-  signalManager = std::shared_ptr<SignalManager>(new SignalManager());
-  signalManager->addSender("KeyboardEventSender", this);
-  ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
-                         invokeManager, signalManager);
-  stateMachine = importer.import();
-  stateMachine->start();
 
   timer.start();
 }

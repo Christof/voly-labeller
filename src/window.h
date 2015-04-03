@@ -11,8 +11,6 @@
 
 class AbstractScene;
 class QStateMachine;
-class InvokeManager;
-class SignalManager;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -25,6 +23,8 @@ class Window : public QQuickView
  public:
   explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
+
+  std::shared_ptr<QStateMachine> stateMachine;
  protected slots:
   void resizeOpenGL();
   void render();
@@ -46,9 +46,6 @@ class Window : public QQuickView
   QOpenGLContext *context;
   Gl *gl;
   std::shared_ptr<AbstractScene> scene;
-  std::shared_ptr<QStateMachine> stateMachine;
-  std::shared_ptr<InvokeManager> invokeManager;
-  std::shared_ptr<SignalManager> signalManager;
   bool updatePending;
   long frameCount;
   QSet<Qt::Key> keysPressed;
