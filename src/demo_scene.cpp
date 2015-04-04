@@ -12,23 +12,6 @@
 
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
-  keyPressedActions[Qt::Key_Q] = [this]
-  {
-    this->camera.changeAzimuth(this->frameTime);
-  };
-  keyPressedActions[Qt::Key_E] = [this]
-  {
-    this->camera.changeAzimuth(-this->frameTime);
-  };
-  keyPressedActions[Qt::Key_R] = [this]
-  {
-    this->camera.changeDeclination(-this->frameTime);
-  };
-  keyPressedActions[Qt::Key_F] = [this]
-  {
-    this->camera.changeDeclination(this->frameTime);
-  };
-
   cameraController = std::shared_ptr<CameraController>(
       new CameraController(camera));
 
@@ -68,11 +51,6 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
-  for (Qt::Key key : keysPressed)
-  {
-    if (keyPressedActions.count(key))
-      keyPressedActions[key]();
-  }
 }
 
 void DemoScene::render()

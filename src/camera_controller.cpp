@@ -34,3 +34,23 @@ void CameraController::strafeRight()
   camera.strafeRight(frameTime * cameraSpeed);
 }
 
+void CameraController::azimuthLeft()
+{
+  camera.changeAzimuth(frameTime);
+}
+
+void CameraController::azimuthRight()
+{
+  camera.changeAzimuth(-frameTime);
+}
+
+void CameraController::increaseDeclination()
+{
+  camera.changeDeclination(-frameTime);
+}
+
+void CameraController::decreaseDeclination()
+{
+  camera.changeDeclination(frameTime);
+}
+

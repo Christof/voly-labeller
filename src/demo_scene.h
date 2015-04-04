@@ -32,7 +32,6 @@ class DemoScene : public AbstractScene
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
-  std::map<Qt::Key, std::function<void()>> keyPressedActions;
 
   std::vector<std::unique_ptr<Mesh>> meshes;
 };

@@ -13,5 +13,17 @@
     <transition event="KeyboardEvent.DOWN.D">
       <invoke targettype="cam" src="strafeRight"/>
     </transition>
+    <transition event="KeyboardEvent.DOWN.Q">
+      <invoke targettype="cam" src="azimuthLeft"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.E">
+      <invoke targettype="cam" src="azimuthRight"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.R">
+      <invoke targettype="cam" src="increaseDeclination"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.F">
+      <invoke targettype="cam" src="decreaseDeclination"/>
+    </transition>
   </state>
 </scxml>
