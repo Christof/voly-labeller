@@ -84,6 +84,8 @@ flags = [
 '-isystem',
 '/usr/local/Qt/5.4/gcc_64/include/QtCore',
 '-isystem',
+'/usr/local/Qt/5.4/gcc_64/include/QtWidgets',
+'-isystem',
 '/usr/local/include/eigen3/',
 ]
 

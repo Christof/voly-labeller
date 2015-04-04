@@ -8,41 +8,14 @@
 #include <Eigen/Core>
 #include <string>
 #include "./gl.h"
+#include "./input/invoke_manager.h"
 
-DemoScene::DemoScene()
+DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
-  keyPressedActions[Qt::Key_W] = [this]
-  {
-    this->camera.moveForward(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_S] = [this]
-  {
-    this->camera.moveBackward(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_A] = [this]
-  {
-    this->camera.strafeLeft(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_D] = [this]
-  {
-    this->camera.strafeRight(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_Q] = [this]
-  {
-    this->camera.changeAzimuth(this->frameTime);
-  };
-  keyPressedActions[Qt::Key_E] = [this]
-  {
-    this->camera.changeAzimuth(-this->frameTime);
-  };
-  keyPressedActions[Qt::Key_R] = [this]
-  {
-    this->camera.changeDeclination(-this->frameTime);
-  };
-  keyPressedActions[Qt::Key_F] = [this]
-  {
-    this->camera.changeDeclination(this->frameTime);
-  };
+  cameraController = std::shared_ptr<CameraController>(
+      new CameraController(camera));
+
+  invokeManager->addHandler("cam", cameraController.get());
 }
 
 DemoScene::~DemoScene()
@@ -77,11 +50,7 @@ void DemoScene::initialize()
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
-  for (Qt::Key key : keysPressed)
-  {
-    if (keyPressedActions.count(key))
-      keyPressedActions[key]();
-  }
+  cameraController->setFrameTime(frameTime);
 }
 
 void DemoScene::render()

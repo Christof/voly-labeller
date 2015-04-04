@@ -61,10 +61,26 @@ class Test_ScxmlImporter : public ::testing::Test
     application->processEvents();
   }
 
+  void sendMouseButtonPressEvent(Qt::MouseButton button)
+  {
+    application->sendEvent(
+        eventSender, new QMouseEvent(QEvent::MouseButtonPress, QPointF(0, 0),
+                                     button, button, Qt::NoModifier));
+    application->processEvents();
+  }
+
   void sendKeyReleaseEvent(Qt::Key key)
   {
     application->sendEvent(
         eventSender, new QKeyEvent(QEvent::KeyRelease, key, Qt::NoModifier));
+    application->processEvents();
+  }
+
+  void sendMouseButtonReleaseEvent(Qt::MouseButton button)
+  {
+    application->sendEvent(
+        eventSender, new QMouseEvent(QEvent::MouseButtonRelease, QPointF(0, 0),
+                                     button, button, Qt::NoModifier));
     application->processEvents();
   }
 
@@ -229,6 +245,24 @@ TEST_F(Test_ScxmlImporter, TransitionOnKeyReleaseEvent)
   sendKeyReleaseEvent(Qt::Key_A);
 
   expectSingleStateWithName("exit");
+}
+
+TEST_F(Test_ScxmlImporter, TransitionOnMousePressEvent)
+{
+  expectSingleStateWithName("idle");
+
+  sendMouseButtonPressEvent(Qt::MouseButton::LeftButton);
+
+  expectSingleStateWithName("exit");
+}
+
+TEST_F(Test_ScxmlImporter, TransitionOnMouseReleaseEvent)
+{
+  expectSingleStateWithName("idle");
+
+  sendMouseButtonReleaseEvent(Qt::MouseButton::RightButton);
+
+  expectSingleStateWithName("base");
 }
 
 TEST_F(Test_ScxmlImporter, EventFromCustomSignal)

@@ -8,6 +8,7 @@
 #include <QEvent>
 #include <QKeySequence>
 #include <QKeyEventTransition>
+#include <QMouseEventTransition>
 #include <QSignalTransition>
 #include <QLoggingCategory>
 #include <cassert>
@@ -52,6 +53,22 @@ Qt::Key toKey(QString const &str)
   // We should only working with a single key here
   assert(seq.count() == 1);
   return static_cast<Qt::Key>(seq[0]);
+}
+
+Qt::MouseButton toButton(const QString &str)
+{
+  if (equalIgnoreCase(str, "left"))
+    return Qt::MouseButton::LeftButton;
+  if (equalIgnoreCase(str, "right"))
+    return Qt::MouseButton::RightButton;
+  if (equalIgnoreCase(str, "middle"))
+    return Qt::MouseButton::MiddleButton;
+  if (equalIgnoreCase(str, "button4"))
+    return Qt::MouseButton::ExtraButton4;
+  if (equalIgnoreCase(str, "button5"))
+    return Qt::MouseButton::ExtraButton5;
+
+  return Qt::MouseButton::NoButton;
 }
 
 ScxmlImporter::ScxmlImporter(QUrl url,
@@ -116,8 +133,9 @@ void ScxmlImporter::readState()
 
   connect(state, &QState::entered, [state]()
           {
-    qCDebug(channel) << "entered:" << state->property("name").toString();
-  });
+            qCDebug(channel)
+                << "entered:" << state->property("name").toString();
+          });
 
   stateStack.push(state);
   states[stateName] = state;
@@ -139,6 +157,12 @@ void ScxmlImporter::readTransition()
   if (event.startsWith("KeyboardEvent"))
   {
     currentTransition = createKeyEventTransition(event);
+    transitions.push_back(std::make_tuple(currentTransition, target));
+  }
+  else if (event.startsWith("MouseButtonEvent"))
+  {
+    qCDebug(channel) << "in MouseButtonEvent" << event;
+    currentTransition = createMouseButtonEventTransition(event);
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
   else if (event.isEmpty() &&
@@ -248,6 +272,22 @@ ScxmlImporter::createKeyEventTransition(const QString &event)
   auto keyCode = toKey(keyAsString);
   return new QKeyEventTransition(signalManager->getFor("KeyboardEventSender"),
                                  eventType, keyCode, stateStack.top());
+}
+
+QAbstractTransition *
+ScxmlImporter::createMouseButtonEventTransition(const QString &event)
+{
+  auto lastDotIndex = event.lastIndexOf(".");
+  auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
+  auto typeString =
+      event.mid(secondLastDotIndex + 1, lastDotIndex - secondLastDotIndex - 1);
+  QEvent::Type eventType =
+      typeString == "DOWN" ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease;
+
+  auto keyAsString = event.mid(lastDotIndex + 1);
+  auto buttonCode = toButton(keyAsString);
+  return new QMouseEventTransition(signalManager->getFor("KeyboardEventSender"),
+                                   eventType, buttonCode, stateStack.top());
 }
 
 QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)

@@ -3,12 +3,17 @@
   <state id="idle">
     <transition event="KeyboardEvent.DOWN.B" target="exit"/>
     <transition event="KeyboardEvent.UP.A" target="exit"/>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="exit"/>
+    <transition event="MouseButtonEvent.UP.RIGHT" target="base"/>
     <transition event="KeyboardEvent.DOWN.V" target="base"/>
     <transition event="KeyboardEvent.DOWN.N" target="with-nesting"/>
     <transition event="KeyboardEvent.DOWN.I" target="with-nesting-invoke"/>
     <transition event="KeyboardEvent.DOWN.E" target="on-entry"/>
     <transition event="KeyboardEvent.DOWN.F" target="on-entry-double"/>
     <transition event="KeyboardEvent.DOWN.G" target="on-exit"/>
+    <transition event="KeyboardEvent.DOWN.W">
+      <invoke targettype="cam" src="moveForward"/>
+    </transition>
     <transition event="KeyboardEvent.DOWN.ALT" target="alt"/>
     <transition event="KeyboardEvent.DOWN.J" target="exit">
       <invoke targettype="Window" src="printCurrentState"/>
