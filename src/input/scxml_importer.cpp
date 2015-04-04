@@ -59,6 +59,14 @@ Qt::MouseButton toButton(const QString &str)
 {
   if (equalIgnoreCase(str, "left"))
     return Qt::MouseButton::LeftButton;
+  if (equalIgnoreCase(str, "right"))
+    return Qt::MouseButton::RightButton;
+  if (equalIgnoreCase(str, "middle"))
+    return Qt::MouseButton::MiddleButton;
+  if (equalIgnoreCase(str, "button4"))
+    return Qt::MouseButton::ExtraButton4;
+  if (equalIgnoreCase(str, "button5"))
+    return Qt::MouseButton::ExtraButton5;
 
   return Qt::MouseButton::NoButton;
 }
