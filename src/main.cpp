@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   window.setSource(QUrl("qrc:ui.qml"));
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
-  ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
+  ScxmlImporter importer(QUrl::fromLocalFile("../config/states.xml"),
                          invokeManager, signalManager);
 
   invokeManager->addHandler(&window);

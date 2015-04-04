@@ -21,6 +21,9 @@ class CameraController : public QObject
 
  public slots:
   void moveForward();
+  void moveBackward();
+  void strafeLeft();
+  void strafeRight();
 
  private:
   Camera &camera;

@@ -18,3 +18,19 @@ void CameraController::moveForward()
 {
   camera.moveForward(frameTime * cameraSpeed);
 }
+
+void CameraController::moveBackward()
+{
+  camera.moveBackward(frameTime * cameraSpeed);
+}
+
+void CameraController::strafeLeft()
+{
+  camera.strafeLeft(frameTime * cameraSpeed);
+}
+
+void CameraController::strafeRight()
+{
+  camera.strafeRight(frameTime * cameraSpeed);
+}
+

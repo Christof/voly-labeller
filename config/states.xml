@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scxml xmlns="http://www.coin3d.org/scxml/coin/1.0" initialstate="idle">
+  <state id="idle">
+    <transition event="KeyboardEvent.DOWN.W">
+      <invoke targettype="cam" src="moveForward"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.S">
+      <invoke targettype="cam" src="moveBackward"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.A">
+      <invoke targettype="cam" src="strafeLeft"/>
+    </transition>
+    <transition event="KeyboardEvent.DOWN.D">
+      <invoke targettype="cam" src="strafeRight"/>
+    </transition>
+  </state>
+</scxml>

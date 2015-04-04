@@ -12,18 +12,6 @@
 
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
-  keyPressedActions[Qt::Key_S] = [this]
-  {
-    this->camera.moveBackward(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_A] = [this]
-  {
-    this->camera.strafeLeft(this->frameTime * this->cameraSpeed);
-  };
-  keyPressedActions[Qt::Key_D] = [this]
-  {
-    this->camera.strafeRight(this->frameTime * this->cameraSpeed);
-  };
   keyPressedActions[Qt::Key_Q] = [this]
   {
     this->camera.changeAzimuth(this->frameTime);
