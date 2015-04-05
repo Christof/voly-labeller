@@ -1,10 +1,12 @@
 #include "./window.h"
 #include <QOpenGLContext>
+#include <QOpenGLPaintDevice>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
+#include <QPainter>
 #include <iostream>
 #include "./abstract_scene.h"
 
@@ -25,12 +27,12 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   auto format = createSurfaceFormat();
   setFormat(format);
 
-
   timer.start();
 }
 
 Window::~Window()
 {
+  delete paintDevice;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -87,6 +89,8 @@ void Window::handleLazyInitialization()
     scene->setContext(context, gl);
     scene->initialize();
     initialized = true;
+
+    paintDevice = new QOpenGLPaintDevice(this->size());
   }
 }
 
@@ -101,6 +105,13 @@ void Window::render()
   // resetOpenGLState();
 
   ++frameCount;
+
+  QPainter painter;
+  painter.begin(paintDevice);
+  painter.setPen(Qt::blue);
+  painter.setFont(QFont("Arial", 16));
+  painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Qt is awesome");
+  painter.end();
 
   QQuickView::update();
 }
