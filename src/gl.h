@@ -3,6 +3,7 @@
 #define SRC_GL_H_
 
 #include <QOpenGLFunctions_4_3_Core>
+#include <QOpenGLPaintDevice>
 
 #ifndef NDEBUG  // debug mode
 
@@ -48,6 +49,29 @@ inline void glCheckErrorFunction(std::string file, int line)
  */
 class Gl : public QOpenGLFunctions_4_3_Core
 {
+ public:
+  Gl()
+  {
+  };
+
+  ~Gl()
+  {
+    delete paintDevice;
+  }
+
+  void setSize(QSize size)
+  {
+    paintDevice->setSize(size);
+  }
+
+  void initialize(QSize size)
+  {
+    initializeOpenGLFunctions();
+    paintDevice = new QOpenGLPaintDevice();
+    setSize(size);
+  }
+
+  QOpenGLPaintDevice *paintDevice;
 };
 
 #endif  // SRC_GL_H_

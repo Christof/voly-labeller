@@ -1,6 +1,5 @@
 #include "./window.h"
 #include <QOpenGLContext>
-#include <QOpenGLPaintDevice>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QStateMachine>
@@ -32,7 +31,6 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
 Window::~Window()
 {
-  delete paintDevice;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -63,7 +61,7 @@ void Window::initializeOpenGL()
     qWarning() << "Could not obtain required OpenGL context version";
     exit(1);
   }
-  gl->initializeOpenGLFunctions();
+  gl->initialize(size());
   glCheckError();
 
   gl->glEnable(GL_DEPTH_TEST);
@@ -89,8 +87,6 @@ void Window::handleLazyInitialization()
     scene->setContext(context, gl);
     scene->initialize();
     initialized = true;
-
-    paintDevice = new QOpenGLPaintDevice(this->size());
   }
 }
 
@@ -107,7 +103,7 @@ void Window::render()
   ++frameCount;
 
   QPainter painter;
-  painter.begin(paintDevice);
+  painter.begin(gl->paintDevice);
   painter.setPen(Qt::blue);
   painter.setFont(QFont("Arial", 16));
   painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Qt is awesome");
@@ -119,6 +115,8 @@ void Window::render()
 void Window::resizeOpenGL()
 {
   scene->resize(width(), height());
+  if (gl)
+    gl->setSize(this->size());
 }
 
 void Window::update()

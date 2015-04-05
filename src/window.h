@@ -11,7 +11,6 @@
 
 class AbstractScene;
 class QStateMachine;
-class QOpenGLPaintDevice;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -45,8 +44,7 @@ class Window : public QQuickView
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  QOpenGLPaintDevice *paintDevice;
-  Gl *gl;
+  Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
   long frameCount;
