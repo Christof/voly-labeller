@@ -5,7 +5,6 @@
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
-#include <QPainter>
 #include <iostream>
 #include "./abstract_scene.h"
 
@@ -101,13 +100,6 @@ void Window::render()
   // resetOpenGLState();
 
   ++frameCount;
-
-  QPainter painter;
-  painter.begin(gl->paintDevice);
-  painter.setPen(Qt::blue);
-  painter.setFont(QFont("Arial", 16));
-  painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Qt is awesome");
-  painter.end();
 
   QQuickView::update();
 }

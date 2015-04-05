@@ -5,6 +5,7 @@
 #include <assimp/postprocess.h>
 #include <QObject>
 #include <QDebug>
+#include <QPainter>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
@@ -70,6 +71,13 @@ void DemoScene::render()
 
   for (auto &node : nodes)
     node->render(renderData);
+
+  QPainter painter;
+  painter.begin(gl->paintDevice);
+  painter.setPen(Qt::blue);
+  painter.setFont(QFont("Arial", 16));
+  painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Qt is awesome");
+  painter.end();
 }
 
 void DemoScene::resize(int width, int height)
