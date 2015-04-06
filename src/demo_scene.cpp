@@ -13,12 +13,13 @@
 #include "./input/invoke_manager.h"
 #include "./mesh.h"
 #include "./mesh_node.h"
+#include "./label_node.h"
 #include "./render_data.h"
 
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
-  cameraController = std::shared_ptr<CameraController>(
-      new CameraController(camera));
+  cameraController =
+      std::shared_ptr<CameraController>(new CameraController(camera));
 
   invokeManager->addHandler("cam", cameraController.get());
 }
@@ -53,6 +54,9 @@ void DemoScene::initialize()
     nodes.push_back(
         std::unique_ptr<MeshNode>(new MeshNode(mesh, transformation.matrix())));
   }
+
+  auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
+  nodes.push_back(std::unique_ptr<LabelNode>(new LabelNode(label, gl)));
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -71,13 +75,6 @@ void DemoScene::render()
 
   for (auto &node : nodes)
     node->render(renderData);
-
-  QPainter painter;
-  painter.begin(gl->paintDevice);
-  painter.setPen(Qt::blue);
-  painter.setFont(QFont("Arial", 16));
-  painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Qt is awesome");
-  painter.end();
 }
 
 void DemoScene::resize(int width, int height)
