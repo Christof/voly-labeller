@@ -5,6 +5,7 @@
 #include <fstream>
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
+#include <Eigen/Core>
 
 /**
  * \brief
@@ -22,7 +23,7 @@ class Persister
     std::ofstream ofs(filename);
     boost::archive::xml_oarchive oa(ofs);
 
-    oa <<  BOOST_SERIALIZATION_NVP(data);
+    oa << BOOST_SERIALIZATION_NVP(data);
   }
 
   template <typename T> static T load(std::string filename)
@@ -38,5 +39,19 @@ class Persister
  private:
   /* data */
 };
+
+namespace boost
+{
+namespace serialization
+{
+template <class Archive>
+void serialize(Archive &ar, Eigen::Vector3f &vector, const unsigned int version)
+{
+  ar & boost::serialization::make_nvp("x", vector.x());
+  ar & boost::serialization::make_nvp("y", vector.y());
+  ar & boost::serialization::make_nvp("z", vector.z());
+}
+}  // namespace serialization
+}  // namespace boost
 
 #endif  // SRC_UTILS_PERSISTER_H_
