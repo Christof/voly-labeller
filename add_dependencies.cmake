@@ -27,6 +27,8 @@ include_directories(${Qt5OpenGL_INCLUDE_DIRS})
 include_directories(${Qt5Gui_INCLUDE_DIRS})
 include_directories(${Qt5Quick_INCLUDE_DIRS})
 
+find_package(Boost 1.57.0 COMPONENTS date_time filesystem system serialization REQUIRED)
+include_directories(${Boost_INCLUDE_DIR})
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC")
 

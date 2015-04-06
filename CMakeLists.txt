@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.11)
 project(voly-labeller)
 
 add_subdirectory(src/input)
+add_subdirectory(src/utils)
 
 option(test "Build all tests." ON)
 if(test)
@@ -37,6 +38,7 @@ add_executable(voly-labeller
   src/main.cpp
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
+  $<TARGET_OBJECTS:utils>
   )
 
 target_link_libraries(voly-labeller
@@ -47,6 +49,7 @@ target_link_libraries(voly-labeller
   Qt5::Quick
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
