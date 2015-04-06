@@ -58,6 +58,7 @@ class Gl : public QOpenGLFunctions_4_3_Core
 
   void setSize(QSize size)
   {
+    this->size = size;
     if (paintDevice)
       paintDevice->setSize(size);
   }
@@ -70,6 +71,7 @@ class Gl : public QOpenGLFunctions_4_3_Core
   }
 
   QOpenGLPaintDevice *paintDevice;
+  QSize size;
 };
 
 #endif  // SRC_GL_H_
