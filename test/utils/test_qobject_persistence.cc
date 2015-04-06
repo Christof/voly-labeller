@@ -1,6 +1,11 @@
 #include "../test.h"
+#include "../../src/utils/persister.h"
 
-TEST(Test_QObjectPersistence, SaveASimpleString)
+TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
 {
-  EXPECT_TRUE(false);
+  std::string text = "example text";
+
+  Persister::save(text, "test.xml");
+
+  EXPECT_EQ(text, Persister::load<std::string>("test.xml"));
 }
