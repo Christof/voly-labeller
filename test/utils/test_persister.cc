@@ -45,7 +45,5 @@ TEST(Test_QObjectPersistence, SaveAndLoadAMatrix)
 
   Persister::save(matrix, "test.xml");
   auto loaded = Persister::load<Eigen::Matrix4f>("test.xml");
-  EXPECT_NEAR(matrix(0, 0), loaded(0, 0), 0.00001f);
-  EXPECT_NEAR(matrix(0, 1), loaded(0, 1), 0.00001f);
-  EXPECT_NEAR(matrix(0, 2), loaded(0, 2), 0.00001f);
+  EXPECT_Matrix4f_NEAR(matrix, loaded, 1E-5f);
 }
