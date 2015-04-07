@@ -19,9 +19,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadAVector)
 
   Persister::save(vector, "test.xml");
   auto loaded = Persister::load<Eigen::Vector3f>("test.xml");
-  EXPECT_NEAR(vector.x(), loaded.x(), 0.00001f);
-  EXPECT_NEAR(vector.y(), loaded.y(), 0.00001f);
-  EXPECT_NEAR(vector.z(), loaded.z(), 0.00001f);
+  EXPECT_Vector3f_NEAR(vector, loaded, 1E-5f);
 }
 
 TEST(Test_QObjectPersistence, SaveAndLoadALabel)
@@ -32,9 +30,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabel)
   auto loaded = Persister::load<Label>("test.xml");
   EXPECT_EQ(label.id, loaded.id);
   EXPECT_EQ(label.text, loaded.text);
-  EXPECT_NEAR(label.anchorPosition.x(), loaded.anchorPosition.x(), 0.00001f);
-  EXPECT_NEAR(label.anchorPosition.y(), loaded.anchorPosition.y(), 0.00001f);
-  EXPECT_NEAR(label.anchorPosition.z(), loaded.anchorPosition.z(), 0.00001f);
+  EXPECT_Vector3f_NEAR(label.anchorPosition, loaded.anchorPosition, 1E-5f);
 }
 
 TEST(Test_QObjectPersistence, SaveAndLoadMeshNode)
