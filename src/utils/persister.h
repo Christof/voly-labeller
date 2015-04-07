@@ -54,4 +54,33 @@ void serialize(Archive &ar, Eigen::Vector3f &vector, const unsigned int version)
 }  // namespace serialization
 }  // namespace boost
 
+namespace boost
+{
+namespace serialization
+{
+template <class Archive>
+void serialize(Archive &ar, Eigen::Matrix4f &matrix, const unsigned int version)
+{
+  ar & boost::serialization::make_nvp("r0c0", matrix(0, 0));
+  ar & boost::serialization::make_nvp("r0c1", matrix(0, 1));
+  ar & boost::serialization::make_nvp("r0c2", matrix(0, 2));
+  ar & boost::serialization::make_nvp("r0c3", matrix(0, 3));
+
+  ar & boost::serialization::make_nvp("r1c0", matrix(1, 0));
+  ar & boost::serialization::make_nvp("r1c1", matrix(1, 1));
+  ar & boost::serialization::make_nvp("r1c2", matrix(1, 2));
+  ar & boost::serialization::make_nvp("r1c3", matrix(1, 3));
+
+  ar & boost::serialization::make_nvp("r2c0", matrix(2, 0));
+  ar & boost::serialization::make_nvp("r2c1", matrix(2, 1));
+  ar & boost::serialization::make_nvp("r2c2", matrix(2, 2));
+  ar & boost::serialization::make_nvp("r2c3", matrix(2, 3));
+
+  ar & boost::serialization::make_nvp("r3c0", matrix(3, 0));
+  ar & boost::serialization::make_nvp("r3c1", matrix(3, 1));
+  ar & boost::serialization::make_nvp("r3c2", matrix(3, 2));
+  ar & boost::serialization::make_nvp("r3c3", matrix(3, 3));
+}
+}  // namespace serialization
+}  // namespace boost
 #endif  // SRC_UTILS_PERSISTER_H_

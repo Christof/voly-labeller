@@ -2,6 +2,7 @@
 #include <Eigen/Core>
 #include "../../src/utils/persister.h"
 #include "../../src/label.h"
+#include "../../src/mesh_node.h"
 
 TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
 {
@@ -34,4 +35,21 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabel)
   EXPECT_NEAR(label.anchorPosition.x(), loaded.anchorPosition.x(), 0.00001f);
   EXPECT_NEAR(label.anchorPosition.y(), loaded.anchorPosition.y(), 0.00001f);
   EXPECT_NEAR(label.anchorPosition.z(), loaded.anchorPosition.z(), 0.00001f);
+}
+
+TEST(Test_QObjectPersistence, SaveAndLoadMeshNode)
+{
+}
+
+TEST(Test_QObjectPersistence, SaveAndLoadAMatrix)
+{
+  Eigen::Matrix4f matrix;
+  matrix << 0.0f, 0.1f, 0.2f, 0.3f, 1.0f, 1.1f, 1.2f, 1.3f, 2.0f, 2.1f, 2.2f,
+      2.3f, 3.0f, 3.1f, 3.2f, 3.3f;
+
+  Persister::save(matrix, "test.xml");
+  auto loaded = Persister::load<Eigen::Matrix4f>("test.xml");
+  EXPECT_NEAR(matrix(0, 0), loaded(0, 0), 0.00001f);
+  EXPECT_NEAR(matrix(0, 1), loaded(0, 1), 0.00001f);
+  EXPECT_NEAR(matrix(0, 2), loaded(0, 2), 0.00001f);
 }
