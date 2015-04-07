@@ -1,8 +1,10 @@
 #include "./mesh_node.h"
 #include "./mesh.h"
 
-MeshNode::MeshNode(std::shared_ptr<Mesh> mesh, Eigen::Matrix4f transformation)
-  : mesh(mesh), transformation(transformation)
+MeshNode::MeshNode(std::string assetFilename, int meshIndex,
+                   std::shared_ptr<Mesh> mesh, Eigen::Matrix4f transformation)
+  : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
+    transformation(transformation)
 {
 }
 

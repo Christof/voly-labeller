@@ -51,8 +51,8 @@ void DemoScene::initialize()
         gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
     auto transformation = Eigen::Affine3f::Identity();
     transformation.translation() << meshIndex, 0, 0;
-    nodes.push_back(
-        std::unique_ptr<MeshNode>(new MeshNode(mesh, transformation.matrix())));
+    nodes.push_back(std::unique_ptr<MeshNode>(
+        new MeshNode(filename, meshIndex, mesh, transformation.matrix())));
   }
 
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));

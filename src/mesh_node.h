@@ -15,7 +15,8 @@ class Mesh;
 class MeshNode : public Node
 {
  public:
-  MeshNode(std::shared_ptr<Mesh> mesh, Eigen::Matrix4f transformation);
+  MeshNode(std::string assetFilename, int meshIndex, std::shared_ptr<Mesh> mesh,
+           Eigen::Matrix4f transformation);
   virtual ~MeshNode();
 
   void render(const RenderData &renderData);
@@ -24,6 +25,8 @@ class MeshNode : public Node
   void setTransformation(Eigen::Matrix4f transformation);
 
  private:
+  std::string assetFilename;
+  int meshIndex;
   std::shared_ptr<Mesh> mesh;
   Eigen::Matrix4f transformation;
 };
