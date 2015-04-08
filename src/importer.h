@@ -3,6 +3,8 @@
 #define SRC_IMPORTER_H_
 
 #include <memory>
+#include <map>
+#include <assimp/Importer.hpp>
 #include "./mesh.h"
 #include "./gl.h"
 
@@ -21,6 +23,10 @@ class Importer
 
  private:
   Gl *gl;
+  Assimp::Importer importer;
+  std::map<std::string, const aiScene *> scenes;
+
+  const aiScene *readScene(std::string filename);
 };
 
 #endif  // SRC_IMPORTER_H_

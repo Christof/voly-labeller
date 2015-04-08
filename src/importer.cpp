@@ -1,5 +1,4 @@
 #include "./importer.h"
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
@@ -11,10 +10,11 @@ Importer::~Importer()
 {
 }
 
-std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
+const aiScene *Importer::readScene(std::string filename)
 {
-  Assimp::Importer importer;
-  // const std::string filename = "../assets/assets.dae";
+  if (scenes.count(filename))
+    return scenes[filename];
+
   const aiScene *scene = importer.ReadFile(
       filename, aiProcess_CalcTangentSpace | aiProcess_Triangulate |
                     aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
@@ -25,6 +25,14 @@ std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
     exit(1);
   }
 
+  scenes[filename] = scene;
+
+  return scene;
+}
+
+std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
+{
+  const aiScene *scene = readScene(filename);
   auto importedMesh = scene->mMeshes[meshIndex];
   return std::shared_ptr<Mesh>(new Mesh(
       gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
