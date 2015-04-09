@@ -33,8 +33,18 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabel)
   EXPECT_Vector3f_NEAR(label.anchorPosition, loaded.anchorPosition, 1E-5f);
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadMeshNode)
+TEST(Test_QObjectPersistence, SaveAndLoadALabelPointer)
 {
+  auto label = new Label(2, "my label 2", Eigen::Vector3f(1, 2, 3));
+
+  Persister::save(label, "test.xml");
+  auto loaded = Persister::load<Label*>("test.xml");
+  EXPECT_EQ(label->id, loaded->id);
+  EXPECT_EQ(label->text, loaded->text);
+  EXPECT_Vector3f_NEAR(label->anchorPosition, loaded->anchorPosition, 1E-5f);
+
+  delete label;
+  delete loaded;
 }
 
 TEST(Test_QObjectPersistence, SaveAndLoadAMatrix)
