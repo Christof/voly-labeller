@@ -31,8 +31,10 @@ class MeshNode : public Node
  private:
   friend class boost::serialization::access;
   template <class Archive>
-  void serialize(Archive &ar, unsigned int version) const {
-  };
+  void serialize(Archive &ar, unsigned int version) const {};
+  template <class Archive>
+  friend void boost::serialization::save_construct_data(
+      Archive &ar, const MeshNode *meshNode, const unsigned int file_version);
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
