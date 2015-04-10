@@ -50,26 +50,11 @@ inline void glCheckErrorFunction(std::string file, int line)
 class Gl : public QOpenGLFunctions_4_3_Core
 {
  public:
-  ~Gl()
-  {
-    if (paintDevice)
-      delete paintDevice;
-  }
+  ~Gl();
 
-  void setSize(QSize size)
-  {
-    this->size = size;
-    if (paintDevice)
-      paintDevice->setSize(size);
-  }
+  void setSize(QSize size);
 
-  void initialize(QSize size)
-  {
-    initializeOpenGLFunctions();
-    paintDevice = new QOpenGLPaintDevice();
-    setSize(size);
-    instance = this;
-  }
+  void initialize(QSize size);
 
   static Gl* instance;
   QOpenGLPaintDevice *paintDevice;
