@@ -36,6 +36,18 @@ class Persister
     return result;
   }
 
+  /*
+  template <typename T> static std::shared_ptr<T> loadSpecial(std::string filename)
+  {
+    std::ifstream ifs(filename);
+    boost::archive::xml_iarchive ia(ifs);
+    T *result = static_cast<T*>(malloc(sizeof(T)));
+    ia >> BOOST_SERIALIZATION_NVP(result);//boost::serialization::make_nvp<T>("result", (T&)*result);
+
+    return std::shared_ptr<T>(result);
+  }
+  */
+
  private:
   /* data */
 };

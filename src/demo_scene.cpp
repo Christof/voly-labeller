@@ -13,6 +13,7 @@
 #include "./label_node.h"
 #include "./render_data.h"
 #include "./importer.h"
+#include "./utils/persister.h"
 
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
@@ -33,17 +34,23 @@ void DemoScene::initialize()
   const std::string filename = "../assets/assets.dae";
   Importer importer(gl);
 
-  for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
+  /*
+  for (unsigned int meshIndex = 0; meshIndex < 1; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
     auto transformation = Eigen::Affine3f::Identity();
     transformation.translation() << meshIndex, 0, 0;
-    nodes.push_back(std::unique_ptr<MeshNode>(
-        new MeshNode(filename, meshIndex, mesh, transformation.matrix())));
+    auto node =
+        new MeshNode(filename, meshIndex, mesh, transformation.matrix());
+    nodes.push_back(std::unique_ptr<MeshNode>(node));
+    Persister::save(node, "../config/mesh.xml");
   }
+  */
+  auto m = Persister::load<MeshNode*>("../config/mesh.xml");
+  nodes.push_back(std::unique_ptr<MeshNode>(m));
 
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
-  nodes.push_back(std::unique_ptr<LabelNode>(new LabelNode(label, gl)));
+  nodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)

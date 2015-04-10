@@ -30,43 +30,44 @@ class MeshNode : public Node
 
  private:
   friend class boost::serialization::access;
-  template <class Archive> void save(Archive &ar, unsigned int version) const
-  {
-    ar << BOOST_SERIALIZATION_NVP(assetFilename);
-    ar << BOOST_SERIALIZATION_NVP(meshIndex);
-    ar << BOOST_SERIALIZATION_NVP(transformation);
-  };
   template <class Archive>
-  void load(Archive &ar, unsigned int version)
-  {
+  void serialize(Archive &ar, unsigned int version) const {
   };
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
   Eigen::Matrix4f transformation;
-  BOOST_SERIALIZATION_SPLIT_MEMBER()
 };
-
-// BOOST_SERIALIZATION_SPLIT_FREE(MeshNode)
 
 namespace boost
 {
 namespace serialization
 {
+
+template <class Archive>
+inline void save_construct_data(Archive &ar, const MeshNode *meshNode,
+                                const unsigned int file_version)
+{
+  assert(meshNode != nullptr && "MeshNode was null");
+
+  ar << BOOST_SERIALIZATION_NVP(meshNode->assetFilename);
+  ar << BOOST_SERIALIZATION_NVP(meshNode->meshIndex);
+  ar << BOOST_SERIALIZATION_NVP(meshNode->transformation);
+}
+
 template <class Archive>
 inline void load_construct_data(Archive &ar, MeshNode *t,
                                 const unsigned int version)
 {
-  // retrieve data from archive required to construct new instance
   std::string assetFilename;
   int meshIndex;
   Eigen::Matrix4f transformation;
-  ar >> assetFilename;
-  ar >> meshIndex;
-  ar >> transformation;
+  ar >> BOOST_SERIALIZATION_NVP(assetFilename);
+  ar >> BOOST_SERIALIZATION_NVP(meshIndex);
+  ar >> BOOST_SERIALIZATION_NVP(transformation);
 
   Importer importer(Gl::instance);
-  // invoke inplace constructor to initialize instance of my_class
+
   ::new (t) MeshNode(assetFilename, meshIndex,
                      importer.import(assetFilename, meshIndex), transformation);
 }

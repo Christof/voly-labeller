@@ -34,7 +34,7 @@ class DemoScene : public AbstractScene
   void prepareShaderProgram();
   void prepareVertexBuffers();
 
-  std::vector<std::unique_ptr<Node>> nodes;
+  std::vector<std::shared_ptr<Node>> nodes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_

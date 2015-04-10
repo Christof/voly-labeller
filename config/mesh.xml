@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="11">
+<data class_id="0" tracking_level="1" version="0" object_id="_0">
+	<assetFilename>../assets/assets.dae</assetFilename>
+	<meshIndex>0</meshIndex>
+	<transformation class_id="1" tracking_level="0" version="0">
+		<r0c0>1.000000000e+00</r0c0>
+		<r0c1>0.000000000e+00</r0c1>
+		<r0c2>0.000000000e+00</r0c2>
+		<r0c3>0.000000000e+00</r0c3>
+		<r1c0>0.000000000e+00</r1c0>
+		<r1c1>1.000000000e+00</r1c1>
+		<r1c2>0.000000000e+00</r1c2>
+		<r1c3>0.000000000e+00</r1c3>
+		<r2c0>0.000000000e+00</r2c0>
+		<r2c1>0.000000000e+00</r2c1>
+		<r2c2>1.000000000e+00</r2c2>
+		<r2c3>0.000000000e+00</r2c3>
+		<r3c0>0.000000000e+00</r3c0>
+		<r3c1>0.000000000e+00</r3c1>
+		<r3c2>0.000000000e+00</r3c2>
+		<r3c3>1.000000000e+00</r3c3>
+	</transformation>
+</data>
+</boost_serialization>
+
