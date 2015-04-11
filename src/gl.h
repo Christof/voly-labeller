@@ -41,6 +41,7 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glCheckError()
 #endif
 
+class QOpenGLContext;
 /**
  * \brief Provides access to OpenGL functions
  *
@@ -50,6 +51,7 @@ inline void glCheckErrorFunction(std::string file, int line)
 class Gl : public QOpenGLFunctions_4_3_Core
 {
  public:
+  Gl();
   ~Gl();
 
   void setSize(QSize size);

@@ -30,6 +30,7 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
 Window::~Window()
 {
+  delete gl;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -54,7 +55,7 @@ void Window::initializeContext(QSurfaceFormat format)
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = context->versionFunctions<Gl>();
+  gl = new Gl();
   if (!gl)
   {
     qWarning() << "Could not obtain required OpenGL context version";

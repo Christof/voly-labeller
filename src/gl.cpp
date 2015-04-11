@@ -2,6 +2,9 @@
 #include <QDebug>
 
 Gl *Gl::instance = nullptr;
+Gl::Gl()
+{
+}
 
 Gl::~Gl()
 {
