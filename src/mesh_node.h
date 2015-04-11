@@ -7,6 +7,7 @@
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/access.hpp>
+#include <QDebug>
 #include "./node.h"
 #include "./importer.h"
 
@@ -28,15 +29,22 @@ class MeshNode : public Node
   Eigen::Matrix4f getTransformation();
   void setTransformation(Eigen::Matrix4f transformation);
 
- public:
+  template <class Archive>
+  void save_construct_data(
+      Archive &ar, const MeshNode *meshNode, const unsigned int file_version) const
+  {
+    qDebug() << "In save_construct_data method";
+    assert(meshNode != nullptr && "MeshNode was null");
+
+    ar << BOOST_SERIALIZATION_NVP(assetFilename);
+    ar << BOOST_SERIALIZATION_NVP(meshIndex);
+    ar << BOOST_SERIALIZATION_NVP(transformation);
+  };
+
+ private:
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive &ar, unsigned int version) const {};
-  /*
-  template <class Archive>
-  friend void boost::serialization::save_construct_data(
-      Archive &ar, const MeshNode *meshNode, const unsigned int file_version);
-      */
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
@@ -52,14 +60,10 @@ template <class Archive>
 inline void save_construct_data(Archive &ar, const MeshNode *meshNode,
                                 const unsigned int file_version)
 {
+  qDebug() << "In save_construct_data function";
   assert(meshNode != nullptr && "MeshNode was null");
 
-  auto assetFilename = meshNode->assetFilename;
-  ar << BOOST_SERIALIZATION_NVP(assetFilename);
-  auto meshIndex = meshNode->meshIndex;
-  ar << BOOST_SERIALIZATION_NVP(meshIndex);
-  auto transformation = meshNode->transformation;
-  ar << BOOST_SERIALIZATION_NVP(transformation);
+  meshNode->save_construct_data(ar, meshNode, file_version);
 }
 
 template <class Archive>
