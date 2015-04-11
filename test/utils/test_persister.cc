@@ -47,6 +47,33 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabelPointer)
   delete loaded;
 }
 
+TEST(Test_QObjectPersistence, SaveAndLoadAVectorOfLabelPointers)
+{
+  auto label = new Label(1, "my label 1", Eigen::Vector3f(1, 2, 3));
+  auto label2 = new Label(2, "my label 2", Eigen::Vector3f(4, 5, 6));
+
+  std::vector<Label*> labels;
+  labels.push_back(label);
+  labels.push_back(label2);
+
+  Persister::save(labels, "test.xml");
+  auto loaded = Persister::load<std::vector<Label*>>("test.xml");
+  auto loadedLabel1 = loaded[0];
+  auto loadedLabel2 = loaded[1];
+  EXPECT_EQ(label->id, loadedLabel1->id);
+  EXPECT_EQ(label->text, loadedLabel1->text);
+  EXPECT_Vector3f_NEAR(label->anchorPosition, loadedLabel1->anchorPosition, 1E-5f);
+
+  EXPECT_EQ(label2->id, loadedLabel2->id);
+  EXPECT_EQ(label2->text, loadedLabel2->text);
+  EXPECT_Vector3f_NEAR(label2->anchorPosition, loadedLabel2->anchorPosition, 1E-5f);
+
+  delete label;
+  delete label2;
+  delete loaded[0];
+  delete loaded[1];
+}
+
 TEST(Test_QObjectPersistence, SaveAndLoadAMatrix)
 {
   Eigen::Matrix4f matrix;
