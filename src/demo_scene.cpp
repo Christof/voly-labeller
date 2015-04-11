@@ -34,7 +34,7 @@ void DemoScene::initialize()
   const std::string filename = "../assets/assets.dae";
   Importer importer(gl);
 
-  std::vector<std::shared_ptr<MeshNode>> meshNodes;
+  std::vector<std::shared_ptr<Node>> meshNodes;
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
@@ -46,7 +46,7 @@ void DemoScene::initialize()
   }
   Persister::save(meshNodes, "../config/mesh.xml");
 
-  auto loadedNodes = Persister::load<std::vector<std::shared_ptr<MeshNode>>>(
+  auto loadedNodes = Persister::load<std::vector<std::shared_ptr<Node>>>(
       "../config/mesh.xml");
   for (auto &m :loadedNodes)
     nodes.push_back(m);
