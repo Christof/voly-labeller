@@ -28,13 +28,15 @@ class MeshNode : public Node
   Eigen::Matrix4f getTransformation();
   void setTransformation(Eigen::Matrix4f transformation);
 
- private:
+ public:
   friend class boost::serialization::access;
   template <class Archive>
   void serialize(Archive &ar, unsigned int version) const {};
+  /*
   template <class Archive>
   friend void boost::serialization::save_construct_data(
       Archive &ar, const MeshNode *meshNode, const unsigned int file_version);
+      */
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
@@ -52,9 +54,12 @@ inline void save_construct_data(Archive &ar, const MeshNode *meshNode,
 {
   assert(meshNode != nullptr && "MeshNode was null");
 
-  ar << BOOST_SERIALIZATION_NVP(meshNode->assetFilename);
-  ar << BOOST_SERIALIZATION_NVP(meshNode->meshIndex);
-  ar << BOOST_SERIALIZATION_NVP(meshNode->transformation);
+  auto assetFilename = meshNode->assetFilename;
+  ar << BOOST_SERIALIZATION_NVP(assetFilename);
+  auto meshIndex = meshNode->meshIndex;
+  ar << BOOST_SERIALIZATION_NVP(meshIndex);
+  auto transformation = meshNode->transformation;
+  ar << BOOST_SERIALIZATION_NVP(transformation);
 }
 
 template <class Archive>

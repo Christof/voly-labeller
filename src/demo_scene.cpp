@@ -34,7 +34,6 @@ void DemoScene::initialize()
   const std::string filename = "../assets/assets.dae";
   Importer importer(gl);
 
-  /*
   for (unsigned int meshIndex = 0; meshIndex < 1; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
@@ -42,10 +41,10 @@ void DemoScene::initialize()
     transformation.translation() << meshIndex, 0, 0;
     auto node =
         new MeshNode(filename, meshIndex, mesh, transformation.matrix());
-    nodes.push_back(std::unique_ptr<MeshNode>(node));
-    Persister::save(node, "../config/mesh.xml");
+    //nodes.push_back(std::unique_ptr<MeshNode>(node));
+    Persister::save<MeshNode*>(node, "../config/mesh.xml");
   }
-  */
+
   auto m = Persister::load<MeshNode*>("../config/mesh.xml");
   nodes.push_back(std::unique_ptr<MeshNode>(m));
 
