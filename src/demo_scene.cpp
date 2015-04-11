@@ -34,19 +34,22 @@ void DemoScene::initialize()
   const std::string filename = "../assets/assets.dae";
   Importer importer(gl);
 
-  for (unsigned int meshIndex = 0; meshIndex < 1; ++meshIndex)
+  std::vector<std::shared_ptr<MeshNode>> meshNodes;
+  for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
     auto transformation = Eigen::Affine3f::Identity();
     transformation.translation() << meshIndex, 0, 0;
     auto node =
         new MeshNode(filename, meshIndex, mesh, transformation.matrix());
-    //nodes.push_back(std::unique_ptr<MeshNode>(node));
-    Persister::save<MeshNode*>(node, "../config/mesh.xml");
+    meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
+  Persister::save(meshNodes, "../config/mesh.xml");
 
-  auto m = Persister::load<MeshNode*>("../config/mesh.xml");
-  nodes.push_back(std::unique_ptr<MeshNode>(m));
+  auto loadedNodes = Persister::load<std::vector<std::shared_ptr<MeshNode>>>(
+      "../config/mesh.xml");
+  for (auto &m :loadedNodes)
+    nodes.push_back(m);
 
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
   nodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
