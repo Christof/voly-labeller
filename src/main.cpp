@@ -1,6 +1,7 @@
 #include <QtGui/QGuiApplication>
 #include <QQmlContext>
 #include <QStateMachine>
+#include <QDebug>
 #include <memory>
 #include "./window.h"
 #include "./demo_scene.h"
@@ -10,6 +11,9 @@
 
 int main(int argc, char **argv)
 {
+  qputenv("QT_MESSAGE_PATTERN",
+          QString("%{time [yyyy'-'MM'-'dd' 'hh':'mm':'ss]} - %{threadid} "
+                  "%{if-category}%{category}: %{endif}%{message}").toUtf8());
   QGuiApplication application(argc, argv);
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
