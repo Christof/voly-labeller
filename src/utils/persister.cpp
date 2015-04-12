@@ -4,7 +4,3 @@ Persister::Persister()
 {
 }
 
-Persister::~Persister()
-{
-}
-

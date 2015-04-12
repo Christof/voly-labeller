@@ -17,8 +17,6 @@
 class Persister
 {
  public:
-  Persister();
-  virtual ~Persister();
 
   template <typename T> static void save(T &data, std::string filename)
   {
@@ -52,7 +50,7 @@ class Persister
   */
 
  private:
-  /* data */
+  Persister();
 };
 
 namespace boost
