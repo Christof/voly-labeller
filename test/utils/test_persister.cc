@@ -3,6 +3,7 @@
 #include "../../src/utils/persister.h"
 #include "../../src/label.h"
 #include "../../src/mesh_node.h"
+#include "../../src/label_node.h"
 
 TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
 {

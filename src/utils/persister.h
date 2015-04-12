@@ -9,7 +9,9 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <Eigen/Core>
 
+class LabelNode;
 class MeshNode;
+
 /**
  * \brief
  *
@@ -25,6 +27,7 @@ class Persister
   {
     std::ofstream ofs(filename);
     boost::archive::xml_oarchive oa(ofs);
+    oa.register_type(static_cast<LabelNode*>(nullptr));
     oa.register_type(static_cast<MeshNode*>(nullptr));
 
     oa << BOOST_SERIALIZATION_NVP(data);
@@ -34,6 +37,7 @@ class Persister
   {
     std::ifstream ifs(filename);
     boost::archive::xml_iarchive ia(ifs);
+    ia.register_type(static_cast<LabelNode*>(nullptr));
     ia.register_type(static_cast<MeshNode*>(nullptr));
 
     T result;

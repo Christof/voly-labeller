@@ -44,15 +44,15 @@ void DemoScene::initialize()
         new MeshNode(filename, meshIndex, mesh, transformation.matrix());
     meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
+  auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
+  meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
+
   Persister::save(meshNodes, "../config/mesh.xml");
 
   auto loadedNodes = Persister::load<std::vector<std::shared_ptr<Node>>>(
       "../config/mesh.xml");
   for (auto &m :loadedNodes)
     nodes.push_back(m);
-
-  auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
-  nodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
