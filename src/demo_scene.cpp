@@ -52,13 +52,19 @@ void DemoScene::initialize()
 
   Persister::save(meshNodes, "../config/scene.xml");
 
-  loadScene("../config/scene.xml");
+  // loadScene("../config/scene.xml");
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
+
+  if (!toLoad.empty())
+  {
+    loadScene(toLoad);
+    toLoad = "";
+  }
 }
 
 void DemoScene::render()

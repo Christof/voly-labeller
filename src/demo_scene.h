@@ -25,13 +25,15 @@ class DemoScene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
-  void loadScene(std::string filename);
+  virtual void loadScene(std::string filename);
+
 
  private:
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
   double frameTime;
   double cameraSpeed = 10.0f;
+
 
   void prepareShaderProgram();
   void prepareVertexBuffers();
