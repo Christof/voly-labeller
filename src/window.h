@@ -31,6 +31,7 @@ class Window : public QQuickView
   void update();
 
   void printCurrentState();
+  void openScene(QUrl url);
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;

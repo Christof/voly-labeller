@@ -147,3 +147,8 @@ void Window::printCurrentState()
   }
 }
 
+void Window::openScene(QUrl url)
+{
+  scene->toLoad = url.path().toStdString();
+}
+

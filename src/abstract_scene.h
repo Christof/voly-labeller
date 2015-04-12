@@ -31,6 +31,10 @@ class AbstractScene
 
   virtual void resize(int width, int height) = 0;
 
+  virtual void loadScene(std::string filename) = 0;
+
+  std::string toLoad;
+
  protected:
   QOpenGLContext *context;
   Gl *gl;
