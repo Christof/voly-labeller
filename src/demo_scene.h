@@ -18,7 +18,8 @@ class InvokeManager;
 class DemoScene : public AbstractScene
 {
  public:
-  DemoScene(std::shared_ptr<InvokeManager> invokeManager);
+  DemoScene(std::shared_ptr<InvokeManager> invokeManager,
+            std::shared_ptr<Nodes> nodes);
   ~DemoScene();
 
   virtual void initialize();

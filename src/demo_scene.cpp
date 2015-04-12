@@ -18,13 +18,14 @@
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
-DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
+DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
+                     std::shared_ptr<Nodes> nodes)
+  : nodes(nodes)
 {
   cameraController =
       std::shared_ptr<CameraController>(new CameraController(camera));
 
   invokeManager->addHandler("cam", cameraController.get());
-  nodes = std::shared_ptr<Nodes>(new Nodes());
 }
 
 DemoScene::~DemoScene()

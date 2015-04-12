@@ -17,7 +17,8 @@ int main(int argc, char **argv)
   QGuiApplication application(argc, argv);
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
-  auto scene = std::make_shared<DemoScene>(invokeManager);
+  auto nodes = std::make_shared<Nodes>();
+  auto scene = std::make_shared<DemoScene>(invokeManager, nodes);
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
   window.setSource(QUrl("qrc:ui.qml"));
