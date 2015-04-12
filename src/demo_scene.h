@@ -11,6 +11,7 @@
 #include "./camera_controller.h"
 #include "./mesh.h"
 
+class Node;
 class InvokeManager;
 
 class DemoScene : public AbstractScene
@@ -33,7 +34,7 @@ class DemoScene : public AbstractScene
   void prepareShaderProgram();
   void prepareVertexBuffers();
 
-  std::vector<std::unique_ptr<Mesh>> meshes;
+  std::vector<std::unique_ptr<Node>> nodes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_

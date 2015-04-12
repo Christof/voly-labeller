@@ -24,6 +24,7 @@ set(SOURCES
   src/camera.cpp
   src/shader_program.cpp
   src/mesh.cpp
+  src/mesh_node.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
   src/camera_controller.cpp

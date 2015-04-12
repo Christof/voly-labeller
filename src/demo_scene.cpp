@@ -6,9 +6,13 @@
 #include <QObject>
 #include <QDebug>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <string>
 #include "./gl.h"
 #include "./input/invoke_manager.h"
+#include "./mesh.h"
+#include "./mesh_node.h"
+#include "./render_data.h"
 
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
@@ -41,9 +45,12 @@ void DemoScene::initialize()
   for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
   {
     auto importedMesh = scene->mMeshes[meshIndex];
-    auto mesh = std::unique_ptr<Mesh>(new Mesh(
+    auto mesh = std::shared_ptr<Mesh>(new Mesh(
         gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
-    meshes.push_back(std::move(mesh));
+    auto transformation = Eigen::Affine3f::Identity();
+    transformation.translation() << meshIndex, 0, 0;
+    nodes.push_back(
+        std::unique_ptr<MeshNode>(new MeshNode(mesh, transformation.matrix())));
   }
 }
 
@@ -57,8 +64,12 @@ void DemoScene::render()
 {
   glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  for (auto &mesh : meshes)
-    mesh->render(camera.getProjectionMatrix(), camera.getViewMatrix());
+  RenderData renderData;
+  renderData.projectionMatrix = camera.getProjectionMatrix();
+  renderData.viewMatrix = camera.getViewMatrix();
+
+  for (auto &node : nodes)
+    node->render(renderData);
 }
 
 void DemoScene::resize(int width, int height)
