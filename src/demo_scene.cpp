@@ -52,10 +52,7 @@ void DemoScene::initialize()
 
   Persister::save(meshNodes, "../config/scene.xml");
 
-  auto loadedNodes = Persister::load<std::vector<std::shared_ptr<Node>>>(
-      "../config/scene.xml");
-  for (auto &m :loadedNodes)
-    nodes.push_back(m);
+  loadScene("../config/scene.xml");
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -79,5 +76,14 @@ void DemoScene::render()
 void DemoScene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
+}
+
+void DemoScene::loadScene(std::string filename)
+{
+  auto loadedNodes =
+      Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
+
+  for (auto &m : loadedNodes)
+    nodes.push_back(m);
 }
 
