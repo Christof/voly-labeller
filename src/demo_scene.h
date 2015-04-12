@@ -27,16 +27,10 @@ class DemoScene : public AbstractScene
 
   virtual void loadScene(std::string filename);
 
-
  private:
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
   double frameTime;
-  double cameraSpeed = 10.0f;
-
-
-  void prepareShaderProgram();
-  void prepareVertexBuffers();
 
   std::vector<std::shared_ptr<Node>> nodes;
 };
