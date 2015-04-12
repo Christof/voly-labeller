@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.2
+import QtQuick.Dialogs 1.0
 
 Item {
   id: root
@@ -23,6 +24,7 @@ Item {
         MenuItem {
           text: "Open"
           shortcut: "Ctrl+o"
+          onTriggered: fileDialog.open();
         }
         MenuItem {
           text: "Hide user interface"
@@ -40,6 +42,15 @@ Item {
           onTriggered: Qt.quit();
         }
       }
+    }
+
+    FileDialog {
+        id: fileDialog
+        title: "Please choose a scene file"
+        nameFilters: [ "Xml files (*.xml)" ]
+        onAccepted: {
+            window.openScene(fileDialog.fileUrl);
+        }
     }
 
     states: State {
