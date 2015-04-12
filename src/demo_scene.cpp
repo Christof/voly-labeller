@@ -47,10 +47,10 @@ void DemoScene::initialize()
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
   meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
 
-  Persister::save(meshNodes, "../config/mesh.xml");
+  Persister::save(meshNodes, "../config/scene.xml");
 
   auto loadedNodes = Persister::load<std::vector<std::shared_ptr<Node>>>(
-      "../config/mesh.xml");
+      "../config/scene.xml");
   for (auto &m :loadedNodes)
     nodes.push_back(m);
 }
