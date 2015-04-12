@@ -15,6 +15,9 @@
 #include "./importer.h"
 #include "./utils/persister.h"
 
+BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
+BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
+
 DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
 {
   cameraController =
