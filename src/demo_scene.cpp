@@ -24,6 +24,7 @@ DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
       std::shared_ptr<CameraController>(new CameraController(camera));
 
   invokeManager->addHandler("cam", cameraController.get());
+  nodes = std::shared_ptr<Nodes>(new Nodes());
 }
 
 DemoScene::~DemoScene()
@@ -75,8 +76,7 @@ void DemoScene::render()
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
 
-  for (auto &node : nodes)
-    node->render(renderData);
+  nodes->render(renderData);
 }
 
 void DemoScene::resize(int width, int height)
@@ -86,10 +86,6 @@ void DemoScene::resize(int width, int height)
 
 void DemoScene::loadScene(std::string filename)
 {
-  auto loadedNodes =
-      Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
-
-  for (auto &m : loadedNodes)
-    nodes.push_back(m);
+  nodes->addSceneNodesFrom(filename);
 }
 

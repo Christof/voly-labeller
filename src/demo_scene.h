@@ -10,6 +10,7 @@
 #include "./camera.h"
 #include "./camera_controller.h"
 #include "./mesh.h"
+#include "./nodes.h"
 
 class Node;
 class InvokeManager;
@@ -32,7 +33,7 @@ class DemoScene : public AbstractScene
   std::shared_ptr<CameraController> cameraController;
   double frameTime;
 
-  std::vector<std::shared_ptr<Node>> nodes;
+  std::shared_ptr<Nodes> nodes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_
