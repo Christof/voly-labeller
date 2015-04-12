@@ -25,6 +25,8 @@ class DemoScene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
+  void loadScene(std::string filename);
+
  private:
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
