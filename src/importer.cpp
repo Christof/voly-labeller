@@ -37,3 +37,15 @@ std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
   return std::shared_ptr<Mesh>(new Mesh(
       gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
 }
+
+std::vector<std::shared_ptr<Mesh>> Importer::importAll(std::string filename)
+{
+  const aiScene *scene = readScene(filename);
+
+  std::vector<std::shared_ptr<Mesh>> result;
+  for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
+    result.push_back(import(filename, i));
+
+  return result;
+}
+

@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <map>
+#include <vector>
 #include <assimp/Importer.hpp>
 #include "./mesh.h"
 #include "./gl.h"
@@ -20,6 +21,7 @@ class Importer
   virtual ~Importer();
 
   std::shared_ptr<Mesh> import(std::string filename, int meshIndex);
+  std::vector<std::shared_ptr<Mesh>> importAll(std::string filename);
 
  private:
   Gl *gl;
