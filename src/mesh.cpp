@@ -5,8 +5,6 @@
 
 Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
 {
-  shaderProgram = std::unique_ptr<ShaderProgram>(
-      new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
@@ -30,7 +28,7 @@ Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
   unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
   indexCount = indicesPerFace * mesh->mNumFaces;
 
-  unsigned int *indexData = new unsigned int[indexCount];
+  indexData = new unsigned int[indexCount];
   auto indexInsertPoint = indexData;
   for (unsigned int i = 0; i < mesh->mNumFaces; i++)
   {
@@ -42,10 +40,21 @@ Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
   }
 
   vertexCount = mesh->mNumVertices;
-  auto positionData = new float[mesh->mNumVertices * 3];
+  positionData = new float[mesh->mNumVertices * 3];
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
-  auto normalData = new float[mesh->mNumVertices * 3];
+  normalData = new float[mesh->mNumVertices * 3];
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+
+}
+
+Mesh::~Mesh()
+{
+}
+
+void Mesh::initialize()
+{
+  shaderProgram = std::unique_ptr<ShaderProgram>(
+      new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
 
   vertexArrayObject.create();
   vertexArrayObject.bind();
@@ -54,20 +63,19 @@ Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
 
   createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData, "index", 1,
                indexCount);
+  delete[] indexData;
 
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
                "vertexPosition", 3, vertexCount);
+  delete[] positionData;
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData, "vertexNormal", 3,
                vertexCount);
+  delete[] normalData;
 
   vertexArrayObject.release();
   for (auto &buffer : buffers)
     buffer.release();
   shaderProgram->release();
-}
-
-Mesh::~Mesh()
-{
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -117,6 +125,9 @@ void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
 
 void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
+  if (!shaderProgram.get())
+    initialize();
+
   shaderProgram->bind();
 
   Eigen::Matrix4f modelViewProjection = projection * view;

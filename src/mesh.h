@@ -24,6 +24,8 @@ class Mesh
   Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
+  void initialize();
+
   void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);
 
  private:
@@ -43,6 +45,9 @@ class Mesh
 
   int vertexCount;
   int indexCount;
+  unsigned int *indexData;
+  float* positionData;
+  float* normalData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
