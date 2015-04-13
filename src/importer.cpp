@@ -2,7 +2,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-Importer::Importer(Gl *gl) : gl(gl)
+Importer::Importer()
 {
 }
 
@@ -35,7 +35,7 @@ std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
   const aiScene *scene = readScene(filename);
   auto importedMesh = scene->mMeshes[meshIndex];
   return std::shared_ptr<Mesh>(new Mesh(
-      gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+      importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
 }
 
 std::vector<std::shared_ptr<Mesh>> Importer::importAll(std::string filename)

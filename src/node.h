@@ -7,6 +7,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 
+class Gl;
 /**
  * \brief
  *
@@ -19,7 +20,7 @@ class Node
   {
   }
 
-  virtual void render(const RenderData &renderData) = 0;
+  virtual void render(Gl *gl, const RenderData &renderData) = 0;
 
  protected:
   Node()

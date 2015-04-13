@@ -3,7 +3,7 @@
 #include <string>
 #include "./gl.h"
 
-Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
+Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 {
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
@@ -51,7 +51,7 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::initialize()
+void Mesh::initialize(Gl *gl)
 {
   shaderProgram = std::unique_ptr<ShaderProgram>(
       new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
@@ -123,10 +123,10 @@ void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
   buffers.push_back(buffer);
 }
 
-void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
+void Mesh::render(Gl* gl, Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
   if (!shaderProgram.get())
-    initialize();
+    initialize(gl);
 
   shaderProgram->bind();
 

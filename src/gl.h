@@ -58,7 +58,6 @@ class Gl : public QOpenGLFunctions_4_3_Core
 
   void initialize(QSize size);
 
-  static Gl* instance;
   QOpenGLPaintDevice *paintDevice;
   QSize size;
 };

@@ -37,7 +37,7 @@ void DemoScene::initialize()
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
   const std::string filename = "../assets/assets.dae";
-  Importer importer(gl);
+  Importer importer;
 
   std::vector<std::shared_ptr<Node>> meshNodes;
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
@@ -50,7 +50,7 @@ void DemoScene::initialize()
     meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
-  meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label, gl)));
+  meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label)));
 
   Persister::save(meshNodes, "../config/scene.xml");
 
@@ -71,7 +71,7 @@ void DemoScene::render()
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
 
-  nodes->render(renderData);
+  nodes->render(gl, renderData);
 }
 
 void DemoScene::resize(int width, int height)
