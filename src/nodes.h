@@ -28,6 +28,8 @@ class Nodes : public QObject
   void saveSceneTo(QUrl url);
   void saveSceneTo(std::string filename);
 
+  void clear();
+
  private:
   std::vector<std::shared_ptr<Node>> nodes;
 };
