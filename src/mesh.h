@@ -21,15 +21,14 @@ class Mesh
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material);
+  Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  void initialize();
+  void initialize(Gl *gl);
 
-  void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);
+  void render(Gl *gl, Eigen::Matrix4f projection, Eigen::Matrix4f view);
 
  private:
-  Gl *gl;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
   std::unique_ptr<ShaderProgram> shaderProgram;

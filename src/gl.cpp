@@ -1,7 +1,6 @@
 #include "./gl.h"
 #include <QDebug>
 
-Gl *Gl::instance = nullptr;
 Gl::Gl()
 {
 }
@@ -21,7 +20,6 @@ void Gl::initialize(QSize size)
   initializeOpenGLFunctions();
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
-  instance = this;
 }
 
 void Gl::setSize(QSize size)

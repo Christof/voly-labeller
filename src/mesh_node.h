@@ -13,6 +13,7 @@
 #include "./importer.h"
 
 class Mesh;
+class Gl;
 /**
  * \brief
  *
@@ -25,7 +26,7 @@ class MeshNode : public Node
            Eigen::Matrix4f transformation);
   virtual ~MeshNode();
 
-  void render(const RenderData &renderData);
+  void render(Gl *gl, const RenderData &renderData);
 
   Eigen::Matrix4f getTransformation();
   void setTransformation(Eigen::Matrix4f transformation);
@@ -82,7 +83,7 @@ inline void load_construct_data(Archive &ar, MeshNode *t,
   ar >> BOOST_SERIALIZATION_NVP(meshIndex);
   ar >> BOOST_SERIALIZATION_NVP(transformation);
 
-  Importer importer(Gl::instance);
+  Importer importer;
 
   ::new (t) MeshNode(assetFilename, meshIndex,
                      importer.import(assetFilename, meshIndex), transformation);

@@ -9,6 +9,8 @@
 #include <string>
 #include <memory>
 
+class Gl;
+
 /**
  * \brief
  *
@@ -19,7 +21,7 @@ class Nodes : public QObject
   Q_OBJECT
  public:
   Nodes();
-  void render(RenderData renderData);
+  void render(Gl *gl, RenderData renderData);
 
  public slots:
   void addSceneNodesFrom(std::string filename);

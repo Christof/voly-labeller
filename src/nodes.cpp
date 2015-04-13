@@ -26,7 +26,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
 
 void Nodes::importFrom(std::string filename)
 {
-  Importer importer(Gl::instance);
+  Importer importer;
 
   auto meshes = importer.importAll(filename);
 
@@ -42,10 +42,10 @@ void Nodes::importFrom(QUrl url)
   importFrom(url.path().toStdString());
 }
 
-void Nodes::render(RenderData renderData)
+void Nodes::render(Gl *gl, RenderData renderData)
 {
   for (auto &node : nodes)
-    node->render(renderData);
+    node->render(gl, renderData);
 }
 
 void Nodes::saveSceneTo(QUrl url)

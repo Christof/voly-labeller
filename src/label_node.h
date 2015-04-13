@@ -16,10 +16,10 @@
 class LabelNode : public Node
 {
  public:
-  LabelNode(Label label, Gl *gl);
+  LabelNode(Label label);
   virtual ~LabelNode();
 
-  void render(const RenderData &renderData);
+  void render(Gl *gl, const RenderData &renderData);
 
   template <class Archive>
   void save_construct_data(Archive &ar, const LabelNode *labelNode,
@@ -32,7 +32,6 @@ class LabelNode : public Node
 
  private:
   Label label;
-  Gl *gl;
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -64,7 +63,7 @@ inline void load_construct_data(Archive &ar, LabelNode *t,
   Label label;
   ar >> BOOST_SERIALIZATION_NVP(label);
 
-  ::new (t) LabelNode(label, Gl::instance);
+  ::new (t) LabelNode(label);
 }
 }  // namespace serialization
 }  // namespace boost

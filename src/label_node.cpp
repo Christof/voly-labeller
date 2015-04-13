@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QPoint>
 
-LabelNode::LabelNode(Label label, Gl *gl) : label(label), gl(gl)
+LabelNode::LabelNode(Label label) : label(label)
 {
 }
 
@@ -10,7 +10,7 @@ LabelNode::~LabelNode()
 {
 }
 
-void LabelNode::render(const RenderData &renderData)
+void LabelNode::render(Gl *gl, const RenderData &renderData)
 {
   QPainter painter;
   painter.begin(gl->paintDevice);

@@ -17,14 +17,13 @@
 class Importer
 {
  public:
-  Importer(Gl *gl);
+  Importer();
   virtual ~Importer();
 
   std::shared_ptr<Mesh> import(std::string filename, int meshIndex);
   std::vector<std::shared_ptr<Mesh>> importAll(std::string filename);
 
  private:
-  Gl *gl;
   Assimp::Importer importer;
   std::map<std::string, const aiScene *> scenes;
 

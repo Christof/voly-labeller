@@ -1,5 +1,6 @@
 #include "./mesh_node.h"
 #include "./mesh.h"
+#include "./gl.h"
 
 MeshNode::MeshNode(std::string assetFilename, int meshIndex,
                    std::shared_ptr<Mesh> mesh, Eigen::Matrix4f transformation)
@@ -12,9 +13,9 @@ MeshNode::~MeshNode()
 {
 }
 
-void MeshNode::render(const RenderData &renderData)
+void MeshNode::render(Gl *gl, const RenderData &renderData)
 {
-  mesh->render(renderData.projectionMatrix, renderData.viewMatrix);
+  mesh->render(gl, renderData.projectionMatrix, renderData.viewMatrix);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()
