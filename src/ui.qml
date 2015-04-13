@@ -49,7 +49,7 @@ Item {
         title: "Please choose a scene file"
         nameFilters: [ "Xml files (*.xml)" ]
         onAccepted: {
-            window.openScene(fileDialog.fileUrl);
+            nodes.addSceneNodesFrom(fileDialog.fileUrl);
         }
     }
 
