@@ -24,7 +24,12 @@ Item {
         MenuItem {
           text: "Open"
           shortcut: "Ctrl+o"
-          onTriggered: fileDialog.open();
+          onTriggered: addSceneNodesFromDialog.open();
+        }
+        MenuItem {
+          text: "Save"
+          shortcut: "Ctrl+s"
+          onTriggered: saveSceneDialog.open();
         }
         MenuItem {
           text: "Hide user interface"
@@ -45,11 +50,21 @@ Item {
     }
 
     FileDialog {
-        id: fileDialog
+        id: addSceneNodesFromDialog
         title: "Please choose a scene file"
         nameFilters: [ "Xml files (*.xml)" ]
         onAccepted: {
-            nodes.addSceneNodesFrom(fileDialog.fileUrl);
+            nodes.addSceneNodesFrom(fileUrl);
+        }
+    }
+
+    FileDialog {
+        id: saveSceneDialog
+        selectExisting: false
+        title: "Please choose a scene file"
+        nameFilters: [ "Xml files (*.xml)" ]
+        onAccepted: {
+            nodes.saveSceneTo(fileUrl);
         }
     }
 
