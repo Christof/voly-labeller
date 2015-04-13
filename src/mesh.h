@@ -8,6 +8,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <vector>
+#include <memory>
 #include <string>
 #include "./shader_program.h"
 #include "./gl.h"
@@ -29,7 +30,7 @@ class Mesh
   Gl *gl;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
-  ShaderProgram shaderProgram;
+  std::unique_ptr<ShaderProgram> shaderProgram;
 
   template <class ElementType>
   void createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
