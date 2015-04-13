@@ -21,6 +21,7 @@ int main(int argc, char **argv)
   auto scene = std::make_shared<DemoScene>(invokeManager, nodes);
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
+  window.rootContext()->setContextProperty("nodes", nodes.get());
   window.setSource(QUrl("qrc:ui.qml"));
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
