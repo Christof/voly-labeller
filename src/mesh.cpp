@@ -3,9 +3,10 @@
 #include <string>
 #include "./gl.h"
 
-Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
-  : gl(gl), shaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag")
+Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material) : gl(gl)
 {
+  shaderProgram = std::unique_ptr<ShaderProgram>(
+      new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
@@ -49,7 +50,7 @@ Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
   vertexArrayObject.create();
   vertexArrayObject.bind();
 
-  shaderProgram.bind();
+  shaderProgram->bind();
 
   createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData, "index", 1,
                indexCount);
@@ -62,7 +63,7 @@ Mesh::Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material)
   vertexArrayObject.release();
   for (auto &buffer : buffers)
     buffer.release();
-  shaderProgram.release();
+  shaderProgram->release();
 }
 
 Mesh::~Mesh()
@@ -109,29 +110,29 @@ void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
   glCheckError();
 
   if (bufferType != QOpenGLBuffer::Type::IndexBuffer)
-    shaderProgram.enableAndSetAttributes(usage, perVertexElements);
+    shaderProgram->enableAndSetAttributes(usage, perVertexElements);
 
   buffers.push_back(buffer);
 }
 
 void Mesh::render(Eigen::Matrix4f projection, Eigen::Matrix4f view)
 {
-  shaderProgram.bind();
+  shaderProgram->bind();
 
   Eigen::Matrix4f modelViewProjection = projection * view;
-  shaderProgram.setUniform("viewProjectionMatrix", modelViewProjection);
-  shaderProgram.setUniform("ambientColor", ambientColor);
-  shaderProgram.setUniform("diffuseColor", diffuseColor);
-  shaderProgram.setUniform("specularColor", specularColor);
-  shaderProgram.setUniform("cameraDirection",
+  shaderProgram->setUniform("viewProjectionMatrix", modelViewProjection);
+  shaderProgram->setUniform("ambientColor", ambientColor);
+  shaderProgram->setUniform("diffuseColor", diffuseColor);
+  shaderProgram->setUniform("specularColor", specularColor);
+  shaderProgram->setUniform("cameraDirection",
                            Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  shaderProgram.setUniform("shininess", shininess);
+  shaderProgram->setUniform("shininess", shininess);
 
   vertexArrayObject.bind();
 
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
   vertexArrayObject.release();
-  shaderProgram.release();
+  shaderProgram->release();
 }
 
