@@ -61,12 +61,6 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
-
-  if (!toLoad.empty())
-  {
-    loadScene(toLoad);
-    toLoad = "";
-  }
 }
 
 void DemoScene::render()
@@ -83,10 +77,5 @@ void DemoScene::render()
 void DemoScene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
-}
-
-void DemoScene::loadScene(std::string filename)
-{
-  nodes->addSceneNodesFrom(filename);
 }
 
