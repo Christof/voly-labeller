@@ -25,6 +25,9 @@ class Nodes : public QObject
   void addSceneNodesFrom(std::string filename);
   void addSceneNodesFrom(QUrl url);
 
+  void importFrom(std::string filename);
+  void importFrom(QUrl url);
+
   void saveSceneTo(QUrl url);
   void saveSceneTo(std::string filename);
 

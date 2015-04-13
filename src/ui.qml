@@ -27,6 +27,11 @@ Item {
           onTriggered: addSceneNodesFromDialog.open();
         }
         MenuItem {
+          text: "Import"
+          shortcut: "Ctrl+i"
+          onTriggered: importDialog.open();
+        }
+        MenuItem {
           text: "Save"
           shortcut: "Ctrl+s"
           onTriggered: saveSceneDialog.open();
@@ -60,6 +65,15 @@ Item {
         nameFilters: [ "Xml files (*.xml)" ]
         onAccepted: {
             nodes.addSceneNodesFrom(fileUrl);
+        }
+    }
+
+    FileDialog {
+        id: importDialog
+        title: "Please choose a file to import"
+        nameFilters: [ "Collada files (*.dae)" ]
+        onAccepted: {
+            nodes.importFrom(fileUrl);
         }
     }
 
