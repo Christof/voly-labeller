@@ -32,6 +32,11 @@ Item {
           onTriggered: saveSceneDialog.open();
         }
         MenuItem {
+          text: "Reset scene"
+          shortcut: "Ctrl+r"
+          onTriggered: nodes.clear();
+        }
+        MenuItem {
           text: "Hide user interface"
           shortcut: "F1"
           onTriggered: toggleVisibility();

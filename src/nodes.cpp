@@ -37,3 +37,8 @@ void Nodes::saveSceneTo(std::string filename)
   Persister::save(nodes, filename);
 }
 
+void Nodes::clear()
+{
+  nodes.clear();
+}
+
