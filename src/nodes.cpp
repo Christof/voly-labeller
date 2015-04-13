@@ -26,3 +26,14 @@ void Nodes::render(RenderData renderData)
   for (auto &node : nodes)
     node->render(renderData);
 }
+
+void Nodes::saveSceneTo(QUrl url)
+{
+  saveSceneTo(url.path().toStdString());
+}
+
+void Nodes::saveSceneTo(std::string filename)
+{
+  Persister::save(nodes, filename);
+}
+
