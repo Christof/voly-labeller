@@ -4,6 +4,8 @@
 
 #include "./node.h"
 #include "./render_data.h"
+#include <QObject>
+#include <QUrl>
 #include <string>
 #include <memory>
 
@@ -12,14 +14,16 @@
  *
  *
  */
-class Nodes
+class Nodes : public QObject
 {
+  Q_OBJECT
  public:
   Nodes();
-
-  void addSceneNodesFrom(std::string filename);
-
   void render(RenderData renderData);
+
+ public slots:
+  void addSceneNodesFrom(std::string filename);
+  void addSceneNodesFrom(QUrl url);
 
  private:
   std::vector<std::shared_ptr<Node>> nodes;
