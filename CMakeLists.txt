@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.11)
 project(voly-labeller)
 
 add_subdirectory(src/input)
+add_subdirectory(src/utils)
 
 option(test "Build all tests." ON)
 if(test)
@@ -21,10 +22,14 @@ set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsani
 
 set(SOURCES
   src/window.cpp
+  src/gl.cpp
   src/camera.cpp
   src/shader_program.cpp
   src/mesh.cpp
+  src/importer.cpp
   src/mesh_node.cpp
+  src/label_node.cpp
+  src/nodes.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
   src/camera_controller.cpp
@@ -36,6 +41,7 @@ add_executable(voly-labeller
   src/main.cpp
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
+  $<TARGET_OBJECTS:utils>
   )
 
 target_link_libraries(voly-labeller
@@ -46,6 +52,7 @@ target_link_libraries(voly-labeller
   Qt5::Quick
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)

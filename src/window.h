@@ -44,7 +44,7 @@ class Window : public QQuickView
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  Gl *gl;
+  Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
   long frameCount;

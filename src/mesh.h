@@ -8,6 +8,7 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <vector>
+#include <memory>
 #include <string>
 #include "./shader_program.h"
 #include "./gl.h"
@@ -20,16 +21,17 @@ class Mesh
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  Mesh(Gl *gl, aiMesh *mesh, aiMaterial *material);
+  Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  void render(Eigen::Matrix4f projection, Eigen::Matrix4f view);
+  void initialize(Gl *gl);
+
+  void render(Gl *gl, Eigen::Matrix4f projection, Eigen::Matrix4f view);
 
  private:
-  Gl *gl;
   QOpenGLVertexArrayObject vertexArrayObject;
   std::vector<QOpenGLBuffer> buffers;
-  ShaderProgram shaderProgram;
+  std::unique_ptr<ShaderProgram> shaderProgram;
 
   template <class ElementType>
   void createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
@@ -42,6 +44,9 @@ class Mesh
 
   int vertexCount;
   int indexCount;
+  unsigned int *indexData;
+  float* positionData;
+  float* normalData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;

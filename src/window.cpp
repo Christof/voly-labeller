@@ -25,12 +25,12 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   auto format = createSurfaceFormat();
   setFormat(format);
 
-
   timer.start();
 }
 
 Window::~Window()
 {
+  delete gl;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -55,13 +55,13 @@ void Window::initializeContext(QSurfaceFormat format)
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = context->versionFunctions<Gl>();
+  gl = new Gl();
   if (!gl)
   {
     qWarning() << "Could not obtain required OpenGL context version";
     exit(1);
   }
-  gl->initializeOpenGLFunctions();
+  gl->initialize(size());
   glCheckError();
 
   gl->glEnable(GL_DEPTH_TEST);
@@ -108,6 +108,8 @@ void Window::render()
 void Window::resizeOpenGL()
 {
   scene->resize(width(), height());
+  if (gl)
+    gl->setSize(this->size());
 }
 
 void Window::update()

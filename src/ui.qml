@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.2
+import QtQuick.Dialogs 1.0
 
 Item {
   id: root
@@ -23,6 +24,22 @@ Item {
         MenuItem {
           text: "Open"
           shortcut: "Ctrl+o"
+          onTriggered: addSceneNodesFromDialog.open();
+        }
+        MenuItem {
+          text: "Import"
+          shortcut: "Ctrl+i"
+          onTriggered: importDialog.open();
+        }
+        MenuItem {
+          text: "Save"
+          shortcut: "Ctrl+s"
+          onTriggered: saveSceneDialog.open();
+        }
+        MenuItem {
+          text: "Reset scene"
+          shortcut: "Ctrl+r"
+          onTriggered: nodes.clear();
         }
         MenuItem {
           text: "Hide user interface"
@@ -40,6 +57,34 @@ Item {
           onTriggered: Qt.quit();
         }
       }
+    }
+
+    FileDialog {
+        id: addSceneNodesFromDialog
+        title: "Please choose a scene file"
+        nameFilters: [ "Xml files (*.xml)" ]
+        onAccepted: {
+            nodes.addSceneNodesFrom(fileUrl);
+        }
+    }
+
+    FileDialog {
+        id: importDialog
+        title: "Please choose a file to import"
+        nameFilters: [ "Collada files (*.dae)" ]
+        onAccepted: {
+            nodes.importFrom(fileUrl);
+        }
+    }
+
+    FileDialog {
+        id: saveSceneDialog
+        selectExisting: false
+        title: "Please choose a scene file"
+        nameFilters: [ "Xml files (*.xml)" ]
+        onAccepted: {
+            nodes.saveSceneTo(fileUrl);
+        }
     }
 
     states: State {

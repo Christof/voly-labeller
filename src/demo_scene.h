@@ -10,6 +10,7 @@
 #include "./camera.h"
 #include "./camera_controller.h"
 #include "./mesh.h"
+#include "./nodes.h"
 
 class Node;
 class InvokeManager;
@@ -17,7 +18,8 @@ class InvokeManager;
 class DemoScene : public AbstractScene
 {
  public:
-  DemoScene(std::shared_ptr<InvokeManager> invokeManager);
+  DemoScene(std::shared_ptr<InvokeManager> invokeManager,
+            std::shared_ptr<Nodes> nodes);
   ~DemoScene();
 
   virtual void initialize();
@@ -29,12 +31,8 @@ class DemoScene : public AbstractScene
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
   double frameTime;
-  double cameraSpeed = 10.0f;
 
-  void prepareShaderProgram();
-  void prepareVertexBuffers();
-
-  std::vector<std::unique_ptr<Node>> nodes;
+  std::shared_ptr<Nodes> nodes;
 };
 
 #endif  // SRC_DEMO_SCENE_H_

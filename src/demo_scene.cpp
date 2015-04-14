@@ -1,10 +1,8 @@
 #include "./demo_scene.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <QObject>
 #include <QDebug>
+#include <QPainter>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
@@ -12,12 +10,20 @@
 #include "./input/invoke_manager.h"
 #include "./mesh.h"
 #include "./mesh_node.h"
+#include "./label_node.h"
 #include "./render_data.h"
+#include "./importer.h"
+#include "./utils/persister.h"
 
-DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager)
+BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
+BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
+
+DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
+                     std::shared_ptr<Nodes> nodes)
+  : nodes(nodes)
 {
-  cameraController = std::shared_ptr<CameraController>(
-      new CameraController(camera));
+  cameraController =
+      std::shared_ptr<CameraController>(new CameraController(camera));
 
   invokeManager->addHandler("cam", cameraController.get());
 }
@@ -30,28 +36,25 @@ void DemoScene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  Assimp::Importer importer;
   const std::string filename = "../assets/assets.dae";
-  const aiScene *scene = importer.ReadFile(
-      filename, aiProcess_CalcTangentSpace | aiProcess_Triangulate |
-                    aiProcess_JoinIdenticalVertices | aiProcess_SortByPType);
+  Importer importer;
 
-  if (!scene)
+  std::vector<std::shared_ptr<Node>> meshNodes;
+  for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
-    qCritical() << "Could not load " << filename.c_str();
-    exit(1);
-  }
-
-  for (unsigned int meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex)
-  {
-    auto importedMesh = scene->mMeshes[meshIndex];
-    auto mesh = std::shared_ptr<Mesh>(new Mesh(
-        gl, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+    auto mesh = importer.import(filename, meshIndex);
     auto transformation = Eigen::Affine3f::Identity();
     transformation.translation() << meshIndex, 0, 0;
-    nodes.push_back(
-        std::unique_ptr<MeshNode>(new MeshNode(mesh, transformation.matrix())));
+    auto node =
+        new MeshNode(filename, meshIndex, mesh, transformation.matrix());
+    meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
+  auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
+  meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label)));
+
+  Persister::save(meshNodes, "../config/scene.xml");
+
+  // loadScene("../config/scene.xml");
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -68,8 +71,7 @@ void DemoScene::render()
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
 
-  for (auto &node : nodes)
-    node->render(renderData);
+  nodes->render(gl, renderData);
 }
 
 void DemoScene::resize(int width, int height)
