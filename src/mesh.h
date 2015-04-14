@@ -12,6 +12,7 @@
 #include <string>
 #include "./shader_program.h"
 #include "./gl.h"
+#include "./render_data.h"
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -26,7 +27,7 @@ class Mesh
 
   void initialize(Gl *gl);
 
-  void render(Gl *gl, Eigen::Matrix4f projection, Eigen::Matrix4f view);
+  void render(Gl *gl, const RenderData &renderData);
 
  private:
   QOpenGLVertexArrayObject vertexArrayObject;

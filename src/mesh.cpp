@@ -44,7 +44,6 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
   normalData = new float[mesh->mNumVertices * 3];
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
-
 }
 
 Mesh::~Mesh()
@@ -123,20 +122,24 @@ void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
   buffers.push_back(buffer);
 }
 
-void Mesh::render(Gl* gl, Eigen::Matrix4f projection, Eigen::Matrix4f view)
+void Mesh::render(Gl *gl, const RenderData &renderData)
 {
   if (!shaderProgram.get())
     initialize(gl);
 
   shaderProgram->bind();
 
-  Eigen::Matrix4f modelViewProjection = projection * view;
-  shaderProgram->setUniform("viewProjectionMatrix", modelViewProjection);
+  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
+                                        renderData.viewMatrix *
+                                        renderData.modelMatrix;
+  shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  shaderProgram->setUniform("modelMatrix", renderData.modelMatrix);
   shaderProgram->setUniform("ambientColor", ambientColor);
   shaderProgram->setUniform("diffuseColor", diffuseColor);
   shaderProgram->setUniform("specularColor", specularColor);
-  shaderProgram->setUniform("cameraDirection",
-                           Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
+  auto view = renderData.viewMatrix;
+  shaderProgram->setUniform(
+      "cameraDirection", Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
   shaderProgram->setUniform("shininess", shininess);
 
   vertexArrayObject.bind();

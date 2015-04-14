@@ -16,6 +16,7 @@ struct RenderData
 
   Eigen::Matrix4f projectionMatrix;
   Eigen::Matrix4f viewMatrix;
+  Eigen::Matrix4f modelMatrix;
 };
 
 #endif  // SRC_RENDER_DATA_H_

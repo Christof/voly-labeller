@@ -15,7 +15,7 @@ LabelNode::~LabelNode()
 {
 }
 
-void LabelNode::render(Gl *gl, const RenderData &renderData)
+void LabelNode::render(Gl *gl, RenderData renderData)
 {
   anchorMesh->render(gl, renderData.projectionMatrix, renderData.viewMatrix);
   QPainter painter;

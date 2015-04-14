@@ -26,7 +26,7 @@ class MeshNode : public Node
            Eigen::Matrix4f transformation);
   virtual ~MeshNode();
 
-  void render(Gl *gl, const RenderData &renderData);
+  void render(Gl *gl, RenderData renderData);
 
   Eigen::Matrix4f getTransformation();
   void setTransformation(Eigen::Matrix4f transformation);
