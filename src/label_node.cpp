@@ -1,9 +1,14 @@
 #include "./label_node.h"
 #include <QPainter>
 #include <QPoint>
+#include "./importer.h"
+#include "./mesh.h"
 
 LabelNode::LabelNode(Label label) : label(label)
 {
+  Importer importer;
+
+  anchorMesh = importer.import("../assets/sphere.dae", 0);
 }
 
 LabelNode::~LabelNode()
@@ -12,6 +17,7 @@ LabelNode::~LabelNode()
 
 void LabelNode::render(Gl *gl, const RenderData &renderData)
 {
+  anchorMesh->render(gl, renderData.projectionMatrix, renderData.viewMatrix);
   QPainter painter;
   painter.begin(gl->paintDevice);
   painter.setPen(Qt::blue);
