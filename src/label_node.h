@@ -22,7 +22,7 @@ class LabelNode : public Node
   LabelNode(Label label);
   virtual ~LabelNode();
 
-  void render(Gl *gl, const RenderData &renderData);
+  void render(Gl *gl, RenderData renderData);
 
   template <class Archive>
   void save_construct_data(Archive &ar) const

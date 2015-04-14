@@ -20,7 +20,7 @@ class Node
   {
   }
 
-  virtual void render(Gl *gl, const RenderData &renderData) = 0;
+  virtual void render(Gl *gl, RenderData renderData) = 0;
 
  protected:
   Node()

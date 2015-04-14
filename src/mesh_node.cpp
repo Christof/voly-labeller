@@ -13,9 +13,10 @@ MeshNode::~MeshNode()
 {
 }
 
-void MeshNode::render(Gl *gl, const RenderData &renderData)
+void MeshNode::render(Gl *gl, RenderData renderData)
 {
-  mesh->render(gl, renderData.projectionMatrix, renderData.viewMatrix);
+  renderData.modelMatrix = transformation;
+  mesh->render(gl, renderData);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()
