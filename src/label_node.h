@@ -43,6 +43,9 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
+  void renderLabelTextToTexture(Gl *gl);
+  bool loadedText = false;
+
   std::shared_ptr<Mesh> anchorMesh;
 };
 
