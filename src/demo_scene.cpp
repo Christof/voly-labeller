@@ -44,7 +44,6 @@ void DemoScene::initialize()
   {
     auto mesh = importer.import(filename, meshIndex);
     auto transformation = Eigen::Affine3f::Identity();
-    transformation.translation() << meshIndex, 0, 0;
     auto node =
         new MeshNode(filename, meshIndex, mesh, transformation.matrix());
     meshNodes.push_back(std::unique_ptr<MeshNode>(node));
