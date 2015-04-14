@@ -10,6 +10,7 @@
 #include "./gl.h"
 
 class Mesh;
+class Quad;
 
 /**
  * \brief Node for a label
@@ -47,6 +48,7 @@ class LabelNode : public Node
   bool loadedText = false;
 
   std::shared_ptr<Mesh> anchorMesh;
+  std::shared_ptr<Quad> quad;
 };
 
 namespace boost
