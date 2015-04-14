@@ -26,6 +26,7 @@ set(SOURCES
   src/camera.cpp
   src/shader_program.cpp
   src/mesh.cpp
+  src/quad.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
