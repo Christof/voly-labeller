@@ -6,12 +6,14 @@
 #include <Eigen/Geometry>
 #include "./importer.h"
 #include "./mesh.h"
+#include "./quad.h"
 
 LabelNode::LabelNode(Label label) : label(label)
 {
   Importer importer;
 
   anchorMesh = importer.import("../assets/anchor.dae", 0);
+  quad = std::make_shared<Quad>();
 }
 
 LabelNode::~LabelNode()
@@ -27,6 +29,9 @@ void LabelNode::render(Gl *gl, RenderData renderData)
                             Eigen::Scaling(0.005f));
   renderData.modelMatrix = transform.matrix();
   anchorMesh->render(gl, renderData);
+
+  renderData.modelMatrix = Eigen::Matrix4f();
+  quad->render(gl, renderData);
 }
 
 void LabelNode::renderLabelTextToTexture(Gl *gl)
