@@ -1,5 +1,6 @@
 #include "./label_node.h"
 #include <QPainter>
+#include <QImage>
 #include <QPoint>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -19,15 +20,29 @@ LabelNode::~LabelNode()
 
 void LabelNode::render(Gl *gl, RenderData renderData)
 {
+  if (!loadedText)
+    renderLabelTextToTexture(gl);
+
   Eigen::Affine3f transform(Eigen::Translation3f(label.anchorPosition) *
                             Eigen::Scaling(0.005f));
   renderData.modelMatrix = transform.matrix();
   anchorMesh->render(gl, renderData);
-  QPainter painter;
-  painter.begin(gl->paintDevice);
-  painter.setPen(Qt::blue);
-  painter.setFont(QFont("Arial", 16));
-  painter.drawText(QRectF(10, 30, 300, 20), Qt::AlignLeft, "Label 1");
+}
 
+void LabelNode::renderLabelTextToTexture(Gl *gl)
+{
+  QImage *image = new QImage(512, 128, QImage::Format_ARGB32);
+  image->fill(Qt::GlobalColor::transparent);
+
+  QPainter painter;
+  painter.begin(image);
+  painter.setPen(Qt::blue);
+  painter.setFont(QFont("Arial", 72));
+  painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
   painter.end();
+
+  image->save("test.png");
+
+  delete image;
+  loadedText = true;
 }
