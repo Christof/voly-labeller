@@ -27,6 +27,7 @@ set(SOURCES
   src/shader_program.cpp
   src/mesh.cpp
   src/quad.cpp
+  src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
