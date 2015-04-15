@@ -2,6 +2,8 @@
     <qresource prefix="/">
         <file>shader/phong.frag</file>
         <file>shader/phong.vert</file>
+        <file>shader/label.frag</file>
+        <file>shader/label.vert</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
