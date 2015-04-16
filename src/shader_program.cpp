@@ -69,3 +69,8 @@ void ShaderProgram::setUniform(const char *name, float value)
   glAssert(gl->glUniform1f(location, value));
 }
 
+void ShaderProgram::setUniform(const char *name, int value)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniform1i(location, value));
+}
