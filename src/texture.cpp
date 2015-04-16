@@ -28,7 +28,7 @@ void Texture::initialize(Gl *gl)
     glAssert(gl->glGenTextures(1, &texture));
     glAssert(gl->glBindTexture(textureTarget, texture));
     glAssert(gl->glTexImage2D(textureTarget, 0, GL_RGBA, width, height, 0,
-                              GL_RGBA, GL_UNSIGNED_BYTE, image.bits()));
+                              GL_BGRA, GL_UNSIGNED_BYTE, image.bits()));
 
     glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
