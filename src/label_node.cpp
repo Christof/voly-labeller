@@ -53,7 +53,12 @@ void LabelNode::renderLabelTextToTexture(Gl *gl)
 
   QPainter painter;
   painter.begin(image);
-  painter.setPen(Qt::blue);
+
+  painter.setBrush(QBrush(Qt::GlobalColor::lightGray));
+  painter.setPen(Qt::GlobalColor::lightGray);
+  painter.drawRoundRect(QRectF(0, 0, 512, 128), 15, 60);
+
+  painter.setPen(Qt::black);
   painter.setFont(QFont("Arial", 72));
   painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
   painter.end();
