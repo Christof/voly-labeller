@@ -34,8 +34,10 @@ void LabelNode::render(Gl *gl, RenderData renderData)
   renderData.modelMatrix = transform.matrix();
   anchorMesh->render(gl, renderData);
 
-  Eigen::Affine3f labelTransform(Eigen::Translation3f(1, 0, 1) *
-                            Eigen::Scaling(2.0f, 0.5f, 1.0f));
+  auto labelPosition = label.anchorPosition * 1.3f;
+  Eigen::Affine3f labelTransform(Eigen::Translation3f(labelPosition) *
+                            Eigen::Scaling(2.0f, 0.5f, 1.0f) * Eigen::Scaling(0.07f));
+
   renderData.modelMatrix = labelTransform.matrix();
   quad->render(gl, renderData, texture);
 }
