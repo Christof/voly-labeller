@@ -39,6 +39,10 @@ void LabelNode::render(Gl *gl, RenderData renderData)
                             Eigen::Scaling(2.0f, 0.5f, 1.0f) * Eigen::Scaling(0.07f));
 
   renderData.modelMatrix = labelTransform.matrix();
+  Eigen::Affine3f viewTransform(Eigen::Translation3f(
+        renderData.viewMatrix.col(3).head(3)));
+  renderData.viewMatrix = viewTransform.matrix();
+
   quad->render(gl, renderData, texture);
 }
 
