@@ -53,7 +53,7 @@ void DemoScene::initialize()
 
   Persister::save(meshNodes, "../config/scene.xml");
 
-  // loadScene("../config/scene.xml");
+  nodes->addSceneNodesFrom("../config/scene.xml");
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
