@@ -11,6 +11,7 @@
 
 class Mesh;
 class Quad;
+class Texture;
 
 /**
  * \brief Node for a label
@@ -49,6 +50,7 @@ class LabelNode : public Node
 
   std::shared_ptr<Mesh> anchorMesh;
   std::shared_ptr<Quad> quad;
+  std::shared_ptr<Texture> texture;
 };
 
 namespace boost
