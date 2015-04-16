@@ -1,5 +1,6 @@
 #include "./quad.h"
 #include "./gl.h"
+#include "./texture.h"
 
 Quad::Quad()
 {
@@ -12,7 +13,7 @@ Quad::~Quad()
 void Quad::initialize(Gl *gl)
 {
   shaderProgram = std::unique_ptr<ShaderProgram>(
-      new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
+      new ShaderProgram(gl, ":shader/label.vert", ":shader/label.frag"));
 
   vertexArrayObject.create();
   vertexArrayObject.bind();
@@ -22,14 +23,15 @@ void Quad::initialize(Gl *gl)
   float positions[12]{ -1.0f, 1.0f,  0.0f, 1.0f,  1.0f,  0.0f,
                        1.0f,  -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, positions, "position", 3, 12);
-  float texcoords[8]{ 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f };
+  float texcoords[8]{ 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, texcoords, "texcoord", 2, 12);
   unsigned int indices[indexCount]{ 0, 1, 2, 0, 2, 3 };
   createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices, "index", 1,
                indexCount);
 }
 
-void Quad::render(Gl *gl, const RenderData &renderData)
+void Quad::render(Gl *gl, const RenderData &renderData,
+                  std::shared_ptr<Texture> texture)
 {
   if (!shaderProgram.get())
     initialize(gl);
@@ -41,7 +43,9 @@ void Quad::render(Gl *gl, const RenderData &renderData)
                                         renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shaderProgram->setUniform("modelMatrix", renderData.modelMatrix);
+  shaderProgram->setUniform("textureSampler", 0);
 
+  texture->bind(gl, GL_TEXTURE0);
   vertexArrayObject.bind();
 
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));

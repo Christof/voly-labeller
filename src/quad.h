@@ -9,6 +9,7 @@
 #include "./shader_program.h"
 #include "./render_data.h"
 
+class Texture;
 /**
  * \brief
  *
@@ -20,7 +21,8 @@ class Quad
   Quad();
   virtual ~Quad();
 
-  void render(Gl *gl, const RenderData &renderData);
+  void render(Gl *gl, const RenderData &renderData,
+              std::shared_ptr<Texture> texture);
 
   void initialize(Gl *gl);
 
