@@ -46,7 +46,6 @@ class LabelNode : public Node
   };
 
   void renderLabelTextToTexture(Gl *gl);
-  bool loadedText = false;
 
   std::shared_ptr<Mesh> anchorMesh;
   std::shared_ptr<Quad> quad;

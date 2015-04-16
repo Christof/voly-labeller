@@ -15,7 +15,6 @@ LabelNode::LabelNode(Label label) : label(label)
 
   anchorMesh = importer.import("../assets/anchor.dae", 0);
   quad = std::make_shared<Quad>();
-  texture = std::make_shared<Texture>("test.png");
 }
 
 LabelNode::~LabelNode()
@@ -24,7 +23,7 @@ LabelNode::~LabelNode()
 
 void LabelNode::render(Gl *gl, RenderData renderData)
 {
-  if (!loadedText)
+  if (!texture.get())
   {
     renderLabelTextToTexture(gl);
     texture->initialize(gl);
@@ -53,8 +52,5 @@ void LabelNode::renderLabelTextToTexture(Gl *gl)
   painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
   painter.end();
 
-  image->save("test.png");
-
-  delete image;
-  loadedText = true;
+  texture = std::make_shared<Texture>(image);
 }
