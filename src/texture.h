@@ -5,6 +5,8 @@
 #include <string>
 #include "./gl.h"
 
+class QImage;
+
 /**
  * \brief Loads an image and provides functions to use it as a texture
  *
@@ -15,6 +17,12 @@ class Texture
 {
  public:
   explicit Texture(std::string filename);
+  /**
+   * \brief Uses given QImage as texture.
+   *
+   * After initialization the given image is deleted.
+   */
+  explicit Texture(QImage *image);
   virtual ~Texture();
 
   void initialize(Gl *gl);
@@ -28,10 +36,10 @@ class Texture
 
  private:
   const GLenum textureTarget = GL_TEXTURE_2D;
-  std::string filename;
   GLuint texture;
   int width;
   int height;
+  QImage* image;
 };
 
 #endif  // SRC_TEXTURE_H_
