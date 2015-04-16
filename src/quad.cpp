@@ -28,6 +28,9 @@ void Quad::initialize(Gl *gl)
   unsigned int indices[indexCount]{ 0, 1, 2, 0, 2, 3 };
   createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices, "index", 1,
                indexCount);
+
+  shaderProgram->release();
+  vertexArrayObject.release();
 }
 
 void Quad::render(Gl *gl, const RenderData &renderData,
