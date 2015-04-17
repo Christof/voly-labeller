@@ -37,7 +37,7 @@ void Connector::render(Gl *gl, const RenderData &renderData)
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  shaderProgram->setUniform("color", Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1));
+  shaderProgram->setUniform("color", color);
 
   vertexArrayObject.bind();
 
