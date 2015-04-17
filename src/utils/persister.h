@@ -11,9 +11,11 @@
 #include <string>
 
 /**
- * \brief
+ * \brief Class to save and load serializable objects
  *
- *
+ * The class just provides two static functions:
+ * - Persister::save
+ * - Persister::load
  */
 class Persister
 {

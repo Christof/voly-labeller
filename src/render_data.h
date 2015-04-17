@@ -5,9 +5,9 @@
 #include <Eigen/Core>
 
 /**
- * \brief
+ * \brief Encapsulates data which is necessary to render objects
  *
- *
+ * It includes for now only camera data.
  */
 struct RenderData
 {
