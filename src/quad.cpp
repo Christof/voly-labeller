@@ -20,14 +20,11 @@ void Quad::initialize(Gl *gl)
 
   shaderProgram->bind();
 
-  float positions[12]{ -1.0f, 1.0f,  0.0f, 1.0f,  1.0f,  0.0f,
+  float positions[12]{ 1.0f, 1.0f,  0.0f, -1.0f,  1.0f,  0.0f,
                        1.0f,  -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, positions, "position", 3, 12);
-  float texcoords[8]{ 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
+  float texcoords[8]{ 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
   createBuffer(QOpenGLBuffer::Type::VertexBuffer, texcoords, "texcoord", 2, 12);
-  unsigned int indices[indexCount]{ 0, 1, 2, 0, 2, 3 };
-  createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices, "index", 1,
-               indexCount);
 
   shaderProgram->release();
   vertexArrayObject.release();
@@ -51,7 +48,7 @@ void Quad::render(Gl *gl, const RenderData &renderData,
   texture->bind(gl, GL_TEXTURE0);
   vertexArrayObject.bind();
 
-  glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+  glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 
   vertexArrayObject.release();
   shaderProgram->release();
