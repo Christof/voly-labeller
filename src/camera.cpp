@@ -3,8 +3,8 @@
 #include <math.h>
 
 Camera::Camera()
-  : position(0, 0, 4), direction(0, 0, -1), up(0, 1, 0), radius(4.0f),
-    azimuth(M_PI / 2.0f), declination(0)
+  : position(0, 0, -4), direction(0, 0, 1), up(0, 1, 0), radius(4.0f),
+    azimuth(-M_PI / 2.0f), declination(0)
 {
   projection = createProjection(M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 }
