@@ -49,7 +49,7 @@ void LabelNode::render(Gl *gl, RenderData renderData)
   renderData.modelMatrix = labelTransform.matrix();
   Eigen::Affine3f viewTransform(
       Eigen::Translation3f(renderData.viewMatrix.col(3).head(3)));
-  renderData.viewMatrix = viewTransform.matrix();
+  // renderData.viewMatrix = viewTransform.matrix();
 
   quad->render(gl, renderData, texture);
 }
