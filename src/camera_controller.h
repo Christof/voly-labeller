@@ -14,7 +14,7 @@ class CameraController : public QObject
 {
   Q_OBJECT
  public:
-  CameraController(Camera &camera);
+  explicit CameraController(Camera &camera);
   virtual ~CameraController();
 
   void setFrameTime(double frameTime);

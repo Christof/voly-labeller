@@ -1,4 +1,5 @@
 #include "./connector.h"
+#include <string>
 
 Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
   : anchor(anchor), label(label)

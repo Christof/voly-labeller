@@ -3,8 +3,8 @@
 #define SRC_LABEL_NODE_H_
 
 #include <QDebug>
-#include <memory>
 #include <boost/serialization/nvp.hpp>
+#include <memory>
 #include "./node.h"
 #include "./label.h"
 #include "./gl.h"
@@ -22,7 +22,7 @@ class Connector;
 class LabelNode : public Node
 {
  public:
-  LabelNode(Label label);
+  explicit LabelNode(Label label);
   virtual ~LabelNode();
 
   void render(Gl *gl, RenderData renderData);

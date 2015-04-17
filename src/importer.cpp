@@ -1,6 +1,8 @@
 #include "./importer.h"
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <string>
+#include <vector>
 
 Importer::Importer()
 {

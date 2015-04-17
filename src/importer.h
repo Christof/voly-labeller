@@ -2,10 +2,11 @@
 
 #define SRC_IMPORTER_H_
 
+#include <assimp/Importer.hpp>
 #include <memory>
 #include <map>
 #include <vector>
-#include <assimp/Importer.hpp>
+#include <string>
 #include "./mesh.h"
 #include "./gl.h"
 
