@@ -2,10 +2,9 @@
 
 #include <QObject>
 #include <QDebug>
-#include <QPainter>
 #include <Eigen/Core>
-#include <Eigen/Geometry>
 #include <string>
+#include <vector>
 #include "./gl.h"
 #include "./input/invoke_manager.h"
 #include "./mesh.h"
@@ -43,9 +42,8 @@ void DemoScene::initialize()
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
-    auto transformation = Eigen::Affine3f::Identity();
     auto node =
-        new MeshNode(filename, meshIndex, mesh, transformation.matrix());
+        new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
     meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
   auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));

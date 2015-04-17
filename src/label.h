@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <boost/serialization/nvp.hpp>
+#include <string>
 
 /**
  * \brief Holds basic data of a label: id, text, anchor position

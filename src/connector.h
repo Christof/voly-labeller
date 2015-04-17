@@ -6,6 +6,8 @@
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <memory>
+#include <string>
+#include <vector>
 #include "./gl.h"
 #include "./render_data.h"
 #include "./shader_program.h"
