@@ -9,9 +9,11 @@
 
 class Gl;
 /**
- * \brief
+ * \brief Base class for nodes which are managed by the
+ * Nodes class
  *
- *
+ * The only virtual method which must be implemented is
+ * Node::render.
  */
 class Node
 {

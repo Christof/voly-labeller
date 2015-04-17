@@ -12,9 +12,7 @@
 
 class Texture;
 /**
- * \brief
- *
- *
+ * \brief Class to draw a quad which is used for the label
  */
 class Quad
 {

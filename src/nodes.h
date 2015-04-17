@@ -13,9 +13,14 @@
 class Gl;
 
 /**
- * \brief
+ * \brief Manages a collection of nodes which is rendered
+ * in the scene
  *
+ * The collection can be extended by loading a scene
+ * file (Nodes::addSceneNodesFrom), which was previously saved
+ * using Nodes::saveSceneTo.
  *
+ * Also an asset file can be dirctly added using Nodes::importFrom.
  */
 class Nodes : public QObject
 {

@@ -16,13 +16,15 @@
 class Mesh;
 class Gl;
 /**
- * \brief
- *
- *
+ * \brief Node which renders a Mesh
  */
 class MeshNode : public Node
 {
  public:
+  /**
+   * \brief Construct the mesh from the given asset filename and mesh index in 
+   * that asset file
+   */
   MeshNode(std::string assetFilename, int meshIndex, std::shared_ptr<Mesh> mesh,
            Eigen::Matrix4f transformation);
   virtual ~MeshNode();
