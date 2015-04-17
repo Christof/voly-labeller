@@ -1,6 +1,5 @@
 #include "./quad.h"
-#include <Eigen/LU>
-#include <iostream>
+#include <string>
 #include "./gl.h"
 #include "./texture.h"
 
@@ -46,7 +45,8 @@ void Quad::render(Gl *gl, const RenderData &renderData,
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shaderProgram->setUniform("viewMatrix", renderData.viewMatrix);
   shaderProgram->setUniform("labelPosition", labelPosition);
-  shaderProgram->setUniform("size", Eigen::Vector2f(2.0f * 0.07f, 0.5f * 0.07f));
+  shaderProgram->setUniform("size",
+                            Eigen::Vector2f(2.0f * 0.07f, 0.5f * 0.07f));
   shaderProgram->setUniform("textureSampler", 0);
 
   texture->bind(gl, GL_TEXTURE0);

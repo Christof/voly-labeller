@@ -1,7 +1,7 @@
 #include "./texture.h"
-#include <string>
 #include <QImage>
 #include <QDebug>
+#include <string>
 
 Texture::Texture(std::string filename)
 {
@@ -29,12 +29,8 @@ Texture::~Texture()
 
 void Texture::initialize(Gl *gl)
 {
-
   width = image->width();
   height = image->height();
-
-  // glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  // glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 
   glAssert(gl->glGenTextures(1, &texture));
   glAssert(gl->glBindTexture(textureTarget, texture));

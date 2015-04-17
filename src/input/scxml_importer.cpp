@@ -133,9 +133,8 @@ void ScxmlImporter::readState()
 
   connect(state, &QState::entered, [state]()
           {
-            qCDebug(channel)
-                << "entered:" << state->property("name").toString();
-          });
+    qCDebug(channel) << "entered:" << state->property("name").toString();
+  });
 
   stateStack.push(state);
   states[stateName] = state;
@@ -281,8 +280,8 @@ ScxmlImporter::createMouseButtonEventTransition(const QString &event)
   auto secondLastDotIndex = event.lastIndexOf(".", lastDotIndex - 1);
   auto typeString =
       event.mid(secondLastDotIndex + 1, lastDotIndex - secondLastDotIndex - 1);
-  QEvent::Type eventType =
-      typeString == "DOWN" ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease;
+  QEvent::Type eventType = typeString == "DOWN" ? QEvent::MouseButtonPress
+                                                : QEvent::MouseButtonRelease;
 
   auto keyAsString = event.mid(lastDotIndex + 1);
   auto buttonCode = toButton(keyAsString);

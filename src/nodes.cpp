@@ -1,5 +1,7 @@
 #include "./nodes.h"
 #include <QDebug>
+#include <string>
+#include <vector>
 #include "./utils/persister.h"
 #include "./importer.h"
 #include "./gl.h"

@@ -1,4 +1,5 @@
 #include "./mesh_node.h"
+#include <string>
 #include "./mesh.h"
 #include "./gl.h"
 
