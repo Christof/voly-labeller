@@ -19,6 +19,7 @@ LabelNode::LabelNode(Label label) : label(label)
 
   auto labelPosition = label.anchorPosition * 1.3f;
   connector = std::make_shared<Connector>(label.anchorPosition, labelPosition);
+  connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
 LabelNode::~LabelNode()

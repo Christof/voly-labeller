@@ -26,6 +26,8 @@ class Connector
 
   void initialize(Gl *gl);
 
+  Eigen::Vector4f color;
+
  private:
   Eigen::Vector3f anchor;
   Eigen::Vector3f label;
