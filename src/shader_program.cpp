@@ -63,6 +63,12 @@ void ShaderProgram::setUniform(const char *name, Eigen::Vector3f vector)
   glAssert(gl->glUniform3fv(location, 1, vector.data()));
 }
 
+void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
+{
+  auto location = shaderProgram.uniformLocation(name);
+  glAssert(gl->glUniform2fv(location, 1, vector.data()));
+}
+
 void ShaderProgram::setUniform(const char *name, float value)
 {
   auto location = shaderProgram.uniformLocation(name);
