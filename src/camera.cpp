@@ -99,3 +99,8 @@ Eigen::Matrix4f Camera::getProjectionMatrix()
   return projection;
 }
 
+Eigen::Vector3f Camera::getPosition()
+{
+  return position;
+}
+
