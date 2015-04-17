@@ -15,6 +15,13 @@
 class Node;
 class InvokeManager;
 
+/**
+ * \brief Default implementation of AbstractScene
+ *
+ * It uses Nodes to manage which nodes are visible.
+ * In initialize a default scene is loaded for now
+ * (and also persisted as `config/scene.xml`).
+ */
 class DemoScene : public AbstractScene
 {
  public:

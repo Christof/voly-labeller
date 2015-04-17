@@ -11,9 +11,7 @@
 #include "./gl.h"
 
 /**
- * \brief
- *
- *
+ * \brief Provides functions to import Mesh%es from an asset file
  */
 class Importer
 {
