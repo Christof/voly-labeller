@@ -4,6 +4,8 @@
         <file>shader/phong.vert</file>
         <file>shader/label.frag</file>
         <file>shader/label.vert</file>
+        <file>shader/line.frag</file>
+        <file>shader/line.vert</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
