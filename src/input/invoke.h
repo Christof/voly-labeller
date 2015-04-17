@@ -5,9 +5,7 @@
 #include <QString>
 
 /**
- * \brief
- *
- *
+ * \brief Encapsulates data for an invoke element in SCXML
  */
 class Invoke
 {
@@ -20,9 +18,6 @@ class Invoke
 
   QString targetType;
   QString source;
-
- private:
-  /* data */
 };
 
 #endif  // SRC_INPUT_INVOKE_H_

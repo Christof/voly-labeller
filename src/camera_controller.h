@@ -6,9 +6,11 @@
 #include "./camera.h"
 
 /**
- * \brief
+ * \brief Provides slots to control the given camera from
+ * the Qt Gui
  *
- *
+ * CameraController::setFrameTime must be called each frame
+ * to ensure a steady camera speed.
  */
 class CameraController : public QObject
 {

@@ -9,9 +9,10 @@
 #include "./connector.h"
 
 /**
- * \brief
+ * \brief Node which draws a coordinate system
  *
- *
+ * Red is the x-axis, green the y-axis and blue
+ * the z-axis.
  */
 class CoordinateSystemNode : public Node
 {

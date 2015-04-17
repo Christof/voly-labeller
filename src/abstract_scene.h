@@ -7,12 +7,25 @@
 #include <QKeyEvent>
 #include "./gl.h"
 
+class QOpenGLContext;
+class Gl;
+
+/**
+ * \brief Base class for all scenes.
+ *
+ * It consists of the following virtual methods:
+ * - AbstractScene::initialize is called before the scene is rendered the first time
+ * - AbstractScene::update is called every frame to update the scene
+ * - AbstractScene::render is called every frame to render the scene
+ * - AbstractScene::resize is called when the window size is changed
+ */
 class AbstractScene
 {
  public:
   AbstractScene() : context(0)
   {
   }
+
   virtual ~AbstractScene()
   {
   }

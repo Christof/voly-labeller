@@ -13,9 +13,10 @@
 #include "./shader_program.h"
 
 /**
- * \brief
+ * \brief Draws a line between two points
  *
- *
+ * It is mainly intended to draw the line between an
+ * anchor and the corresponding label.
  */
 class Connector
 {
