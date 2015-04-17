@@ -69,6 +69,8 @@ void DemoScene::render()
   RenderData renderData;
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
+  renderData.cameraPosition = camera.getPosition();
+  renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
   nodes->render(gl, renderData);
 }
