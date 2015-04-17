@@ -3,12 +3,13 @@
 #define SRC_MESH_NODE_H_
 
 #include <Eigen/Core>
-#include <memory>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/split_free.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/export.hpp>
 #include <QDebug>
+#include <memory>
+#include <string>
 #include "./node.h"
 #include "./importer.h"
 

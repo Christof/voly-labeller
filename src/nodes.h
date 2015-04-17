@@ -2,12 +2,13 @@
 
 #define SRC_NODES_H_
 
-#include "./node.h"
-#include "./render_data.h"
 #include <QObject>
 #include <QUrl>
 #include <string>
+#include <vector>
 #include <memory>
+#include "./node.h"
+#include "./render_data.h"
 
 class Gl;
 

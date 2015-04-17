@@ -6,6 +6,7 @@
 #include <QOpenGLBuffer>
 #include <vector>
 #include <memory>
+#include <string>
 #include "./shader_program.h"
 #include "./render_data.h"
 
