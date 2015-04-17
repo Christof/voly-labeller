@@ -4,9 +4,11 @@
 #include "./importer.h"
 #include "./gl.h"
 #include "./mesh_node.h"
+#include "./coordinate_system_node.h"
 
 Nodes::Nodes()
 {
+  nodes.push_back(std::make_shared<CoordinateSystemNode>());
 }
 
 void Nodes::addSceneNodesFrom(QUrl url)

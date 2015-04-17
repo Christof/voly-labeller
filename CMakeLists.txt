@@ -32,6 +32,7 @@ set(SOURCES
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
+  src/coordinate_system_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
   src/demo_scene.cpp
