@@ -27,8 +27,7 @@ class LabelNode : public Node
 
   void render(Gl *gl, RenderData renderData);
 
-  template <class Archive>
-  void save_construct_data(Archive &ar) const
+  template <class Archive> void save_construct_data(Archive &ar) const
   {
     qDebug() << "In save_construct_data method";
 
@@ -46,7 +45,7 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
-  void renderLabelTextToTexture(Gl *gl);
+  QImage *renderLabelTextToQImage();
 
   std::shared_ptr<Mesh> anchorMesh;
   std::shared_ptr<Quad> quad;
