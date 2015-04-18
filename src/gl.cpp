@@ -1,5 +1,6 @@
 #include "./gl.h"
 #include <QDebug>
+#include <QOpenGLPaintDevice>
 
 Gl::Gl()
 {

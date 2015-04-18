@@ -2,10 +2,7 @@
 
 #define SRC_ABSTRACT_SCENE_H_
 
-#include <QOpenGLContext>
-#include <QtDebug>
 #include <QKeyEvent>
-#include "./gl.h"
 
 class QOpenGLContext;
 class Gl;

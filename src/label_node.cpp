@@ -4,6 +4,7 @@
 #include <QPoint>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include "./gl.h"
 #include "./importer.h"
 #include "./mesh.h"
 #include "./quad.h"

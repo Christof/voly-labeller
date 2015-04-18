@@ -1,11 +1,13 @@
 #include "./window.h"
 #include <QOpenGLContext>
+#include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
 #include <iostream>
+#include "./gl.h"
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)

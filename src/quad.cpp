@@ -1,6 +1,7 @@
 #include "./quad.h"
 #include <string>
 #include "./gl.h"
+#include "./shader_program.h"
 #include "./texture.h"
 
 Quad::Quad()

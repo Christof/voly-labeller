@@ -8,9 +8,10 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "./gl.h"
 #include "./render_data.h"
-#include "./shader_program.h"
+
+class Gl;
+class ShaderProgram;
 
 /**
  * \brief Draws a line between two points

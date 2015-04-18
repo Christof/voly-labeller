@@ -7,8 +7,8 @@
 #include <memory>
 #include "./node.h"
 #include "./label.h"
-#include "./gl.h"
 
+class Gl;
 class Mesh;
 class Quad;
 class Texture;

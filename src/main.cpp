@@ -5,6 +5,7 @@
 #include <memory>
 #include "./window.h"
 #include "./demo_scene.h"
+#include "./nodes.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"

@@ -5,8 +5,9 @@
 #include <memory>
 #include "./node.h"
 #include "./render_data.h"
-#include "./gl.h"
-#include "./connector.h"
+
+class Gl;
+class Connector;
 
 /**
  * \brief Node which draws a coordinate system

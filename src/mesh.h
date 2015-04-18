@@ -10,9 +10,10 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "./shader_program.h"
-#include "./gl.h"
 #include "./render_data.h"
+
+class Gl;
+class ShaderProgram;
 
 /**
  * \brief Encapsulates a single mesh including its material.
