@@ -17,6 +17,10 @@ Camera movements are defined to move forward and backward (`W` and `S` respectiv
 to strafe left or right (`A` and `D`), to increase and decrease declination (`R` and `F`)
 as well as to change the azimuth (`Q` and `E`).
 
+# Assets
+Some assets - which are necessary to run the application - can be downloaded from
+a shared [folder](https://drive.google.com/folderview?id=0ByTbZ7z8JSt-fnRNM09UcVNRQ3BBVnA2ZUx1bjFidXRnSDgtN0dqaEdya2d6MjJDcmJ6Wms&usp=sharing). They must be located in the `assets` in the projects root directory.
+
 # Building
 ```
 mkdir build
