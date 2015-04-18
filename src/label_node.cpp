@@ -31,7 +31,7 @@ void LabelNode::render(Gl *gl, RenderData renderData)
 {
   if (!texture.get())
   {
-    renderLabelTextToTexture(gl);
+    texture = std::make_shared<Texture>(renderLabelTextToQImage());
     texture->initialize(gl);
   }
 
@@ -49,10 +49,11 @@ void LabelNode::render(Gl *gl, RenderData renderData)
 
   renderData.modelMatrix = labelTransform.matrix();
 
-  quad->render(gl, renderData, texture);
+  texture->bind(gl, GL_TEXTURE0);
+  quad->render(gl, renderData);
 }
 
-void LabelNode::renderLabelTextToTexture(Gl *gl)
+QImage *LabelNode::renderLabelTextToQImage()
 {
   QImage *image = new QImage(512, 128, QImage::Format_ARGB32);
   image->fill(Qt::GlobalColor::transparent);
@@ -69,6 +70,6 @@ void LabelNode::renderLabelTextToTexture(Gl *gl)
   painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
   painter.end();
 
-  texture = std::make_shared<Texture>(image);
+  return image;
 }
 

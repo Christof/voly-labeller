@@ -2,40 +2,30 @@
 
 #define SRC_QUAD_H_
 
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
-#include <vector>
 #include <memory>
-#include <string>
 #include "./render_data.h"
+#include "./renderable.h"
 
 class Gl;
-class Texture;
 class ShaderProgram;
 
 /**
  * \brief Class to draw a quad which is used for the label
  */
-class Quad
+class Quad : public Renderable
 {
  public:
   Quad();
   virtual ~Quad();
 
-  void render(Gl *gl, const RenderData &renderData,
-              std::shared_ptr<Texture> texture);
-
-  void initialize(Gl *gl);
+ protected:
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
+  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
+                           const RenderData &renderData);
+  virtual void draw(Gl *gl);
 
  private:
-  QOpenGLVertexArrayObject vertexArrayObject;
-  std::vector<QOpenGLBuffer> buffers;
-  std::unique_ptr<ShaderProgram> shaderProgram;
   static const int indexCount = 6;
-  template <class ElementType>
-  void createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
-                    std::string usage, int perVertexElements,
-                    int numberOfVertices);
 };
 
 #endif  // SRC_QUAD_H_
