@@ -1,4 +1,5 @@
 #include "./render_object.h"
+#include <string>
 
 RenderObject::RenderObject(Gl *gl, std::string vertexShaderPath,
                            std::string fragmentShaderPath)

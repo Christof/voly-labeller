@@ -33,7 +33,6 @@ class Mesh : public Renderable
   virtual void draw(Gl *gl);
 
  private:
-
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);

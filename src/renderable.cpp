@@ -1,4 +1,5 @@
 #include "./renderable.h"
+#include <string>
 #include "./render_object.h"
 
 Renderable::Renderable(std::string vertexShaderPath,
@@ -35,3 +36,4 @@ void Renderable::render(Gl *gl, const RenderData &renderData)
 
   renderObject->release();
 }
+

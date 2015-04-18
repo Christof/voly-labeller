@@ -2,10 +2,11 @@
 
 #define SRC_RENDER_OBJECT_H_
 
-#include <memory>
-#include <string>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
+#include <memory>
+#include <string>
+#include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
 

@@ -3,6 +3,7 @@
 #define SRC_RENDERABLE_H_
 
 #include <memory>
+#include <string>
 #include "./render_data.h"
 
 class Gl;
