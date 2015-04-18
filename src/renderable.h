@@ -11,9 +11,7 @@ class RenderObject;
 class ShaderProgram;
 
 /**
- * \brief
- *
- *
+ * \brief Base class for easier access to a RenderObject
  */
 class Renderable
 {
