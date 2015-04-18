@@ -11,27 +11,28 @@
 #include <memory>
 #include <string>
 #include "./render_data.h"
+#include "./renderable.h"
 
 class Gl;
-class RenderObject;
 
 /**
  * \brief Encapsulates a single mesh including its material.
  *
  */
-class Mesh
+class Mesh : public Renderable
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  void initialize(Gl *gl);
-
-  void render(Gl *gl, const RenderData &renderData);
+ protected:
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
+  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
+                           const RenderData &renderData);
+  virtual void draw(Gl *gl);
 
  private:
-  std::unique_ptr<RenderObject> renderObject;
 
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
