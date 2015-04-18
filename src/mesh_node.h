@@ -15,6 +15,7 @@
 
 class Mesh;
 class Gl;
+
 /**
  * \brief Node which renders a Mesh
  */

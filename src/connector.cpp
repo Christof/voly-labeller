@@ -1,5 +1,7 @@
 #include "./connector.h"
 #include <string>
+#include "./gl.h"
+#include "./shader_program.h"
 
 Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
   : anchor(anchor), label(label)

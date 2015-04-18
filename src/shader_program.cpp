@@ -1,5 +1,6 @@
 #include "./shader_program.h"
 #include <string>
+#include "./gl.h"
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)

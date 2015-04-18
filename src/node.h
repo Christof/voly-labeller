@@ -8,6 +8,7 @@
 #include "./render_data.h"
 
 class Gl;
+
 /**
  * \brief Base class for nodes which are managed by the
  * Nodes class

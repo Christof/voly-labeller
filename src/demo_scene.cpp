@@ -1,6 +1,5 @@
 #include "./demo_scene.h"
 
-#include <QObject>
 #include <QDebug>
 #include <Eigen/Core>
 #include <string>
@@ -12,6 +11,8 @@
 #include "./label_node.h"
 #include "./render_data.h"
 #include "./importer.h"
+#include "./camera_controller.h"
+#include "./nodes.h"
 #include "./utils/persister.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")

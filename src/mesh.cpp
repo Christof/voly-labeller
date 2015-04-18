@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
+#include "./shader_program.h"
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 {

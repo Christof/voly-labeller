@@ -2,18 +2,13 @@
 
 #define SRC_DEMO_SCENE_H_
 
-#include <map>
-#include <vector>
 #include <memory>
-
 #include "./abstract_scene.h"
 #include "./camera.h"
-#include "./camera_controller.h"
-#include "./mesh.h"
-#include "./nodes.h"
 
-class Node;
+class Nodes;
 class InvokeManager;
+class CameraController;
 
 /**
  * \brief Default implementation of AbstractScene

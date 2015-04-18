@@ -7,8 +7,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "./mesh.h"
-#include "./gl.h"
+
+class Mesh;
 
 /**
  * \brief Provides functions to import Mesh%es from an asset file

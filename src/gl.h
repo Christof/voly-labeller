@@ -3,7 +3,7 @@
 #define SRC_GL_H_
 
 #include <QOpenGLFunctions_4_3_Core>
-#include <QOpenGLPaintDevice>
+#include <QSize>
 
 #ifndef NDEBUG  // debug mode
 
@@ -42,6 +42,8 @@ inline void glCheckErrorFunction(std::string file, int line)
 #endif
 
 class QOpenGLContext;
+class QOpenGLPaintDevice;
+
 /**
  * \brief Provides access to OpenGL functions
  *

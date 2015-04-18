@@ -7,10 +7,12 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "./shader_program.h"
 #include "./render_data.h"
 
+class Gl;
 class Texture;
+class ShaderProgram;
+
 /**
  * \brief Class to draw a quad which is used for the label
  */

@@ -1,8 +1,10 @@
 #include "./importer.h"
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <QDebug>
 #include <string>
 #include <vector>
+#include "./mesh.h"
 
 Importer::Importer()
 {

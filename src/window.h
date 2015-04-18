@@ -7,10 +7,10 @@
 #include <QElapsedTimer>
 #include <QSet>
 #include <memory>
-#include "./gl.h"
 
 class AbstractScene;
 class QStateMachine;
+class Gl;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn

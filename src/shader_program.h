@@ -5,7 +5,8 @@
 #include <QOpenGLShaderProgram>
 #include <Eigen/Core>
 #include <string>
-#include "./gl.h"
+
+class Gl;
 
 /**
  * \brief Encapsulates a shader program consisting of a vertex and a fragment

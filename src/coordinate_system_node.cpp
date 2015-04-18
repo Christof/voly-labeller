@@ -1,5 +1,7 @@
 #include "./coordinate_system_node.h"
 #include <Eigen/Core>
+#include "./gl.h"
+#include "./connector.h"
 
 CoordinateSystemNode::CoordinateSystemNode()
 {
