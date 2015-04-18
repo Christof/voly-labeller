@@ -25,6 +25,7 @@ set(SOURCES
   src/gl.cpp
   src/camera.cpp
   src/shader_program.cpp
+  src/render_object.cpp
   src/mesh.cpp
   src/quad.cpp
   src/connector.cpp

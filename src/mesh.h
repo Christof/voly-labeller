@@ -13,7 +13,7 @@
 #include "./render_data.h"
 
 class Gl;
-class ShaderProgram;
+class RenderObject;
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -31,14 +31,7 @@ class Mesh
   void render(Gl *gl, const RenderData &renderData);
 
  private:
-  QOpenGLVertexArrayObject vertexArrayObject;
-  std::vector<QOpenGLBuffer> buffers;
-  std::unique_ptr<ShaderProgram> shaderProgram;
-
-  template <class ElementType>
-  void createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
-                    std::string usage, int perVertexElements,
-                    int numberOfVertices);
+  std::unique_ptr<RenderObject> renderObject;
 
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
