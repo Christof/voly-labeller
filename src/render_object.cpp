@@ -3,8 +3,8 @@
 RenderObject::RenderObject(Gl *gl, std::string vertexShaderPath,
                            std::string fragmentShaderPath)
 {
-  shaderProgram = std::unique_ptr<ShaderProgram>(
-      new ShaderProgram(gl, vertexShaderPath, fragmentShaderPath));
+  shaderProgram =
+      std::make_shared<ShaderProgram>(gl, vertexShaderPath, fragmentShaderPath);
 
   vertexArrayObject.create();
   bind();

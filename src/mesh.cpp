@@ -6,6 +6,7 @@
 #include "./shader_program.h"
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
+  : Renderable(":/shader/phong.vert", ":/shader/phong.frag")
 {
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
@@ -52,11 +53,8 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::initialize(Gl *gl)
+void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
 {
-  renderObject = std::unique_ptr<RenderObject>(
-      new RenderObject(gl, ":/shader/phong.vert", ":/shader/phong.frag"));
-
   renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
                              "index", 1, indexCount);
   delete[] indexData;
@@ -67,9 +65,6 @@ void Mesh::initialize(Gl *gl)
   renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
                              "vertexNormal", 3, vertexCount);
   delete[] normalData;
-
-  renderObject->release();
-  renderObject->releaseBuffers();
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -98,30 +93,25 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
   return result;
 }
 
-void Mesh::render(Gl *gl, const RenderData &renderData)
+void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
+                       const RenderData &renderData)
 {
-  if (!renderObject.get())
-    initialize(gl);
-
-  renderObject->bind();
-
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *
                                         renderData.modelMatrix;
-  renderObject->shaderProgram->setUniform("modelViewProjectionMatrix",
-                                          modelViewProjection);
-  renderObject->shaderProgram->setUniform("modelMatrix",
-                                          renderData.modelMatrix);
-  renderObject->shaderProgram->setUniform("ambientColor", ambientColor);
-  renderObject->shaderProgram->setUniform("diffuseColor", diffuseColor);
-  renderObject->shaderProgram->setUniform("specularColor", specularColor);
+  shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  shader->setUniform("modelMatrix", renderData.modelMatrix);
+  shader->setUniform("ambientColor", ambientColor);
+  shader->setUniform("diffuseColor", diffuseColor);
+  shader->setUniform("specularColor", specularColor);
   auto view = renderData.viewMatrix;
-  renderObject->shaderProgram->setUniform(
-      "cameraDirection", Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  renderObject->shaderProgram->setUniform("shininess", shininess);
+  shader->setUniform("cameraDirection",
+                     Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
+  shader->setUniform("shininess", shininess);
+}
 
+void Mesh::draw(Gl *gl)
+{
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
-
-  renderObject->release();
 }
 

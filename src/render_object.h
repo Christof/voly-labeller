@@ -46,7 +46,7 @@ class RenderObject
 
   void releaseBuffers();
 
-  std::unique_ptr<ShaderProgram> shaderProgram;
+  std::shared_ptr<ShaderProgram> shaderProgram;
 
  private:
   QOpenGLVertexArrayObject vertexArrayObject;
