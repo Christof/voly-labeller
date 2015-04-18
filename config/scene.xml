@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <data class_id="0" tracking_level="0" version="0">
-	<count>3</count>
+	<count>5</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="MeshNode" tracking_level="1" version="0" object_id="_0">
@@ -56,11 +56,37 @@
 		<px class_id="4" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
 			<label class_id="5" tracking_level="0" version="0">
 				<label.id>1</label.id>
-				<label.text>My label 1</label.text>
+				<label.text>Shoulder</label.text>
 				<label.anchorPosition class_id="6" tracking_level="0" version="0">
 					<x>1.739999950e-01</x>
 					<y>5.529999733e-01</y>
 					<z>1.999999955e-02</z>
+				</label.anchorPosition>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="4" object_id="_3">
+			<label>
+				<label.id>2</label.id>
+				<label.text>Ellbow</label.text>
+				<label.anchorPosition>
+					<x>3.339999914e-01</x>
+					<y>3.170000017e-01</y>
+					<z>-1.300000027e-02</z>
+				</label.anchorPosition>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="4" object_id="_4">
+			<label>
+				<label.id>3</label.id>
+				<label.text>Wound</label.text>
+				<label.anchorPosition>
+					<x>2.619999945e-01</x>
+					<y>4.219999909e-01</y>
+					<z>5.799999833e-02</z>
 				</label.anchorPosition>
 			</label>
 		</px>
