@@ -47,8 +47,14 @@ void DemoScene::initialize()
         new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
     meshNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
-  auto label = Label(1, "My label 1", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
-  meshNodes.push_back(std::shared_ptr<LabelNode>(new LabelNode(label)));
+  auto label = Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
+  meshNodes.push_back(std::make_shared<LabelNode>(label));
+
+  auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.334f, 0.317f, -0.013f));
+  meshNodes.push_back(std::make_shared<LabelNode>(label2));
+
+  auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f));
+  meshNodes.push_back(std::make_shared<LabelNode>(label3));
 
   Persister::save(meshNodes, "../config/scene.xml");
 
