@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
+#include "./render_object.h"
 #include "./shader_program.h"
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
@@ -53,29 +54,22 @@ Mesh::~Mesh()
 
 void Mesh::initialize(Gl *gl)
 {
-  shaderProgram = std::unique_ptr<ShaderProgram>(
-      new ShaderProgram(gl, ":shader/phong.vert", ":shader/phong.frag"));
+  renderObject = std::unique_ptr<RenderObject>(
+      new RenderObject(gl, ":/shader/phong.vert", ":/shader/phong.frag"));
 
-  vertexArrayObject.create();
-  vertexArrayObject.bind();
-
-  shaderProgram->bind();
-
-  createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData, "index", 1,
-               indexCount);
+  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
+                             "index", 1, indexCount);
   delete[] indexData;
 
-  createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
-               "vertexPosition", 3, vertexCount);
+  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
+                             "vertexPosition", 3, vertexCount);
   delete[] positionData;
-  createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData, "vertexNormal", 3,
-               vertexCount);
+  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
+                             "vertexNormal", 3, vertexCount);
   delete[] normalData;
 
-  vertexArrayObject.release();
-  for (auto &buffer : buffers)
-    buffer.release();
-  shaderProgram->release();
+  renderObject->release();
+  renderObject->releaseBuffers();
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -104,50 +98,30 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
   return result;
 }
 
-template <class ElementType>
-void Mesh::createBuffer(QOpenGLBuffer::Type bufferType, ElementType *data,
-                        std::string usage, int perVertexElements,
-                        int numberOfVertices)
-{
-  QOpenGLBuffer buffer(bufferType);
-  buffer.create();
-  buffer.setUsagePattern(QOpenGLBuffer::StaticDraw);
-  buffer.bind();
-  buffer.allocate(data,
-                  numberOfVertices * perVertexElements * sizeof(ElementType));
-  glCheckError();
-
-  if (bufferType != QOpenGLBuffer::Type::IndexBuffer)
-    shaderProgram->enableAndSetAttributes(usage, perVertexElements);
-
-  buffers.push_back(buffer);
-}
-
 void Mesh::render(Gl *gl, const RenderData &renderData)
 {
-  if (!shaderProgram.get())
+  if (!renderObject.get())
     initialize(gl);
 
-  shaderProgram->bind();
+  renderObject->bind();
 
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *
                                         renderData.modelMatrix;
-  shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  shaderProgram->setUniform("modelMatrix", renderData.modelMatrix);
-  shaderProgram->setUniform("ambientColor", ambientColor);
-  shaderProgram->setUniform("diffuseColor", diffuseColor);
-  shaderProgram->setUniform("specularColor", specularColor);
+  renderObject->shaderProgram->setUniform("modelViewProjectionMatrix",
+                                          modelViewProjection);
+  renderObject->shaderProgram->setUniform("modelMatrix",
+                                          renderData.modelMatrix);
+  renderObject->shaderProgram->setUniform("ambientColor", ambientColor);
+  renderObject->shaderProgram->setUniform("diffuseColor", diffuseColor);
+  renderObject->shaderProgram->setUniform("specularColor", specularColor);
   auto view = renderData.viewMatrix;
-  shaderProgram->setUniform(
+  renderObject->shaderProgram->setUniform(
       "cameraDirection", Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  shaderProgram->setUniform("shininess", shininess);
-
-  vertexArrayObject.bind();
+  renderObject->shaderProgram->setUniform("shininess", shininess);
 
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
-  vertexArrayObject.release();
-  shaderProgram->release();
+  renderObject->release();
 }
 
