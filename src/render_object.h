@@ -11,9 +11,10 @@
 #include "./shader_program.h"
 
 /**
- * \brief
+ * \brief Encapsulates buffers and an associated shader program
  *
- *
+ * It provides helper functions to bind and release the
+ * shader and the vertex array object as well as all buffers.
  */
 class RenderObject
 {
