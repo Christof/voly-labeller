@@ -9,6 +9,7 @@
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
+#include "./camera_rotation_controller.h"
 
 int main(int argc, char **argv)
 {
@@ -25,11 +26,14 @@ int main(int argc, char **argv)
   window.rootContext()->setContextProperty("nodes", nodes.get());
   window.setSource(QUrl("qrc:ui.qml"));
 
+  CameraRotationController cameraRotationController(window);
+
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("../config/states.xml"),
                          invokeManager, signalManager);
 
   invokeManager->addHandler(&window);
+  invokeManager->addHandler("cameraRotation", &cameraRotationController);
   signalManager->addSender("KeyboardEventSender", &window);
 
   auto stateMachine = importer.import();
