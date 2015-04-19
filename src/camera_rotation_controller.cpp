@@ -16,3 +16,8 @@ void CameraRotationController::setRotate()
       Eigen::Vector2f(window.mousePosition.x(), window.mousePosition.y());
   qDebug() << "Start dragging at: " << mousePositionStart;
 }
+
+void CameraRotationController::updateRotate()
+{
+  qDebug() << "Update rotate";
+}

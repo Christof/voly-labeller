@@ -22,6 +22,7 @@ class CameraRotationController : public QObject
 
  public slots:
   void setRotate();
+  void updateRotate();
 
  private:
   Window &window;
