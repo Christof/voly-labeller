@@ -25,5 +25,12 @@
     <transition event="KeyboardEvent.DOWN.F">
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
+
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate">
+      <invoke targettype="cameraRotation" src="setRotate"/>
+    </transition>
+  </state>
+  <state id="rotate">
+    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
   </state>
 </scxml>
