@@ -24,6 +24,7 @@ class Window : public QQuickView
   explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
 
+  QPoint mousePosition;
   std::shared_ptr<QStateMachine> stateMachine;
  protected slots:
   void resizeOpenGL();
@@ -35,6 +36,7 @@ class Window : public QQuickView
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
   void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+  void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 
  private:
   QSurfaceFormat createSurfaceFormat();
