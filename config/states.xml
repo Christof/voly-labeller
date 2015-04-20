@@ -35,15 +35,18 @@
       <transition target="rotate-wait"/>
     </initial>
     <state id="rotate-wait">
-      <transition event="Mouse.MOVE" target="rotate-move">
+      <transition event="MouseMoveEvent.MOVE" target="rotate-move">
         <invoke targettype="cameraRotation" src="updateRotate"/>
       </transition>
     </state>
     <state id="rotate-move">
-      <transition event="Mouse.MOVE">
+      <transition event="MouseMoveEvent.MOVE">
         <invoke targettype="cameraRotation" src="updateRotate"/>
       </transition>
     </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <onexit>
+      <invoke targettype="cameraRotation" src="endRotate"/>
+    </onexit>
   </state>
 </scxml>
