@@ -2,9 +2,9 @@
 
 #define SRC_EIGEN_QDEBUG_H_
 
-#include <iostream>
-#include <QDebug>
 #include <Eigen/Core>
+#include <QDebug>
+#include <iostream>
 
 QDebug operator<<(QDebug dbg, const Eigen::Vector2f &vector)
 {

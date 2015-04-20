@@ -21,7 +21,7 @@ class CameraRotationController : public QObject
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  CameraRotationController(Camera &camera);
+  explicit CameraRotationController(Camera &camera);
   virtual ~CameraRotationController();
 
   void setFrameTime(double frameTime);

@@ -14,7 +14,7 @@ class MouseShapeController : public QObject
 {
   Q_OBJECT
  public:
-  MouseShapeController(QQuickView &view) : view(view)
+  explicit MouseShapeController(QQuickView &view) : view(view)
   {
   }
 
