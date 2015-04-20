@@ -26,20 +26,14 @@
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
 
-    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate">
-      <invoke targettype="cameraRotation" src="setRotate"/>
-    </transition>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>
   </state>
   <state id="rotate">
     <initial id="rotate-initial">
-      <transition target="rotate-wait"/>
+      <transition target="rotate-move"/>
       <invoke targettype="mouseShape" src="startDragging"/>
+      <invoke targettype="cameraRotation" src="setRotate"/>
     </initial>
-    <state id="rotate-wait">
-      <transition event="MouseMoveEvent.MOVE" target="rotate-move">
-        <invoke targettype="cameraRotation" src="updateRotate"/>
-      </transition>
-    </state>
     <state id="rotate-move">
       <transition event="MouseMoveEvent.MOVE">
         <invoke targettype="cameraRotation" src="updateRotate"/>
