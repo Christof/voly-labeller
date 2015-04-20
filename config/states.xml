@@ -25,5 +25,30 @@
     <transition event="KeyboardEvent.DOWN.F">
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
+
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate">
+      <invoke targettype="cameraRotation" src="setRotate"/>
+    </transition>
+  </state>
+  <state id="rotate">
+    <initial id="rotate-initial">
+      <transition target="rotate-wait"/>
+      <invoke targettype="mouseShape" src="startDragging"/>
+    </initial>
+    <state id="rotate-wait">
+      <transition event="MouseMoveEvent.MOVE" target="rotate-move">
+        <invoke targettype="cameraRotation" src="updateRotate"/>
+      </transition>
+    </state>
+    <state id="rotate-move">
+      <transition event="MouseMoveEvent.MOVE">
+        <invoke targettype="cameraRotation" src="updateRotate"/>
+      </transition>
+    </state>
+    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <onexit>
+      <invoke targettype="cameraRotation" src="endRotate"/>
+      <invoke targettype="mouseShape" src="endDragging"/>
+    </onexit>
   </state>
 </scxml>

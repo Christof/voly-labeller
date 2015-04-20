@@ -5,6 +5,9 @@
     <transition event="KeyboardEvent.UP.A" target="exit"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="exit"/>
     <transition event="MouseButtonEvent.UP.RIGHT" target="base"/>
+    <transition event="MouseMoveEvent.MOVE">
+      <invoke targettype="Window" src="somethingElse"/>
+    </transition>
     <transition event="KeyboardEvent.DOWN.V" target="base"/>
     <transition event="KeyboardEvent.DOWN.N" target="with-nesting"/>
     <transition event="KeyboardEvent.DOWN.I" target="with-nesting-invoke"/>

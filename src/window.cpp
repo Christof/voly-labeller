@@ -79,6 +79,11 @@ void Window::keyPressEvent(QKeyEvent *event)
   keysPressed += static_cast<Qt::Key>(event->key());
 }
 
+void Window::mouseMoveEvent(QMouseEvent *event)
+{
+  mousePosition = event->pos();
+}
+
 void Window::handleLazyInitialization()
 {
   static bool initialized = false;

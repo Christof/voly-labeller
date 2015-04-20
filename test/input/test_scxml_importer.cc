@@ -84,6 +84,16 @@ class Test_ScxmlImporter : public ::testing::Test
     application->processEvents();
   }
 
+  void sendMouseMoveEvent(QPointF newPosition)
+  {
+    application->sendEvent(eventSender,
+                           new QMouseEvent(QEvent::MouseMove, newPosition,
+                                           Qt::MouseButton::NoButton,
+                                           Qt::MouseButton::NoButton,
+                                           Qt::NoModifier));
+    application->processEvents();
+  }
+
   QCoreApplication *application;
   QObject *eventSender;
   ScxmlImporter *importer;
@@ -263,6 +273,17 @@ TEST_F(Test_ScxmlImporter, TransitionOnMouseReleaseEvent)
   sendMouseButtonReleaseEvent(Qt::MouseButton::RightButton);
 
   expectSingleStateWithName("base");
+}
+
+TEST_F(Test_ScxmlImporter, TransitionOnMouseMoveEvent)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+  expectSingleStateWithName("idle");
+
+  sendMouseMoveEvent(QPointF(123.1f, 56.0f));
+
+  EXPECT_EQ(1, handler.somethingElseCallCount);
 }
 
 TEST_F(Test_ScxmlImporter, EventFromCustomSignal)
