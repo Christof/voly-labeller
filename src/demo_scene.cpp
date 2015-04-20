@@ -13,6 +13,7 @@
 #include "./importer.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
+#include "./camera_zoom_controller.h"
 #include "./nodes.h"
 #include "./utils/persister.h"
 
@@ -25,9 +26,11 @@ DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
+  cameraZoomController = std::make_shared<CameraZoomController>(camera);
 
   invokeManager->addHandler("cam", cameraController.get());
   invokeManager->addHandler("cameraRotation", cameraRotationController.get());
+  invokeManager->addHandler("cameraZoom", cameraZoomController.get());
 }
 
 DemoScene::~DemoScene()
@@ -68,6 +71,7 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
   cameraRotationController->setFrameTime(frameTime);
+  cameraZoomController->setFrameTime(frameTime);
 }
 
 void DemoScene::render()

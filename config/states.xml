@@ -27,6 +27,7 @@
     </transition>
 
     <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>
+    <transition event="KeyboardEvent.DOWN.CTRL" target="ctrl"/>
   </state>
   <state id="rotate">
     <initial id="rotate-initial">
@@ -42,7 +43,27 @@
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
     <onexit>
       <invoke targettype="cameraRotation" src="endRotate"/>
-      <invoke targettype="mouseShape" src="endDragging"/>
+      <invoke targettype="mouseShape" src="reset"/>
+    </onexit>
+  </state>
+  <state id="ctrl">
+    <transition event="KeyboardEvent.DOWN.UP" target="idle"/>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="zoom"/>
+  </state>
+  <state id="zoom">
+    <initial id="zoom-initial">
+      <transition target="zoom-move"/>
+      <invoke targettype="mouseShape" src="startZoom"/>
+      <invoke targettype="cameraZoom" src="setRotate"/>
+    </initial>
+    <state id="zoom-move">
+      <transition event="MouseMoveEvent.MOVE">
+        <invoke targettype="cameraZoom" src="updateRotate"/>
+      </transition>
+    </state>
+    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <onexit>
+      <invoke targettype="mouseShape" src="reset"/>
     </onexit>
   </state>
 </scxml>

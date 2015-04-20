@@ -21,19 +21,27 @@ class MouseShapeController : public QObject
  public slots:
   void startDragging()
   {
-    auto cursor = view.cursor();
-    cursor.setShape(Qt::CursorShape::ClosedHandCursor);
-    view.setCursor(cursor);
+    setShape(Qt::CursorShape::ClosedHandCursor);
   }
 
-  void endDragging()
+  void reset()
   {
-    auto cursor = view.cursor();
-    cursor.setShape(Qt::CursorShape::ArrowCursor);
-    view.setCursor(cursor);
+    setShape(Qt::CursorShape::ArrowCursor);
+  }
+
+  void startZoom()
+  {
+    setShape(Qt::CursorShape::SizeVerCursor);
   }
 
  private:
+  void setShape(Qt::CursorShape shape)
+  {
+    auto cursor = view.cursor();
+    cursor.setShape(shape);
+    view.setCursor(cursor);
+  }
+
   QQuickView &view;
 };
 
