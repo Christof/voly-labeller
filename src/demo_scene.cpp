@@ -12,6 +12,7 @@
 #include "./render_data.h"
 #include "./importer.h"
 #include "./camera_controller.h"
+#include "./camera_rotation_controller.h"
 #include "./nodes.h"
 #include "./utils/persister.h"
 
@@ -22,10 +23,11 @@ DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
                      std::shared_ptr<Nodes> nodes)
   : nodes(nodes)
 {
-  cameraController =
-      std::shared_ptr<CameraController>(new CameraController(camera));
+  cameraController = std::make_shared<CameraController>(camera);
+  cameraRotationController = std::make_shared<CameraRotationController>(camera);
 
   invokeManager->addHandler("cam", cameraController.get());
+  invokeManager->addHandler("cameraRotation", cameraRotationController.get());
 }
 
 DemoScene::~DemoScene()

@@ -40,6 +40,7 @@ set(SOURCES
   src/demo_scene.cpp
   src/camera_controller.cpp
   src/camera_rotation_controller.cpp
+  src/mouse_shape_controller.h
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})

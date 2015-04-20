@@ -1,8 +1,10 @@
 #include "./camera_rotation_controller.h"
+#include <QCursor>
 #include <QDebug>
 #include "./eigen_qdebug.h"
 
-CameraRotationController::CameraRotationController(Window &window) : window(window)
+CameraRotationController::CameraRotationController(Camera &camera)
+  : camera(camera)
 {
 }
 
@@ -12,22 +14,16 @@ CameraRotationController::~CameraRotationController()
 
 void CameraRotationController::setRotate()
 {
-  mousePositionStart =
-      Eigen::Vector2f(cursor.pos().x(), cursor.pos().y());
-  qDebug() << "Start dragging at: " << cursor.pos();
-  cursor.setShape(Qt::CursorShape::ClosedHandCursor);
-  window.setCursor(cursor);
+  mousePositionStart = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
+  qDebug() << "Start dragging at: " << mousePositionStart;
 }
 
 void CameraRotationController::updateRotate()
 {
-  auto position = cursor.pos();
-  qDebug() << "Update rotate" << position;
+  qDebug() << "Update rotate" << QCursor::pos();
 }
 
 void CameraRotationController::endRotate()
 {
-  qDebug() << "Stop dragging at: " << cursor.pos();
-  cursor.setShape(Qt::CursorShape::ArrowCursor);
-  window.setCursor(cursor);
+  qDebug() << "Stop dragging at: " << QCursor::pos();
 }

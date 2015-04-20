@@ -33,6 +33,7 @@
   <state id="rotate">
     <initial id="rotate-initial">
       <transition target="rotate-wait"/>
+      <invoke targettype="mouseShape" src="startDragging"/>
     </initial>
     <state id="rotate-wait">
       <transition event="MouseMoveEvent.MOVE" target="rotate-move">
@@ -47,6 +48,7 @@
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
     <onexit>
       <invoke targettype="cameraRotation" src="endRotate"/>
+      <invoke targettype="mouseShape" src="endDragging"/>
     </onexit>
   </state>
 </scxml>

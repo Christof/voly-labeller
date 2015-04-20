@@ -3,9 +3,8 @@
 #define SRC_CAMERA_ROTATION_CONTROLLER_H_
 
 #include <QObject>
-#include <QCursor>
 #include <Eigen/Core>
-#include "./window.h"
+#include "./camera.h"
 
 /**
  * \brief
@@ -18,7 +17,7 @@ class CameraRotationController : public QObject
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  CameraRotationController(Window &window);
+  CameraRotationController(Camera &camera);
   virtual ~CameraRotationController();
 
  public slots:
@@ -27,8 +26,7 @@ class CameraRotationController : public QObject
   void endRotate();
 
  private:
-  QCursor cursor;
-  Window &window;
+  Camera &camera;
   Eigen::Vector2f mousePositionStart;
 };
 
