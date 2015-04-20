@@ -67,6 +67,7 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
+  cameraRotationController->setFrameTime(frameTime);
 }
 
 void DemoScene::render()

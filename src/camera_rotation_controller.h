@@ -20,6 +20,8 @@ class CameraRotationController : public QObject
   CameraRotationController(Camera &camera);
   virtual ~CameraRotationController();
 
+  void setFrameTime(double frameTime);
+
  public slots:
   void setRotate();
   void updateRotate();
@@ -27,7 +29,9 @@ class CameraRotationController : public QObject
 
  private:
   Camera &camera;
-  Eigen::Vector2f mousePositionStart;
+  Eigen::Vector2f lastMousePosition;
+  double frameTime;
+  double speedFactor = 0.5;
 };
 
 #endif  // SRC_CAMERA_ROTATION_CONTROLLER_H_
