@@ -6,9 +6,9 @@
 #include <QtQuick/QQuickView>
 
 /**
- * \brief
+ * \brief Changes the shape of the mouse cursor depending on the state
  *
- *
+ * The state is changed by the state machine using the provided slots.
  */
 class MouseShapeController : public QObject
 {
