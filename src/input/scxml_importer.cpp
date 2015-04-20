@@ -164,6 +164,11 @@ void ScxmlImporter::readTransition()
     currentTransition = createMouseButtonEventTransition(event);
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
+  else if (event.startsWith("MouseMoveEvent"))
+  {
+    currentTransition = createMouseMoveEventTransition();
+    transitions.push_back(std::make_tuple(currentTransition, target));
+  }
   else if (event.isEmpty() &&
            elementStack[elementStack.size() - 2] == ScxmlElement::initial)
   {
@@ -285,6 +290,16 @@ ScxmlImporter::createMouseButtonEventTransition(const QString &event)
 
   auto keyAsString = event.mid(lastDotIndex + 1);
   auto buttonCode = toButton(keyAsString);
+  return new QMouseEventTransition(signalManager->getFor("KeyboardEventSender"),
+                                   eventType, buttonCode, stateStack.top());
+}
+
+QAbstractTransition *
+ScxmlImporter::createMouseMoveEventTransition()
+{
+  QEvent::Type eventType = QEvent::MouseMove;
+
+  auto buttonCode = Qt::MouseButton::NoButton;
   return new QMouseEventTransition(signalManager->getFor("KeyboardEventSender"),
                                    eventType, buttonCode, stateStack.top());
 }
