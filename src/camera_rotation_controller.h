@@ -2,9 +2,9 @@
 
 #define SRC_CAMERA_ROTATION_CONTROLLER_H_
 
-#include <QObject>
-#include <Eigen/Core>
-#include "./camera.h"
+#include "./mouse_dragging_controller.h"
+
+class Camera;
 
 /**
  * \brief Controls rotation of the camrea using mouse dragging
@@ -15,25 +15,16 @@
  * CameraRotationController::setFrameTime must be called each frame
  * to ensure a steady camera speed.
  */
-class CameraRotationController : public QObject
+class CameraRotationController : public MouseDraggingController
 {
-  Q_OBJECT
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   explicit CameraRotationController(Camera &camera);
-  virtual ~CameraRotationController();
 
-  void setFrameTime(double frameTime);
-
- public slots:
-  void startDragging();
-  void updateDragging();
+ protected:
+  virtual void update(Eigen::Vector2f diff);
 
  private:
   Camera &camera;
-  Eigen::Vector2f lastMousePosition;
-  double frameTime;
   double speedFactor = 0.5;
 };
 

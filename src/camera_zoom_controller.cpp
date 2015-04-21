@@ -1,32 +1,16 @@
 #include "./camera_zoom_controller.h"
 #include <QCursor>
+#include "./camera.h"
 
 CameraZoomController::CameraZoomController(Camera &camera) : camera(camera)
 {
 }
 
-CameraZoomController::~CameraZoomController()
+void CameraZoomController::update(Eigen::Vector2f diff)
 {
-}
-
-void CameraZoomController::setFrameTime(double frameTime)
-{
-  this->frameTime = frameTime;
-}
-
-void CameraZoomController::startDragging()
-{
-  lastMousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
-}
-
-void CameraZoomController::updateDragging()
-{
-  auto mousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
   double scaling = frameTime * speedFactor;
-  Eigen::Vector2f diff = scaling * (lastMousePosition - mousePosition);
+  Eigen::Vector2f delta = scaling * diff;
 
-  camera.changeRadius(diff.y());
-
-  lastMousePosition = mousePosition;
+  camera.changeRadius(delta.y());
 }
 

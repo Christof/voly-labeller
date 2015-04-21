@@ -2,9 +2,9 @@
 
 #define SRC_CAMERA_ZOOM_CONTROLLER_H_
 
-#include <QObject>
-#include <Eigen/Core>
-#include "./camera.h"
+#include "./mouse_dragging_controller.h"
+
+class Camera;
 
 /**
  * \brief Controls zoom of the camrea using mouse dragging with ctrl
@@ -15,25 +15,17 @@
  * CameraZoomController::setFrameTime must be called each frame
  * to ensure a steady camera speed.
  */
-class CameraZoomController : public QObject
+class CameraZoomController : public MouseDraggingController
 {
-  Q_OBJECT
  public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
   explicit CameraZoomController(Camera &camera);
-  virtual ~CameraZoomController();
-
-  void setFrameTime(double frameTime);
-
- public slots:
-  void startDragging();
   void updateDragging();
+
+ protected:
+  virtual void update(Eigen::Vector2f diff);
 
  private:
   Camera &camera;
-  Eigen::Vector2f lastMousePosition;
-  double frameTime;
   double speedFactor = 1;
 };
 
