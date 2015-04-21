@@ -47,11 +47,11 @@
     </onexit>
   </state>
   <state id="ctrl">
-    <transition event="KeyboardEvent.DOWN.UP" target="idle"/>
+    <transition event="KeyboardEvent.UP.CTRL" target="idle"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="zoom"/>
   </state>
   <state id="shift">
-    <transition event="KeyboardEvent.DOWN.UP" target="idle"/>
+    <transition event="KeyboardEvent.UP.SHIFT" target="idle"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="move"/>
   </state>
   <state id="zoom">
@@ -65,7 +65,7 @@
         <invoke targettype="cameraZoom" src="updateDragging"/>
       </transition>
     </state>
-    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <transition event="MouseButtonEvent.UP.LEFT" target="ctrl"/>
     <onexit>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
@@ -81,7 +81,7 @@
         <invoke targettype="cameraMove" src="updateDragging"/>
       </transition>
     </state>
-    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <transition event="MouseButtonEvent.UP.LEFT" target="shift"/>
     <onexit>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
