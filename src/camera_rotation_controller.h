@@ -27,9 +27,8 @@ class CameraRotationController : public QObject
   void setFrameTime(double frameTime);
 
  public slots:
-  void setRotate();
-  void updateRotate();
-  void endRotate();
+  void startDragging();
+  void updateDragging();
 
  private:
   Camera &camera;

@@ -17,13 +17,13 @@ void CameraRotationController::setFrameTime(double frameTime)
   this->frameTime = frameTime;
 }
 
-void CameraRotationController::setRotate()
+void CameraRotationController::startDragging()
 {
   lastMousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
   qDebug() << "Start dragging at: " << lastMousePosition;
 }
 
-void CameraRotationController::updateRotate()
+void CameraRotationController::updateDragging()
 {
   auto mousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
   double scaling = frameTime * speedFactor / camera.getPosition().norm();
@@ -33,10 +33,5 @@ void CameraRotationController::updateRotate()
   camera.changeDeclination(atan(diff.y()));
 
   lastMousePosition = mousePosition;
-}
-
-void CameraRotationController::endRotate()
-{
-  qDebug() << "Stop dragging at: " << QCursor::pos();
 }
 

@@ -27,8 +27,8 @@ class CameraZoomController : public QObject
   void setFrameTime(double frameTime);
 
  public slots:
-  void setRotate();
-  void updateRotate();
+  void startDragging();
+  void updateDragging();
 
  private:
   Camera &camera;

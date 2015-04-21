@@ -33,16 +33,15 @@
     <initial id="rotate-initial">
       <transition target="rotate-move"/>
       <invoke targettype="mouseShape" src="startDragging"/>
-      <invoke targettype="cameraRotation" src="setRotate"/>
+      <invoke targettype="cameraRotation" src="startDragging"/>
     </initial>
     <state id="rotate-move">
       <transition event="MouseMoveEvent.MOVE">
-        <invoke targettype="cameraRotation" src="updateRotate"/>
+        <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
     </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
     <onexit>
-      <invoke targettype="cameraRotation" src="endRotate"/>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
   </state>
@@ -54,11 +53,11 @@
     <initial id="zoom-initial">
       <transition target="zoom-move"/>
       <invoke targettype="mouseShape" src="startZoom"/>
-      <invoke targettype="cameraZoom" src="setRotate"/>
+      <invoke targettype="cameraZoom" src="startDragging"/>
     </initial>
     <state id="zoom-move">
       <transition event="MouseMoveEvent.MOVE">
-        <invoke targettype="cameraZoom" src="updateRotate"/>
+        <invoke targettype="cameraZoom" src="updateDragging"/>
       </transition>
     </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>

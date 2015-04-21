@@ -14,12 +14,12 @@ void CameraZoomController::setFrameTime(double frameTime)
   this->frameTime = frameTime;
 }
 
-void CameraZoomController::setRotate()
+void CameraZoomController::startDragging()
 {
   lastMousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
 }
 
-void CameraZoomController::updateRotate()
+void CameraZoomController::updateDragging()
 {
   auto mousePosition = Eigen::Vector2f(QCursor::pos().x(), QCursor::pos().y());
   double scaling = frameTime * speedFactor;
