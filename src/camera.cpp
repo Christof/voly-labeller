@@ -53,6 +53,11 @@ void Camera::strafeRight(float distance)
   strafe(distance);
 }
 
+void Camera::moveVertical(float distance)
+{
+  position += distance * up;
+}
+
 void Camera::changeAzimuth(float deltaAngle)
 {
   azimuth += deltaAngle;
