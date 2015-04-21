@@ -35,6 +35,7 @@ class Camera
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
 
+  Eigen::Vector3f origin;
   Eigen::Vector3f position;
   Eigen::Vector3f direction;
   Eigen::Vector3f up;

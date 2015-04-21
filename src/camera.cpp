@@ -3,8 +3,8 @@
 #include <math.h>
 
 Camera::Camera()
-  : position(0, 0, -1.0f), direction(0, 0, 1), up(0, 1, 0), radius(1.0f),
-    azimuth(-M_PI / 2.0f), declination(0)
+  : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
+    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0)
 {
   projection = createProjection(M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
 }
@@ -41,6 +41,7 @@ void Camera::strafe(float distance)
 {
   auto right = direction.cross(up);
   position += distance * right;
+  origin += distance * right;
 }
 
 void Camera::strafeLeft(float distance)
@@ -56,6 +57,7 @@ void Camera::strafeRight(float distance)
 void Camera::moveVertical(float distance)
 {
   position += distance * up;
+  origin += distance * up;
 }
 
 void Camera::changeAzimuth(float deltaAngle)
@@ -73,17 +75,18 @@ void Camera::changeDeclination(float deltaAngle)
 void Camera::changeRadius(float deltaRadius)
 {
   radius += deltaRadius;
-  position = position.normalized() * radius;
+  position = origin + (position - origin).normalized() * radius;
   update();
 }
 
 void Camera::update()
 {
-  radius = position.norm();
-  position = Eigen::Vector3f(cos(azimuth) * cos(declination), sin(declination),
+  radius = (origin - position).norm();
+  position = origin +
+             Eigen::Vector3f(cos(azimuth) * cos(declination), sin(declination),
                              sin(azimuth) * cos(declination)) *
-             radius;
-  direction = -position.normalized();
+                 radius;
+  direction = (origin - position).normalized();
   float upDeclination = declination - M_PI / 2.0f;
   up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
                         sin(azimuth) * cos(upDeclination)).normalized();
@@ -96,10 +99,8 @@ Eigen::Matrix4f Camera::getViewMatrix()
   auto v = n.cross(u);
   auto e = position;
 
-  view << u.x(), u.y(), u.z(), u.dot(e),
-       v.x(), v.y(), v.z(), v.dot(e),
-       n.x(), n.y(), n.z(), n.dot(e),
-       0, 0, 0, 1;
+  view << u.x(), u.y(), u.z(), u.dot(e), v.x(), v.y(), v.z(), v.dot(e), n.x(),
+      n.y(), n.z(), n.dot(e), 0, 0, 0, 1;
 
   return view;
 }
