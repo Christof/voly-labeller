@@ -24,6 +24,7 @@ class Camera
   void moveBackward(float distance);
   void strafeLeft(float distance);
   void strafeRight(float distance);
+  void strafe(float distance);
 
   void changeAzimuth(float deltaAngle);
   void changeDeclination(float deltaAngle);

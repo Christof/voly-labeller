@@ -37,16 +37,20 @@ void Camera::moveBackward(float distance)
   position -= distance * direction;
 }
 
-void Camera::strafeLeft(float distance)
+void Camera::strafe(float distance)
 {
   auto right = direction.cross(up);
-  position -= distance * right;
+  position += distance * right;
+}
+
+void Camera::strafeLeft(float distance)
+{
+  strafe(-distance);
 }
 
 void Camera::strafeRight(float distance)
 {
-  auto right = direction.cross(up);
-  position += distance * right;
+  strafe(distance);
 }
 
 void Camera::changeAzimuth(float deltaAngle)
