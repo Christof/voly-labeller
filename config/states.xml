@@ -26,29 +26,43 @@
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
 
-    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate">
-      <invoke targettype="cameraRotation" src="setRotate"/>
-    </transition>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>
+    <transition event="KeyboardEvent.DOWN.CTRL" target="ctrl"/>
   </state>
   <state id="rotate">
     <initial id="rotate-initial">
-      <transition target="rotate-wait"/>
+      <transition target="rotate-move"/>
       <invoke targettype="mouseShape" src="startDragging"/>
+      <invoke targettype="cameraRotation" src="startDragging"/>
     </initial>
-    <state id="rotate-wait">
-      <transition event="MouseMoveEvent.MOVE" target="rotate-move">
-        <invoke targettype="cameraRotation" src="updateRotate"/>
-      </transition>
-    </state>
     <state id="rotate-move">
       <transition event="MouseMoveEvent.MOVE">
-        <invoke targettype="cameraRotation" src="updateRotate"/>
+        <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
     </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
     <onexit>
-      <invoke targettype="cameraRotation" src="endRotate"/>
-      <invoke targettype="mouseShape" src="endDragging"/>
+      <invoke targettype="mouseShape" src="reset"/>
+    </onexit>
+  </state>
+  <state id="ctrl">
+    <transition event="KeyboardEvent.DOWN.UP" target="idle"/>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="zoom"/>
+  </state>
+  <state id="zoom">
+    <initial id="zoom-initial">
+      <transition target="zoom-move"/>
+      <invoke targettype="mouseShape" src="startZoom"/>
+      <invoke targettype="cameraZoom" src="startDragging"/>
+    </initial>
+    <state id="zoom-move">
+      <transition event="MouseMoveEvent.MOVE">
+        <invoke targettype="cameraZoom" src="updateDragging"/>
+      </transition>
+    </state>
+    <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
+    <onexit>
+      <invoke targettype="mouseShape" src="reset"/>
     </onexit>
   </state>
 </scxml>

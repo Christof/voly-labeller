@@ -10,6 +10,7 @@ class Nodes;
 class InvokeManager;
 class CameraController;
 class CameraRotationController;
+class CameraZoomController;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -34,6 +35,7 @@ class DemoScene : public AbstractScene
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
   std::shared_ptr<CameraRotationController> cameraRotationController;
+  std::shared_ptr<CameraZoomController> cameraZoomController;
   double frameTime;
 
   std::shared_ptr<Nodes> nodes;
