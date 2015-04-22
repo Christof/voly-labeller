@@ -24,6 +24,8 @@ class Camera
   void moveBackward(float distance);
   void strafeLeft(float distance);
   void strafeRight(float distance);
+  void strafe(float distance);
+  void moveVertical(float distance);
 
   void changeAzimuth(float deltaAngle);
   void changeDeclination(float deltaAngle);
@@ -33,6 +35,7 @@ class Camera
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
 
+  Eigen::Vector3f origin;
   Eigen::Vector3f position;
   Eigen::Vector3f direction;
   Eigen::Vector3f up;

@@ -8,6 +8,9 @@
 /**
  * \brief Base class for controllers which are based on mouse dragging
  *
+ * It is enabled via the state machine, which calls the slots.
+ * The mouse position is gathered using QCursor.
+ *
  * MouseDraggingController::setFrameTime must be called each frame
  * to ensure a steady camera speed.
  */

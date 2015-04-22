@@ -42,6 +42,7 @@ set(SOURCES
   src/mouse_dragging_controller.cpp
   src/camera_rotation_controller.cpp
   src/camera_zoom_controller.cpp
+  src/camera_move_controller.cpp
   src/mouse_shape_controller.h
   ${RESOURCES})
 
