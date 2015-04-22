@@ -26,6 +26,9 @@ class Mesh : public Renderable
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
+  float* positionData;
+  int vertexCount;
+
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
@@ -37,10 +40,8 @@ class Mesh : public Renderable
                                           aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);
 
-  int vertexCount;
   int indexCount;
   unsigned int *indexData;
-  float* positionData;
   float* normalData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;

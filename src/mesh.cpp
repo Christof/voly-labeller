@@ -51,6 +51,7 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
+  delete[] positionData;
 }
 
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
@@ -61,7 +62,6 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
 
   renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
                              "vertexPosition", 3, vertexCount);
-  delete[] positionData;
   renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
                              "vertexNormal", 3, vertexCount);
   delete[] normalData;
