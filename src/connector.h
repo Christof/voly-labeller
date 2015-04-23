@@ -25,6 +25,7 @@ class Connector : public Renderable
   virtual ~Connector();
 
   Eigen::Vector4f color;
+  float lineWidth = 3.0f;
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);

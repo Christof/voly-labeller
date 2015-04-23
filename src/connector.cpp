@@ -44,7 +44,7 @@ void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
 
 void Connector::draw(Gl *gl)
 {
-  gl->glLineWidth(3.0f);
+  gl->glLineWidth(lineWidth);
   glAssert(gl->glDrawArrays(GL_LINES, 0, points.size()));
 }
 
