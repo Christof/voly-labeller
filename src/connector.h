@@ -21,6 +21,7 @@ class Connector : public Renderable
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   Connector(Eigen::Vector3f anchor, Eigen::Vector3f label);
+  Connector(std::vector<Eigen::Vector3f> points);
   virtual ~Connector();
 
   Eigen::Vector4f color;
@@ -32,8 +33,7 @@ class Connector : public Renderable
   virtual void draw(Gl *gl);
 
  private:
-  Eigen::Vector3f anchor;
-  Eigen::Vector3f label;
+  std::vector<Eigen::Vector3f> points;
 };
 
 #endif  // SRC_CONNECTOR_H_
