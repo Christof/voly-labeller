@@ -41,10 +41,10 @@ Obb::Obb(Eigen::MatrixXf points)
   auto lower = Eigen::Vector3f(onAxis1.minCoeff(), onAxis2.minCoeff(),
                                onAxis3.minCoeff());
 
-  halfWidths = 0.5f * (lower + upper);
+  halfWidths = 0.5f * (upper - lower);
 
-  center =
-      halfWidths.x() * axis1 + halfWidths.y() * axis2 + halfWidths.z() * axis3;
+  auto halfSum = 0.5f * (upper + lower);
+  center = halfSum.x() * axis1 + halfSum.y() * axis2 + halfSum.z() * axis3;
 
   std::cout << "center " << center << std::endl;
   std::cout << "half widths " << halfWidths << std::endl;
