@@ -29,6 +29,7 @@ set(SOURCES
   src/renderable.cpp
   src/mesh.cpp
   src/quad.cpp
+  src/obb.cpp
   src/connector.cpp
   src/texture.cpp
   src/importer.cpp

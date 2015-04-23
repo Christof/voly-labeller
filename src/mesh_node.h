@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 #include "./node.h"
+#include "./obb.h"
 #include "./importer.h"
 
 class Mesh;
@@ -59,6 +60,7 @@ class MeshNode : public Node
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
   Eigen::Matrix4f transformation;
+  Obb obb;
 };
 
 namespace boost
