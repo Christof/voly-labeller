@@ -12,12 +12,9 @@ Obb::Obb(Eigen::MatrixXf points)
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXf> eig(cov);
   Eigen::MatrixXf eigenVectors = eig.eigenvectors();
 
-  // Gram-Schmidt process
   axis1 = eigenVectors.row(2).normalized();
-  auto eigen2 = eigenVectors.row(1);
-  auto dir2 = eigen2 - eigen2.dot(axis1) * eigen2;
-  axis2 = dir2.normalized();
-  axis3 = axis1.cross(axis2);
+  axis2 = eigenVectors.row(1).normalized();
+  axis3 = eigenVectors.row(0).normalized();
 
   std::cout << "Axes:" << std::endl;
   std::cout << axis1 << std::endl;
