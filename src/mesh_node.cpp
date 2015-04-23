@@ -35,7 +35,8 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
     obb.corners[0], obb.corners[4], obb.corners[1], obb.corners[5],
     obb.corners[2], obb.corners[6], obb.corners[3], obb.corners[7]
   });
-  obbVis->color = Eigen::Vector4f(meshIndex, 0, 1, 1);
+  obbVis->color = Eigen::Vector4f(meshIndex, 0.5f, 0.5f, 1);
+  obbVis->lineWidth = 1.0f;
 }
 
 MeshNode::~MeshNode()
