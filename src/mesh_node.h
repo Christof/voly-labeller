@@ -10,7 +10,6 @@
 #include <QDebug>
 #include <memory>
 #include <string>
-#include <vector>
 #include "./node.h"
 #include "./obb.h"
 #include "./importer.h"
@@ -61,7 +60,7 @@ class MeshNode : public Node
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
-  std::vector<Connector> obbVis;
+  std::shared_ptr<Connector> obbVis;
   Eigen::Matrix4f transformation;
   Obb obb;
 };

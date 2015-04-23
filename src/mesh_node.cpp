@@ -27,21 +27,15 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
 
   obb = Obb(data);
 
-  auto connector = Connector(obb.corners[0], obb.corners[1]);
-  connector.color = Eigen::Vector4f(meshIndex, 0, 1, 1);
-  obbVis.push_back(connector);
-
-  connector = Connector(obb.corners[1], obb.corners[2]);
-  connector.color = Eigen::Vector4f(meshIndex, 0, 1, 1);
-  obbVis.push_back(connector);
-
-  connector = Connector(obb.corners[2], obb.corners[3]);
-  connector.color = Eigen::Vector4f(meshIndex, 0, 1, 1);
-  obbVis.push_back(connector);
-
-  connector = Connector(obb.corners[3], obb.corners[0]);
-  connector.color = Eigen::Vector4f(meshIndex, 0, 1, 1);
-  obbVis.push_back(connector);
+  obbVis = std::make_shared<Connector>(std::vector<Eigen::Vector3f>{
+    obb.corners[0], obb.corners[1], obb.corners[1], obb.corners[2],
+    obb.corners[2], obb.corners[3], obb.corners[3], obb.corners[0],
+    obb.corners[4], obb.corners[5], obb.corners[5], obb.corners[6],
+    obb.corners[6], obb.corners[7], obb.corners[7], obb.corners[4],
+    obb.corners[0], obb.corners[4], obb.corners[1], obb.corners[5],
+    obb.corners[2], obb.corners[6], obb.corners[3], obb.corners[7]
+  });
+  obbVis->color = Eigen::Vector4f(meshIndex, 0, 1, 1);
 }
 
 MeshNode::~MeshNode()
@@ -53,8 +47,7 @@ void MeshNode::render(Gl *gl, RenderData renderData)
   renderData.modelMatrix = transformation;
   mesh->render(gl, renderData);
 
-  for (auto &connector : obbVis)
-    connector.render(gl, renderData);
+  obbVis->render(gl, renderData);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()
