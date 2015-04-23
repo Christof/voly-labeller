@@ -16,6 +16,8 @@ class Obb
   Obb() = default;
   Obb(Eigen::MatrixXf points);
 
+  Eigen::Vector3f corners[8];
+
  private:
   Eigen::Vector3f axis1;
   Eigen::Vector3f axis2;
@@ -25,7 +27,6 @@ class Obb
 
   Eigen::Vector3f center;
 
-  Eigen::Vector3f corners[8];
 };
 
 #endif  // SRC_OBB_H_
