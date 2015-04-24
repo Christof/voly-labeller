@@ -6,6 +6,7 @@
 #include "./importer.h"
 #include "./gl.h"
 #include "./mesh_node.h"
+#include "./obb_node.h"
 #include "./coordinate_system_node.h"
 
 Nodes::Nodes()
@@ -50,6 +51,12 @@ void Nodes::render(Gl *gl, RenderData renderData)
 {
   for (auto &node : nodes)
     node->render(gl, renderData);
+
+  if (showBoundingVolumes)
+  {
+    for (auto &node : obbNodes)
+      node->render(gl, renderData);
+  }
 }
 
 void Nodes::saveSceneTo(QUrl url)
@@ -65,5 +72,22 @@ void Nodes::saveSceneTo(std::string filename)
 void Nodes::clear()
 {
   nodes.clear();
+}
+
+void Nodes::toggleBoundingVolumes()
+{
+  showBoundingVolumes = !showBoundingVolumes;
+
+  if (showBoundingVolumes)
+  {
+    obbNodes.clear();
+    for (auto &node : nodes)
+    {
+      if (node->getObb().get())
+      {
+        obbNodes.push_back(std::make_shared<ObbNode>(node->getObb()));
+      }
+    }
+  }
 }
 

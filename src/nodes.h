@@ -41,8 +41,12 @@ class Nodes : public QObject
 
   void clear();
 
+  void toggleBoundingVolumes();
+
  private:
   std::vector<std::shared_ptr<Node>> nodes;
+  bool showBoundingVolumes = false;
+  std::vector<std::shared_ptr<Node>> obbNodes;
 };
 
 #endif  // SRC_NODES_H_

@@ -47,6 +47,11 @@ Item {
           onTriggered: toggleVisibility();
         }
         MenuItem {
+          text: "Toggle bounding volumes"
+          shortcut: "F2"
+          onTriggered: nodes.toggleBoundingVolumes();
+        }
+        MenuItem {
           text: "Display state machine state"
           shortcut: "l"
           onTriggered: window.printCurrentState();
