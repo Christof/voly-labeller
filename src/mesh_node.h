@@ -51,18 +51,21 @@ class MeshNode : public Node
 
  private:
   friend class boost::serialization::access;
+
+  void createObbVisualization();
+
   template <class Archive>
   void serialize(Archive &ar, unsigned int version) const
   {
     boost::serialization::void_cast_register<MeshNode, Node>(
         static_cast<MeshNode *>(NULL), static_cast<Node *>(NULL));
   };
+
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;
-  std::shared_ptr<Connector> obbVis;
+  std::shared_ptr<Connector> obbVisualization;
   Eigen::Matrix4f transformation;
-  Obb obb;
 };
 
 namespace boost
