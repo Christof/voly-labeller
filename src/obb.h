@@ -14,7 +14,7 @@ class Obb
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Obb() = default;
-  Obb(Eigen::MatrixXf points);
+  explicit Obb(Eigen::MatrixXf points);
 
   Eigen::Vector3f corners[8];
 
@@ -27,7 +27,8 @@ class Obb
 
   void calculateCenterAndHalfWidhts(Eigen::MatrixXf &onAxes);
   void calculateCorners();
-  Eigen::Vector3f getCornerWidths(float axis1Sign, float axis2Sign, float axis3Sign);
+  Eigen::Vector3f getCornerWidths(float axis1Sign, float axis2Sign,
+                                  float axis3Sign);
 };
 
 #endif  // SRC_OBB_H_

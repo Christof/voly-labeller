@@ -1,10 +1,11 @@
 #include "./connector.h"
+#include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
 
 Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
-  : Connector(std::vector<Eigen::Vector3f> { anchor, label })
+  : Connector(std::vector<Eigen::Vector3f>{ anchor, label })
 {
 }
 

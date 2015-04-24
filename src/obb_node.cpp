@@ -1,5 +1,6 @@
 #include "./obb_node.h"
 #include <Eigen/Core>
+#include <vector>
 #include "./obb.h"
 #include "./connector.h"
 

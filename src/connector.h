@@ -3,6 +3,7 @@
 #define SRC_CONNECTOR_H_
 
 #include <Eigen/Core>
+#include <vector>
 #include "./render_data.h"
 #include "./renderable.h"
 
@@ -21,7 +22,7 @@ class Connector : public Renderable
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   Connector(Eigen::Vector3f anchor, Eigen::Vector3f label);
-  Connector(std::vector<Eigen::Vector3f> points);
+  explicit Connector(std::vector<Eigen::Vector3f> points);
   virtual ~Connector();
 
   Eigen::Vector4f color;

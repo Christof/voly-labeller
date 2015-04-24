@@ -1,6 +1,6 @@
 #include "./obb.h"
 #include <Eigen/Eigenvalues>
-#include <iostream>
+#include <limits>
 
 Obb::Obb(Eigen::MatrixXf points)
 {
