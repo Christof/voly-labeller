@@ -19,14 +19,15 @@ class Obb
   Eigen::Vector3f corners[8];
 
  private:
-  Eigen::Vector3f axis1;
-  Eigen::Vector3f axis2;
-  Eigen::Vector3f axis3;
+  Eigen::Matrix3f axes;
 
   Eigen::Vector3f halfWidths;
 
   Eigen::Vector3f center;
 
+  void calculateCenterAndHalfWidhts(Eigen::MatrixXf &onAxes);
+  void calculateCorners();
+  Eigen::Vector3f getCornerWidths(float axis1Sign, float axis2Sign, float axis3Sign);
 };
 
 #endif  // SRC_OBB_H_
