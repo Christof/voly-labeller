@@ -9,6 +9,9 @@ class Gl;
 class Obb;
 class Connector;
 
+/**
+ * \brief Node which displays an Obb
+ */
 class ObbNode : public Node
 {
  public:

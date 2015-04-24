@@ -5,9 +5,11 @@
 #include <Eigen/Core>
 
 /**
- * \brief
+ * \brief Oriented bounding box
  *
- *
+ * The algorithm to create it used based on Gottschalk, S. (2000).
+ * Collision Queries using Oriented Bounding Boxes. Retrieved from
+ * http://www.mechcore.net/files/docs/alg/gottschalk00collision.pdf
  */
 class Obb
 {

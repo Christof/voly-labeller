@@ -11,10 +11,12 @@ class Gl;
 class ShaderProgram;
 
 /**
- * \brief Draws a line between two points
+ * \brief Draws a line between two points or many points
  *
  * It is mainly intended to draw the line between an
  * anchor and the corresponding label.
+ *
+ * It is also used to visualize the Obb.
  */
 class Connector : public Renderable
 {
