@@ -5,9 +5,11 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <memory>
 #include "./render_data.h"
 
 class Gl;
+class Obb;
 
 /**
  * \brief Base class for nodes which are managed by the
@@ -24,6 +26,11 @@ class Node
   }
 
   virtual void render(Gl *gl, RenderData renderData) = 0;
+
+  virtual std::shared_ptr<Obb> getObb()
+  {
+    return std::shared_ptr<Obb>();
+  }
 
  protected:
   Node()

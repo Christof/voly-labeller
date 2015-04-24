@@ -14,6 +14,11 @@ MeshNode::~MeshNode()
 {
 }
 
+std::shared_ptr<Obb> MeshNode::getObb()
+{
+  return mesh->obb;
+}
+
 void MeshNode::render(Gl *gl, RenderData renderData)
 {
   renderData.modelMatrix = transformation;
@@ -29,3 +34,4 @@ void MeshNode::setTransformation(Eigen::Matrix4f transformation)
 {
   this->transformation = transformation;
 }
+

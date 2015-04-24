@@ -11,7 +11,9 @@
 #include <memory>
 #include <string>
 #include "./node.h"
+#include "./obb.h"
 #include "./importer.h"
+#include "./connector.h"
 
 class Mesh;
 class Gl;
@@ -47,14 +49,20 @@ class MeshNode : public Node
     ar << BOOST_SERIALIZATION_NVP(transformation);
   };
 
+  virtual std::shared_ptr<Obb> getObb();
+
  private:
   friend class boost::serialization::access;
+
+  void createObbVisualization();
+
   template <class Archive>
   void serialize(Archive &ar, unsigned int version) const
   {
     boost::serialization::void_cast_register<MeshNode, Node>(
         static_cast<MeshNode *>(NULL), static_cast<Node *>(NULL));
   };
+
   std::string assetFilename;
   int meshIndex;
   std::shared_ptr<Mesh> mesh;

@@ -14,6 +14,7 @@
 #include "./renderable.h"
 
 class Gl;
+class Obb;
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -26,6 +27,8 @@ class Mesh : public Renderable
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
+  std::shared_ptr<Obb> obb;
+
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
@@ -33,6 +36,7 @@ class Mesh : public Renderable
   virtual void draw(Gl *gl);
 
  private:
+  void createObb();
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);

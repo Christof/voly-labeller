@@ -29,11 +29,13 @@ set(SOURCES
   src/renderable.cpp
   src/mesh.cpp
   src/quad.cpp
+  src/obb.cpp
   src/connector.cpp
   src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
+  src/obb_node.cpp
   src/coordinate_system_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
