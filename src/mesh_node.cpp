@@ -8,25 +8,7 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {
-  std::cout << assetFilename << " " << meshIndex << " " << mesh->vertexCount
-            << std::endl;
-
-  // auto vertexCount = 4;
-  auto vertexCount = mesh->vertexCount;
-  Eigen::MatrixXf data(3, vertexCount);
-  auto positions = mesh->positionData;
-  for (int i = 0; i < vertexCount; ++i)
-    data.col(i) = Eigen::Vector3f(positions[i * 3], positions[i * 3 + 1],
-                                  positions[i * 3 + 2]);
-  /*
-  data.col(0) = Eigen::Vector3f(1, 0, 0);
-  data.col(1) = Eigen::Vector3f(-1, 0, 0);
-  data.col(2) = Eigen::Vector3f(1, 0.1, 0);
-  data.col(3) = Eigen::Vector3f(1, 0.2, 0);
-                                  */
-
-  obb = Obb(data);
-
+  auto obb = *mesh->obb;
   obbVis = std::make_shared<Connector>(std::vector<Eigen::Vector3f>{
     obb.corners[0], obb.corners[1], obb.corners[1], obb.corners[2],
     obb.corners[2], obb.corners[3], obb.corners[3], obb.corners[0],

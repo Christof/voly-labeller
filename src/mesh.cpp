@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
+#include "./obb.h"
 #include "./render_object.h"
 #include "./shader_program.h"
 
@@ -47,11 +48,23 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
   normalData = new float[mesh->mNumVertices * 3];
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+
+  createObb();
 }
 
 Mesh::~Mesh()
 {
   delete[] positionData;
+}
+
+void Mesh::createObb()
+{
+  Eigen::MatrixXf data(3, vertexCount);
+  for (int i = 0; i < vertexCount; ++i)
+    data.col(i) = Eigen::Vector3f(positionData[i * 3], positionData[i * 3 + 1],
+                                  positionData[i * 3 + 2]);
+
+  obb = std::make_shared<Obb>(data);
 }
 
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
