@@ -18,7 +18,6 @@ LabelNode::LabelNode(Label label) : label(label)
   anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Quad>();
 
-  labelPosition = label.anchorPosition * 1.3f;
   connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
                                           Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);

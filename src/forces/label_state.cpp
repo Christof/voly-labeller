@@ -6,6 +6,6 @@ namespace Forces
 LabelState::LabelState(int id, std::string text, Eigen::Vector3f anchorPosition)
   : id(id), anchorPosition(anchorPosition), text(text)
 {
-  labelPosition = 2.0f * anchorPosition.normalized();
+  labelPosition = 1.3f * anchorPosition.normalized();
 }
 }  // namespace Forces
