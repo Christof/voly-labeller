@@ -5,6 +5,7 @@
 #include <memory>
 #include "./abstract_scene.h"
 #include "./camera.h"
+#include "./forces/labeller.h"
 
 class Nodes;
 class InvokeManager;
@@ -40,6 +41,7 @@ class DemoScene : public AbstractScene
   std::shared_ptr<CameraMoveController> cameraMoveController;
   double frameTime;
 
+  std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Nodes> nodes;
 };
 

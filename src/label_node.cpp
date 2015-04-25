@@ -27,6 +27,11 @@ LabelNode::~LabelNode()
 {
 }
 
+const Label& LabelNode::getLabel()
+{
+  return label;
+}
+
 void LabelNode::render(Gl *gl, RenderData renderData)
 {
   if (!texture.get())

@@ -17,6 +17,7 @@
 #include "./camera_move_controller.h"
 #include "./nodes.h"
 #include "./utils/persister.h"
+#include "./forces/label_state.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
@@ -67,6 +68,14 @@ void DemoScene::initialize()
   Persister::save(meshNodes, "config/scene.xml");
 
   nodes->addSceneNodesFrom("config/scene.xml");
+
+  labeller = std::make_shared<Forces::Labeller>();
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    auto label = labelNode->getLabel();
+    labeller->addLabel(label.id, label.text, label.anchorPosition);
+  }
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -76,6 +85,12 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
   cameraRotationController->setFrameTime(frameTime);
   cameraZoomController->setFrameTime(frameTime);
   cameraMoveController->setFrameTime(frameTime);
+
+  auto newPositions = labeller->update(frameTime);
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    labelNode->labelPosition = newPositions[labelNode->getLabel().id];
+  }
 }
 
 void DemoScene::render()
