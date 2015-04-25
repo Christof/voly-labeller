@@ -20,4 +20,5 @@ void main()
       cameraUp * position.y * size.y;
 
   gl_Position = modelViewProjectionMatrix * vec4(pos, 1.0f);
+  gl_Position.z -= 0.01f;
 }
