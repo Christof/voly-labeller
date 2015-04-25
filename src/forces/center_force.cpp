@@ -20,7 +20,7 @@ void CenterForce::beforeAll(std::vector<LabelState> &labels)
 Eigen::Vector3f CenterForce::calculate(LabelState &label,
                                        std::vector<LabelState> &labels)
 {
-  return (label.anchorPosition - averageCenter).normalized();
+  return (label.anchorPosition - averageCenter).normalized() * weight;
 }
 
 }  // namespace Forces
