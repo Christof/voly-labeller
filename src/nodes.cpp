@@ -6,12 +6,27 @@
 #include "./importer.h"
 #include "./gl.h"
 #include "./mesh_node.h"
+#include "./label_node.h"
 #include "./obb_node.h"
 #include "./coordinate_system_node.h"
 
 Nodes::Nodes()
 {
   nodes.push_back(std::make_shared<CoordinateSystemNode>());
+}
+
+std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
+{
+  std::vector<std::shared_ptr<LabelNode>> result;
+  for (auto &node : nodes)
+  {
+    std::shared_ptr<LabelNode> labelNode =
+        std::dynamic_pointer_cast<LabelNode>(node);
+    if (labelNode.get())
+      result.push_back(labelNode);
+  }
+
+  return result;
 }
 
 void Nodes::addSceneNodesFrom(QUrl url)
