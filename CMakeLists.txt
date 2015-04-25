@@ -4,6 +4,7 @@ project(voly-labeller)
 
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
+add_subdirectory(src/forces)
 
 option(test "Build all tests." ON)
 if(test)
@@ -55,6 +56,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
+  $<TARGET_OBJECTS:forces>
   )
 
 target_link_libraries(voly-labeller
