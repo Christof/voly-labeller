@@ -19,7 +19,8 @@ LabelNode::LabelNode(Label label) : label(label)
   quad = std::make_shared<Quad>();
 
   labelPosition = label.anchorPosition * 1.3f;
-  connector = std::make_shared<Connector>(label.anchorPosition, labelPosition);
+  connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
+                                          Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
@@ -27,7 +28,7 @@ LabelNode::~LabelNode()
 {
 }
 
-const Label& LabelNode::getLabel()
+const Label &LabelNode::getLabel()
 {
   return label;
 }
@@ -39,6 +40,16 @@ void LabelNode::render(Gl *gl, RenderData renderData)
     texture = std::make_shared<Texture>(renderLabelTextToQImage());
     texture->initialize(gl);
   }
+
+  Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
+  auto length = anchorToPosition.norm();
+  auto rotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitX(),
+                                                     anchorToPosition);
+  Eigen::Affine3f connectorTransform(
+      Eigen::Translation3f(label.anchorPosition) *
+      rotation *
+      Eigen::Scaling(length));
+  renderData.modelMatrix = connectorTransform.matrix();
 
   connector->render(gl, renderData);
 
