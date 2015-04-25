@@ -40,23 +40,35 @@ void LabelNode::render(Gl *gl, RenderData renderData)
     texture->initialize(gl);
   }
 
+  renderConnector(gl, renderData);
+  renderAnchor(gl, renderData);
+  renderLabel(gl, renderData);
+}
+
+void LabelNode::renderConnector(Gl *gl, RenderData renderData)
+{
   Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
   auto length = anchorToPosition.norm();
   auto rotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitX(),
                                                      anchorToPosition);
   Eigen::Affine3f connectorTransform(
-      Eigen::Translation3f(label.anchorPosition) *
-      rotation *
+      Eigen::Translation3f(label.anchorPosition) * rotation *
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
   connector->render(gl, renderData);
+}
 
+void LabelNode::renderAnchor(Gl *gl, RenderData renderData)
+{
   Eigen::Affine3f transform(Eigen::Translation3f(label.anchorPosition) *
                             Eigen::Scaling(0.005f));
   renderData.modelMatrix = transform.matrix();
   anchorMesh->render(gl, renderData);
+}
 
+void LabelNode::renderLabel(Gl *gl, RenderData renderData)
+{
   Eigen::Affine3f labelTransform(Eigen::Translation3f(labelPosition) *
                                  Eigen::Scaling(2.0f, 0.5f, 1.0f) *
                                  Eigen::Scaling(0.07f));

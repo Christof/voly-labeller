@@ -46,6 +46,9 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
+  void renderConnector(Gl *gl, RenderData renderData);
+  void renderAnchor(Gl *gl, RenderData renderData);
+  void renderLabel(Gl *gl, RenderData renderData);
   QImage *renderLabelTextToQImage();
 
   std::shared_ptr<Mesh> anchorMesh;
