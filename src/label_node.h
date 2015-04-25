@@ -32,6 +32,7 @@ class LabelNode : public Node
     ar << BOOST_SERIALIZATION_NVP(label);
   };
 
+  Eigen::Vector3f labelPosition;
  private:
   Label label;
 

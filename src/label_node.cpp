@@ -18,7 +18,7 @@ LabelNode::LabelNode(Label label) : label(label)
   anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Quad>();
 
-  auto labelPosition = label.anchorPosition * 1.3f;
+  labelPosition = label.anchorPosition * 1.3f;
   connector = std::make_shared<Connector>(label.anchorPosition, labelPosition);
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
@@ -37,7 +37,6 @@ void LabelNode::render(Gl *gl, RenderData renderData)
 
   connector->render(gl, renderData);
 
-  auto labelPosition = label.anchorPosition * 1.3f;
   Eigen::Affine3f transform(Eigen::Translation3f(label.anchorPosition) *
                             Eigen::Scaling(0.005f));
   renderData.modelMatrix = transform.matrix();
