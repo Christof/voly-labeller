@@ -2,7 +2,7 @@
 #include <vector>
 #include "./label_state.h"
 
-namespace forces
+namespace Forces
 {
 
 void CenterForce::beforeAll(std::vector<LabelState> &labels)
@@ -23,4 +23,4 @@ Eigen::Vector3f CenterForce::calculate(LabelState &label,
   return (label.anchorPosition - averageCenter).normalized();
 }
 
-}  // namespace forces
+}  // namespace Forces

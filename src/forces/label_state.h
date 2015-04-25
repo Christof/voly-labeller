@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 
-namespace forces
+namespace Forces
 {
 /**
  * \brief
@@ -26,6 +26,6 @@ class LabelState
 
   Eigen::Vector2f anchorPosition2D;
 };
-}  // namespace forces
+}  // namespace Forces
 
 #endif  // SRC_FORCES_LABEL_STATE_H_

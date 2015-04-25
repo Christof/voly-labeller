@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <vector>
 
-namespace forces
+namespace Forces
 {
 
 class LabelState;
@@ -25,6 +25,6 @@ public:
 private:
   Eigen::Vector3f averageCenter;
 };
-}  // namespace forces
+}  // namespace Forces
 
 #endif  // SRC_FORCES_CENTER_FORCE_H_
