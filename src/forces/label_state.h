@@ -3,6 +3,7 @@
 #define SRC_FORCES_LABEL_STATE_H_
 
 #include <Eigen/Core>
+#include <string>
 
 namespace Forces
 {
@@ -20,6 +21,7 @@ class LabelState
 
   const int id;
   Eigen::Vector3f anchorPosition;
+  Eigen::Vector3f labelPosition;
 
  private:
   std::string text;
