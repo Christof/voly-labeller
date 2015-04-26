@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include "./force.h"
 
 namespace Forces
 {
@@ -15,7 +16,7 @@ class LabelState;
  *
  *
  */
-class CenterForce
+class CenterForce : public Force
 {
  public:
   CenterForce() = default;

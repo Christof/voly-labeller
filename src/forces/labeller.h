@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 #include "./label_state.h"
-
-#include "./center_force.h"
+#include "./force.h"
 
 namespace Forces
 {
@@ -27,7 +27,7 @@ class Labeller
 
   std::map<int, Eigen::Vector3f> update(double frameTime);
  private:
-  CenterForce centerForce;
+  std::vector<std::unique_ptr<Force>> forces;
   std::vector<LabelState> labels;
 };
 }  // namespace Forces
