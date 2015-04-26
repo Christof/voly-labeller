@@ -3,6 +3,7 @@
 #include <string>
 #include "./center_force.h"
 #include "./anchor_force.h"
+#include "./label_collision_force.h"
 
 namespace Forces
 {
@@ -13,6 +14,8 @@ void Labeller::addLabel(int id, std::string text,
 
   forces.push_back(std::unique_ptr<CenterForce>(new CenterForce()));
   forces.push_back(std::unique_ptr<AnchorForce>(new AnchorForce()));
+  forces.push_back(
+      std::unique_ptr<LabelCollisionForce>(new LabelCollisionForce()));
 }
 
 std::map<int, Eigen::Vector3f> Labeller::update(double frameTime)
