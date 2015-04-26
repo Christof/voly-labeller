@@ -19,14 +19,13 @@ class LabelState;
 class CenterForce : public Force
 {
  public:
-  CenterForce() = default;
+  CenterForce();
 
   void beforeAll(std::vector<LabelState> &labels);
   Eigen::Vector3f calculate(LabelState &label, std::vector<LabelState> &labels);
 
  private:
   Eigen::Vector3f averageCenter;
-  float weight = 0.0001f;
 };
 }  // namespace Forces
 

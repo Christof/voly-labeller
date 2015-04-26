@@ -4,6 +4,9 @@
 
 namespace Forces
 {
+CenterForce::CenterForce() : Force(0.0001f)
+{
+}
 
 void CenterForce::beforeAll(std::vector<LabelState> &labels)
 {

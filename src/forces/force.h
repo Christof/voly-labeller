@@ -17,7 +17,9 @@ class LabelState;
 class Force
 {
  public:
-  Force() = default;
+  Force(float weight) : weight(weight)
+  {
+  }
 
   virtual void beforeAll(std::vector<LabelState> &labels)
   {
@@ -25,6 +27,9 @@ class Force
 
   virtual Eigen::Vector3f calculate(LabelState &label,
                                     std::vector<LabelState> &labels) = 0;
+
+ protected:
+  float weight;
 };
 }  // namespace Forces
 

@@ -17,7 +17,7 @@ class LabelState;
 class AnchorForce : public Force
 {
  public:
-  AnchorForce() = default;
+  AnchorForce();
 
   Eigen::Vector3f calculate(LabelState &label, std::vector<LabelState> &labels);
 };
