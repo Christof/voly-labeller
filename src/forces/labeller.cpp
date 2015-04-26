@@ -12,10 +12,9 @@ void Labeller::addLabel(int id, std::string text,
 {
   labels.push_back(LabelState(id, text, anchorPosition));
 
-  forces.push_back(std::unique_ptr<CenterForce>(new CenterForce()));
-  forces.push_back(std::unique_ptr<AnchorForce>(new AnchorForce()));
-  forces.push_back(
-      std::unique_ptr<LabelCollisionForce>(new LabelCollisionForce()));
+  addForce(new CenterForce());
+  addForce(new AnchorForce());
+  addForce(new LabelCollisionForce());
 }
 
 std::map<int, Eigen::Vector3f> Labeller::update(double frameTime)
@@ -37,5 +36,10 @@ std::map<int, Eigen::Vector3f> Labeller::update(double frameTime)
   }
 
   return positions;
+}
+
+template <class T> void Labeller::addForce(T *force)
+{
+  forces.push_back(std::unique_ptr<T>(force));
 }
 }  // namespace Forces
