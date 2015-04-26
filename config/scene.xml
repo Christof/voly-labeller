@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <data class_id="0" tracking_level="0" version="0">
-	<count>5</count>
+	<count>6</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="MeshNode" tracking_level="1" version="0" object_id="_0">
@@ -87,6 +87,19 @@
 					<x>2.619999945e-01</x>
 					<y>4.219999909e-01</y>
 					<z>5.799999833e-02</z>
+				</label.anchorPosition>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="4" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>Wound 2</label.text>
+				<label.anchorPosition>
+					<x>3.400000185e-02</x>
+					<y>3.729999959e-01</y>
+					<z>1.410000026e-01</z>
 				</label.anchorPosition>
 			</label>
 		</px>

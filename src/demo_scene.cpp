@@ -65,6 +65,9 @@ void DemoScene::initialize()
   auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f));
   meshNodes.push_back(std::make_shared<LabelNode>(label3));
 
+  auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
+  meshNodes.push_back(std::make_shared<LabelNode>(label4));
+
   Persister::save(meshNodes, "config/scene.xml");
 
   nodes->addSceneNodesFrom("config/scene.xml");
