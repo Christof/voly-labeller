@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include "./labeller_frame_data.h"
 
 namespace Forces
 {
@@ -26,7 +27,8 @@ class Force
   }
 
   virtual Eigen::Vector3f calculate(LabelState &label,
-                                    std::vector<LabelState> &labels) = 0;
+                                    std::vector<LabelState> &labels,
+                                    const LabellerFrameData &frameData) = 0;
 
  protected:
   float weight;

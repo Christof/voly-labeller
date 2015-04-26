@@ -17,7 +17,8 @@ void Labeller::addLabel(int id, std::string text,
   addForce(new LabelCollisionForce());
 }
 
-std::map<int, Eigen::Vector3f> Labeller::update(double frameTime)
+std::map<int, Eigen::Vector3f>
+Labeller::update(const LabellerFrameData &frameData)
 {
   std::map<int, Eigen::Vector3f> positions;
 
@@ -28,9 +29,9 @@ std::map<int, Eigen::Vector3f> Labeller::update(double frameTime)
   {
     auto forceOnLabel = Eigen::Vector3f(0, 0, 0);
     for (auto &force : forces)
-      forceOnLabel += force->calculate(label, labels);
+      forceOnLabel += force->calculate(label, labels, frameData);
 
-    label.labelPosition += forceOnLabel * frameTime;
+    label.labelPosition += forceOnLabel * frameData.frameTime;
 
     positions[label.id] = label.labelPosition;
   }

@@ -9,6 +9,7 @@
 #include <memory>
 #include "./label_state.h"
 #include "./force.h"
+#include "./labeller_frame_data.h"
 
 namespace Forces
 {
@@ -25,7 +26,7 @@ class Labeller
 
   void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition);
 
-  std::map<int, Eigen::Vector3f> update(double frameTime);
+  std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
  private:
   std::vector<std::unique_ptr<Force>> forces;

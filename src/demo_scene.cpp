@@ -17,7 +17,7 @@
 #include "./camera_move_controller.h"
 #include "./nodes.h"
 #include "./utils/persister.h"
-#include "./forces/label_state.h"
+#include "./forces/labeller_frame_data.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
@@ -89,7 +89,9 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
   cameraZoomController->setFrameTime(frameTime);
   cameraMoveController->setFrameTime(frameTime);
 
-  auto newPositions = labeller->update(frameTime);
+  auto newPositions = labeller->update(Forces::LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
   for (auto &labelNode : nodes->getLabelNodes())
   {
     labelNode->labelPosition = newPositions[labelNode->getLabel().id];
