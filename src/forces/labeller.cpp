@@ -4,6 +4,7 @@
 #include "./center_force.h"
 #include "./anchor_force.h"
 #include "./label_collision_force.h"
+#include "./anchor_depth_force.h"
 
 namespace Forces
 {
@@ -15,6 +16,7 @@ void Labeller::addLabel(int id, std::string text,
   addForce(new CenterForce());
   addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
+  addForce(new AnchorDepthForce());
 }
 
 std::map<int, Eigen::Vector3f>

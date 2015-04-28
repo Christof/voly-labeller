@@ -9,6 +9,7 @@ set(SOURCES
   center_force.cpp
   anchor_force.cpp
   label_collision_force.cpp
+  anchor_depth_force.cpp
   labeller.cpp
   )
 
