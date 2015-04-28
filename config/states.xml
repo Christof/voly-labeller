@@ -66,6 +66,7 @@
       </transition>
     </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="ctrl"/>
+    <transition event="KeyboardEvent.UP.CTRL" target="idle"/>
     <onexit>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
