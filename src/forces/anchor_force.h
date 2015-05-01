@@ -19,7 +19,7 @@ class AnchorForce : public Force
  public:
   AnchorForce();
 
-  Eigen::Vector3f calculate(LabelState &label, std::vector<LabelState> &labels,
+  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels,
                             const LabellerFrameData &frameData);
 };
 }  // namespace Forces

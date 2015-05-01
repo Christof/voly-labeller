@@ -8,10 +8,10 @@ AnchorForce::AnchorForce() : Force(0.01f)
 {
 }
 
-Eigen::Vector3f AnchorForce::calculate(LabelState &label,
+Eigen::Vector2f AnchorForce::calculate(LabelState &label,
                                        std::vector<LabelState> &labels,
                                        const LabellerFrameData &frameData)
 {
-  return (label.anchorPosition - label.labelPosition).normalized() * weight;
+  return (label.anchorPosition2D - label.labelPosition2D).normalized() * weight;
 }
 }  // namespace Forces

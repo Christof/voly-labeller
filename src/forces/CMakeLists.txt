@@ -7,7 +7,7 @@ include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 set(SOURCES
   label_state.cpp
   center_force.cpp
-  #anchor_force.cpp
+  anchor_force.cpp
   #label_collision_force.cpp
   #anchor_depth_force.cpp
   labeller.cpp
