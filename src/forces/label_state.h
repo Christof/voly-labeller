@@ -20,13 +20,15 @@ class LabelState
   LabelState(int id, std::string text, Eigen::Vector3f anchorPosition);
 
   const int id;
-  Eigen::Vector3f anchorPosition;
+  const Eigen::Vector3f anchorPosition;
   Eigen::Vector3f labelPosition;
 
+  Eigen::Vector2f anchorPosition2D;
+  Eigen::Vector2f labelPosition2D;
+  float labelPositionDepth;
  private:
   std::string text;
 
-  Eigen::Vector2f anchorPosition2D;
 };
 }  // namespace Forces
 

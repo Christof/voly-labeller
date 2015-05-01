@@ -26,7 +26,7 @@ class Force
   {
   }
 
-  virtual Eigen::Vector3f calculate(LabelState &label,
+  virtual Eigen::Vector2f calculate(LabelState &label,
                                     std::vector<LabelState> &labels,
                                     const LabellerFrameData &frameData) = 0;
 
