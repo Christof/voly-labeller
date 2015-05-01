@@ -7,20 +7,21 @@ LabelCollisionForce::LabelCollisionForce() : Force(0.01f)
 {
 }
 
-Eigen::Vector3f
+Eigen::Vector2f
 LabelCollisionForce::calculate(LabelState &label,
                                std::vector<LabelState> &labels,
                                const LabellerFrameData &frameData)
 {
-  Eigen::Vector3f result(0, 0, 0);
+  Eigen::Vector2f result(0, 0);
 
   for (auto &otherLabel : labels)
   {
     if (otherLabel.id == label.id)
       continue;
 
-    result +=
-        (label.labelPosition - otherLabel.labelPosition).normalized() * weight;
+    Eigen::Vector2f diff = label.labelPosition2D - otherLabel.labelPosition2D;
+    float factor = diff.norm() > 0.2f ? 0.0f : 1.0f;
+    result += diff.normalized() * factor * weight;
   }
 
   return result;

@@ -8,7 +8,7 @@ set(SOURCES
   label_state.cpp
   center_force.cpp
   anchor_force.cpp
-  #label_collision_force.cpp
+  label_collision_force.cpp
   labeller.cpp
   )
 

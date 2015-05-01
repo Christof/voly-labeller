@@ -5,9 +5,7 @@
 #include "./center_force.h"
 #include "../eigen.h"
 #include "./anchor_force.h"
-/*
 #include "./label_collision_force.h"
-*/
 
 namespace Forces
 {
@@ -15,9 +13,7 @@ Labeller::Labeller()
 {
   addForce(new CenterForce());
   addForce(new AnchorForce());
-  /*
   addForce(new LabelCollisionForce());
-  */
 }
 
 void Labeller::addLabel(int id, std::string text,
