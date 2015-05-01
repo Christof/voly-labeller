@@ -33,6 +33,8 @@ class Labeller
   std::vector<LabelState> labels;
 
   template <class T> void addForce(T *force);
+  void enforceAnchorDepthForLabel(LabelState &label,
+                                  const Eigen::Matrix4f &viewMatrix);
 };
 }  // namespace Forces
 
