@@ -8,15 +8,18 @@
 
 namespace Forces
 {
-void Labeller::addLabel(int id, std::string text,
-                        Eigen::Vector3f anchorPosition)
+Labeller::Labeller()
 {
-  labels.push_back(LabelState(id, text, anchorPosition));
-
   addForce(new CenterForce());
   addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
   addForce(new AnchorDepthForce());
+}
+
+void Labeller::addLabel(int id, std::string text,
+                        Eigen::Vector3f anchorPosition)
+{
+  labels.push_back(LabelState(id, text, anchorPosition));
 }
 
 std::map<int, Eigen::Vector3f>

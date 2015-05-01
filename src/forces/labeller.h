@@ -22,7 +22,7 @@ namespace Forces
 class Labeller
 {
  public:
-  Labeller() = default;
+  Labeller();
 
   void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition);
 
