@@ -7,7 +7,6 @@
 #include "./anchor_force.h"
 /*
 #include "./label_collision_force.h"
-#include "./anchor_depth_force.h"
 */
 
 namespace Forces
@@ -18,7 +17,6 @@ Labeller::Labeller()
   addForce(new AnchorForce());
   /*
   addForce(new LabelCollisionForce());
-  addForce(new AnchorDepthForce());
   */
 }
 
