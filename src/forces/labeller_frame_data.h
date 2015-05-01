@@ -2,7 +2,7 @@
 
 #define SRC_FORCES_LABELLER_FRAME_DATA_H_
 
-#include <Eigen/Core>
+#include "../eigen.h"
 #include <iostream>
 
 namespace Forces
@@ -30,10 +30,7 @@ class LabellerFrameData
 
   Eigen::Vector3f project(Eigen::Vector3f vector) const
   {
-    Eigen::Vector4f projected =
-        viewProjection * Eigen::Vector4f(vector.x(), vector.y(), vector.z(), 1);
-
-    std::cout << "projected" << projected / projected.w() << std::endl;
+    Eigen::Vector4f projected = mul(viewProjection, vector);
 
     return projected.head<3>() / projected.w();
   }
