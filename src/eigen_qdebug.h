@@ -30,10 +30,10 @@ QDebug operator<<(QDebug dbg, const Eigen::Vector4f &vector)
 
 QDebug operator<<(QDebug dbg, const Eigen::Matrix4f &vector)
 {
-  const Eigen::IOFormat cleanFormat(4, 0, ", ", "\n", "[", "]");
+  const Eigen::IOFormat cleanFormat(4, 0, ", ", "\n", "\t[", "]");
   std::stringstream stream;
   stream << vector.format(cleanFormat);
-  dbg << stream.str().c_str();
+  dbg << "\n" << stream.str().c_str();
 
   return dbg.maybeSpace();
 }
