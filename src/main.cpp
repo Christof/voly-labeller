@@ -16,6 +16,9 @@ int main(int argc, char **argv)
   qputenv("QT_MESSAGE_PATTERN",
           QString("%{time [yyyy'-'MM'-'dd' 'hh':'mm':'ss]} - %{threadid} "
                   "%{if-category}%{category}: %{endif}%{message}").toUtf8());
+  if (qgetenv("QT_LOGGING_CONF").size() == 0)
+    qputenv("QT_LOGGING_CONF", "../config/logging.ini");
+
   QGuiApplication application(argc, argv);
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
