@@ -26,9 +26,8 @@ class LabelState
   Eigen::Vector2f anchorPosition2D;
   Eigen::Vector2f labelPosition2D;
   float labelPositionDepth;
- private:
-  std::string text;
 
+  const std::string text;
 };
 }  // namespace Forces
 
