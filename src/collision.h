@@ -13,7 +13,7 @@
  *
  * Implementation taken from real-time collision detection by Christer Ericson
  */
-float signed2DTriangelArea(Eigen::Vector2f a, Eigen::Vector2f b,
+inline float signed2DTriangelArea(Eigen::Vector2f a, Eigen::Vector2f b,
                            Eigen::Vector2f c)
 {
   return (a.x() - c.x()) * (b.y() - c.y()) - (a.y() - c.y()) * (b.x() - c.x());
@@ -22,7 +22,7 @@ float signed2DTriangelArea(Eigen::Vector2f a, Eigen::Vector2f b,
 /**
  * \brief Test if line segments ab and cd overlap.
  */
-bool test2DSegmentSegment(Eigen::Vector2f a, Eigen::Vector2f b,
+inline bool test2DSegmentSegment(Eigen::Vector2f a, Eigen::Vector2f b,
                          Eigen::Vector2f c, Eigen::Vector2f d)
 {
   // Sign of areas correspond to which side of ab points c and d are
