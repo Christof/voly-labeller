@@ -9,6 +9,7 @@
 #include "./mesh.h"
 #include "./mesh_node.h"
 #include "./label_node.h"
+#include "./forces_visualizer_node.h"
 #include "./render_data.h"
 #include "./importer.h"
 #include "./camera_controller.h"
@@ -79,6 +80,8 @@ void DemoScene::initialize()
     auto label = labelNode->getLabel();
     labeller->addLabel(label.id, label.text, label.anchorPosition);
   }
+
+  nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
