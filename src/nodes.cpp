@@ -29,6 +29,11 @@ std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
   return result;
 }
 
+void Nodes::addNode(std::shared_ptr<Node> node)
+{
+  nodes.push_back(node);
+}
+
 void Nodes::addSceneNodesFrom(QUrl url)
 {
   addSceneNodesFrom(url.path().toStdString());
