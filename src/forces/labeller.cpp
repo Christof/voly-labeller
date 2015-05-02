@@ -1,7 +1,8 @@
 #include "./labeller.h"
-#include <map>
-#include <string>
 #include <Eigen/LU>
+#include <map>
+#include <vector>
+#include <string>
 #include "./center_force.h"
 #include "../eigen.h"
 #include "./anchor_force.h"

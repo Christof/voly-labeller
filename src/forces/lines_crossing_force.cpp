@@ -1,4 +1,5 @@
 #include "./lines_crossing_force.h"
+#include <vector>
 #include "../collision.h"
 #include "./label_state.h"
 #include "../eigen_qdebug.h"

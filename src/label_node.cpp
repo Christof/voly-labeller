@@ -61,9 +61,9 @@ void LabelNode::renderConnector(Gl *gl, RenderData renderData)
 
 void LabelNode::renderAnchor(Gl *gl, RenderData renderData)
 {
-  Eigen::Affine3f transform(Eigen::Translation3f(label.anchorPosition) *
-                            Eigen::Scaling(0.005f));
-  renderData.modelMatrix = transform.matrix();
+  Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
+                                 Eigen::Scaling(0.005f));
+  renderData.modelMatrix = modelTransform.matrix();
   anchorMesh->render(gl, renderData);
 }
 

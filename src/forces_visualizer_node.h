@@ -16,7 +16,7 @@ class Connector;
 class ForcesVisualizerNode : public Node
 {
  public:
-  ForcesVisualizerNode(std::shared_ptr<Forces::Labeller> labeller);
+  explicit ForcesVisualizerNode(std::shared_ptr<Forces::Labeller> labeller);
 
   void render(Gl *gl, RenderData renderData);
 

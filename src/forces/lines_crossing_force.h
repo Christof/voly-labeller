@@ -2,6 +2,7 @@
 
 #define SRC_FORCES_LINES_CROSSING_FORCE_H_
 
+#include <vector>
 #include "./force.h"
 
 namespace Forces

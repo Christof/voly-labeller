@@ -18,7 +18,7 @@ class LabelState;
 class Force
 {
  public:
-  Force(float weight);
+  explicit Force(float weight);
 
   virtual void beforeAll(std::vector<LabelState> &labels);
 

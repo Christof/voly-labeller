@@ -1,4 +1,5 @@
 #include "./force.h"
+#include <vector>
 #include "./label_state.h"
 
 namespace Forces

@@ -3,7 +3,6 @@
 #define SRC_FORCES_LABELLER_FRAME_DATA_H_
 
 #include "../eigen.h"
-#include <iostream>
 
 namespace Forces
 {

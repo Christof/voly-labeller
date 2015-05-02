@@ -2,6 +2,7 @@
 
 #define SRC_FORCES_ANCHOR_FORCE_H_
 
+#include <vector>
 #include "./force.h"
 
 namespace Forces

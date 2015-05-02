@@ -1,5 +1,7 @@
 #include "./anchor_force.h"
 #include <Eigen/Core>
+#include <vector>
+#include <algorithm>
 #include "./label_state.h"
 
 namespace Forces

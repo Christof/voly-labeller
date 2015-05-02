@@ -2,6 +2,7 @@
 
 #define SRC_FORCES_LABEL_COLLISION_FORCE_H_
 
+#include <vector>
 #include "./force.h"
 
 namespace Forces

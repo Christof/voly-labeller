@@ -1,4 +1,5 @@
 #include "./label_collision_force.h"
+#include <vector>
 #include "./label_state.h"
 
 namespace Forces
