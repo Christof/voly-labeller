@@ -4,7 +4,8 @@
 namespace Forces
 {
 
-Force::Force(float weight) : weight(weight)
+Force::Force(float weight)
+  : color(Eigen::Vector3f::Random(3, 1)), weight(weight)
 {
 }
 

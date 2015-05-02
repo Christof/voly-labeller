@@ -17,7 +17,10 @@ void ForcesVisualizerNode::render(Gl *gl, RenderData renderData)
   for (auto &label : labeller->getLabels())
   {
     for (auto &forcePair : label.forces)
+    {
+      connector->color.head<3>() = forcePair.first->color;
       renderForce(label.labelPosition, forcePair.second, gl, renderData);
+    }
   }
 }
 

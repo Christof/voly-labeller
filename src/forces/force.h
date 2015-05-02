@@ -26,6 +26,7 @@ class Force
                                  std::vector<LabelState> &labels,
                                  const LabellerFrameData &frameData);
 
+  const Eigen::Vector3f color;
  protected:
   float weight;
 
