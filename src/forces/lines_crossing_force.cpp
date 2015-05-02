@@ -1,9 +1,14 @@
 #include "./lines_crossing_force.h"
 #include "../collision.h"
 #include "./label_state.h"
+#include "../eigen_qdebug.h"
 
 namespace Forces
 {
+LinesCrossingForce::LinesCrossingForce() : Force(1)
+{
+}
+
 Eigen::Vector2f
 LinesCrossingForce::calculate(LabelState &label,
                               std::vector<LabelState> &labels,
@@ -20,7 +25,7 @@ LinesCrossingForce::calculate(LabelState &label,
       result += calculateForce(label, otherLabel);
   }
 
-  return result;
+  return result * weight * frameData.frameTime;
 }
 
 bool LinesCrossingForce::doLinesIntersect(const LabelState &current,
@@ -31,8 +36,21 @@ bool LinesCrossingForce::doLinesIntersect(const LabelState &current,
 }
 
 Eigen::Vector2f LinesCrossingForce::calculateForce(const LabelState &current,
-                                                   const LabelState &ohter)
+                                                   const LabelState &other)
 {
-  return Eigen::Vector2f(0, 0);
+  Eigen::Vector2f direction = other.labelPosition2D - current.labelPosition2D;
+  direction.normalize();
+
+  Eigen::Vector2f orthoDir = current.labelPosition2D - current.anchorPosition2D;
+  float temp = orthoDir.y();
+  orthoDir.y() = orthoDir.x() * -1.0f;
+  orthoDir.x() = temp;
+  orthoDir.normalize();
+
+  Eigen::Vector2f force = direction.dot(orthoDir) * orthoDir;
+  force.normalize();
+  qDebug() << "Lines crossing " << current.text.c_str() << " force:" << force;
+
+  return force;
 }
 }  // namespace Forces

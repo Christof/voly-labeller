@@ -14,7 +14,7 @@ namespace Forces
 class LinesCrossingForce : public Force
 {
  public:
-  LinesCrossingForce() = default;
+  LinesCrossingForce();
 
   Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels,
                             const LabellerFrameData &frameData);
@@ -22,7 +22,7 @@ class LinesCrossingForce : public Force
  private:
   bool doLinesIntersect(const LabelState &current, const LabelState &other);
   Eigen::Vector2f calculateForce(const LabelState &current,
-                                 const LabelState &ohter);
+                                 const LabelState &other);
 };
 }  // namespace Forces
 
