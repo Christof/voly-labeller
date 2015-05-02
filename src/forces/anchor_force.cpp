@@ -16,13 +16,8 @@ Eigen::Vector2f AnchorForce::calculate(LabelState &label,
   Eigen::Vector2f diff = label.anchorPosition2D - label.labelPosition2D;
   float distance = diff.norm();
   float d = std::max(epsilon, distance);
-  float factor = d > 0.2f ? 1.0f : 0.0f;
+  float factor = d > 0.2f ? 1.0f : -1.0f;
 
-  Eigen::Vector2f result =
-      (d - 2 + 1 / d) * factor * diff.normalized() * frameData.frameTime;
-
-  label.forces[this] = result;
-
-  return result;
+  return (d - 2 + 1 / d) * factor * diff.normalized() * frameData.frameTime;
 }
 }  // namespace Forces

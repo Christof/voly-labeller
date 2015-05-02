@@ -45,7 +45,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
-      forceOnLabel += force->calculate(label, labels, frameData);
+      forceOnLabel += force->calculateForce(label, labels, frameData);
 
     label.labelPosition2D += forceOnLabel * frameData.frameTime;
 
