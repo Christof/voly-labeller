@@ -4,9 +4,12 @@
 
 #include <Eigen/Core>
 #include <string>
+#include <map>
 
 namespace Forces
 {
+
+class Force;
 /**
  * \brief
  *
@@ -28,6 +31,8 @@ class LabelState
   float labelPositionDepth;
 
   const std::string text;
+
+  std::map<Force*, Eigen::Vector2f> forces;
 };
 }  // namespace Forces
 

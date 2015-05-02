@@ -65,6 +65,11 @@ Labeller::update(const LabellerFrameData &frameData)
   return positions;
 }
 
+std::vector<LabelState> Labeller::getLabels()
+{
+  return labels;
+}
+
 template <class T> void Labeller::addForce(T *force)
 {
   forces.push_back(std::unique_ptr<T>(force));

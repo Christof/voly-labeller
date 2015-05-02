@@ -28,6 +28,7 @@ class Labeller
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
+  std::vector<LabelState> getLabels();
  private:
   std::vector<std::unique_ptr<Force>> forces;
   std::vector<LabelState> labels;
