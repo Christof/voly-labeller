@@ -46,6 +46,8 @@ class Camera
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);
+  Eigen::Matrix4f createOrthographicProjection(float aspectRatio,
+                                               float nearPlane, float farPlane);
   void update();
 };
 
