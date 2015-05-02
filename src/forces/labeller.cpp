@@ -12,6 +12,7 @@ namespace Forces
 {
 Labeller::Labeller()
 {
+  srand(0);
   addForce(new CenterForce());
   addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
