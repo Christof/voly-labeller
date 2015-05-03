@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
 add_subdirectory(src/forces)
@@ -59,6 +60,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
   $<TARGET_OBJECTS:forces>
+  $<TARGET_OBJECTS:math>
   )
 
 target_link_libraries(voly-labeller
