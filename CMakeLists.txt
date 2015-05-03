@@ -24,6 +24,7 @@ set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsani
 set(SOURCES
   src/window.cpp
   src/gl.cpp
+  src/eigen_qdebug.cpp
   src/camera.cpp
   src/shader_program.cpp
   src/render_object.cpp
