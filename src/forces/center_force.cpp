@@ -24,7 +24,7 @@ Eigen::Vector2f CenterForce::calculate(LabelState &label,
                                        std::vector<LabelState> &labels,
                                        const LabellerFrameData &frameData)
 {
-  return (label.anchorPosition2D - averageCenter).normalized() * weight;
+  return (label.anchorPosition2D - averageCenter).normalized();
 }
 
 }  // namespace Forces

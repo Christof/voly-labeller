@@ -22,7 +22,7 @@ LabelCollisionForce::calculate(LabelState &label,
 
     Eigen::Vector2f diff = label.labelPosition2D - otherLabel.labelPosition2D;
     float factor = diff.norm() > 0.2f ? 0.0f : 1.0f;
-    result += diff.normalized() * factor * weight;
+    result += diff.normalized() * factor;
   }
 
   return result;

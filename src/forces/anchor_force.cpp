@@ -6,7 +6,7 @@
 
 namespace Forces
 {
-AnchorForce::AnchorForce() : Force(0.01f)
+AnchorForce::AnchorForce() : Force(1.0f)
 {
 }
 

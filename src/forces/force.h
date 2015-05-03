@@ -27,12 +27,14 @@ class Force
                                  const LabellerFrameData &frameData);
 
   const Eigen::Vector3f color;
- protected:
-  float weight;
 
+ protected:
   virtual Eigen::Vector2f calculate(LabelState &label,
                                     std::vector<LabelState> &labels,
                                     const LabellerFrameData &frameData) = 0;
+
+ private:
+  float weight;
 };
 }  // namespace Forces
 
