@@ -17,8 +17,7 @@ class LinesCrossingForce : public Force
  public:
   LinesCrossingForce();
 
-  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels,
-                            const LabellerFrameData &frameData);
+  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels);
 
  private:
   bool doLinesIntersect(const LabelState &current, const LabelState &other);

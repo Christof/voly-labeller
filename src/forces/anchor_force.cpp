@@ -11,8 +11,7 @@ AnchorForce::AnchorForce() : Force(1.0f)
 }
 
 Eigen::Vector2f AnchorForce::calculate(LabelState &label,
-                                       std::vector<LabelState> &labels,
-                                       const LabellerFrameData &frameData)
+                                       std::vector<LabelState> &labels)
 {
   const float epsilon = 0.01f;
   Eigen::Vector2f diff = label.anchorPosition2D - label.labelPosition2D;

@@ -30,8 +30,7 @@ class Force
 
  protected:
   virtual Eigen::Vector2f calculate(LabelState &label,
-                                    std::vector<LabelState> &labels,
-                                    const LabellerFrameData &frameData) = 0;
+                                    std::vector<LabelState> &labels) = 0;
 
  private:
   float weight;

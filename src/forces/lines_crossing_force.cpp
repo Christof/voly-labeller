@@ -10,10 +10,8 @@ LinesCrossingForce::LinesCrossingForce() : Force(1)
 {
 }
 
-Eigen::Vector2f
-LinesCrossingForce::calculate(LabelState &label,
-                              std::vector<LabelState> &labels,
-                              const LabellerFrameData &frameData)
+Eigen::Vector2f LinesCrossingForce::calculate(LabelState &label,
+                                              std::vector<LabelState> &labels)
 {
   Eigen::Vector2f result(0, 0);
 

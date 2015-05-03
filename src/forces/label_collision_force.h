@@ -17,8 +17,7 @@ class LabelCollisionForce : public Force
  public:
   LabelCollisionForce();
 
-  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels,
-                            const LabellerFrameData &frameData);
+  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels);
 };
 }  // namespace Forces
 

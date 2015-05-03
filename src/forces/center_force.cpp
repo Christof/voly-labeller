@@ -21,8 +21,7 @@ void CenterForce::beforeAll(std::vector<LabelState> &labels)
 }
 
 Eigen::Vector2f CenterForce::calculate(LabelState &label,
-                                       std::vector<LabelState> &labels,
-                                       const LabellerFrameData &frameData)
+                                       std::vector<LabelState> &labels)
 {
   return (label.anchorPosition2D - averageCenter).normalized();
 }

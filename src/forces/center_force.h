@@ -22,8 +22,7 @@ class CenterForce : public Force
   CenterForce();
 
   void beforeAll(std::vector<LabelState> &labels);
-  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels,
-                            const LabellerFrameData &frameData);
+  Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels);
 
  private:
   Eigen::Vector2f averageCenter;

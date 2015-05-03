@@ -18,7 +18,7 @@ Eigen::Vector2f Force::calculateForce(LabelState &label,
                                       const LabellerFrameData &frameData)
 {
   Eigen::Vector2f force =
-      weight * frameData.frameTime * calculate(label, labels, frameData);
+      weight * frameData.frameTime * calculate(label, labels);
 
   label.forces[this] = force;
 

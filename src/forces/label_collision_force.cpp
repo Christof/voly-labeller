@@ -8,10 +8,8 @@ LabelCollisionForce::LabelCollisionForce() : Force(0.01f)
 {
 }
 
-Eigen::Vector2f
-LabelCollisionForce::calculate(LabelState &label,
-                               std::vector<LabelState> &labels,
-                               const LabellerFrameData &frameData)
+Eigen::Vector2f LabelCollisionForce::calculate(LabelState &label,
+                                               std::vector<LabelState> &labels)
 {
   Eigen::Vector2f result(0, 0);
 
