@@ -42,7 +42,7 @@ set(SOURCES
   src/coordinate_system_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
-  src/demo_scene.cpp
+  src/scene.cpp
   src/camera_controller.cpp
   src/mouse_dragging_controller.cpp
   src/camera_rotation_controller.cpp

@@ -1,6 +1,6 @@
-#ifndef SRC_DEMO_SCENE_H_
+#ifndef SRC_SCENE_H_
 
-#define SRC_DEMO_SCENE_H_
+#define SRC_SCENE_H_
 
 #include <memory>
 #include "./abstract_scene.h"
@@ -21,12 +21,12 @@ class CameraMoveController;
  * In initialize a default scene is loaded for now
  * (and also persisted as `config/scene.xml`).
  */
-class DemoScene : public AbstractScene
+class Scene : public AbstractScene
 {
  public:
-  DemoScene(std::shared_ptr<InvokeManager> invokeManager,
-            std::shared_ptr<Nodes> nodes);
-  ~DemoScene();
+  Scene(std::shared_ptr<InvokeManager> invokeManager,
+        std::shared_ptr<Nodes> nodes);
+  ~Scene();
 
   virtual void initialize();
   virtual void update(double frameTime, QSet<Qt::Key> keysPressed);
@@ -45,4 +45,4 @@ class DemoScene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
 };
 
-#endif  // SRC_DEMO_SCENE_H_
+#endif  // SRC_SCENE_H_

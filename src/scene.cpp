@@ -1,4 +1,4 @@
-#include "./demo_scene.h"
+#include "./scene.h"
 
 #include <QDebug>
 #include <Eigen/Core>
@@ -23,8 +23,8 @@
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
-DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
-                     std::shared_ptr<Nodes> nodes)
+Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
+             std::shared_ptr<Nodes> nodes)
   : nodes(nodes)
 {
   cameraController = std::make_shared<CameraController>(camera);
@@ -38,11 +38,11 @@ DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 }
 
-DemoScene::~DemoScene()
+Scene::~Scene()
 {
 }
 
-void DemoScene::initialize()
+void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
@@ -85,7 +85,7 @@ void DemoScene::initialize()
   nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
 }
 
-void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
+void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
@@ -102,7 +102,7 @@ void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
   }
 }
 
-void DemoScene::render()
+void Scene::render()
 {
   glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -115,7 +115,7 @@ void DemoScene::render()
   nodes->render(gl, renderData);
 }
 
-void DemoScene::resize(int width, int height)
+void Scene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
 }

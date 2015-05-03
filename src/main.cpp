@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <memory>
 #include "./window.h"
-#include "./demo_scene.h"
+#include "./scene.h"
 #include "./nodes.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
-  auto scene = std::make_shared<DemoScene>(invokeManager, nodes);
+  auto scene = std::make_shared<Scene>(invokeManager, nodes);
 
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
