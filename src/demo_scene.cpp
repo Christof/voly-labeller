@@ -63,7 +63,8 @@ void DemoScene::initialize()
   auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.334f, 0.317f, -0.013f));
   meshNodes.push_back(std::make_shared<LabelNode>(label2));
 
-  auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f));
+  auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f),
+                      Eigen::Vector2f(0.14f, 0.14f));
   meshNodes.push_back(std::make_shared<LabelNode>(label3));
 
   auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
