@@ -26,7 +26,7 @@ LinesCrossingForce::calculate(LabelState &label,
       result += calculateForce(label, otherLabel);
   }
 
-  return result * frameData.frameTime;
+  return result;
 }
 
 bool LinesCrossingForce::doLinesIntersect(const LabelState &current,
