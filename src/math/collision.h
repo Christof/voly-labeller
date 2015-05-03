@@ -1,8 +1,11 @@
-#ifndef SRC_COLLISION_H_
+#ifndef SRC_MATH_COLLISION_H_
 
-#define SRC_COLLISION_H_
+#define SRC_MATH_COLLISION_H_
 
 #include "./eigen.h"
+
+namespace Math
+{
 
 /**
  * \brief Returns 2 times the signed area of the triangle
@@ -42,4 +45,5 @@ inline bool test2DSegmentSegment(Eigen::Vector2f a, Eigen::Vector2f b,
   return area3 * area4 < 0.0f;
 }
 
-#endif  // SRC_COLLISION_H_
+}  // namespace Math
+#endif  // SRC_MATH_COLLISION_H_

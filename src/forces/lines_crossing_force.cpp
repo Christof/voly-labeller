@@ -1,6 +1,6 @@
 #include "./lines_crossing_force.h"
 #include <vector>
-#include "../collision.h"
+#include "../math/collision.h"
 #include "./label_state.h"
 #include "../eigen_qdebug.h"
 
@@ -30,8 +30,9 @@ Eigen::Vector2f LinesCrossingForce::calculate(LabelState &label,
 bool LinesCrossingForce::doLinesIntersect(const LabelState &current,
                                           const LabelState &other)
 {
-  return test2DSegmentSegment(current.labelPosition2D, current.anchorPosition2D,
-                              other.labelPosition2D, other.anchorPosition2D);
+  return Math::test2DSegmentSegment(
+      current.labelPosition2D, current.anchorPosition2D, other.labelPosition2D,
+      other.anchorPosition2D);
 }
 
 Eigen::Vector2f LinesCrossingForce::calculateForce(const LabelState &current,

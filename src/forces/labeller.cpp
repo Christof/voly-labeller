@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include "./center_force.h"
-#include "../eigen.h"
+#include "../math/eigen.h"
 #include "./anchor_force.h"
 #include "./label_collision_force.h"
 #include "./lines_crossing_force.h"
