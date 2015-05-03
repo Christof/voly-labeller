@@ -11,10 +11,10 @@
 #include <memory>
 #include <string>
 #include "./render_data.h"
+#include "./math/obb.h"
 #include "./renderable.h"
 
 class Gl;
-class Obb;
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -27,7 +27,7 @@ class Mesh : public Renderable
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  std::shared_ptr<Obb> obb;
+  std::shared_ptr<Math::Obb> obb;
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);

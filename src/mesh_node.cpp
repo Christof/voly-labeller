@@ -14,7 +14,7 @@ MeshNode::~MeshNode()
 {
 }
 
-std::shared_ptr<Obb> MeshNode::getObb()
+std::shared_ptr<Math::Obb> MeshNode::getObb()
 {
   return mesh->obb;
 }

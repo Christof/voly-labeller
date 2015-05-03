@@ -1,8 +1,11 @@
-#ifndef SRC_OBB_H_
+#ifndef SRC_MATH_OBB_H_
 
-#define SRC_OBB_H_
+#define SRC_MATH_OBB_H_
 
 #include <Eigen/Core>
+
+namespace Math
+{
 
 /**
  * \brief Oriented bounding box
@@ -33,4 +36,5 @@ class Obb
                                   float axis3Sign);
 };
 
-#endif  // SRC_OBB_H_
+}  // namespace Math
+#endif  // SRC_MATH_OBB_H_
