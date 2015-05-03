@@ -29,8 +29,6 @@ class LabelNode : public Node
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
-    qDebug() << "In save_construct_data method";
-
     ar << BOOST_SERIALIZATION_NVP(label);
   };
 
@@ -62,8 +60,6 @@ template <class Archive>
 inline void save_construct_data(Archive &ar, const LabelNode *labelNode,
                                 const unsigned int file_version)
 {
-  qDebug() << "In save_construct_data function";
-
   labelNode->save_construct_data(ar);
 }
 
