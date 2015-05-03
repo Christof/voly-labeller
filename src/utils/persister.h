@@ -49,19 +49,20 @@ namespace boost
 namespace serialization
 {
 template <class Archive>
+void serialize(Archive &ar, Eigen::Vector2f &vector, const unsigned int version)
+{
+  ar &boost::serialization::make_nvp("x", vector.x());
+  ar &boost::serialization::make_nvp("y", vector.y());
+}
+
+template <class Archive>
 void serialize(Archive &ar, Eigen::Vector3f &vector, const unsigned int version)
 {
   ar &boost::serialization::make_nvp("x", vector.x());
   ar &boost::serialization::make_nvp("y", vector.y());
   ar &boost::serialization::make_nvp("z", vector.z());
 }
-}  // namespace serialization
-}  // namespace boost
 
-namespace boost
-{
-namespace serialization
-{
 template <class Archive>
 void serialize(Archive &ar, Eigen::Matrix4f &matrix, const unsigned int version)
 {

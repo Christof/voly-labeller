@@ -4,6 +4,10 @@
 
 #include <gtest/gtest.h>
 
+#define EXPECT_Vector2f_NEAR(expected, actual, delta)                          \
+  EXPECT_NEAR(expected.x(), actual.x(), delta);                                \
+  EXPECT_NEAR(expected.y(), actual.y(), delta);
+
 #define EXPECT_Vector3f_NEAR(expected, actual, delta)                          \
   EXPECT_NEAR(expected.x(), actual.x(), delta);                                \
   EXPECT_NEAR(expected.y(), actual.y(), delta);                                \
