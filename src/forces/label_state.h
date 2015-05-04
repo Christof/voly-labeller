@@ -20,11 +20,13 @@ class LabelState
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  LabelState(int id, std::string text, Eigen::Vector3f anchorPosition);
+  LabelState(int id, std::string text, Eigen::Vector3f anchorPosition,
+             Eigen::Vector2f size);
 
   const int id;
   const Eigen::Vector3f anchorPosition;
   Eigen::Vector3f labelPosition;
+  Eigen::Vector2f size;
 
   Eigen::Vector2f anchorPosition2D;
   Eigen::Vector2f labelPosition2D;
@@ -32,7 +34,7 @@ class LabelState
 
   const std::string text;
 
-  std::map<Force*, Eigen::Vector2f> forces;
+  std::map<Force *, Eigen::Vector2f> forces;
 };
 }  // namespace Forces
 

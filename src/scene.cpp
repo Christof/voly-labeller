@@ -79,7 +79,7 @@ void Scene::initialize()
   for (auto &labelNode : nodes->getLabelNodes())
   {
     auto label = labelNode->getLabel();
-    labeller->addLabel(label.id, label.text, label.anchorPosition);
+    labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
   }
 
   nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));

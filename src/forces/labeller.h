@@ -24,11 +24,13 @@ class Labeller
  public:
   Labeller();
 
-  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition);
+  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
+                Eigen::Vector2f size);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
   std::vector<LabelState> getLabels();
+
  private:
   std::vector<std::unique_ptr<Force>> forces;
   std::vector<LabelState> labels;

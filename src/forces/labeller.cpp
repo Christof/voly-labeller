@@ -21,9 +21,9 @@ Labeller::Labeller()
 }
 
 void Labeller::addLabel(int id, std::string text,
-                        Eigen::Vector3f anchorPosition)
+                        Eigen::Vector3f anchorPosition, Eigen::Vector2f size)
 {
-  labels.push_back(LabelState(id, text, anchorPosition));
+  labels.push_back(LabelState(id, text, anchorPosition, size));
 }
 
 std::map<int, Eigen::Vector3f>
