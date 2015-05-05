@@ -30,13 +30,11 @@ class Force
   const Eigen::Vector3f color;
   const std::string name;
   bool isEnabled = true;
+  float weight;
 
  protected:
   virtual Eigen::Vector2f calculate(LabelState &label,
                                     std::vector<LabelState> &labels) = 0;
-
- private:
-  float weight;
 };
 }  // namespace Forces
 
