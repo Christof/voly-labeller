@@ -109,10 +109,23 @@ Item {
       }
     }
 
+    Component {
+      id: forceDelegate
+      Item {
+        width: 400; height: 30
+        Row {
+          CheckBox { checked: enabled }
+          Text { text: name }
+          TextInput { text: weight }
+        }
+      }
+    }
+
     ListView {
-        width: 200; height: 250
+        x: 10; y: 30
+        width: 400; height: 250
         model: labeller
-        delegate: Text { text: enabled + " " + name + ": " + weight }
+        delegate: forceDelegate
     }
   }
 }
