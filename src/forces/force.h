@@ -27,6 +27,7 @@ class Force
                                  const LabellerFrameData &frameData);
 
   const Eigen::Vector3f color;
+  bool isEnabled = true;
 
  protected:
   virtual Eigen::Vector2f calculate(LabelState &label,
