@@ -23,7 +23,8 @@ int main(int argc, char **argv)
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
-  auto scene = std::make_shared<Scene>(invokeManager, nodes);
+  auto labeller = std::make_shared<Forces::Labeller>();
+  auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);

@@ -25,7 +25,8 @@ class Scene : public AbstractScene
 {
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
-        std::shared_ptr<Nodes> nodes);
+        std::shared_ptr<Nodes> nodes,
+        std::shared_ptr<Forces::Labeller> labeller);
   ~Scene();
 
   virtual void initialize();
@@ -41,8 +42,8 @@ class Scene : public AbstractScene
   std::shared_ptr<CameraMoveController> cameraMoveController;
   double frameTime;
 
-  std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<Forces::Labeller> labeller;
 };
 
 #endif  // SRC_SCENE_H_
