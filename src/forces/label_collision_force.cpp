@@ -6,7 +6,7 @@
 
 namespace Forces
 {
-LabelCollisionForce::LabelCollisionForce() : Force(1.0f)
+LabelCollisionForce::LabelCollisionForce() : Force("Label Collision", 1.0f)
 {
 }
 

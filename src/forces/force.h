@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <string>
 #include "./labeller_frame_data.h"
 
 namespace Forces
@@ -18,7 +19,7 @@ class LabelState;
 class Force
 {
  public:
-  explicit Force(float weight);
+  Force(std::string name, float weight);
 
   virtual void beforeAll(std::vector<LabelState> &labels);
 
@@ -27,6 +28,7 @@ class Force
                                  const LabellerFrameData &frameData);
 
   const Eigen::Vector3f color;
+  const std::string name;
   bool isEnabled = true;
 
  protected:

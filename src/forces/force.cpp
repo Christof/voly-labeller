@@ -1,11 +1,13 @@
 #include "./force.h"
 #include <vector>
+#include <string>
 #include "./label_state.h"
 
 namespace Forces
 {
 
-Force::Force(float weight) : color(Eigen::Vector3f::Random()), weight(weight)
+Force::Force(std::string name, float weight)
+  : color(Eigen::Vector3f::Random()), name(name), weight(weight)
 {
 }
 

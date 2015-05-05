@@ -6,7 +6,7 @@
 
 namespace Forces
 {
-LinesCrossingForce::LinesCrossingForce() : Force(1)
+LinesCrossingForce::LinesCrossingForce() : Force("Lines Crossing", 1)
 {
 }
 

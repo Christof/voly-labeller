@@ -4,7 +4,7 @@
 
 namespace Forces
 {
-CenterForce::CenterForce() : Force(0.01f)
+CenterForce::CenterForce() : Force("Center", 0.01f)
 {
 }
 
