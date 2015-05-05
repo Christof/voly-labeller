@@ -108,5 +108,11 @@ Item {
         width: menuWrapper.width
       }
     }
+
+    ListView {
+        width: 200; height: 250
+        model: labeller
+        delegate: Text { text: enabled + " " + name + ": " + weight }
+    }
   }
 }
