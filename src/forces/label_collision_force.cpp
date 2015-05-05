@@ -1,6 +1,6 @@
 #include "./label_collision_force.h"
-#include <vector>
 #include <QDebug>
+#include <vector>
 #include "../math/aabb2d.h"
 #include "./label_state.h"
 
