@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "./mesh.h"
+#include "./utils/path_helper.h"
 
 Importer::Importer()
 {
@@ -36,7 +37,7 @@ const aiScene *Importer::readScene(std::string filename)
 
 std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
 {
-  const aiScene *scene = readScene(filename);
+  const aiScene *scene = readScene(absolutePathOfRelativePath(filename));
   auto importedMesh = scene->mMeshes[meshIndex];
   return std::shared_ptr<Mesh>(new Mesh(
       importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));

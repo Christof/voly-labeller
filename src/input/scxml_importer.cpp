@@ -12,6 +12,7 @@
 #include <QSignalTransition>
 #include <QLoggingCategory>
 #include <cassert>
+#include "../utils/path_helper.h"
 #include "./invoke.h"
 
 QLoggingCategory channel("Input::ScxmlImporter");
@@ -220,7 +221,8 @@ std::shared_ptr<QStateMachine> ScxmlImporter::import()
 
 void ScxmlImporter::parse()
 {
-  QFile file(url.toLocalFile());
+  auto path = absolutePathOfRelativeUrl(url);
+  QFile file(path);
   file.open(QFile::OpenModeFlag::ReadOnly);
   qCDebug(channel) << "Import scxml" << url;
 
@@ -294,8 +296,7 @@ ScxmlImporter::createMouseButtonEventTransition(const QString &event)
                                    eventType, buttonCode, stateStack.top());
 }
 
-QAbstractTransition *
-ScxmlImporter::createMouseMoveEventTransition()
+QAbstractTransition *ScxmlImporter::createMouseMoveEventTransition()
 {
   QEvent::Type eventType = QEvent::MouseMove;
 

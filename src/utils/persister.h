@@ -9,6 +9,7 @@
 #include <Eigen/Core>
 #include <fstream>
 #include <string>
+#include "./path_helper.h"
 
 /**
  * \brief Class to save and load serializable objects
@@ -22,7 +23,7 @@ class Persister
  public:
   template <typename T> static void save(T &data, std::string filename)
   {
-    std::ofstream ofs(filename);
+    std::ofstream ofs(absolutePathOfRelativePath(filename));
     boost::archive::xml_oarchive oa(ofs);
 
     oa << BOOST_SERIALIZATION_NVP(data);
@@ -30,7 +31,7 @@ class Persister
 
   template <typename T> static T load(std::string filename)
   {
-    std::ifstream ifs(filename);
+    std::ifstream ifs(absolutePathOfRelativePath(filename));
     boost::archive::xml_iarchive ia(ifs);
 
     T result;
