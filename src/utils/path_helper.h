@@ -7,6 +7,13 @@
 #include <QDir>
 #include <QCoreApplication>
 #include <string>
+#include "./project_root.h"
+
+inline QString relativeApplicationToProjectRootPath()
+{
+  return QDir(QCoreApplication::applicationDirPath())
+      .relativeFilePath(QString(PROJECT_ROOT));
+}
 
 inline QString absolutePathOfRelativeUrl(QUrl url)
 {
@@ -14,10 +21,28 @@ inline QString absolutePathOfRelativeUrl(QUrl url)
       .absoluteFilePath(url.toLocalFile());
 }
 
+inline QString absolutePathOfProjectRelativePath(QString path)
+{
+  return QDir(QDir(QCoreApplication::applicationDirPath())
+                  .absoluteFilePath(relativeApplicationToProjectRootPath()))
+      .absoluteFilePath(path);
+}
+
+inline QString absolutePathOfProjectRelativeUrl(QUrl url)
+{
+  return absolutePathOfProjectRelativePath(url.toLocalFile());
+}
+
 inline std::string absolutePathOfRelativePath(std::string relativePath)
 {
   return QDir(QCoreApplication::applicationDirPath())
       .absoluteFilePath(QString(relativePath.c_str()))
+      .toStdString();
+}
+
+inline std::string absolutePathOfProjectRelativePath(std::string relativePath)
+{
+  return absolutePathOfProjectRelativePath(QString(relativePath.c_str()))
       .toStdString();
 }
 
