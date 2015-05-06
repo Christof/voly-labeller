@@ -1,0 +1,9 @@
+#ifndef SRC_UTILS_PROJECT_ROOT_H_
+
+#define SRC_UTILS_PROJECT_ROOT_H_
+
+@WARNING@
+
+#cmakedefine PROJECT_ROOT "@PROJECT_ROOT@"  // NOLINT
+
+#endif  // SRC_UTILS_PROJECT_ROOT_H_

@@ -12,6 +12,7 @@
 
 /*build
 
+src/utils/project_root.h
 # Qt-es
 
 /.qmake.cache
