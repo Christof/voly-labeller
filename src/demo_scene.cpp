@@ -44,7 +44,7 @@ void DemoScene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  const std::string filename = "../assets/assets.dae";
+  const std::string filename = "assets/assets.dae";
   Importer importer;
 
   std::vector<std::shared_ptr<Node>> meshNodes;
@@ -64,9 +64,9 @@ void DemoScene::initialize()
   auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f));
   meshNodes.push_back(std::make_shared<LabelNode>(label3));
 
-  Persister::save(meshNodes, "../config/scene.xml");
+  Persister::save(meshNodes, "config/scene.xml");
 
-  nodes->addSceneNodesFrom("../config/scene.xml");
+  nodes->addSceneNodesFrom("config/scene.xml");
 }
 
 void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)

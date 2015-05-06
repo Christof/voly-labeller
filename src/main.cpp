@@ -33,7 +33,7 @@ int main(int argc, char **argv)
   MouseShapeController mouseShapeController(window);
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
-  ScxmlImporter importer(QUrl::fromLocalFile("../config/states.xml"),
+  ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
                          invokeManager, signalManager);
 
   invokeManager->addHandler(&window);

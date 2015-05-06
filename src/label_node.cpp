@@ -15,7 +15,7 @@ LabelNode::LabelNode(Label label) : label(label)
 {
   Importer importer;
 
-  anchorMesh = importer.import("../assets/anchor.dae", 0);
+  anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Quad>();
 
   auto labelPosition = label.anchorPosition * 1.3f;

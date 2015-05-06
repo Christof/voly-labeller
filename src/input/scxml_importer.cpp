@@ -221,7 +221,7 @@ std::shared_ptr<QStateMachine> ScxmlImporter::import()
 
 void ScxmlImporter::parse()
 {
-  auto path = absolutePathOfRelativeUrl(url);
+  auto path = absolutePathOfProjectRelativeUrl(url);
   QFile file(path);
   file.open(QFile::OpenModeFlag::ReadOnly);
   qCDebug(channel) << "Import scxml" << url;
