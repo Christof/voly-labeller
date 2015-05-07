@@ -31,6 +31,11 @@ class LabellerContext : public QAbstractListModel
 
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+  virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
+
+  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
+  QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
  private:
   std::shared_ptr<Forces::Labeller> labeller;
 };

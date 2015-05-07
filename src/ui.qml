@@ -114,9 +114,23 @@ Item {
       Item {
         width: 400; height: 30
         Row {
-          CheckBox { checked: enabled }
-          Text { text: name }
-          TextInput { text: weight }
+          CheckBox {
+            checked: enabled
+            onClicked: enabled = checked
+            Component.onCompleted: checked = enabled
+            Connections {
+              target: labeller
+              onDataChanged: {
+                enabled = checked
+              }
+            }
+          }
+          Text {
+            text: name
+            width: 200
+            focus: true
+          }
+          TextEdit { text: weight }
         }
       }
     }
@@ -126,6 +140,8 @@ Item {
         width: 400; height: 250
         model: labeller
         delegate: forceDelegate
+        focus: true
+        clip: true
     }
   }
 }
