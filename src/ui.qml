@@ -116,6 +116,7 @@ Item {
         Row {
           CheckBox {
             checked: enabled
+            /*
             onClicked: enabled = checked
             Component.onCompleted: checked = enabled
             Connections {
@@ -124,6 +125,7 @@ Item {
                 enabled = checked
               }
             }
+            */
           }
           Text {
             text: name
@@ -135,13 +137,41 @@ Item {
       }
     }
 
-    ListView {
-        x: 10; y: 30
-        width: 400; height: 250
-        model: labeller
-        delegate: forceDelegate
-        focus: true
-        clip: true
+    Component {
+      id: checkBoxDelegate
+
+      Item {
+        CheckBox {
+          anchors.fill: parent
+          checked: styleData.value
+          onCheckedChanged: {
+            enabled = checked
+          }
+        }
+      }
+    }
+
+    TableView {
+      TableViewColumn {
+        role: "enabled"
+        title: "Enabled"
+        width: 100
+        delegate: checkBoxDelegate
+      }
+      TableViewColumn {
+        role: "name"
+        title: "Name"
+        width: 200
+      }
+      TableViewColumn {
+        role: "weight"
+        title: "Weight"
+      }
+      x: 10; y: 30
+      width: 400
+      model: labeller
+      focus: true
+      clip: true
     }
   }
 }

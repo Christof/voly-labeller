@@ -2,7 +2,7 @@
 
 #define SRC_LABELLER_CONTEXT_H_
 
-#include <QAbstractListModel>
+#include <QAbstractTableModel>
 #include <QList>
 #include <memory>
 #include "./forces/labeller.h"
@@ -12,7 +12,7 @@
  *
  *
  */
-class LabellerContext : public QAbstractListModel
+class LabellerContext : public QAbstractTableModel
 {
   Q_OBJECT
  public:
@@ -21,19 +21,20 @@ class LabellerContext : public QAbstractListModel
   enum ForceRoles
   {
     NameRole = Qt::UserRole + 1,
-    EnabledRole,
-    WeightRole
+    WeightRole,
+    EnabledRole = Qt::CheckStateRole
   };
 
   QHash<int, QByteArray> roleNames() const;
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-  virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
+  bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const;
 
   QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
  private:

@@ -22,6 +22,12 @@ int LabellerContext::rowCount(const QModelIndex &parent) const
   return labeller->forces.size();
 }
 
+int LabellerContext::columnCount(const QModelIndex &parent) const
+{
+  Q_UNUSED(parent);
+  return 3;
+}
+
 QVariant LabellerContext::data(const QModelIndex &index, int role) const
 {
   qWarning() << "data: index" << index << "role" << role;
@@ -34,7 +40,6 @@ QVariant LabellerContext::data(const QModelIndex &index, int role) const
   {
   case NameRole:
     return QVariant::fromValue(QString(force->name.c_str()));
-  case EnabledRole:
   case Qt::CheckStateRole:
     return QVariant::fromValue(force->isEnabled);
   case WeightRole:
