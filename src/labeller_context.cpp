@@ -40,10 +40,9 @@ QVariant LabellerContext::data(const QModelIndex &index, int role) const
   {
   case NameRole:
     return QVariant::fromValue(QString(force->name.c_str()));
-  case Qt::CheckStateRole:
+  case EnabledRole:
     return QVariant::fromValue(force->isEnabled);
   case WeightRole:
-  case Qt::EditRole:
     return QVariant::fromValue(force->weight);
   }
   return QVariant();
@@ -82,5 +81,15 @@ QVariant LabellerContext::headerData(int section, Qt::Orientation orientation,
     return QString("Column %1").arg(section);
   else
     return QString("Row %1").arg(section);
+}
+
+void LabellerContext::changeEnabled(int row, QVariant newValue)
+{
+  qWarning() << "changeEnabled to" << newValue << "for" << row;
+}
+
+void LabellerContext::changeWeight(int row, QVariant newValue)
+{
+  qWarning() << "changeWeight to" << newValue << "for" << row;
 }
 

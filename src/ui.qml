@@ -145,7 +145,22 @@ Item {
           anchors.fill: parent
           checked: styleData.value
           onCheckedChanged: {
-            enabled = checked
+            console.log("changed");
+            labeller.changeEnabled(styleData.row, checked);
+          }
+        }
+      }
+    }
+
+    Component {
+      id: textDelegate
+
+      Item {
+        TextInput {
+          anchors.fill: parent
+          text: styleData.value
+          onTextChanged: {
+            labeller.changeWeight(styleData.row, text);
           }
         }
       }
@@ -166,6 +181,7 @@ Item {
       TableViewColumn {
         role: "weight"
         title: "Weight"
+        delegate: textDelegate
       }
       x: 10; y: 30
       width: 400

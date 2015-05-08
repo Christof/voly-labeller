@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 
-  //QApplication application(argc, argv);
+  // QApplication application(argc, argv);
   QGuiApplication application(argc, argv);
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
@@ -39,8 +39,8 @@ int main(int argc, char **argv)
   view->setModel(&labellerContext);
 view->show();
 */
-  //Window window(scene);
-  QQuickView window;
+  Window window(scene);
+  // QQuickView window;
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
   LabellerContext labellerContext(labeller);
@@ -60,7 +60,7 @@ view->show();
   auto stateMachine = importer.import();
 
   // just for printCurrentState slot for debugging
-  // window.stateMachine = stateMachine;
+  window.stateMachine = stateMachine;
 
   stateMachine->start();
 
