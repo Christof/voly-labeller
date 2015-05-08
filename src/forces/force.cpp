@@ -7,7 +7,7 @@ namespace Forces
 {
 
 Force::Force(std::string name, float weight)
-  : color(Eigen::Vector3f::Random()), name(name), weight(weight)
+  : color(Eigen::Vector3f::Random().cwiseAbs()), name(name), weight(weight)
 {
 }
 
