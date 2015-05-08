@@ -2,8 +2,6 @@
 #include <QQmlContext>
 #include <QStateMachine>
 #include <QDebug>
-#include <QListView>
-#include <QApplication>
 #include <memory>
 #include "./window.h"
 #include "./scene.h"
@@ -22,7 +20,6 @@ int main(int argc, char **argv)
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 
-  // QApplication application(argc, argv);
   QGuiApplication application(argc, argv);
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
@@ -30,17 +27,7 @@ int main(int argc, char **argv)
   auto labeller = std::make_shared<Forces::Labeller>();
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
-  /*
-  QListView *view = new QListView;
-
-  view->setWindowTitle("View onto a string list model");
-
-  LabellerContext labellerContext(labeller);
-  view->setModel(&labellerContext);
-view->show();
-*/
   Window window(scene);
-  // QQuickView window;
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
   LabellerContext labellerContext(labeller);
