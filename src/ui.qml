@@ -159,6 +159,7 @@ Item {
           anchors.fill: parent
           maximumLength: 6
           text: styleData.value
+          color: model ? model.forceColor : "black"
           onTextChanged: {
             if (labeller) labeller.changeWeight(styleData.row, text);
           }

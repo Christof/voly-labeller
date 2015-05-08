@@ -22,7 +22,8 @@ class LabellerContext : public QAbstractTableModel
   {
     NameRole = Qt::UserRole + 1,
     WeightRole,
-    EnabledRole
+    EnabledRole,
+    ColorRole
   };
 
   QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;

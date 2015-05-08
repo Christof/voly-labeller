@@ -1,5 +1,7 @@
 #include "./labeller_context.h"
 #include <QDebug>
+#include <QColor>
+#include <Eigen/Core>
 
 LabellerContext::LabellerContext(std::shared_ptr<Forces::Labeller> labeller)
   : labeller(labeller)
@@ -12,6 +14,7 @@ QHash<int, QByteArray> LabellerContext::roleNames() const
   roles[NameRole] = "name";
   roles[EnabledRole] = "enabled";
   roles[WeightRole] = "weight";
+  roles[ColorRole] = "forceColor";
 
   return roles;
 }
@@ -43,6 +46,10 @@ QVariant LabellerContext::data(const QModelIndex &index, int role) const
     return QVariant::fromValue(force->isEnabled);
   case WeightRole:
     return QVariant::fromValue(force->weight);
+  case ColorRole:
+    auto color = force->color;
+    return QVariant::fromValue(
+        QColor::fromRgbF(color.x(), color.y(), color.z()));
   }
   return QVariant();
 }
