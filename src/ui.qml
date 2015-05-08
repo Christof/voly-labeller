@@ -167,6 +167,17 @@ Item {
       }
     }
 
+    Component {
+      id: nameDelegate
+
+      Item {
+        Text {
+          text: styleData.value
+          color: model ? model.forceColor : "black"
+        }
+      }
+    }
+
     TableView {
       TableViewColumn {
         role: "enabled"
@@ -178,6 +189,7 @@ Item {
         role: "name"
         title: "Name"
         width: 200
+        delegate: nameDelegate
       }
       TableViewColumn {
         role: "weight"
