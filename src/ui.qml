@@ -157,6 +157,7 @@ Item {
       Item {
         TextInput {
           anchors.fill: parent
+          maximumLength: 6
           text: styleData.value
           onTextChanged: {
             if (labeller) labeller.changeWeight(styleData.row, text);
@@ -180,9 +181,10 @@ Item {
       TableViewColumn {
         role: "weight"
         title: "Weight"
+        width: 98
         delegate: textDelegate
       }
-      x: 10; y: 30
+      x: 10; y: 36
       width: 400
       model: labeller
       focus: true
