@@ -145,8 +145,7 @@ Item {
           anchors.fill: parent
           checked: styleData.value
           onCheckedChanged: {
-            console.log("changed");
-            labeller.changeEnabled(styleData.row, checked);
+            if (labeller) labeller.changeEnabled(styleData.row, checked);
           }
         }
       }
@@ -160,7 +159,7 @@ Item {
           anchors.fill: parent
           text: styleData.value
           onTextChanged: {
-            labeller.changeWeight(styleData.row, text);
+            if (labeller) labeller.changeWeight(styleData.row, text);
           }
         }
       }
