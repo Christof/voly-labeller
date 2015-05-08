@@ -30,7 +30,6 @@ int LabellerContext::columnCount(const QModelIndex &parent) const
 
 QVariant LabellerContext::data(const QModelIndex &index, int role) const
 {
-  qWarning() << "data: index" << index << "role" << role;
   if (index.row() < 0 ||
       index.row() >= static_cast<int>(labeller->forces.size()))
     return QVariant();
@@ -63,12 +62,11 @@ bool LabellerContext::setData(const QModelIndex &index, const QVariant &value,
 
 Qt::ItemFlags LabellerContext::flags(const QModelIndex &index) const
 {
-  qWarning() << "flags" << index;
-
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  return QAbstractItemModel::flags(index) | Qt::ItemFlag::ItemIsEditable | Qt::ItemIsUserCheckable;
+  return QAbstractItemModel::flags(index) | Qt::ItemFlag::ItemIsEditable |
+         Qt::ItemIsUserCheckable;
 }
 
 QVariant LabellerContext::headerData(int section, Qt::Orientation orientation,
@@ -85,11 +83,17 @@ QVariant LabellerContext::headerData(int section, Qt::Orientation orientation,
 
 void LabellerContext::changeEnabled(int row, QVariant newValue)
 {
-  qWarning() << "changeEnabled to" << newValue << "for" << row;
+  labeller->forces[row]->isEnabled = newValue.toBool();
 }
 
 void LabellerContext::changeWeight(int row, QVariant newValue)
 {
-  qWarning() << "changeWeight to" << newValue << "for" << row;
+  bool converted = false;
+  auto value = newValue.toFloat(&converted);
+  if (converted)
+    labeller->forces[row]->weight = value;
+
+  qWarning() << "changeWeight to" << newValue << "for" << row << "conv"
+             << converted;
 }
 
