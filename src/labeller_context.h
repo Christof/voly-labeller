@@ -16,7 +16,7 @@ class LabellerContext : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  LabellerContext(std::shared_ptr<Forces::Labeller> labeller);
+  explicit LabellerContext(std::shared_ptr<Forces::Labeller> labeller);
 
   enum ForceRoles
   {
