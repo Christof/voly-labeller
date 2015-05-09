@@ -29,6 +29,7 @@ class Connector : public Renderable
 
   Eigen::Vector4f color;
   float lineWidth = 3.0f;
+  float zOffset = 0.0f;
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);

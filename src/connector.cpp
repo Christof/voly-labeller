@@ -42,6 +42,7 @@ void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                                         renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shaderProgram->setUniform("color", color);
+  shaderProgram->setUniform("zOffset", zOffset);
 }
 
 void Connector::draw(Gl *gl)

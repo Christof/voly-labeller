@@ -10,6 +10,7 @@ ForcesVisualizerNode::ForcesVisualizerNode(
   connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
                                           Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(1.0f, 0.8f, 0, 1);
+  connector->zOffset = -0.02f;
 }
 
 void ForcesVisualizerNode::render(Gl *gl, RenderData renderData)
