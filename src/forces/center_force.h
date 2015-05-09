@@ -12,8 +12,7 @@ namespace Forces
 class LabelState;
 
 /**
- * \brief
- *
+ * \brief Pushes the label away from the center of all anchors
  *
  */
 class CenterForce : public Force
