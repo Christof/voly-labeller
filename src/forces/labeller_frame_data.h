@@ -7,9 +7,10 @@
 namespace Forces
 {
 /**
- * \brief
+ * \brief Data which changes every frame and is passed on to the labeller
+ * and then to the forces
  *
- *
+ * It consists of camera matrices and the frame time.
  */
 class LabellerFrameData
 {

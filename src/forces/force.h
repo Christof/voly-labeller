@@ -12,9 +12,11 @@ namespace Forces
 class LabelState;
 
 /**
- * \brief
+ * \brief Base class for all forces, which handles meta data and weights
  *
+ * The force can be disabled with Force::isEnabled.
  *
+ * The influence can be changed by setting Force::weight.
  */
 class Force
 {
