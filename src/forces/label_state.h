@@ -11,9 +11,12 @@ namespace Forces
 
 class Force;
 /**
- * \brief
+ * \brief Encapsulates state for a label necessary for the simulation
  *
+ * This consists of label and anchor positions in 2D and 3D, as well as
+ * the label's size, text and its id.
  *
+ * It also stores the last force values for debugging purposes.
  */
 class LabelState
 {

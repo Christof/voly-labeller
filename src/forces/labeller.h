@@ -11,13 +11,18 @@
 #include "./force.h"
 #include "./labeller_frame_data.h"
 
+/**
+ * \brief Contains classes for the force simulation part of label placement
+ *
+ */
 namespace Forces
 {
 
 /**
- * \brief
+ * \brief Facade for force simulation, which provides methods to add
+ * labels
  *
- *
+ * It stores all forces and runs the simulation when Labeller::Update is called.
  */
 class Labeller
 {
@@ -32,6 +37,7 @@ class Labeller
   std::vector<LabelState> getLabels();
 
   std::vector<std::unique_ptr<Force>> forces;
+
  private:
   std::vector<LabelState> labels;
 
