@@ -73,16 +73,19 @@ void Window::initializeOpenGL()
 
 void Window::keyReleaseEvent(QKeyEvent *event)
 {
+  QQuickView::keyReleaseEvent(event);
   keysPressed -= static_cast<Qt::Key>(event->key());
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
+  QQuickView::keyPressEvent(event);
   keysPressed += static_cast<Qt::Key>(event->key());
 }
 
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
+  QQuickView::mouseMoveEvent(event);
   mousePosition = event->pos();
 }
 
