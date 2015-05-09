@@ -31,8 +31,8 @@ class Labeller
 
   std::vector<LabelState> getLabels();
 
- private:
   std::vector<std::unique_ptr<Force>> forces;
+ private:
   std::vector<LabelState> labels;
 
   template <class T> void addForce(T *force);
