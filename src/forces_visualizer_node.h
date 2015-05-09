@@ -9,9 +9,10 @@
 class Connector;
 
 /**
- * \brief
+ * \brief Node to visualize forces of a Forces::Labeller instance
  *
- *
+ * The forces are displayed as lines, with a displayed magnitude
+ * 10 times larger than the real one.
  */
 class ForcesVisualizerNode : public Node
 {
