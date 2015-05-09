@@ -1,6 +1,6 @@
-#ifndef SRC_LABELLER_CONTEXT_H_
+#ifndef SRC_LABELLER_MODEL_H_
 
-#define SRC_LABELLER_CONTEXT_H_
+#define SRC_LABELLER_MODEL_H_
 
 #include <QAbstractTableModel>
 #include <QList>
@@ -8,15 +8,14 @@
 #include "./forces/labeller.h"
 
 /**
- * \brief
- *
+ * \brief Model to display and edit forces of a Forces::Labeller
  *
  */
-class LabellerContext : public QAbstractTableModel
+class LabellerModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  explicit LabellerContext(std::shared_ptr<Forces::Labeller> labeller);
+  explicit LabellerModel(std::shared_ptr<Forces::Labeller> labeller);
 
   enum ForceRoles
   {
@@ -50,4 +49,4 @@ class LabellerContext : public QAbstractTableModel
   std::shared_ptr<Forces::Labeller> labeller;
 };
 
-#endif  // SRC_LABELLER_CONTEXT_H_
+#endif  // SRC_LABELLER_MODEL_H_

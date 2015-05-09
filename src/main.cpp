@@ -10,7 +10,7 @@
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
-#include "./labeller_context.h"
+#include "./labeller_model.h"
 
 int main(int argc, char **argv)
 {
@@ -30,8 +30,8 @@ int main(int argc, char **argv)
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
-  LabellerContext labellerContext(labeller);
-  window.rootContext()->setContextProperty("labeller", &labellerContext);
+  LabellerModel labellerModel(labeller);
+  window.rootContext()->setContextProperty("labeller", &labellerModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
   MouseShapeController mouseShapeController(window);

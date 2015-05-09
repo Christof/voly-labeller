@@ -49,7 +49,7 @@ set(SOURCES
   src/camera_zoom_controller.cpp
   src/camera_move_controller.cpp
   src/mouse_shape_controller.h
-  src/labeller_context.cpp
+  src/labeller_model.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})

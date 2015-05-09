@@ -1,14 +1,14 @@
-#include "./labeller_context.h"
+#include "./labeller_model.h"
 #include <QDebug>
 #include <QColor>
 #include <Eigen/Core>
 
-LabellerContext::LabellerContext(std::shared_ptr<Forces::Labeller> labeller)
+LabellerModel::LabellerModel(std::shared_ptr<Forces::Labeller> labeller)
   : labeller(labeller)
 {
 }
 
-QHash<int, QByteArray> LabellerContext::roleNames() const
+QHash<int, QByteArray> LabellerModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
   roles[NameRole] = "name";
@@ -19,19 +19,19 @@ QHash<int, QByteArray> LabellerContext::roleNames() const
   return roles;
 }
 
-int LabellerContext::rowCount(const QModelIndex &parent) const
+int LabellerModel::rowCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
   return labeller->forces.size();
 }
 
-int LabellerContext::columnCount(const QModelIndex &parent) const
+int LabellerModel::columnCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
   return 3;
 }
 
-QVariant LabellerContext::data(const QModelIndex &index, int role) const
+QVariant LabellerModel::data(const QModelIndex &index, int role) const
 {
   if (index.row() < 0 ||
       index.row() >= static_cast<int>(labeller->forces.size()))
@@ -54,7 +54,7 @@ QVariant LabellerContext::data(const QModelIndex &index, int role) const
   return QVariant();
 }
 
-bool LabellerContext::setData(const QModelIndex &index, const QVariant &value,
+bool LabellerModel::setData(const QModelIndex &index, const QVariant &value,
                               int role)
 {
   qWarning() << "index" << index << "value" << value;
@@ -67,7 +67,7 @@ bool LabellerContext::setData(const QModelIndex &index, const QVariant &value,
   return true;
 }
 
-Qt::ItemFlags LabellerContext::flags(const QModelIndex &index) const
+Qt::ItemFlags LabellerModel::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
     return Qt::ItemIsEnabled;
@@ -76,7 +76,7 @@ Qt::ItemFlags LabellerContext::flags(const QModelIndex &index) const
          Qt::ItemIsUserCheckable;
 }
 
-QVariant LabellerContext::headerData(int section, Qt::Orientation orientation,
+QVariant LabellerModel::headerData(int section, Qt::Orientation orientation,
                                      int role) const
 {
   if (role != Qt::DisplayRole)
@@ -88,12 +88,12 @@ QVariant LabellerContext::headerData(int section, Qt::Orientation orientation,
     return QString("Row %1").arg(section);
 }
 
-void LabellerContext::changeEnabled(int row, QVariant newValue)
+void LabellerModel::changeEnabled(int row, QVariant newValue)
 {
   labeller->forces[row]->isEnabled = newValue.toBool();
 }
 
-void LabellerContext::changeWeight(int row, QVariant newValue)
+void LabellerModel::changeWeight(int row, QVariant newValue)
 {
   bool converted = false;
   auto value = newValue.toFloat(&converted);
