@@ -8,8 +8,7 @@
 namespace Forces
 {
 /**
- * \brief
- *
+ * \brief If two labels collide they are pushed away from each other
  *
  */
 class LabelCollisionForce : public Force

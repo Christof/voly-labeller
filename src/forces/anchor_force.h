@@ -11,8 +11,8 @@ namespace Forces
 class LabelState;
 
 /**
- * \brief
- *
+ * \brief Pulls the label towards the anchor or pushes it away if it
+ * is too close
  *
  */
 class AnchorForce : public Force

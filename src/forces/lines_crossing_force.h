@@ -8,8 +8,8 @@
 namespace Forces
 {
 /**
- * \brief
- *
+ * \brief If lines between anchors and labels cross it pushes the labels
+ * away in a perpendicular fashion
  *
  */
 class LinesCrossingForce : public Force
