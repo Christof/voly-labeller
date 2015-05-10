@@ -53,17 +53,6 @@ QVariant LabellerModel::data(const QModelIndex &index, int role) const
   return QVariant();
 }
 
-bool LabellerModel::setData(const QModelIndex &index, const QVariant &value,
-                            int role)
-{
-  if (role == EnabledRole || Qt::EditRole)
-    labeller->forces[index.row()]->isEnabled = value.toBool();
-
-  emit dataChanged(index, index);
-
-  return true;
-}
-
 Qt::ItemFlags LabellerModel::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
@@ -71,18 +60,6 @@ Qt::ItemFlags LabellerModel::flags(const QModelIndex &index) const
 
   return QAbstractItemModel::flags(index) | Qt::ItemFlag::ItemIsEditable |
          Qt::ItemIsUserCheckable;
-}
-
-QVariant LabellerModel::headerData(int section, Qt::Orientation orientation,
-                                   int role) const
-{
-  if (role != Qt::DisplayRole)
-    return QVariant();
-
-  if (orientation == Qt::Horizontal)
-    return QString("Column %1").arg(section);
-  else
-    return QString("Row %1").arg(section);
 }
 
 void LabellerModel::changeEnabled(int row, QVariant newValue)
