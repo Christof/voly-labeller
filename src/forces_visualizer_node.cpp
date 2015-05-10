@@ -20,21 +20,26 @@ void ForcesVisualizerNode::render(Gl *gl, RenderData renderData)
     for (auto &forcePair : label.forces)
     {
       connector->color.head<3>() = forcePair.first->color;
-      renderForce(label.labelPosition, forcePair.second, gl, renderData);
+      renderForce(label.labelPosition2D, forcePair.second, gl, renderData);
     }
   }
 }
 
-void ForcesVisualizerNode::renderForce(Eigen::Vector3f labelPosition,
+void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
                                        Eigen::Vector2f force, Gl *gl,
                                        RenderData renderData)
 {
   auto length = force.norm() * 10;
   auto rotation = Eigen::Quaternionf::FromTwoVectors(
       Eigen::Vector3f::UnitX(), Eigen::Vector3f(force.x(), force.y(), 0));
-  Eigen::Affine3f connectorTransform(Eigen::Translation3f(labelPosition) *
+  auto translation = Eigen::Vector3f(labelPosition.x(), labelPosition.y(), 0);
+  Eigen::Affine3f connectorTransform(Eigen::Translation3f(translation) *
                                      rotation * Eigen::Scaling(length));
+
   renderData.modelMatrix = connectorTransform.matrix();
+  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
+  renderData.viewMatrix = Eigen::Matrix4f::Identity();
 
   connector->render(gl, renderData);
 }
+

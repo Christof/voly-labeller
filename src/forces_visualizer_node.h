@@ -26,7 +26,7 @@ class ForcesVisualizerNode : public Node
 
   std::shared_ptr<Connector> connector;
 
-  void renderForce(Eigen::Vector3f labelPosition, Eigen::Vector2f force, Gl *gl,
+  void renderForce(Eigen::Vector2f labelPosition, Eigen::Vector2f force, Gl *gl,
                    RenderData renderData);
 };
 
