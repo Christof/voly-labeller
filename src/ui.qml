@@ -52,6 +52,11 @@ Item {
           onTriggered: nodes.toggleBoundingVolumes();
         }
         MenuItem {
+          text: "Toggle label update"
+          shortcut: "Space"
+          onTriggered: labeller.toggleUpdatePositions();
+        }
+        MenuItem {
           text: "Display state machine state"
           shortcut: "l"
           onTriggered: window.printCurrentState();

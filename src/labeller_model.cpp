@@ -55,7 +55,7 @@ QVariant LabellerModel::data(const QModelIndex &index, int role) const
 }
 
 bool LabellerModel::setData(const QModelIndex &index, const QVariant &value,
-                              int role)
+                            int role)
 {
   qWarning() << "index" << index << "value" << value;
 
@@ -77,7 +77,7 @@ Qt::ItemFlags LabellerModel::flags(const QModelIndex &index) const
 }
 
 QVariant LabellerModel::headerData(int section, Qt::Orientation orientation,
-                                     int role) const
+                                   int role) const
 {
   if (role != Qt::DisplayRole)
     return QVariant();
@@ -102,5 +102,10 @@ void LabellerModel::changeWeight(int row, QVariant newValue)
 
   qWarning() << "changeWeight to" << newValue << "for" << row << "conv"
              << converted;
+}
+
+void LabellerModel::toggleUpdatePositions()
+{
+  labeller->updatePositions = !labeller->updatePositions;
 }
 

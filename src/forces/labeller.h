@@ -38,6 +38,8 @@ class Labeller
 
   std::vector<std::unique_ptr<Force>> forces;
 
+  bool updatePositions = true;
+
  private:
   std::vector<LabelState> labels;
 

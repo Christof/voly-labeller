@@ -44,6 +44,7 @@ class LabellerModel : public QAbstractTableModel
  public slots:
   void changeEnabled(int row, QVariant newValue);
   void changeWeight(int row, QVariant newValue);
+  void toggleUpdatePositions();
 
  private:
   std::shared_ptr<Forces::Labeller> labeller;
