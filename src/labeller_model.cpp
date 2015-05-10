@@ -1,5 +1,4 @@
 #include "./labeller_model.h"
-#include <QDebug>
 #include <QColor>
 #include <Eigen/Core>
 
@@ -57,8 +56,6 @@ QVariant LabellerModel::data(const QModelIndex &index, int role) const
 bool LabellerModel::setData(const QModelIndex &index, const QVariant &value,
                             int role)
 {
-  qWarning() << "index" << index << "value" << value;
-
   if (role == EnabledRole || Qt::EditRole)
     labeller->forces[index.row()]->isEnabled = value.toBool();
 
@@ -99,9 +96,6 @@ void LabellerModel::changeWeight(int row, QVariant newValue)
   auto value = newValue.toFloat(&converted);
   if (converted)
     labeller->forces[row]->weight = value;
-
-  qWarning() << "changeWeight to" << newValue << "for" << row << "conv"
-             << converted;
 }
 
 void LabellerModel::toggleUpdatePositions()
