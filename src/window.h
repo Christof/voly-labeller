@@ -32,6 +32,7 @@ class Window : public QQuickView
   void update();
 
   void printCurrentState();
+  void toggleFullscreen();
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;

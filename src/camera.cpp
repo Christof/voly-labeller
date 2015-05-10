@@ -4,9 +4,9 @@
 
 Camera::Camera()
   : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
-    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0)
+    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0), fieldOfView(M_PI / 2.0f)
 {
-  projection = createProjection(M_PI / 2.0f, 16.0f / 9.0f, 0.1f, 100.0f);
+  projection = createProjection(fieldOfView, 16.0f / 9.0f, 0.1f, 100.0f);
   // projection = createOrthographicProjection(16.0f / 9.0f, 0.1f, 100.0f);
 }
 
@@ -128,5 +128,10 @@ Eigen::Matrix4f Camera::getProjectionMatrix()
 Eigen::Vector3f Camera::getPosition()
 {
   return position;
+}
+
+void Camera::resize(float width, float height)
+{
+  projection = createProjection(fieldOfView, width / height, 0.1f, 100.0f);
 }
 

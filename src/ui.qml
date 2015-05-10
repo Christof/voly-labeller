@@ -42,6 +42,14 @@ Item {
           onTriggered: nodes.clear();
         }
         MenuItem {
+          text: "Exit"
+          shortcut: "Esc"
+          onTriggered: Qt.quit();
+        }
+      }
+      Menu {
+        title: "View"
+        MenuItem {
           text: "Hide user interface"
           shortcut: "F1"
           onTriggered: toggleVisibility();
@@ -52,6 +60,11 @@ Item {
           onTriggered: nodes.toggleBoundingVolumes();
         }
         MenuItem {
+          text: "Toggle fullscreen"
+          shortcut: "F11"
+          onTriggered: window.toggleFullscreen();
+        }
+        MenuItem {
           text: "Toggle label update"
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();
@@ -60,11 +73,6 @@ Item {
           text: "Display state machine state"
           shortcut: "l"
           onTriggered: window.printCurrentState();
-        }
-        MenuItem {
-          text: "Exit"
-          shortcut: "Esc"
-          onTriggered: Qt.quit();
         }
       }
     }
