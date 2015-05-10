@@ -13,6 +13,7 @@ class CameraController;
 class CameraRotationController;
 class CameraZoomController;
 class CameraMoveController;
+class QOpenGLFramebufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -44,6 +45,7 @@ class Scene : public AbstractScene
 
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Forces::Labeller> labeller;
+  std::unique_ptr<QOpenGLFramebufferObject> fbo;
 };
 
 #endif  // SRC_SCENE_H_

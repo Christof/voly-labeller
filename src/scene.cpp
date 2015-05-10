@@ -1,6 +1,7 @@
 #include "./scene.h"
 
 #include <QDebug>
+#include <QOpenGLFramebufferObject>
 #include <Eigen/Core>
 #include <string>
 #include <vector>
@@ -119,5 +120,8 @@ void Scene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
   camera.resize(width, height);
+  fbo = std::unique_ptr<QOpenGLFramebufferObject>(new QOpenGLFramebufferObject(
+      width, height, QOpenGLFramebufferObject::Depth));
+  qWarning() << "create fbo";
 }
 
