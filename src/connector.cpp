@@ -37,10 +37,12 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject)
 void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                             const RenderData &renderData)
 {
-  Eigen::Matrix4f modelViewProjection =
-      renderData.projectionMatrix * renderData.viewMatrix;
+  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
+                                        renderData.viewMatrix *
+                                        renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shaderProgram->setUniform("color", color);
+  shaderProgram->setUniform("zOffset", zOffset);
 }
 
 void Connector::draw(Gl *gl)

@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <data class_id="0" tracking_level="0" version="0">
-	<count>5</count>
+	<count>6</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="MeshNode" tracking_level="1" version="0" object_id="_0">
@@ -62,6 +62,10 @@
 					<y>5.529999733e-01</y>
 					<z>1.999999955e-02</z>
 				</label.anchorPosition>
+				<label.size class_id="7" tracking_level="0" version="0">
+					<x>1.400000006e-01</x>
+					<y>3.500000015e-02</y>
+				</label.size>
 			</label>
 		</px>
 	</item>
@@ -75,6 +79,10 @@
 					<y>3.170000017e-01</y>
 					<z>-1.300000027e-02</z>
 				</label.anchorPosition>
+				<label.size>
+					<x>1.400000006e-01</x>
+					<y>3.500000015e-02</y>
+				</label.size>
 			</label>
 		</px>
 	</item>
@@ -88,6 +96,27 @@
 					<y>4.219999909e-01</y>
 					<z>5.799999833e-02</z>
 				</label.anchorPosition>
+				<label.size>
+					<x>1.400000006e-01</x>
+					<y>1.400000006e-01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="4" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>Wound 2</label.text>
+				<label.anchorPosition>
+					<x>3.400000185e-02</x>
+					<y>3.729999959e-01</y>
+					<z>1.410000026e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.400000006e-01</x>
+					<y>3.500000015e-02</y>
+				</label.size>
 			</label>
 		</px>
 	</item>

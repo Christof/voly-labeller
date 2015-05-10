@@ -25,13 +25,11 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject)
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
-  Eigen::Vector3f labelPosition = renderData.modelMatrix.col(3).head(3);
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
   shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
-  shader->setUniform("labelPosition", labelPosition);
-  shader->setUniform("size", Eigen::Vector2f(2.0f * 0.07f, 0.5f * 0.07f));
+  shader->setUniform("modelMatrix", renderData.modelMatrix);
   shader->setUniform("textureSampler", 0);
 }
 

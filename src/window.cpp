@@ -67,20 +67,25 @@ void Window::initializeOpenGL()
   glCheckError();
 
   gl->glEnable(GL_DEPTH_TEST);
+  gl->glEnable(GL_BLEND);
+  gl->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Window::keyReleaseEvent(QKeyEvent *event)
 {
+  QQuickView::keyReleaseEvent(event);
   keysPressed -= static_cast<Qt::Key>(event->key());
 }
 
 void Window::keyPressEvent(QKeyEvent *event)
 {
+  QQuickView::keyPressEvent(event);
   keysPressed += static_cast<Qt::Key>(event->key());
 }
 
 void Window::mouseMoveEvent(QMouseEvent *event)
 {
+  QQuickView::mouseMoveEvent(event);
   mousePosition = event->pos();
 }
 

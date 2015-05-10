@@ -2,6 +2,9 @@
 #include <Eigen/Eigenvalues>
 #include <limits>
 
+namespace Math
+{
+
 Obb::Obb(Eigen::MatrixXf points)
 {
   Eigen::Matrix3Xf centered = points.colwise() - points.rowwise().mean();
@@ -71,3 +74,4 @@ Eigen::Vector3f Obb::getCornerWidths(float axis1Sign, float axis2Sign,
       Eigen::Vector3f(axis1Sign, axis2Sign, axis3Sign));
 }
 
+}  // namespace Math

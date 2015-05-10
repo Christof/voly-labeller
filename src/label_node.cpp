@@ -18,13 +18,18 @@ LabelNode::LabelNode(Label label) : label(label)
   anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Quad>();
 
-  auto labelPosition = label.anchorPosition * 1.3f;
-  connector = std::make_shared<Connector>(label.anchorPosition, labelPosition);
+  connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
+                                          Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
 LabelNode::~LabelNode()
 {
+}
+
+const Label &LabelNode::getLabel()
+{
+  return label;
 }
 
 void LabelNode::render(Gl *gl, RenderData renderData)
@@ -35,17 +40,38 @@ void LabelNode::render(Gl *gl, RenderData renderData)
     texture->initialize(gl);
   }
 
+  renderConnector(gl, renderData);
+  renderAnchor(gl, renderData);
+  renderLabel(gl, renderData);
+}
+
+void LabelNode::renderConnector(Gl *gl, RenderData renderData)
+{
+  Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
+  auto length = anchorToPosition.norm();
+  auto rotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitX(),
+                                                     anchorToPosition);
+  Eigen::Affine3f connectorTransform(
+      Eigen::Translation3f(label.anchorPosition) * rotation *
+      Eigen::Scaling(length));
+  renderData.modelMatrix = connectorTransform.matrix();
+
   connector->render(gl, renderData);
+}
 
-  auto labelPosition = label.anchorPosition * 1.3f;
-  Eigen::Affine3f transform(Eigen::Translation3f(label.anchorPosition) *
-                            Eigen::Scaling(0.005f));
-  renderData.modelMatrix = transform.matrix();
+void LabelNode::renderAnchor(Gl *gl, RenderData renderData)
+{
+  Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
+                                 Eigen::Scaling(0.005f));
+  renderData.modelMatrix = modelTransform.matrix();
   anchorMesh->render(gl, renderData);
+}
 
-  Eigen::Affine3f labelTransform(Eigen::Translation3f(labelPosition) *
-                                 Eigen::Scaling(2.0f, 0.5f, 1.0f) *
-                                 Eigen::Scaling(0.07f));
+void LabelNode::renderLabel(Gl *gl, RenderData renderData)
+{
+  Eigen::Affine3f labelTransform(
+      Eigen::Translation3f(labelPosition) *
+      Eigen::Scaling(label.size.x(), label.size.y(), 1.0f));
 
   renderData.modelMatrix = labelTransform.matrix();
 

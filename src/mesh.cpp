@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
-#include "./obb.h"
+#include "./math/obb.h"
 #include "./render_object.h"
 #include "./shader_program.h"
 
@@ -64,7 +64,7 @@ void Mesh::createObb()
     data.col(i) = Eigen::Vector3f(positionData[i * 3], positionData[i * 3 + 1],
                                   positionData[i * 3 + 2]);
 
-  obb = std::make_shared<Obb>(data);
+  obb = std::make_shared<Math::Obb>(data);
 }
 
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)

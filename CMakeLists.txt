@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
+add_subdirectory(src/forces)
 
 option(test "Build all tests." ON)
 if(test)
@@ -23,29 +25,31 @@ set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsani
 set(SOURCES
   src/window.cpp
   src/gl.cpp
+  src/eigen_qdebug.cpp
   src/camera.cpp
   src/shader_program.cpp
   src/render_object.cpp
   src/renderable.cpp
   src/mesh.cpp
   src/quad.cpp
-  src/obb.cpp
   src/connector.cpp
   src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
   src/obb_node.cpp
+  src/forces_visualizer_node.cpp
   src/coordinate_system_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
-  src/demo_scene.cpp
+  src/scene.cpp
   src/camera_controller.cpp
   src/mouse_dragging_controller.cpp
   src/camera_rotation_controller.cpp
   src/camera_zoom_controller.cpp
   src/camera_move_controller.cpp
   src/mouse_shape_controller.h
+  src/labeller_model.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
@@ -55,6 +59,8 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
+  $<TARGET_OBJECTS:forces>
+  $<TARGET_OBJECTS:math>
   )
 
 target_link_libraries(voly-labeller

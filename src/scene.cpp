@@ -1,4 +1,4 @@
-#include "./demo_scene.h"
+#include "./scene.h"
 
 #include <QDebug>
 #include <Eigen/Core>
@@ -9,6 +9,7 @@
 #include "./mesh.h"
 #include "./mesh_node.h"
 #include "./label_node.h"
+#include "./forces_visualizer_node.h"
 #include "./render_data.h"
 #include "./importer.h"
 #include "./camera_controller.h"
@@ -17,13 +18,16 @@
 #include "./camera_move_controller.h"
 #include "./nodes.h"
 #include "./utils/persister.h"
+#include "./forces/labeller_frame_data.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
-DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
-                     std::shared_ptr<Nodes> nodes)
-  : nodes(nodes)
+Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
+             std::shared_ptr<Nodes> nodes,
+             std::shared_ptr<Forces::Labeller> labeller)
+
+  : nodes(nodes), labeller(labeller)
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
@@ -36,11 +40,11 @@ DemoScene::DemoScene(std::shared_ptr<InvokeManager> invokeManager,
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 }
 
-DemoScene::~DemoScene()
+Scene::~Scene()
 {
 }
 
-void DemoScene::initialize()
+void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
@@ -61,24 +65,44 @@ void DemoScene::initialize()
   auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.334f, 0.317f, -0.013f));
   meshNodes.push_back(std::make_shared<LabelNode>(label2));
 
-  auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f));
+  auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f),
+                      Eigen::Vector2f(0.14f, 0.14f));
   meshNodes.push_back(std::make_shared<LabelNode>(label3));
+
+  auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
+  meshNodes.push_back(std::make_shared<LabelNode>(label4));
 
   Persister::save(meshNodes, "config/scene.xml");
 
   nodes->addSceneNodesFrom("config/scene.xml");
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    auto label = labelNode->getLabel();
+    labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
+  }
+
+  nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
 }
 
-void DemoScene::update(double frameTime, QSet<Qt::Key> keysPressed)
+void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
   cameraController->setFrameTime(frameTime);
   cameraRotationController->setFrameTime(frameTime);
   cameraZoomController->setFrameTime(frameTime);
   cameraMoveController->setFrameTime(frameTime);
+
+  auto newPositions = labeller->update(Forces::LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    labelNode->labelPosition = newPositions[labelNode->getLabel().id];
+  }
 }
 
-void DemoScene::render()
+void Scene::render()
 {
   glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -91,7 +115,7 @@ void DemoScene::render()
   nodes->render(gl, renderData);
 }
 
-void DemoScene::resize(int width, int height)
+void Scene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
 }

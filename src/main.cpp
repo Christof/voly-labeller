@@ -4,12 +4,13 @@
 #include <QDebug>
 #include <memory>
 #include "./window.h"
-#include "./demo_scene.h"
+#include "./scene.h"
 #include "./nodes.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
+#include "./labeller_model.h"
 
 int main(int argc, char **argv)
 {
@@ -23,11 +24,14 @@ int main(int argc, char **argv)
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
-  auto scene = std::make_shared<DemoScene>(invokeManager, nodes);
+  auto labeller = std::make_shared<Forces::Labeller>();
+  auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
   Window window(scene);
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
+  LabellerModel labellerModel(labeller);
+  window.rootContext()->setContextProperty("labeller", &labellerModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
   MouseShapeController mouseShapeController(window);

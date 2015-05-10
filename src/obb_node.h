@@ -4,9 +4,9 @@
 
 #include <memory>
 #include "./node.h"
+#include "./math/obb.h"
 
 class Gl;
-class Obb;
 class Connector;
 
 /**
@@ -15,7 +15,7 @@ class Connector;
 class ObbNode : public Node
 {
  public:
-  explicit ObbNode(std::shared_ptr<Obb> obb);
+  explicit ObbNode(std::shared_ptr<Math::Obb> obb);
 
   void render(Gl *gl, RenderData renderData);
 

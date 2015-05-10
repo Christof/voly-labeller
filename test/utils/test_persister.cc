@@ -14,13 +14,22 @@ TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
   EXPECT_EQ(text, Persister::load<std::string>("test.xml"));
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadAVector)
+TEST(Test_QObjectPersistence, SaveAndLoadAVector3f)
 {
   Eigen::Vector3f vector(1.0f, 1.1f, 1.2f);
 
   Persister::save(vector, "test.xml");
   auto loaded = Persister::load<Eigen::Vector3f>("test.xml");
   EXPECT_Vector3f_NEAR(vector, loaded, 1E-5f);
+}
+
+TEST(Test_QObjectPersistence, SaveAndLoadAVector2f)
+{
+  Eigen::Vector2f vector(1.0f, 1.1f);
+
+  Persister::save(vector, "test.xml");
+  auto loaded = Persister::load<Eigen::Vector2f>("test.xml");
+  EXPECT_Vector2f_NEAR(vector, loaded, 1E-5f);
 }
 
 TEST(Test_QObjectPersistence, SaveAndLoadALabel)

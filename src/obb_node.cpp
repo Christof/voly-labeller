@@ -1,10 +1,9 @@
 #include "./obb_node.h"
 #include <Eigen/Core>
 #include <vector>
-#include "./obb.h"
 #include "./connector.h"
 
-ObbNode::ObbNode(std::shared_ptr<Obb> obb)
+ObbNode::ObbNode(std::shared_ptr<Math::Obb> obb)
 {
   wireframe = std::make_shared<Connector>(std::vector<Eigen::Vector3f>{
     obb->corners[0], obb->corners[1], obb->corners[1], obb->corners[2],

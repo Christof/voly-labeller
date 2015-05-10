@@ -11,7 +11,7 @@
 #include <memory>
 #include <string>
 #include "./node.h"
-#include "./obb.h"
+#include "./math/obb.h"
 #include "./importer.h"
 #include "./connector.h"
 
@@ -49,7 +49,7 @@ class MeshNode : public Node
     ar << BOOST_SERIALIZATION_NVP(transformation);
   };
 
-  virtual std::shared_ptr<Obb> getObb();
+  virtual std::shared_ptr<Math::Obb> getObb();
 
  private:
   friend class boost::serialization::access;

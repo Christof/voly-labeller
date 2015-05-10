@@ -11,6 +11,7 @@
 #include "./render_data.h"
 
 class Gl;
+class LabelNode;
 
 /**
  * \brief Manages a collection of nodes which is rendered
@@ -29,6 +30,8 @@ class Nodes : public QObject
   Nodes();
   void render(Gl *gl, RenderData renderData);
 
+  std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
+  void addNode(std::shared_ptr<Node> node);
  public slots:
   void addSceneNodesFrom(std::string filename);
   void addSceneNodesFrom(QUrl url);

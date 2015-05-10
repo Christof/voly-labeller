@@ -6,28 +6,12 @@
 #include <QDebug>
 #include <iostream>
 
-QDebug operator<<(QDebug dbg, const Eigen::Vector2f &vector)
-{
-  dbg << "[" << vector.x() << "|" << vector.y() << "]";
+QDebug operator<<(QDebug dbg, const Eigen::Vector2f &vector);
 
-  return dbg.maybeSpace();
-}
+QDebug operator<<(QDebug dbg, const Eigen::Vector3f &vector);
 
-QDebug operator<<(QDebug dbg, const Eigen::Vector3f &vector)
-{
-  dbg << "[" << vector.x() << "|" << vector.y() << "|" << vector.z() << "]";
+QDebug operator<<(QDebug dbg, const Eigen::Vector4f &vector);
 
-  return dbg.maybeSpace();
-}
-
-QDebug operator<<(QDebug dbg, const Eigen::Matrix4f &vector)
-{
-  const Eigen::IOFormat cleanFormat(4, 0, ", ", "\n", "[", "]");
-  std::stringstream stream;
-  stream << vector.format(cleanFormat);
-  dbg << stream.str().c_str();
-
-  return dbg.maybeSpace();
-}
+QDebug operator<<(QDebug dbg, const Eigen::Matrix4f &vector);
 
 #endif  // SRC_EIGEN_QDEBUG_H_
