@@ -118,5 +118,6 @@ void Scene::render()
 void Scene::resize(int width, int height)
 {
   glAssert(glViewport(0, 0, width, height));
+  camera.resize(width, height);
 }
 

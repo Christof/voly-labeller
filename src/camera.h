@@ -31,6 +31,7 @@ class Camera
   void changeDeclination(float deltaAngle);
   void changeRadius(float deltaRadius);
 
+  void resize(float width, float height);
  private:
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
@@ -43,6 +44,8 @@ class Camera
   float radius;
   float azimuth;
   float declination;
+
+  float fieldOfView;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);
