@@ -28,6 +28,7 @@ int main(int argc, char **argv)
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
   Window window(scene);
+  window.setResizeMode(QQuickView::SizeRootObjectToView);
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
   LabellerModel labellerModel(labeller);

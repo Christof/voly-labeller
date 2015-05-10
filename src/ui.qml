@@ -52,6 +52,11 @@ Item {
           onTriggered: nodes.toggleBoundingVolumes();
         }
         MenuItem {
+          text: "Toggle fullscreen"
+          shortcut: "F11"
+          onTriggered: window.toggleFullscreen();
+        }
+        MenuItem {
           text: "Toggle label update"
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();

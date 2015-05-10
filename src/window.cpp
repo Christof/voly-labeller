@@ -159,3 +159,9 @@ void Window::printCurrentState()
   }
 }
 
+void Window::toggleFullscreen()
+{
+  setVisibility(visibility() == QWindow::Windowed ? QWindow::FullScreen
+                                                  : QWindow::Windowed);
+}
+
