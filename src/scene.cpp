@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QOpenGLFramebufferObject>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
 #include "./gl.h"
@@ -18,6 +19,7 @@
 #include "./camera_zoom_controller.h"
 #include "./camera_move_controller.h"
 #include "./nodes.h"
+#include "./quad.h"
 #include "./utils/persister.h"
 #include "./forces/labeller_frame_data.h"
 
@@ -84,6 +86,8 @@ void Scene::initialize()
   }
 
   nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
+
+  quad = std::make_shared<Quad>();
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -105,6 +109,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
+  glAssert(glViewport(0, 0, width, height));
+  glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+  glAssert(fbo->bind());
+  glAssert(glViewport(0, 0, width, height));
   glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   RenderData renderData;
@@ -114,14 +123,44 @@ void Scene::render()
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
   nodes->render(gl, renderData);
+
+  glAssert(fbo->release());
+
+  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
+  renderData.viewMatrix = Eigen::Matrix4f::Identity();
+  renderData.modelMatrix =
+      Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
+
+  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+
+  glAssert(gl->glActiveTexture(GL_TEXTURE0));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
+
+  quad->render(gl, renderData);
 }
 
 void Scene::resize(int width, int height)
 {
+  this->width = width;
+  this->height = height;
+
   glAssert(glViewport(0, 0, width, height));
   camera.resize(width, height);
+  if (fbo.get())
+    fbo->release();
+
   fbo = std::unique_ptr<QOpenGLFramebufferObject>(new QOpenGLFramebufferObject(
-      width, height, QOpenGLFramebufferObject::Depth));
+      width, height, QOpenGLFramebufferObject::CombinedDepthStencil));
   qWarning() << "create fbo";
+
+  /*
+  glAssert(fbo->bind());
+  glAssert(glViewport(0, 0, width, height));
+
+  glAssert(fbo->bindDefault());
+  */
 }
 

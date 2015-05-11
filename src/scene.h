@@ -7,13 +7,14 @@
 #include "./camera.h"
 #include "./forces/labeller.h"
 
+class QOpenGLFramebufferObject;
 class Nodes;
 class InvokeManager;
 class CameraController;
 class CameraRotationController;
 class CameraZoomController;
 class CameraMoveController;
-class QOpenGLFramebufferObject;
+class Quad;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -45,7 +46,11 @@ class Scene : public AbstractScene
 
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Forces::Labeller> labeller;
+  std::shared_ptr<Quad> quad;
   std::unique_ptr<QOpenGLFramebufferObject> fbo;
+
+  int width;
+  int height;
 };
 
 #endif  // SRC_SCENE_H_
