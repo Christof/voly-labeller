@@ -48,6 +48,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Quad> quad;
   std::unique_ptr<QOpenGLFramebufferObject> fbo;
+  unsigned int depthTexture;
 
   int width;
   int height;

@@ -114,7 +114,8 @@ void Scene::render()
 
   glAssert(fbo->bind());
   glAssert(gl->glViewport(0, 0, width, height));
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                       GL_STENCIL_BUFFER_BIT));
 
   RenderData renderData;
   renderData.projectionMatrix = camera.getProjectionMatrix();
@@ -131,13 +132,9 @@ void Scene::render()
   renderData.modelMatrix =
       Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
 
-  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-  glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
+  // glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
 
   quad->render(gl, renderData);
 }
@@ -153,9 +150,28 @@ void Scene::resize(int width, int height)
     fbo->release();
 
   fbo = std::unique_ptr<QOpenGLFramebufferObject>(new QOpenGLFramebufferObject(
-      width, height, QOpenGLFramebufferObject::CombinedDepthStencil));
+      width, height, QOpenGLFramebufferObject::Depth));
   qWarning() << "create fbo";
 
+  glAssert(fbo->bind());
+  glAssert(glViewport(0, 0, width, height));
+
+  glAssert(gl->glGenTextures(1, &depthTexture));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
+  glAssert(
+      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+  glAssert(
+      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  glAssert(
+      gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE));
+  glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width,
+                            height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
+                            NULL));
+
+  glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                      GL_TEXTURE_2D, depthTexture, 0));
+
+  fbo->release();
   /*
   glAssert(fbo->bind());
   glAssert(glViewport(0, 0, width, height));
