@@ -7,7 +7,6 @@
 #include "./camera.h"
 #include "./forces/labeller.h"
 
-class QOpenGLFramebufferObject;
 class Nodes;
 class InvokeManager;
 class CameraController;
@@ -15,6 +14,7 @@ class CameraRotationController;
 class CameraZoomController;
 class CameraMoveController;
 class Quad;
+class FrameBufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -47,8 +47,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Quad> quad;
-  std::unique_ptr<QOpenGLFramebufferObject> fbo;
-  unsigned int depthTexture;
+  std::unique_ptr<FrameBufferObject> fbo;
 
   int width;
   int height;
