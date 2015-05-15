@@ -24,13 +24,11 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
     fbo->release();
     fbo.release();
     */
+    glAssert(gl->glGenTextures(1, &depthTexture));
   }
 
   glAssert(fbo->bind());
-  glAssert(glViewport(0, 0, width, height));
-
-  if (!resize)
-    glAssert(gl->glGenTextures(1, &depthTexture));
+  // glAssert(glViewport(0, 0, width, height));
 
   if (resize)
   {
@@ -47,7 +45,7 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
                                         GL_TEXTURE_2D, fbo->texture(), 0));
   }
 
-  fbo->release();
+  glAssert(fbo->release());
 }
 
 void FrameBufferObject::bind()
@@ -86,5 +84,6 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
   // gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE));
   glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
                             component, GL_UNSIGNED_BYTE, NULL));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 }
 
