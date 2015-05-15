@@ -10,15 +10,28 @@ FrameBufferObject::~FrameBufferObject()
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
 {
-  this->gl = gl;
-  fbo = std::unique_ptr<QOpenGLFramebufferObject>(new QOpenGLFramebufferObject(
-      width, height, QOpenGLFramebufferObject::Depth));
-  qWarning() << "create fbo";
+  bool resize = fbo.get();
+  if (!resize)
+  {
+    this->gl = gl;
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::Depth);
+    // format.setSamples(16);
+    fbo = std::unique_ptr<QOpenGLFramebufferObject>(
+        new QOpenGLFramebufferObject(width, height, format));
+    qWarning() << "create fbo";
+    /*
+    fbo->release();
+    fbo.release();
+    */
+  }
 
   glAssert(fbo->bind());
   glAssert(glViewport(0, 0, width, height));
 
-  glAssert(gl->glGenTextures(1, &depthTexture));
+  if (!resize)
+    glAssert(gl->glGenTextures(1, &depthTexture));
+
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
   glAssert(
       gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -33,11 +46,29 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                       GL_TEXTURE_2D, depthTexture, 0));
 
+  if (resize)
+  {
+    glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
+    glAssert(
+        gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    glAssert(
+        gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE,
+                                 GL_LUMINANCE));
+    glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width,
+                              height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
+                              NULL));
+
+    glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                        GL_TEXTURE_2D, fbo->texture(), 0));
+  }
+
   fbo->release();
 }
 
 void FrameBufferObject::bind()
 {
+  // QOpenGLFramebufferObject::blitFramebuffer(fbo.get(), fbo.get());
   glAssert(fbo->bind());
 }
 
