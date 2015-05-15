@@ -28,22 +28,18 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   }
 
   glAssert(fbo->bind());
-  // glAssert(glViewport(0, 0, width, height));
 
-  if (resize)
-  {
-    qWarning() << "Resize to " << width << "x" << height;
-    glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
-    resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                  GL_DEPTH_COMPONENT32F);
-    glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                        GL_TEXTURE_2D, depthTexture, 0));
+  qWarning() << "Resize to " << width << "x" << height;
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
+  resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
+                GL_DEPTH_COMPONENT32F);
+  glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                      GL_TEXTURE_2D, depthTexture, 0));
 
-    glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
-    resizeTexture(fbo->texture(), width, height, GL_RGBA, GL_RGBA8);
-    glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                        GL_TEXTURE_2D, fbo->texture(), 0));
-  }
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
+  resizeTexture(fbo->texture(), width, height, GL_RGBA, GL_RGBA8);
+  glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                      GL_TEXTURE_2D, fbo->texture(), 0));
 
   glAssert(fbo->release());
 }
