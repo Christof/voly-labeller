@@ -32,33 +32,17 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   if (!resize)
     glAssert(gl->glGenTextures(1, &depthTexture));
 
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
-  glAssert(
-      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-  glAssert(
-      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-  glAssert(
-      gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE));
-  glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width,
-                            height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
-                            NULL));
-
-  glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                      GL_TEXTURE_2D, depthTexture, 0));
-
   if (resize)
   {
-    glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
-    glAssert(
-        gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-    glAssert(
-        gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-    glAssert(gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE,
-                                 GL_LUMINANCE));
-    glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width,
-                              height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE,
-                              NULL));
+    qWarning() << "Resize to " << width << "x" << height;
+    glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
+    resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
+                  GL_DEPTH_COMPONENT32F);
+    glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                        GL_TEXTURE_2D, depthTexture, 0));
 
+    glAssert(gl->glBindTexture(GL_TEXTURE_2D, fbo->texture()));
+    resizeTexture(fbo->texture(), width, height, GL_RGBA, GL_RGBA8);
     glAssert(gl->glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                         GL_TEXTURE_2D, fbo->texture(), 0));
   }
@@ -87,5 +71,20 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
+}
+
+void FrameBufferObject::resizeTexture(int texture, int width, int height,
+                                      unsigned int component,
+                                      unsigned int format)
+{
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, texture));
+  glAssert(
+      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+  glAssert(
+      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+  // glAssert(
+  // gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE));
+  glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
+                            component, GL_UNSIGNED_BYTE, NULL));
 }
 
