@@ -21,7 +21,7 @@ class LabelNode;
  * file (Nodes::addSceneNodesFrom), which was previously saved
  * using Nodes::saveSceneTo.
  *
- * Also an asset file can be dirctly added using Nodes::importFrom.
+ * Also an asset file can be directly added using Nodes::importFrom.
  */
 class Nodes : public QObject
 {
@@ -32,6 +32,7 @@ class Nodes : public QObject
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
   void addNode(std::shared_ptr<Node> node);
+  void removeNode(std::shared_ptr<Node> node);
  public slots:
   void addSceneNodesFrom(std::string filename);
   void addSceneNodesFrom(QUrl url);
