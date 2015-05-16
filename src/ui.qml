@@ -69,6 +69,9 @@ Item {
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();
         }
+      }
+      Menu {
+        title: "Simulation"
         MenuItem {
           text: "Toggle label update"
           shortcut: "Space"
