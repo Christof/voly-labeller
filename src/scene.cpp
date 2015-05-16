@@ -136,6 +136,12 @@ void Scene::render()
 
   fbo->unbind();
 
+  renderScreenQuad();
+}
+
+void Scene::renderScreenQuad()
+{
+  RenderData renderData;
   renderData.projectionMatrix = Eigen::Matrix4f::Identity();
   renderData.viewMatrix = Eigen::Matrix4f::Identity();
   renderData.modelMatrix =
@@ -151,8 +157,6 @@ void Scene::resize(int width, int height)
 {
   this->width = width;
   this->height = height;
-
-  // glAssert(glViewport(0, 0, width, height));
 
   shouldResize = true;
 }

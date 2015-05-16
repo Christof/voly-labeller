@@ -52,6 +52,8 @@ class Scene : public AbstractScene
   int width;
   int height;
   bool shouldResize = false;
+
+  void renderScreenQuad();
 };
 
 #endif  // SRC_SCENE_H_
