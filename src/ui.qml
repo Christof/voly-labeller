@@ -74,11 +74,6 @@ Item {
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();
         }
-        MenuItem {
-          text: "Display state machine state"
-          shortcut: "l"
-          onTriggered: window.printCurrentState();
-        }
       }
     }
 

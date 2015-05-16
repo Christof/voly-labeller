@@ -132,36 +132,6 @@ void Window::update()
   scene->update(timer.restart() / 1000.0, keysPressed);
 }
 
-void Window::printCurrentState()
-{
-  auto currentState = stateMachine->configuration();
-  std::cout << "current state(s): " << std::endl;
-  for (auto state : currentState)
-  {
-    std::cout << "\t" << state->property("name").toString().toStdString()
-              << std::endl;
-    auto castState = dynamic_cast<QState *>(state);
-    if (!castState)
-      continue;
-
-    auto transitions = castState->transitions();
-    std::cout << "\t\ttransition count: " << transitions.length() << std::endl;
-    for (auto transition : transitions)
-    {
-      std::cout << "\t\tsource: "
-                << transition->sourceState()
-                       ->property("name")
-                       .toString()
-                       .toStdString() << std::endl;
-      auto targetState = transition->targetState();
-      if (targetState)
-        std::cout << "\t\ttarget: "
-                  << targetState->property("name").toString().toStdString()
-                  << std::endl;
-    }
-  }
-}
-
 void Window::toggleFullscreen()
 {
   setVisibility(visibility() == QWindow::Windowed ? QWindow::FullScreen

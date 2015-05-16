@@ -31,7 +31,6 @@ class Window : public QQuickView
   void render();
   void update();
 
-  void printCurrentState();
   void toggleFullscreen();
 
  protected:
