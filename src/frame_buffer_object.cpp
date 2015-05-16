@@ -11,57 +11,29 @@ FrameBufferObject::~FrameBufferObject()
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
 {
-  bool isFirstTime = framebuffer == 0;
-  if (isFirstTime)
-  {
-    this->gl = gl;
-    glAssert(gl->glGenFramebuffers(1, &framebuffer));
-    glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
+  this->gl = gl;
 
-    glAssert(gl->glGenTextures(1, &depthTexture));
-    resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                  GL_DEPTH_COMPONENT32F);
+  glAssert(gl->glGenFramebuffers(1, &framebuffer));
+  glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
 
-    glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
-                                        GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-                                        depthTexture, 0));
+  glAssert(gl->glGenTextures(1, &depthTexture));
+  resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
+                GL_DEPTH_COMPONENT32F);
 
-    glAssert(gl->glGenTextures(1, &renderTexture));
-    resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
+  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                      GL_TEXTURE_2D, depthTexture, 0));
 
-    glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
-                                        GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                        renderTexture, 0));
-    glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
+  glAssert(gl->glGenTextures(1, &renderTexture));
+  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
 
-    auto status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE)
-    {
-      switch (status)
-      {
-      case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-        throw std::runtime_error(
-            "Framebuffer not complete: Incomplete attachment");
-      case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-        throw std::runtime_error(
-            "Framebuffer not complete: missing attachment");
-      case GL_FRAMEBUFFER_UNSUPPORTED:
-        throw std::runtime_error("Framebuffer not complete: unsupported");
-      case GL_FRAMEBUFFER_UNDEFINED:
-        throw std::runtime_error("Framebuffer not complete: undefined");
-      case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-        throw std::runtime_error("Framebuffer not complete: draw buffer");
-      case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-        throw std::runtime_error("Framebuffer not complete: layer targets");
-      }
-      throw std::runtime_error("Framebuffer not complete " +
-                               std::to_string(status));
-    }
-  }
-  else
-  {
-    resize(gl, width, height);
-  }
+  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                      GL_TEXTURE_2D, renderTexture, 0));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
+
+  auto status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if (status != GL_FRAMEBUFFER_COMPLETE)
+    throw std::runtime_error("Framebuffer not complete " +
+                             std::to_string(status));
 }
 
 void FrameBufferObject::resize(Gl *gl, int width, int height)

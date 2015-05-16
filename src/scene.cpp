@@ -90,6 +90,8 @@ void Scene::initialize()
   nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
 
   quad = std::make_shared<Quad>();
+
+  fbo->initialize(gl, width, height);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -114,7 +116,7 @@ void Scene::render()
   if (shouldResize)
   {
     camera.resize(width, height);
-    fbo->initialize(gl, width, height);
+    fbo->resize(gl, width, height);
     shouldResize = false;
   }
   glAssert(gl->glViewport(0, 0, width, height));
