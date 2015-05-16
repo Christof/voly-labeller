@@ -11,6 +11,7 @@
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
 #include "./labeller_model.h"
+#include "./forces_visualizer_node.h"
 
 int main(int argc, char **argv)
 {
@@ -25,6 +26,8 @@ int main(int argc, char **argv)
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
   auto labeller = std::make_shared<Forces::Labeller>();
+  auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
+  nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
   Window window(scene);
@@ -32,6 +35,15 @@ int main(int argc, char **argv)
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
   LabellerModel labellerModel(labeller);
+  labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
+                        [&labellerModel, &nodes, &forcesVisualizerNode]()
+                        {
+    if (labellerModel.getIsVisible())
+      nodes->addNode(forcesVisualizerNode);
+    else
+      nodes->removeNode(forcesVisualizerNode);
+
+  });
   window.rootContext()->setContextProperty("labeller", &labellerModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
