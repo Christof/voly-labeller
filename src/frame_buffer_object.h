@@ -19,6 +19,8 @@ class FrameBufferObject
 
   void initialize(Gl *gl, int width, int height);
 
+  void resize(Gl *gl, int width, int height);
+
   void bind();
   void unbind();
 

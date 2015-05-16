@@ -11,17 +11,8 @@ FrameBufferObject::~FrameBufferObject()
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
 {
-  bool resize = framebuffer != 0;
-  /*
-  if (resize)
-  {
-    unbind();
-    glAssert(gl->glDeleteBuffers(1, &framebuffer));
-    glAssert(gl->glDeleteTextures(1, &depthTexture));
-    glAssert(gl->glDeleteTextures(1, &renderTexture));
-  }
-  */
-  if (!resize)
+  bool isFirstTime = framebuffer == 0;
+  if (isFirstTime)
   {
     this->gl = gl;
     glAssert(gl->glGenFramebuffers(1, &framebuffer));
@@ -66,62 +57,31 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
       throw std::runtime_error("Framebuffer not complete " +
                                std::to_string(status));
     }
-    // Set the list of draw buffers.
-    qWarning() << "create fbo";
-    /*
-    fbo->release();
-    fbo.release();
-    */
   }
   else
   {
-    bind();
-
-    resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                  GL_DEPTH_COMPONENT32F);
-    glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
-                                        GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D,
-                                        depthTexture, 0));
-
-
-    resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
-    glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
-                                        GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                                        renderTexture, 0));
-
-    int param = 0;
-    gl->glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &param);
-    qWarning() << "width of render texture" << param;
-
-    unbind();
+    resize(gl, width, height);
   }
+}
 
-  /*
+void FrameBufferObject::resize(Gl *gl, int width, int height)
+{
   bind();
 
-  qWarning() << "Resize to " << width << "x" << height;
-  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                      GL_TEXTURE_2D, 0, 0));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
   resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
                 GL_DEPTH_COMPONENT32F);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                       GL_TEXTURE_2D, depthTexture, 0));
 
-  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                      GL_TEXTURE_2D, 0, 0));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, renderTexture));
   resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, renderTexture, 0));
 
   unbind();
-  */
 }
 
 void FrameBufferObject::bind()
 {
-  // QOpenGLFramebufferObject::blitFramebuffer(fbo.get(), fbo.get());
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
 }
 
@@ -151,8 +111,6 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
       gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
   glAssert(
       gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-  // glAssert(
-  // gl->glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE));
   glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
                             component, GL_UNSIGNED_BYTE, NULL));
 }
