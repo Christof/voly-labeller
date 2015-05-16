@@ -7,9 +7,17 @@
 class Gl;
 
 /**
- * \brief
+ * \brief Encapsulates a frame buffer with textures for color and depth
+ * attachments
  *
+ * FrameBufferObject::initialize must be called once, and FrameBufferObject::resize
+ * if the window is resized (mind that it must be called from the rendering thread).
  *
+ * The draw into the frame buffer call FrameBufferObject::bind. After drawing
+ * call FrameBufferObject::unbind.
+ *
+ * Using FrameBufferObject::bindColorTexture or FrameBufferObject::bindDepthTexture
+ * the corresponding textures can be used.
  */
 class FrameBufferObject
 {
