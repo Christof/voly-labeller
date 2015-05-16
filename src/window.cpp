@@ -97,6 +97,7 @@ void Window::handleLazyInitialization()
     initializeOpenGL();
 
     scene->setContext(context, gl);
+    scene->resize(size().width(), size().height());
     scene->initialize();
     initialized = true;
   }
@@ -119,9 +120,11 @@ void Window::render()
 
 void Window::resizeOpenGL()
 {
+  if (!gl)
+    return;
+
   scene->resize(width(), height());
-  if (gl)
-    gl->setSize(this->size());
+  gl->setSize(this->size());
 }
 
 void Window::update()

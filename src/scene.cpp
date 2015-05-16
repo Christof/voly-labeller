@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
 #include "./gl.h"
@@ -17,6 +18,8 @@
 #include "./camera_zoom_controller.h"
 #include "./camera_move_controller.h"
 #include "./nodes.h"
+#include "./quad.h"
+#include "./frame_buffer_object.h"
 #include "./utils/persister.h"
 #include "./forces/labeller_frame_data.h"
 
@@ -38,6 +41,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   invokeManager->addHandler("cameraRotation", cameraRotationController.get());
   invokeManager->addHandler("cameraZoom", cameraZoomController.get());
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
+
+  fbo = std::unique_ptr<FrameBufferObject>(new FrameBufferObject());
 }
 
 Scene::~Scene()
@@ -83,6 +88,10 @@ void Scene::initialize()
   }
 
   nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
+
+  quad = std::make_shared<Quad>();
+
+  fbo->initialize(gl, width, height);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -104,7 +113,18 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
-  glAssert(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+  if (shouldResize)
+  {
+    camera.resize(width, height);
+    fbo->resize(gl, width, height);
+    shouldResize = false;
+  }
+  glAssert(gl->glViewport(0, 0, width, height));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+  fbo->bind();
+  glAssert(gl->glViewport(0, 0, width, height));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   RenderData renderData;
   renderData.projectionMatrix = camera.getProjectionMatrix();
@@ -113,11 +133,31 @@ void Scene::render()
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
   nodes->render(gl, renderData);
+
+  fbo->unbind();
+
+  renderScreenQuad();
+}
+
+void Scene::renderScreenQuad()
+{
+  RenderData renderData;
+  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
+  renderData.viewMatrix = Eigen::Matrix4f::Identity();
+  renderData.modelMatrix =
+      Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
+
+  fbo->bindColorTexture(GL_TEXTURE0);
+  // fbo->bindDepthTexture(GL_TEXTURE0);
+
+  quad->render(gl, renderData);
 }
 
 void Scene::resize(int width, int height)
 {
-  glAssert(glViewport(0, 0, width, height));
-  camera.resize(width, height);
+  this->width = width;
+  this->height = height;
+
+  shouldResize = true;
 }
 
