@@ -62,6 +62,11 @@ Qt::ItemFlags LabellerModel::flags(const QModelIndex &index) const
          Qt::ItemIsUserCheckable;
 }
 
+bool LabellerModel::getIsVisible() const
+{
+  return isVisible;
+}
+
 void LabellerModel::changeEnabled(int row, QVariant newValue)
 {
   labeller->forces[row]->isEnabled = newValue.toBool();
