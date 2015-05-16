@@ -134,16 +134,6 @@ Item {
         Row {
           CheckBox {
             checked: enabled
-            /*
-            onClicked: enabled = checked
-            Component.onCompleted: checked = enabled
-            Connections {
-              target: labeller
-              onDataChanged: {
-                enabled = checked
-              }
-            }
-            */
           }
           Text {
             text: name
