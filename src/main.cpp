@@ -42,8 +42,8 @@ int main(int argc, char **argv)
       nodes->addNode(forcesVisualizerNode);
     else
       nodes->removeNode(forcesVisualizerNode);
-
   });
+
   window.rootContext()->setContextProperty("labeller", &labellerModel);
   window.setSource(QUrl("qrc:ui.qml"));
 

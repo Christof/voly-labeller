@@ -36,7 +36,8 @@ class LabellerModel : public QAbstractTableModel
 
   Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-  Q_PROPERTY(bool isVisible MEMBER isVisible READ getIsVisible NOTIFY isVisibleChanged)
+  Q_PROPERTY(bool isVisible MEMBER isVisible READ getIsVisible NOTIFY
+                 isVisibleChanged)
 
   bool getIsVisible() const;
  public slots:
