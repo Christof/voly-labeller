@@ -4,7 +4,8 @@
 
 Camera::Camera()
   : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
-    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0), fieldOfView(M_PI / 2.0f)
+    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0),
+    fieldOfView(M_PI / 2.0f)
 {
   projection = createProjection(fieldOfView, 16.0f / 9.0f, 0.1f, 100.0f);
   // projection = createOrthographicProjection(16.0f / 9.0f, 0.1f, 100.0f);
@@ -29,7 +30,8 @@ Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
 }
 
 Eigen::Matrix4f Camera::createOrthographicProjection(float aspectRatio,
-                                               float nearPlane, float farPlane)
+                                                     float nearPlane,
+                                                     float farPlane)
 {
   float diff = farPlane - nearPlane;
   Eigen::Matrix4f result = Eigen::Matrix4f::Zero();
