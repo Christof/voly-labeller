@@ -34,6 +34,11 @@ void Nodes::addNode(std::shared_ptr<Node> node)
   nodes.push_back(node);
 }
 
+void Nodes::removeNode(std::shared_ptr<Node> node)
+{
+  nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
+}
+
 void Nodes::addSceneNodesFrom(QUrl url)
 {
   addSceneNodesFrom(url.path().toStdString());

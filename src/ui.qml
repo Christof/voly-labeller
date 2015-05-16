@@ -60,19 +60,22 @@ Item {
           onTriggered: nodes.toggleBoundingVolumes();
         }
         MenuItem {
+          text: "Toggle forces info"
+          shortcut: "F3"
+          onTriggered: labeller.toggleForcesVisbility();
+        }
+        MenuItem {
           text: "Toggle fullscreen"
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();
         }
+      }
+      Menu {
+        title: "Simulation"
         MenuItem {
           text: "Toggle label update"
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();
-        }
-        MenuItem {
-          text: "Display state machine state"
-          shortcut: "l"
-          onTriggered: window.printCurrentState();
         }
       }
     }
@@ -129,16 +132,6 @@ Item {
         Row {
           CheckBox {
             checked: enabled
-            /*
-            onClicked: enabled = checked
-            Component.onCompleted: checked = enabled
-            Connections {
-              target: labeller
-              onDataChanged: {
-                enabled = checked
-              }
-            }
-            */
           }
           Text {
             text: name
@@ -192,6 +185,7 @@ Item {
     }
 
     TableView {
+      visible: labeller.isVisible
       TableViewColumn {
         role: "enabled"
         title: "Enabled"

@@ -10,7 +10,6 @@
 #include "./mesh.h"
 #include "./mesh_node.h"
 #include "./label_node.h"
-#include "./forces_visualizer_node.h"
 #include "./render_data.h"
 #include "./importer.h"
 #include "./camera_controller.h"
@@ -86,8 +85,6 @@ void Scene::initialize()
     auto label = labelNode->getLabel();
     labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
   }
-
-  nodes->addNode(std::make_shared<ForcesVisualizerNode>(labeller));
 
   quad = std::make_shared<Quad>();
 

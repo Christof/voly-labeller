@@ -13,8 +13,12 @@ The file menu provides items to:
 The view menu enables you to:
 - hide the ui (`F1`)
 - toggle bounding volumes (`F2`)
+- toggle forces info (`F3`)
 - toggle fullscreen mode (`F11`)
 
+The simulation menu has items to:
+- toggle the label update (`Space`). If the label update is disabled the best new position is
+  still calculated but not applied.
 
 ## 3D control and states
 The 3D controls and state transitions are defined in `config/states.xml`.
