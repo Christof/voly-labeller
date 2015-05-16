@@ -60,6 +60,11 @@ Item {
           onTriggered: nodes.toggleBoundingVolumes();
         }
         MenuItem {
+          text: "Toggle forces info"
+          shortcut: "F3"
+          onTriggered: labeller.toggleForcesVisbility();
+        }
+        MenuItem {
           text: "Toggle fullscreen"
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();
@@ -192,6 +197,7 @@ Item {
     }
 
     TableView {
+      visible: labeller.isVisible
       TableViewColumn {
         role: "enabled"
         title: "Enabled"

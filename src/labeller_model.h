@@ -36,13 +36,20 @@ class LabellerModel : public QAbstractTableModel
 
   Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+  Q_PROPERTY(bool isVisible MEMBER isVisible NOTIFY isVisibleChanged)
+
  public slots:
   void changeEnabled(int row, QVariant newValue);
   void changeWeight(int row, QVariant newValue);
   void toggleUpdatePositions();
+  void toggleForcesVisbility();
+
+ signals:
+  void isVisibleChanged();
 
  private:
   std::shared_ptr<Forces::Labeller> labeller;
+  bool isVisible = true;
 };
 
 #endif  // SRC_LABELLER_MODEL_H_
