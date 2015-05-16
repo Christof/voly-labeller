@@ -51,6 +51,7 @@ class Scene : public AbstractScene
 
   int width;
   int height;
+  bool shouldResize = false;
 };
 
 #endif  // SRC_SCENE_H_

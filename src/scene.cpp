@@ -111,13 +111,18 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
+  if (shouldResize)
+  {
+    camera.resize(width, height);
+    fbo->initialize(gl, width, height);
+    shouldResize = false;
+  }
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
-                       GL_STENCIL_BUFFER_BIT));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   RenderData renderData;
   renderData.projectionMatrix = camera.getProjectionMatrix();
@@ -145,9 +150,8 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
-  glAssert(glViewport(0, 0, width, height));
-  camera.resize(width, height);
+  // glAssert(glViewport(0, 0, width, height));
 
-  fbo->initialize(gl, width, height);
+  shouldResize = true;
 }
 

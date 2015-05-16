@@ -2,7 +2,6 @@
 
 #define SRC_FRAME_BUFFER_OBJECT_H_
 
-#include <QOpenGLFramebufferObject>
 #include <memory>
 
 class Gl;
@@ -27,12 +26,13 @@ class FrameBufferObject
   void bindDepthTexture(unsigned int textureUnit);
 
  private:
-  std::unique_ptr<QOpenGLFramebufferObject> fbo;
-  unsigned int depthTexture;
+  unsigned int framebuffer = 0;
+  unsigned int renderTexture = 0;
+  unsigned int depthTexture = 0;
   Gl *gl;
 
-  void resizeTexture(int texture, int width, int height,
-                     unsigned int component, unsigned int format);
+  void resizeTexture(int texture, int width, int height, unsigned int component,
+                     unsigned int format);
 };
 
 #endif  // SRC_FRAME_BUFFER_OBJECT_H_
