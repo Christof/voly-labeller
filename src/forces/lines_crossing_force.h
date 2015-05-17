@@ -17,12 +17,13 @@ class LinesCrossingForce : public Force
  public:
   LinesCrossingForce();
 
+ protected:
   Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels);
 
  private:
   bool doLinesIntersect(const LabelState &current, const LabelState &other);
   Eigen::Vector2f calculateCrossingForce(const LabelState &current,
-                                 const LabelState &other);
+                                         const LabelState &other);
 };
 }  // namespace Forces
 

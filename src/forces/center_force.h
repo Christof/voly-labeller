@@ -21,6 +21,8 @@ class CenterForce : public Force
   CenterForce();
 
   void beforeAll(std::vector<LabelState> &labels);
+
+ protected:
   Eigen::Vector2f calculate(LabelState &label, std::vector<LabelState> &labels);
 
  private:
