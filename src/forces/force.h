@@ -22,6 +22,7 @@ class Force
 {
  public:
   Force(std::string name, float weight);
+  ~Force() = default;
 
   virtual void beforeAll(std::vector<LabelState> &labels);
 
