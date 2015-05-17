@@ -21,7 +21,7 @@ Eigen::Vector2f LinesCrossingForce::calculate(LabelState &label,
       continue;
 
     if (doLinesIntersect(label, otherLabel))
-      result += calculateForce(label, otherLabel);
+      result += calculateCrossingForce(label, otherLabel);
   }
 
   return result;
@@ -35,8 +35,9 @@ bool LinesCrossingForce::doLinesIntersect(const LabelState &current,
       other.anchorPosition2D);
 }
 
-Eigen::Vector2f LinesCrossingForce::calculateForce(const LabelState &current,
-                                                   const LabelState &other)
+Eigen::Vector2f
+LinesCrossingForce::calculateCrossingForce(const LabelState &current,
+                                           const LabelState &other)
 {
   Eigen::Vector2f direction = other.labelPosition2D - current.labelPosition2D;
   direction.normalize();

@@ -21,7 +21,7 @@ class LinesCrossingForce : public Force
 
  private:
   bool doLinesIntersect(const LabelState &current, const LabelState &other);
-  Eigen::Vector2f calculateForce(const LabelState &current,
+  Eigen::Vector2f calculateCrossingForce(const LabelState &current,
                                  const LabelState &other);
 };
 }  // namespace Forces
