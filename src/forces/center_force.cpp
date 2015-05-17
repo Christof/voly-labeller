@@ -10,7 +10,7 @@ CenterForce::CenterForce() : Force("Center", 0.1f)
 
 void CenterForce::beforeAll(std::vector<LabelState> &labels)
 {
-  Eigen::Vector2f anchorPositionSum;
+  Eigen::Vector2f anchorPositionSum(0, 0);
   for (auto &labelState : labels)
     anchorPositionSum += labelState.anchorPosition2D;
 
