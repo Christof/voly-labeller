@@ -29,7 +29,7 @@ class Test_ScxmlImporter : public ::testing::Test
     signalManager = std::shared_ptr<SignalManager>(new SignalManager());
     signalManager->addSender(&sender);
     signalManager->addSender("KeyboardEventSender", eventSender);
-    ScxmlImporter importer(QUrl::fromLocalFile("../config/simple_state.xml"),
+    ScxmlImporter importer(QUrl::fromLocalFile("config/simple_state.xml"),
                            invokeManager, signalManager);
     stateMachine = importer.import();
 
