@@ -131,6 +131,13 @@ void Scene::render()
 
   nodes->render(gl, renderData);
 
+  int x = 640;
+  int y = 360;
+  float depth = -1.0f;
+  glAssert(gl->glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
+
+  qWarning() << depth;
+
   fbo->unbind();
 
   renderScreenQuad();
@@ -145,7 +152,7 @@ void Scene::renderScreenQuad()
       Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
 
   fbo->bindColorTexture(GL_TEXTURE0);
-  // fbo->bindDepthTexture(GL_TEXTURE0);
+  //fbo->bindDepthTexture(GL_TEXTURE0);
 
   quad->render(gl, renderData);
 }
