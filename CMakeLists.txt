@@ -93,7 +93,7 @@ file(GLOB SHADER src/shader/*)
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
 
-add_executable(voly-labeller
+cuda_add_executable(voly-labeller
   src/main.cpp
   ${SHADER}
   $<TARGET_OBJECTS:voly-labeller-lib>

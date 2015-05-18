@@ -3,6 +3,7 @@
 #include <QStateMachine>
 #include <QDebug>
 #include <memory>
+#include <cuda_runtime.h>
 #include "./window.h"
 #include "./scene.h"
 #include "./nodes.h"
@@ -73,6 +74,14 @@ void setupLogging()
 int main(int argc, char **argv)
 {
   setupLogging();
+
+  int deviceCount = 0;
+  cudaGetDeviceCount(&deviceCount);
+  if (deviceCount == 0)
+  {
+    qCritical() << "No cuda device found!";
+    return 1;
+  }
 
   QGuiApplication application(argc, argv);
 
