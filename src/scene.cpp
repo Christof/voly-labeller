@@ -1,6 +1,5 @@
 #include "./scene.h"
-
-#include <QDebug>
+#include <QCursor>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
@@ -21,6 +20,7 @@
 #include "./frame_buffer_object.h"
 #include "./utils/persister.h"
 #include "./forces/labeller_frame_data.h"
+#include "./eigen_qdebug.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
@@ -131,12 +131,7 @@ void Scene::render()
 
   nodes->render(gl, renderData);
 
-  int x = 640;
-  int y = 360;
-  float depth = -1.0f;
-  glAssert(gl->glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
-
-  qWarning() << depth;
+  pick();
 
   fbo->unbind();
 
@@ -152,7 +147,7 @@ void Scene::renderScreenQuad()
       Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
 
   fbo->bindColorTexture(GL_TEXTURE0);
-  //fbo->bindDepthTexture(GL_TEXTURE0);
+  // fbo->bindDepthTexture(GL_TEXTURE0);
 
   quad->render(gl, renderData);
 }
@@ -163,5 +158,16 @@ void Scene::resize(int width, int height)
   this->height = height;
 
   shouldResize = true;
+}
+
+void Scene::pick()
+{
+  auto pos = QCursor::pos();
+  float depth = -1.0f;
+  glAssert(gl->glReadPixels(pos.x(), pos.y(), 1, 1, GL_DEPTH_COMPONENT,
+                            GL_FLOAT, &depth));
+  Eigen::Vector4f positionNDC(pos.x() / width, pos.y() / height, depth, 1.0f);
+
+  qWarning() << positionNDC;
 }
 
