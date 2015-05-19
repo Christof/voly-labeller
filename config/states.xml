@@ -25,6 +25,9 @@
     <transition event="KeyboardEvent.DOWN.F">
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
+    <transition event="MouseScrollEvent">
+      <invoke targettype="cameraZoom" src="scroll"/>
+    </transition>
 
     <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>
     <transition event="KeyboardEvent.DOWN.CTRL" target="ctrl"/>
