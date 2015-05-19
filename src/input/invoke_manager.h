@@ -9,6 +9,9 @@
 #include <vector>
 #include "./invoke.h"
 
+
+#include "./mouse_wheel_transition.h"
+
 class QAbstractTransition;
 class QAbstractState;
 
@@ -36,6 +39,7 @@ class InvokeManager : public QObject
   }
 
   void invokeFor(QAbstractTransition *transition);
+  void invokeForWithArg(MouseWheelTransition *transition);
 
   void addHandler(QObject *handlerObject);
   void addHandler(QString targetType, QObject *handlerObject);
