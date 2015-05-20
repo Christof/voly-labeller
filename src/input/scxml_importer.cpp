@@ -314,7 +314,7 @@ QAbstractTransition *ScxmlImporter::createMouseMoveEventTransition()
 QAbstractTransition *ScxmlImporter::createMouseWheelTransition()
 {
   return new MouseWheelTransition(signalManager->getFor("KeyboardEventSender"),
-                                   stateStack.top());
+                                  QEvent::Wheel, stateStack.top());
 }
 
 QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)
