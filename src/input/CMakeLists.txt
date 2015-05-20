@@ -8,7 +8,7 @@ set(SOURCES
   scxml_importer.cpp
   invoke_manager.cpp
   signal_manager.cpp
-  mouse_wheel_transition.cpp
+  event_transition.cpp
   )
 
 add_library(input OBJECT ${SOURCES})

@@ -14,7 +14,7 @@
 #include <cassert>
 #include "../utils/path_helper.h"
 #include "./invoke.h"
-#include "./mouse_wheel_transition.h"
+#include "./event_transition.h"
 
 QLoggingCategory channel("Input::ScxmlImporter");
 
@@ -173,7 +173,7 @@ void ScxmlImporter::readTransition()
   }
   else if (event.startsWith("Event"))
   {
-    currentTransition = createMouseWheelTransition();
+    currentTransition = createEventTransition(event);
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
   else if (event.isEmpty() &&
@@ -311,9 +311,9 @@ QAbstractTransition *ScxmlImporter::createMouseMoveEventTransition()
                                    eventType, buttonCode, stateStack.top());
 }
 
-QAbstractTransition *ScxmlImporter::createMouseWheelTransition()
+QAbstractTransition *ScxmlImporter::createEventTransition(const QString &event)
 {
-  return new MouseWheelTransition(signalManager->getFor("KeyboardEventSender"),
+  return new EventTransition(signalManager->getFor("KeyboardEventSender"),
                                   QEvent::Wheel, stateStack.top());
 }
 
