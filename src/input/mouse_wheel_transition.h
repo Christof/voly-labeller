@@ -17,8 +17,6 @@ class MouseWheelTransition : public QEventTransition
   QEvent *event;
 
  protected:
-  bool eventTest(QEvent *event);
-
   void onTransition(QEvent *event);
 
  private:

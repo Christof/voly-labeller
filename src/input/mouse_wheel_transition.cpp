@@ -10,12 +10,6 @@ MouseWheelTransition::~MouseWheelTransition()
 {
 }
 
-bool MouseWheelTransition::eventTest(QEvent *event)
-{
-  qWarning() << "eventTest" << event->type();
-  return event->type() == QEvent::Scroll;
-}
-
 void MouseWheelTransition::onTransition(QEvent *event)
 {
   this->event = event;
