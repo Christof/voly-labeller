@@ -1,6 +1,7 @@
 #include "./camera_zoom_controller.h"
 #include <QDebug>
 #include <QEvent>
+#include <QWheelEvent>
 #include "./camera.h"
 
 CameraZoomController::CameraZoomController(Camera &camera) : camera(camera)
@@ -17,6 +18,11 @@ void CameraZoomController::update(Eigen::Vector2f diff)
 
 void CameraZoomController::scroll(QEvent *event)
 {
-  qWarning() << event->type();
+  QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+
+  double scaling = -0.02f * frameTime * speedFactor;
+  float delta = scaling * wheelEvent->angleDelta().y();
+
+  camera.changeRadius(delta);
 }
 

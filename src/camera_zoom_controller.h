@@ -14,6 +14,8 @@ class Camera;
  */
 class CameraZoomController : public MouseDraggingController
 {
+  Q_OBJECT
+
  public:
   explicit CameraZoomController(Camera &camera);
 
