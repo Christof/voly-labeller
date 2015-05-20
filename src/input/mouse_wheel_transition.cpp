@@ -2,7 +2,7 @@
 #include <QDebug>
 
 MouseWheelTransition::MouseWheelTransition(QObject *object, QState *sourceState)
-  : QEventTransition(object, QEvent::Scroll, sourceState)
+  : QEventTransition(object, QEvent::Wheel, sourceState)
 {
 }
 
