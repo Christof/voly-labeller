@@ -1,5 +1,5 @@
 #include "./mouse_wheel_transition.h"
-#include <QDebug>
+#include <QStateMachine>
 
 MouseWheelTransition::MouseWheelTransition(QObject *object, QState *sourceState)
   : QEventTransition(object, QEvent::Wheel, sourceState)
@@ -12,5 +12,6 @@ MouseWheelTransition::~MouseWheelTransition()
 
 void MouseWheelTransition::onTransition(QEvent *event)
 {
-  this->event = event;
+  QStateMachine::WrappedEvent *we = static_cast<QStateMachine::WrappedEvent*>(event);
+  this->event = we->event();
 }
