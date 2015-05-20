@@ -20,7 +20,7 @@ class CameraZoomController : public MouseDraggingController
   explicit CameraZoomController(Camera &camera);
 
  public slots:
-  void scroll(QEvent *event);
+  void wheelZoom(QEvent *event);
 
  protected:
   virtual void update(Eigen::Vector2f diff);

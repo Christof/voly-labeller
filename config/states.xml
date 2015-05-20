@@ -26,7 +26,7 @@
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
     <transition event="MouseScrollEvent">
-      <invoke targettype="cameraZoom" src="scroll"/>
+      <invoke targettype="cameraZoom" src="wheelZoom"/>
     </transition>
 
     <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>

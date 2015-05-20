@@ -16,7 +16,7 @@ void CameraZoomController::update(Eigen::Vector2f diff)
   camera.changeRadius(delta.y());
 }
 
-void CameraZoomController::scroll(QEvent *event)
+void CameraZoomController::wheelZoom(QEvent *event)
 {
   QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
 
