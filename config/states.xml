@@ -25,7 +25,7 @@
     <transition event="KeyboardEvent.DOWN.F">
       <invoke targettype="cam" src="decreaseDeclination"/>
     </transition>
-    <transition event="MouseScrollEvent">
+    <transition event="Event.Wheel">
       <invoke targettype="cameraZoom" src="wheelZoom"/>
     </transition>
 

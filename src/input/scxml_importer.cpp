@@ -171,7 +171,7 @@ void ScxmlImporter::readTransition()
     currentTransition = createMouseMoveEventTransition();
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
-  else if (event.startsWith("MouseScrollEvent"))
+  else if (event.startsWith("Event"))
   {
     currentTransition = createMouseWheelTransition();
     transitions.push_back(std::make_tuple(currentTransition, target));
