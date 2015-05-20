@@ -17,7 +17,7 @@ void InvokeManager::addFor(QAbstractTransition *transition, QString targetType,
   if (invokes.count(transition) == 0)
   {
     MouseWheelTransition *mouseWheelTransition =
-        reinterpret_cast<MouseWheelTransition *>(transition);
+        dynamic_cast<MouseWheelTransition *>(transition);
     if (mouseWheelTransition == nullptr)
       connect(transition, &QAbstractTransition::triggered,
               std::bind(&InvokeManager::invokeFor, this, transition));
@@ -45,7 +45,7 @@ void InvokeManager::invokeForWithArg(MouseWheelTransition *transition)
     auto object = handlers[invoke.targetType];
     QMetaObject::invokeMethod(object, invoke.source.toStdString().c_str(),
                               Qt::AutoConnection,
-                              Q_ARG(QEvent *, transition->event));
+                              Q_ARG(QEvent*, transition->event));
   }
 }
 
