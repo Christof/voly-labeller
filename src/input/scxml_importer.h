@@ -56,6 +56,7 @@ class ScxmlImporter : public QObject
   QUrl url;
   QString initialState;
   QMetaEnum metaScxmlElement;
+  QMetaEnum metaEventType;
   QStack<ScxmlElement> elementStack;
   QStack<QState *> stateStack;
   QAbstractTransition *currentTransition;

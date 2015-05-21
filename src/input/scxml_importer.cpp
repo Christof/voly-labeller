@@ -5,7 +5,6 @@
 #include <QAbstractTransition>
 #include <QState>
 #include <QFinalState>
-#include <QEvent>
 #include <QKeyEventTransition>
 #include <QMouseEventTransition>
 #include <QSignalTransition>
@@ -23,8 +22,10 @@ ScxmlImporter::ScxmlImporter(QUrl url,
   : url(url), invokeManager(invokeManager), signalManager(signalManager)
 {
   const QMetaObject &mo = ScxmlImporter::staticMetaObject;
-  int index = mo.indexOfEnumerator("ScxmlElement");
-  metaScxmlElement = mo.enumerator(index);
+  metaScxmlElement = mo.enumerator(mo.indexOfEnumerator("ScxmlElement"));
+
+  auto eventEnumIndex = QEvent::staticMetaObject.indexOfEnumerator("Type");
+  metaEventType = QEvent::staticMetaObject.enumerator(eventEnumIndex);
 }
 
 ScxmlImporter::~ScxmlImporter()
@@ -257,8 +258,15 @@ QAbstractTransition *ScxmlImporter::createMouseMoveEventTransition()
 
 QAbstractTransition *ScxmlImporter::createEventTransition(const QString &event)
 {
+  auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
+  bool couldConvert = false;
+  QEvent::Type eventType = static_cast<QEvent::Type>(metaEventType.keyToValue(
+      keyAsString.toStdString().c_str(), &couldConvert));
+  if (!couldConvert)
+    throw std::runtime_error("Could not convert " + keyAsString.toStdString());
+
   return new EventTransition(signalManager->getFor("KeyboardEventSender"),
-                                  QEvent::Wheel, stateStack.top());
+                             eventType, stateStack.top());
 }
 
 QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)
