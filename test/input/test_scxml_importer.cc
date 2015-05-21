@@ -128,9 +128,15 @@ class MockHandler : public QObject
     somethingElseCallCount++;
   }
 
+  void move(QEvent *event)
+  {
+    this->event = event;
+  }
+
  public:
   int printCurrentStateCallCount = 0;
   int somethingElseCallCount = 0;
+  QEvent *event = nullptr;
 };
 
 TEST_F(Test_ScxmlImporter,
@@ -305,6 +311,22 @@ TEST_F(Test_ScxmlImporter, StateChangeWithControlKey)
   sendKeyPressEvent(Qt::Key_Alt);
 
   expectSingleStateWithName("alt");
+}
+
+TEST_F(Test_ScxmlImporter, EventTransition)
+{
+  MockHandler handler;
+  invokeManager->addHandler("Window", &handler);
+  sendKeyPressEvent(Qt::Key_Alt);
+  expectSingleStateWithName("alt");
+
+  QPointF mousePosition(123.1f, 56.0f);
+  sendMouseMoveEvent(mousePosition);
+
+  ASSERT_TRUE(handler.event != nullptr);
+  QMouseEvent *event = static_cast<QMouseEvent *>(handler.event);
+  EXPECT_EQ(mousePosition.x(), event->localPos().x());
+  EXPECT_EQ(mousePosition.y(), event->localPos().y());
 }
 
 #include "test_scxml_importer.moc"

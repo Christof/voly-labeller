@@ -27,6 +27,9 @@
     </transition>
   </state>
   <state id="alt">
+    <transition event="Event.MouseMove">
+      <invoke targettype="Window" src="move"/>
+    </transition>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.DOWN.I" target="idle"/>
