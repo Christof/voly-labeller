@@ -32,6 +32,9 @@ class Camera
   void changeRadius(float deltaRadius);
 
   void resize(float width, float height);
+
+  float near = 0.1f;
+  float far = 5.0f;
  private:
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;

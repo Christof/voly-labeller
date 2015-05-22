@@ -7,8 +7,8 @@ Camera::Camera()
     radius(1.0f), azimuth(-M_PI / 2.0f), declination(0),
     fieldOfView(M_PI / 2.0f)
 {
-  projection = createProjection(fieldOfView, 16.0f / 9.0f, 0.1f, 100.0f);
-  // projection = createOrthographicProjection(16.0f / 9.0f, 0.1f, 100.0f);
+  projection = createProjection(fieldOfView, 16.0f / 9.0f, near, far);
+  // projection = createOrthographicProjection(16.0f / 9.0f, near, far);
 }
 
 Camera::~Camera()
