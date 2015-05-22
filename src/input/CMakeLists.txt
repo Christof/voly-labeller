@@ -8,6 +8,7 @@ set(SOURCES
   scxml_importer.cpp
   invoke_manager.cpp
   signal_manager.cpp
+  event_transition.cpp
   )
 
 add_library(input OBJECT ${SOURCES})

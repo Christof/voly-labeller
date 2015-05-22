@@ -56,6 +56,7 @@ class ScxmlImporter : public QObject
   QUrl url;
   QString initialState;
   QMetaEnum metaScxmlElement;
+  QMetaEnum metaEventType;
   QStack<ScxmlElement> elementStack;
   QStack<QState *> stateStack;
   QAbstractTransition *currentTransition;
@@ -80,7 +81,7 @@ class ScxmlImporter : public QObject
   void setInitialStates();
   QAbstractTransition *createKeyEventTransition(const QString &event);
   QAbstractTransition *createMouseButtonEventTransition(const QString &event);
-  QAbstractTransition *createMouseMoveEventTransition();
+  QAbstractTransition *createEventTransition(const QString &event);
   QAbstractTransition *createSignalTransition(const QString &event);
   QString attributeAsString(const char *name);
   ScxmlElement elementFromString(QString name);

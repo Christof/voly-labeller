@@ -5,72 +5,16 @@
 #include <QAbstractTransition>
 #include <QState>
 #include <QFinalState>
-#include <QEvent>
-#include <QKeySequence>
 #include <QKeyEventTransition>
 #include <QMouseEventTransition>
 #include <QSignalTransition>
 #include <QLoggingCategory>
-#include <cassert>
 #include "../utils/path_helper.h"
 #include "./invoke.h"
+#include "./key_helper.h"
+#include "./event_transition.h"
 
 QLoggingCategory channel("Input::ScxmlImporter");
-
-bool equalIgnoreCase(QString const &a, QString const &b)
-{
-  return QString::compare(a, b, Qt::CaseSensitivity::CaseInsensitive) == 0;
-}
-
-// from
-// http://stackoverflow.com/questions/14034209/convert-string-representation-of-keycode-to-qtkey-or-any-int-and-back
-Qt::Key toKey(QString const &str)
-{
-  QKeySequence seq(str);
-
-  if (equalIgnoreCase(str, "ctrl"))
-    return Qt::Key_Control;
-  if (equalIgnoreCase(str, "space"))
-    return Qt::Key_Space;
-  if (equalIgnoreCase(str, "alt"))
-    return Qt::Key_Alt;
-  if (equalIgnoreCase(str, "up_arrow"))
-    return Qt::Key_Up;
-  if (equalIgnoreCase(str, "down_arrow"))
-    return Qt::Key_Down;
-  if (equalIgnoreCase(str, "left_arrow"))
-    return Qt::Key_Left;
-  if (equalIgnoreCase(str, "right_arrow"))
-    return Qt::Key_Right;
-  if (equalIgnoreCase(str, "shift"))
-    return Qt::Key_Shift;
-  if (equalIgnoreCase(str, "esc"))
-    return Qt::Key_Escape;
-  if (equalIgnoreCase(str, "delete"))
-    return Qt::Key_Delete;
-  if (equalIgnoreCase(str, "backspace"))
-    return Qt::Key_Backspace;
-
-  // We should only working with a single key here
-  assert(seq.count() == 1);
-  return static_cast<Qt::Key>(seq[0]);
-}
-
-Qt::MouseButton toButton(const QString &str)
-{
-  if (equalIgnoreCase(str, "left"))
-    return Qt::MouseButton::LeftButton;
-  if (equalIgnoreCase(str, "right"))
-    return Qt::MouseButton::RightButton;
-  if (equalIgnoreCase(str, "middle"))
-    return Qt::MouseButton::MiddleButton;
-  if (equalIgnoreCase(str, "button4"))
-    return Qt::MouseButton::ExtraButton4;
-  if (equalIgnoreCase(str, "button5"))
-    return Qt::MouseButton::ExtraButton5;
-
-  return Qt::MouseButton::NoButton;
-}
 
 ScxmlImporter::ScxmlImporter(QUrl url,
                              std::shared_ptr<InvokeManager> invokeManager,
@@ -78,8 +22,10 @@ ScxmlImporter::ScxmlImporter(QUrl url,
   : url(url), invokeManager(invokeManager), signalManager(signalManager)
 {
   const QMetaObject &mo = ScxmlImporter::staticMetaObject;
-  int index = mo.indexOfEnumerator("ScxmlElement");
-  metaScxmlElement = mo.enumerator(index);
+  metaScxmlElement = mo.enumerator(mo.indexOfEnumerator("ScxmlElement"));
+
+  auto eventEnumIndex = QEvent::staticMetaObject.indexOfEnumerator("Type");
+  metaEventType = QEvent::staticMetaObject.enumerator(eventEnumIndex);
 }
 
 ScxmlImporter::~ScxmlImporter()
@@ -165,9 +111,9 @@ void ScxmlImporter::readTransition()
     currentTransition = createMouseButtonEventTransition(event);
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
-  else if (event.startsWith("MouseMoveEvent"))
+  else if (event.startsWith("Event"))
   {
-    currentTransition = createMouseMoveEventTransition();
+    currentTransition = createEventTransition(event);
     transitions.push_back(std::make_tuple(currentTransition, target));
   }
   else if (event.isEmpty() &&
@@ -296,13 +242,17 @@ ScxmlImporter::createMouseButtonEventTransition(const QString &event)
                                    eventType, buttonCode, stateStack.top());
 }
 
-QAbstractTransition *ScxmlImporter::createMouseMoveEventTransition()
+QAbstractTransition *ScxmlImporter::createEventTransition(const QString &event)
 {
-  QEvent::Type eventType = QEvent::MouseMove;
+  auto keyAsString = event.mid(event.lastIndexOf(".") + 1);
+  bool couldConvert = false;
+  QEvent::Type eventType = static_cast<QEvent::Type>(metaEventType.keyToValue(
+      keyAsString.toStdString().c_str(), &couldConvert));
+  if (!couldConvert)
+    throw std::runtime_error("Could not convert " + keyAsString.toStdString());
 
-  auto buttonCode = Qt::MouseButton::NoButton;
-  return new QMouseEventTransition(signalManager->getFor("KeyboardEventSender"),
-                                   eventType, buttonCode, stateStack.top());
+  return new EventTransition(signalManager->getFor("KeyboardEventSender"),
+                             eventType, stateStack.top());
 }
 
 QAbstractTransition *ScxmlImporter::createSignalTransition(const QString &event)

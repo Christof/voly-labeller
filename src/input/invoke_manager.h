@@ -11,6 +11,7 @@
 
 class QAbstractTransition;
 class QAbstractState;
+class EventTransition;
 
 /**
  * \brief Manages SCXML invoke calls by storing handler objects which
@@ -36,6 +37,7 @@ class InvokeManager : public QObject
   }
 
   void invokeFor(QAbstractTransition *transition);
+  void invokeForWithArg(EventTransition *transition);
 
   void addHandler(QObject *handlerObject);
   void addHandler(QString targetType, QObject *handlerObject);
