@@ -5,8 +5,8 @@
     <transition event="KeyboardEvent.UP.A" target="exit"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="exit"/>
     <transition event="MouseButtonEvent.UP.RIGHT" target="base"/>
-    <transition event="MouseMoveEvent.MOVE">
-      <invoke targettype="Window" src="somethingElse"/>
+    <transition event="Event.MouseMove">
+      <invoke targettype="Window" src="move"/>
     </transition>
     <transition event="KeyboardEvent.DOWN.V" target="base"/>
     <transition event="KeyboardEvent.DOWN.N" target="with-nesting"/>
@@ -27,9 +27,6 @@
     </transition>
   </state>
   <state id="alt">
-    <transition event="Event.MouseMove">
-      <invoke targettype="Window" src="move"/>
-    </transition>
   </state>
   <state id="base">
     <transition event="KeyboardEvent.DOWN.I" target="idle"/>

@@ -281,17 +281,6 @@ TEST_F(Test_ScxmlImporter, TransitionOnMouseReleaseEvent)
   expectSingleStateWithName("base");
 }
 
-TEST_F(Test_ScxmlImporter, TransitionOnMouseMoveEvent)
-{
-  MockHandler handler;
-  invokeManager->addHandler("Window", &handler);
-  expectSingleStateWithName("idle");
-
-  sendMouseMoveEvent(QPointF(123.1f, 56.0f));
-
-  EXPECT_EQ(1, handler.somethingElseCallCount);
-}
-
 TEST_F(Test_ScxmlImporter, EventFromCustomSignal)
 {
   MockHandler handler;
@@ -317,8 +306,7 @@ TEST_F(Test_ScxmlImporter, EventTransition)
 {
   MockHandler handler;
   invokeManager->addHandler("Window", &handler);
-  sendKeyPressEvent(Qt::Key_Alt);
-  expectSingleStateWithName("alt");
+  expectSingleStateWithName("idle");
 
   QPointF mousePosition(123.1f, 56.0f);
   sendMouseMoveEvent(mousePosition);
