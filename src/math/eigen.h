@@ -17,4 +17,9 @@ inline Eigen::Vector2f toEigen(const QPoint &pos)
   return Eigen::Vector2f(pos.x(), pos.y());
 }
 
+inline Eigen::Vector2f toEigen(const QPointF &pos)
+{
+  return Eigen::Vector2f(pos.x(), pos.y());
+}
+
 #endif  // SRC_MATH_EIGEN_H_

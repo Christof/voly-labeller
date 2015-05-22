@@ -36,6 +36,8 @@ class Scene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
+  void pick(Eigen::Vector2f position);
+
  private:
   Camera camera;
   std::shared_ptr<CameraController> cameraController;
@@ -55,7 +57,9 @@ class Scene : public AbstractScene
 
   void renderScreenQuad();
 
-  void pick();
+  bool performPicking;
+  Eigen::Vector2f pickingPosition;
+  void doPick();
 };
 
 #endif  // SRC_SCENE_H_

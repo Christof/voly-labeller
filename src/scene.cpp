@@ -131,7 +131,7 @@ void Scene::render()
 
   nodes->render(gl, renderData);
 
-  pick();
+  doPick();
 
   fbo->unbind();
 
@@ -160,14 +160,33 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 }
 
-void Scene::pick()
+void Scene::pick(Eigen::Vector2f position)
 {
-  auto pos = QCursor::pos();
-  float depth = -1.0f;
-  glAssert(gl->glReadPixels(pos.x(), pos.y(), 1, 1, GL_DEPTH_COMPONENT,
-                            GL_FLOAT, &depth));
-  Eigen::Vector4f positionNDC(pos.x() / width, pos.y() / height, depth, 1.0f);
+  pickingPosition = position;
+  performPicking = true;
+}
 
-  qWarning() << positionNDC;
+void Scene::doPick()
+{
+  if (!performPicking)
+    return;
+
+  qWarning() << "Pos" << pickingPosition;
+
+  float depth = -2.0f;
+  glAssert(gl->glReadPixels(pickingPosition.x(), pickingPosition.y(), 1, 1,
+                            GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
+  Eigen::Vector4f positionNDC(pickingPosition.x() * 2.0f / width - 1.0f,
+                              pickingPosition.y() * -2.0f / height + 1.0f,
+                              depth * 2.0f - 1.0f, 1.0f);
+
+  auto viewProjection = camera.getProjectionMatrix() * camera.getViewMatrix();
+  Eigen::Vector4f positionWorld = viewProjection.inverse() * positionNDC;
+  positionWorld = positionWorld / positionWorld.w();
+
+  qWarning() << "NDC" << positionNDC;
+  qWarning() << "World" << positionWorld;
+
+  performPicking = false;
 }
 
