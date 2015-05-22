@@ -26,13 +26,16 @@ class MouseDraggingController : public QObject
 
  public slots:
   void startDragging();
-  void updateDragging();
+  void updateDragging(QEvent *event);
 
  protected:
   virtual void update(Eigen::Vector2f diff) = 0;
 
   Eigen::Vector2f lastMousePosition;
   double frameTime;
+
+ private:
+  bool start = false;
 };
 
 #endif  // SRC_MOUSE_DRAGGING_CONTROLLER_H_

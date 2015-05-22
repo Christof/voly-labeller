@@ -40,7 +40,7 @@
       <invoke targettype="cameraRotation" src="startDragging"/>
     </initial>
     <state id="rotate-move">
-      <transition event="MouseMoveEvent.MOVE">
+      <transition event="Event.MouseMove">
         <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
     </state>
@@ -64,7 +64,7 @@
       <invoke targettype="cameraZoom" src="startDragging"/>
     </initial>
     <state id="zoom-move">
-      <transition event="MouseMoveEvent.MOVE">
+      <transition event="Event.MouseMove">
         <invoke targettype="cameraZoom" src="updateDragging"/>
       </transition>
     </state>
@@ -81,7 +81,7 @@
       <invoke targettype="cameraMove" src="startDragging"/>
     </initial>
     <state id="move-move">
-      <transition event="MouseMoveEvent.MOVE">
+      <transition event="Event.MouseMove">
         <invoke targettype="cameraMove" src="updateDragging"/>
       </transition>
     </state>
