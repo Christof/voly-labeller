@@ -39,6 +39,11 @@ class MouseShapeController : public QObject
     setShape(Qt::CursorShape::SizeAllCursor);
   }
 
+  void startPicking()
+  {
+    setShape(Qt::CursorShape::CrossCursor);
+  }
+
  private:
   void setShape(Qt::CursorShape shape)
   {
