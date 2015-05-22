@@ -6,11 +6,6 @@ void MouseDraggingController::setFrameTime(double frameTime)
   this->frameTime = frameTime;
 }
 
-inline Eigen::Vector2f toEigen(const QPoint &pos)
-{
-  return Eigen::Vector2f(pos.x(), pos.y());
-}
-
 void MouseDraggingController::startDragging()
 {
   start = true;

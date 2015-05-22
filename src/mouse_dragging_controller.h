@@ -3,7 +3,7 @@
 #define SRC_MOUSE_DRAGGING_CONTROLLER_H_
 
 #include <QObject>
-#include <Eigen/Core>
+#include "./math/eigen.h"
 
 /**
  * \brief Base class for controllers which are based on mouse dragging
