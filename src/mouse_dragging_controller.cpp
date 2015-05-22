@@ -1,5 +1,5 @@
 #include "./mouse_dragging_controller.h"
-#include <QMoveEvent>
+#include <QMouseEvent>
 
 void MouseDraggingController::setFrameTime(double frameTime)
 {
