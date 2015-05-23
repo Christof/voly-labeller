@@ -171,10 +171,12 @@ void Scene::doPick()
   if (!performPicking)
     return;
 
-  qWarning() << "Pos" << pickingPosition;
-
   float depth = -2.0f;
-  glAssert(gl->glReadPixels(pickingPosition.x(), pickingPosition.y(), 1, 1,
+
+  fbo->bindDepthTexture(GL_TEXTURE0);
+
+  glAssert(gl->glReadPixels(pickingPosition.x(),
+                            height - pickingPosition.y() - 1, 1, 1,
                             GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
   Eigen::Vector4f positionNDC(pickingPosition.x() * 2.0f / width - 1.0f,
                               pickingPosition.y() * -2.0f / height + 1.0f,
@@ -184,8 +186,7 @@ void Scene::doPick()
   Eigen::Vector4f positionWorld = viewProjection.inverse() * positionNDC;
   positionWorld = positionWorld / positionWorld.w();
 
-  qWarning() << "NDC" << positionNDC;
-  qWarning() << "World" << positionWorld;
+  qWarning() << "picked:" << positionWorld;
 
   performPicking = false;
 }
