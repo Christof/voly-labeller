@@ -42,7 +42,7 @@ class FrameBufferObject
   Gl *gl;
 
   void resizeTexture(int texture, int width, int height, unsigned int component,
-                     unsigned int format);
+                     unsigned int format, unsigned int type);
 };
 
 #endif  // SRC_FRAME_BUFFER_OBJECT_H_

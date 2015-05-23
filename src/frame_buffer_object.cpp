@@ -18,13 +18,13 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
 
   glAssert(gl->glGenTextures(1, &depthTexture));
   resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                GL_DEPTH_COMPONENT32F);
+                GL_DEPTH_COMPONENT32F, GL_FLOAT);
 
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                       GL_TEXTURE_2D, depthTexture, 0));
 
   glAssert(gl->glGenTextures(1, &renderTexture));
-  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
+  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8, GL_UNSIGNED_BYTE);
 
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, renderTexture, 0));
@@ -41,11 +41,11 @@ void FrameBufferObject::resize(Gl *gl, int width, int height)
   bind();
 
   resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                GL_DEPTH_COMPONENT32F);
+                GL_DEPTH_COMPONENT32F, GL_FLOAT);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                       GL_TEXTURE_2D, depthTexture, 0));
 
-  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8);
+  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8, GL_UNSIGNED_BYTE);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, renderTexture, 0));
 
@@ -76,7 +76,8 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
 
 void FrameBufferObject::resizeTexture(int texture, int width, int height,
                                       unsigned int component,
-                                      unsigned int format)
+                                      unsigned int format,
+                                      unsigned int type)
 {
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, texture));
   glAssert(
@@ -84,6 +85,6 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
   glAssert(
       gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
   glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-                            component, GL_UNSIGNED_BYTE, NULL));
+                            component, type, NULL));
 }
 
