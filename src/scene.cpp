@@ -113,7 +113,7 @@ void Scene::render()
   if (shouldResize)
   {
     camera.resize(width, height);
-    fbo->resize(gl, width, height);
+    fbo->resize(width, height);
     shouldResize = false;
   }
   glAssert(gl->glViewport(0, 0, width, height));
