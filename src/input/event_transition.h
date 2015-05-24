@@ -5,8 +5,8 @@
 #include <QEventTransition>
 
 /**
- * \brief
- *
+ * \brief Transition triggered on given QEvent::Type which stores the triggering
+ * event so that the values can be used in an invoke slot
  *
  */
 class EventTransition : public QEventTransition
