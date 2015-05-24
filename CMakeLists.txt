@@ -49,6 +49,7 @@ set(SOURCES
   src/camera_rotation_controller.cpp
   src/camera_zoom_controller.cpp
   src/camera_move_controller.cpp
+  src/picking_controller.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   ${RESOURCES})

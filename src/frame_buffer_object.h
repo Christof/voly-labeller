@@ -27,7 +27,7 @@ class FrameBufferObject
 
   void initialize(Gl *gl, int width, int height);
 
-  void resize(Gl *gl, int width, int height);
+  void resize(int width, int height);
 
   void bind();
   void unbind();
@@ -41,8 +41,10 @@ class FrameBufferObject
   unsigned int depthTexture = 0;
   Gl *gl;
 
+  void resizeAndSetColorAttachment(int width, int height);
+  void resizeAndSetDepthAttachment(int width, int height);
   void resizeTexture(int texture, int width, int height, unsigned int component,
-                     unsigned int format);
+                     unsigned int format, unsigned int type);
 };
 
 #endif  // SRC_FRAME_BUFFER_OBJECT_H_

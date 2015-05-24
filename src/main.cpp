@@ -10,6 +10,7 @@
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
+#include "./picking_controller.h"
 #include "./labeller_model.h"
 #include "./forces_visualizer_node.h"
 
@@ -30,6 +31,7 @@ int main(int argc, char **argv)
   nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
+
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);
   window.rootContext()->setContextProperty("window", &window);
@@ -48,6 +50,7 @@ int main(int argc, char **argv)
   window.setSource(QUrl("qrc:ui.qml"));
 
   MouseShapeController mouseShapeController(window);
+  PickingController pickingController(scene);
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
@@ -55,6 +58,7 @@ int main(int argc, char **argv)
 
   invokeManager->addHandler(&window);
   invokeManager->addHandler("mouseShape", &mouseShapeController);
+  invokeManager->addHandler("picking", &pickingController);
   signalManager->addSender("KeyboardEventSender", &window);
 
   auto stateMachine = importer.import();
