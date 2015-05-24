@@ -182,7 +182,8 @@ void Scene::doPick()
                               pickingPosition.y() * -2.0f / height + 1.0f,
                               depth * 2.0f - 1.0f, 1.0f);
 
-  auto viewProjection = camera.getProjectionMatrix() * camera.getViewMatrix();
+  Eigen::Matrix4f viewProjection =
+      camera.getProjectionMatrix() * camera.getViewMatrix();
   Eigen::Vector4f positionWorld = viewProjection.inverse() * positionNDC;
   positionWorld = positionWorld / positionWorld.w();
 
