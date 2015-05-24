@@ -8,8 +8,7 @@
 class Scene;
 
 /**
- * \brief
- *
+ * \brief Triggers picking of 3d position on mouse click
  *
  */
 class PickingController : public QObject
