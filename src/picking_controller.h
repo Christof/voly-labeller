@@ -16,7 +16,7 @@ class PickingController : public QObject
 {
   Q_OBJECT
  public:
-  PickingController(std::shared_ptr<Scene> scene);
+  explicit PickingController(std::shared_ptr<Scene> scene);
 
  public slots:
   void pick(QEvent *event);

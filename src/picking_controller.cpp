@@ -10,7 +10,7 @@ PickingController::PickingController(std::shared_ptr<Scene> scene)
 
 void PickingController::pick(QEvent *event)
 {
-  auto mouseEvent =static_cast<QMouseEvent*>(event);
+  auto mouseEvent = static_cast<QMouseEvent *>(event);
   if (mouseEvent->button() != Qt::MouseButton::LeftButton)
     return;
 
