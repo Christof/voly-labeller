@@ -6,6 +6,10 @@
 LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes)
   : nodes(nodes)
 {
+  connect(nodes.get(), &Nodes::nodesChanged, [this]() {
+        this->beginResetModel();
+        this->endResetModel();
+      });
 }
 
 QHash<int, QByteArray> LabelsModel::roleNames() const
