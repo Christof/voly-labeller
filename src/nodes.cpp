@@ -12,7 +12,7 @@
 
 Nodes::Nodes()
 {
-  nodes.push_back(std::make_shared<CoordinateSystemNode>());
+  addNode(std::make_shared<CoordinateSystemNode>());
 }
 
 std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
@@ -51,7 +51,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
       Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
 
   for (auto &m : loadedNodes)
-    nodes.push_back(m);
+    addNode(m);
 }
 
 void Nodes::importFrom(std::string filename)
@@ -62,7 +62,7 @@ void Nodes::importFrom(std::string filename)
 
   for (size_t i = 0; i < meshes.size(); ++i)
   {
-    nodes.push_back(
+    addNode(
         std::make_shared<MeshNode>(filename, i, meshes[i], Eigen::Matrix4f()));
   }
 }
