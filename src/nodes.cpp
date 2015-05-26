@@ -32,6 +32,8 @@ std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
 void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
+
+  emit nodesChanged();
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)

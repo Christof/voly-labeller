@@ -47,6 +47,9 @@ class Nodes : public QObject
 
   void toggleBoundingVolumes();
 
+ signals:
+  void nodesChanged();
+
  private:
   std::vector<std::shared_ptr<Node>> nodes;
   bool showBoundingVolumes = false;
