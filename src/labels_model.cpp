@@ -25,7 +25,7 @@ int LabelsModel::rowCount(const QModelIndex &parent) const
 int LabelsModel::columnCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
-  return 3;
+  return 1;
 }
 
 QVariant LabelsModel::data(const QModelIndex &index, int role) const
@@ -56,5 +56,11 @@ Qt::ItemFlags LabelsModel::flags(const QModelIndex &index) const
 bool LabelsModel::getIsVisible() const
 {
   return isVisible;
+}
+
+void LabelsModel::toggleLabelsInfoVisbility()
+{
+  isVisible = !isVisible;
+  emit isVisibleChanged();
 }
 

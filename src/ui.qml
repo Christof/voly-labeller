@@ -65,6 +65,11 @@ Item {
           onTriggered: labeller.toggleForcesVisbility();
         }
         MenuItem {
+          text: "Toggle labels info"
+          shortcut: "F4"
+          onTriggered: labels.toggleLabelsInfoVisbility();
+        }
+        MenuItem {
           text: "Toggle fullscreen"
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();
@@ -207,6 +212,30 @@ Item {
       x: 10; y: 36
       width: 400
       model: labeller
+      focus: true
+      clip: true
+    }
+
+    Component {
+      id: labelNameDelegate
+
+      Item {
+        Text {
+          text: styleData.value
+        }
+      }
+    }
+    TableView {
+      visible: labels.isVisible
+      TableViewColumn {
+        role: "name"
+        title: "Name"
+        width: 200
+        delegate: labelNameDelegate
+      }
+      x: 10; y: 200
+      width: 400
+      model: labels
       focus: true
       clip: true
     }

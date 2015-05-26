@@ -14,6 +14,7 @@ class Nodes;
  */
 class LabelsModel : public QAbstractTableModel
 {
+  Q_OBJECT
  public:
   explicit LabelsModel(std::shared_ptr<Nodes> nodes);
 
@@ -37,6 +38,12 @@ class LabelsModel : public QAbstractTableModel
                  isVisibleChanged)
 
   bool getIsVisible() const;
+
+ public slots:
+  void toggleLabelsInfoVisbility();
+
+ signals:
+  void isVisibleChanged();
 
  private:
   std::shared_ptr<Nodes> nodes;

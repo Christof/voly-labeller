@@ -12,6 +12,7 @@
 #include "./mouse_shape_controller.h"
 #include "./picking_controller.h"
 #include "./labeller_model.h"
+#include "./labels_model.h"
 #include "./forces_visualizer_node.h"
 
 int main(int argc, char **argv)
@@ -36,6 +37,7 @@ int main(int argc, char **argv)
   window.setResizeMode(QQuickView::SizeRootObjectToView);
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
+
   LabellerModel labellerModel(labeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
                         [&labellerModel, &nodes, &forcesVisualizerNode]()
@@ -45,8 +47,10 @@ int main(int argc, char **argv)
     else
       nodes->removeNode(forcesVisualizerNode);
   });
-
   window.rootContext()->setContextProperty("labeller", &labellerModel);
+
+  LabelsModel labelsModel(nodes);
+  window.rootContext()->setContextProperty("labels", &labelsModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
   MouseShapeController mouseShapeController(window);
