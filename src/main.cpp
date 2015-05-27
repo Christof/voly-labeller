@@ -64,6 +64,7 @@ int main(int argc, char **argv)
   invokeManager->addHandler("mouseShape", &mouseShapeController);
   invokeManager->addHandler("picking", &pickingController);
   signalManager->addSender("KeyboardEventSender", &window);
+  signalManager->addSender("labels", &labelsModel);
 
   auto stateMachine = importer.import();
 

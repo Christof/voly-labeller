@@ -50,9 +50,11 @@ class LabelsModel : public QAbstractTableModel
   void changeText(int row, QString text);
   void changeSizeX(int row, float sizeX);
   void changeSizeY(int row, float sizeY);
+  void pick(int row);
 
  signals:
   void isVisibleChanged();
+  void startPicking();
 
  private:
   std::shared_ptr<Nodes> nodes;

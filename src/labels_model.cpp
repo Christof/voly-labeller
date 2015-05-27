@@ -118,3 +118,10 @@ void LabelsModel::changeSizeY(int row, float sizeY)
 
   labels[row]->getLabel().size.y() = sizeY;
 }
+
+void LabelsModel::pick(int row)
+{
+  qWarning() << "pick" << row;
+  emit startPicking();
+}
+

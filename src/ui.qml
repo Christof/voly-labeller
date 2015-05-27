@@ -257,12 +257,25 @@ Item {
         }
       }
     }
+    Component {
+      id: anchorDelegate
+
+      Item {
+        Button {
+          anchors.fill: parent
+          text: "Pick"
+          onClicked: {
+            if (labels) labels.pick(styleData.row);
+          }
+        }
+      }
+    }
     TableView {
       visible: labels.isVisible
       TableViewColumn {
         role: "name"
         title: "Name"
-        width: 200
+        width: 150
         delegate: labelNameDelegate
       }
       TableViewColumn {
@@ -276,6 +289,11 @@ Item {
         title: "Height"
         width: 100
         delegate: sizeYDelegate
+      }
+      TableViewColumn {
+        title: "Anchor"
+        width: 46
+        delegate: anchorDelegate
       }
       x: 10; y: 200
       width: 400
