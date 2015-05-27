@@ -34,6 +34,9 @@ class LabelsModel : public QAbstractTableModel
 
   Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+  QVariant headerData(int section, Qt::Orientation orientation,
+                      int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
   Q_PROPERTY(bool isVisible MEMBER isVisible READ getIsVisible NOTIFY
                  isVisibleChanged)
 

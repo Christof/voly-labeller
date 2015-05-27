@@ -53,6 +53,18 @@ Qt::ItemFlags LabelsModel::flags(const QModelIndex &index) const
          Qt::ItemIsUserCheckable;
 }
 
+QVariant LabelsModel::headerData(int section, Qt::Orientation orientation,
+                                 int role) const
+{
+  switch (role)
+  {
+  case NameRole:
+    return QVariant::fromValue(QString("Text"));
+  }
+
+  return QVariant();
+}
+
 bool LabelsModel::getIsVisible() const
 {
   return isVisible;
