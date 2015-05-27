@@ -37,6 +37,7 @@ class LabelNode : public Node
   Label &getLabel();
  private:
   Label label;
+  std::string textureText;
 
   friend class boost::serialization::access;
   template <class Archive>
