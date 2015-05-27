@@ -21,6 +21,8 @@ class LabelsModel : public QAbstractTableModel
   enum ForceRoles
   {
     NameRole = Qt::UserRole + 1,
+    SizeXRole,
+    SizeYRole
   };
 
   QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
@@ -45,6 +47,9 @@ class LabelsModel : public QAbstractTableModel
  public slots:
   void toggleLabelsInfoVisbility();
   void resetModel();
+  void changeText(int row, QString text);
+  void changeSizeX(int row, float sizeX);
+  void changeSizeY(int row, float sizeY);
 
  signals:
   void isVisibleChanged();

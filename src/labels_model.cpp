@@ -13,6 +13,8 @@ QHash<int, QByteArray> LabelsModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
   roles[NameRole] = "name";
+  roles[SizeXRole] = "sizeX";
+  roles[SizeYRole] = "sizeY";
 
   return roles;
 }
@@ -40,6 +42,10 @@ QVariant LabelsModel::data(const QModelIndex &index, int role) const
   {
   case NameRole:
     return QVariant::fromValue(QString(label.text.c_str()));
+  case SizeXRole:
+    return QVariant::fromValue(label.size.x());
+  case SizeYRole:
+    return QVariant::fromValue(label.size.y());
   }
   return QVariant();
 }
@@ -60,6 +66,10 @@ QVariant LabelsModel::headerData(int section, Qt::Orientation orientation,
   {
   case NameRole:
     return QVariant::fromValue(QString("Text"));
+  case SizeXRole:
+    return QVariant::fromValue(QString("Width Scale"));
+  case SizeYRole:
+    return QVariant::fromValue(QString("Height Scale"));
   }
 
   return QVariant();
@@ -82,3 +92,29 @@ void LabelsModel::resetModel()
   endResetModel();
 }
 
+void LabelsModel::changeText(int row, QString text)
+{
+  auto labels =nodes->getLabelNodes();
+  if (row < 0 || row >= static_cast<int>(labels.size()))
+    return;
+
+  labels[row]->getLabel().text = text.toStdString();
+}
+
+void LabelsModel::changeSizeX(int row, float sizeX)
+{
+  auto labels =nodes->getLabelNodes();
+  if (row < 0 || row >= static_cast<int>(labels.size()))
+    return;
+
+  labels[row]->getLabel().size.x() = sizeX;
+}
+
+void LabelsModel::changeSizeY(int row, float sizeY)
+{
+  auto labels =nodes->getLabelNodes();
+  if (row < 0 || row >= static_cast<int>(labels.size()))
+    return;
+
+  labels[row]->getLabel().size.y() = sizeY;
+}

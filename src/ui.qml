@@ -220,8 +220,40 @@ Item {
       id: labelNameDelegate
 
       Item {
-        Text {
+        TextInput {
+          anchors.fill: parent
           text: styleData.value
+          onTextChanged: {
+            if (labels) labels.changeText(styleData.row, text);
+          }
+        }
+      }
+    }
+    Component {
+      id: sizeYDelegate
+
+      Item {
+        TextInput {
+          anchors.fill: parent
+          maximumLength: 5
+          text: styleData.value
+          onTextChanged: {
+            if (labels) labels.changeSizeY(styleData.row, text);
+          }
+        }
+      }
+    }
+    Component {
+      id: sizeXDelegate
+
+      Item {
+        TextInput {
+          anchors.fill: parent
+          maximumLength: 5
+          text: styleData.value
+          onTextChanged: {
+            if (labels) labels.changeSizeX(styleData.row, text);
+          }
         }
       }
     }
@@ -232,6 +264,18 @@ Item {
         title: "Name"
         width: 200
         delegate: labelNameDelegate
+      }
+      TableViewColumn {
+        role: "sizeX"
+        title: "Width"
+        width: 100
+        delegate: sizeXDelegate
+      }
+      TableViewColumn {
+        role: "sizeY"
+        title: "Height"
+        width: 100
+        delegate: sizeYDelegate
       }
       x: 10; y: 200
       width: 400
