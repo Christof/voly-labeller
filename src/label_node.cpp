@@ -27,7 +27,7 @@ LabelNode::~LabelNode()
 {
 }
 
-const Label &LabelNode::getLabel()
+Label &LabelNode::getLabel()
 {
   return label;
 }

@@ -34,7 +34,7 @@ class LabelNode : public Node
 
   Eigen::Vector3f labelPosition;
 
-  const Label &getLabel();
+  Label &getLabel();
  private:
   Label label;
 
