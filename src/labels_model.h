@@ -41,6 +41,7 @@ class LabelsModel : public QAbstractTableModel
 
  public slots:
   void toggleLabelsInfoVisbility();
+  void resetModel();
 
  signals:
   void isVisibleChanged();

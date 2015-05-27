@@ -3,13 +3,10 @@
 #include "./label_node.h"
 #include "./label.h"
 
-LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes)
-  : nodes(nodes)
+LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes) : nodes(nodes)
 {
-  connect(nodes.get(), &Nodes::nodesChanged, [this]() {
-        this->beginResetModel();
-        this->endResetModel();
-      });
+  connect(nodes.get(), SIGNAL(nodesChanged()), this, SLOT(resetModel()),
+          Qt::QueuedConnection);
 }
 
 QHash<int, QByteArray> LabelsModel::roleNames() const
@@ -35,8 +32,7 @@ int LabelsModel::columnCount(const QModelIndex &parent) const
 QVariant LabelsModel::data(const QModelIndex &index, int role) const
 {
   auto labels = nodes->getLabelNodes();
-  if (index.row() < 0 ||
-      index.row() >= static_cast<int>(labels.size()))
+  if (index.row() < 0 || index.row() >= static_cast<int>(labels.size()))
     return QVariant();
 
   auto &label = labels[index.row()]->getLabel();
@@ -66,5 +62,11 @@ void LabelsModel::toggleLabelsInfoVisbility()
 {
   isVisible = !isVisible;
   emit isVisibleChanged();
+}
+
+void LabelsModel::resetModel()
+{
+  beginResetModel();
+  endResetModel();
 }
 
