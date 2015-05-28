@@ -3,6 +3,7 @@
 #define SRC_MOUSE_SHAPE_CONTROLLER_H_
 
 #include <QObject>
+#include <QApplication>
 #include <QtQuick/QQuickView>
 
 /**
@@ -13,11 +14,6 @@
 class MouseShapeController : public QObject
 {
   Q_OBJECT
- public:
-  explicit MouseShapeController(QQuickView &view) : view(view)
-  {
-  }
-
  public slots:
   void startDragging()
   {
@@ -26,7 +22,7 @@ class MouseShapeController : public QObject
 
   void reset()
   {
-    setShape(Qt::CursorShape::ArrowCursor);
+    QApplication::restoreOverrideCursor();
   }
 
   void startZoom()
@@ -47,12 +43,8 @@ class MouseShapeController : public QObject
  private:
   void setShape(Qt::CursorShape shape)
   {
-    auto cursor = view.cursor();
-    cursor.setShape(shape);
-    view.setCursor(cursor);
+    QApplication::setOverrideCursor(shape);
   }
-
-  QQuickView &view;
 };
 
 #endif  // SRC_MOUSE_SHAPE_CONTROLLER_H_

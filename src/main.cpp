@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   window.rootContext()->setContextProperty("labels", &labelsModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
-  MouseShapeController mouseShapeController(window);
+  MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
