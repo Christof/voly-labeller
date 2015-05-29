@@ -7,6 +7,8 @@ ForcesVisualizerNode::ForcesVisualizerNode(
     std::shared_ptr<Forces::Labeller> labeller)
   : labeller(labeller)
 {
+  persistable = false;
+
   connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
                                           Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(1.0f, 0.8f, 0, 1);
