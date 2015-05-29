@@ -3,6 +3,7 @@
 #define SRC_SCENE_H_
 
 #include <memory>
+#include <functional>
 #include "./abstract_scene.h"
 #include "./camera.h"
 #include "./forces/labeller.h"
@@ -36,7 +37,8 @@ class Scene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
-  void pick(Eigen::Vector2f position);
+  void pick(Eigen::Vector2f position,
+            std::function<void(Eigen::Vector3f)> callback);
 
  private:
   Camera camera;
@@ -59,6 +61,7 @@ class Scene : public AbstractScene
 
   bool performPicking;
   Eigen::Vector2f pickingPosition;
+  std::function<void(Eigen::Vector3f)> pickingCallback;
   void doPick();
 };
 

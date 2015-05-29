@@ -2,10 +2,16 @@
 #include <QMouseEvent>
 #include "./math/eigen.h"
 #include "./scene.h"
+#include "./label.h"
 
 PickingController::PickingController(std::shared_ptr<Scene> scene)
   : scene(scene)
 {
+}
+
+void PickingController::startPicking(Label *label)
+{
+  this->label = label;
 }
 
 void PickingController::pick(QEvent *event)
@@ -15,5 +21,11 @@ void PickingController::pick(QEvent *event)
     return;
 
   auto position = toEigen(mouseEvent->localPos());
-  scene->pick(position);
+  scene->pick(position, std::bind(&PickingController::pickedPosition, this,
+                                  std::placeholders::_1));
+}
+
+void PickingController::pickedPosition(Eigen::Vector3f position)
+{
+  label->anchorPosition = position;
 }

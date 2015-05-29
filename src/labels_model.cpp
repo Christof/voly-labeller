@@ -2,8 +2,11 @@
 #include "./nodes.h"
 #include "./label_node.h"
 #include "./label.h"
+#include "./picking_controller.h"
 
-LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes) : nodes(nodes)
+LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes,
+                         PickingController &pickingController)
+  : nodes(nodes), pickingController(pickingController)
 {
   connect(nodes.get(), SIGNAL(nodesChanged()), this, SLOT(resetModel()),
           Qt::QueuedConnection);
@@ -121,7 +124,11 @@ void LabelsModel::changeSizeY(int row, float sizeY)
 
 void LabelsModel::pick(int row)
 {
-  qWarning() << "pick" << row;
+  auto labels = nodes->getLabelNodes();
+  if (row < 0 || row >= static_cast<int>(labels.size()))
+    return;
+
+  pickingController.startPicking(&labels[row]->getLabel());
   emit startPicking();
 }
 

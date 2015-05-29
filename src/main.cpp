@@ -32,11 +32,13 @@ int main(int argc, char **argv)
   nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
 
-
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);
   window.rootContext()->setContextProperty("window", &window);
   window.rootContext()->setContextProperty("nodes", nodes.get());
+
+  MouseShapeController mouseShapeController;
+  PickingController pickingController(scene);
 
   LabellerModel labellerModel(labeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
@@ -49,12 +51,9 @@ int main(int argc, char **argv)
   });
   window.rootContext()->setContextProperty("labeller", &labellerModel);
 
-  LabelsModel labelsModel(nodes);
+  LabelsModel labelsModel(nodes, pickingController);
   window.rootContext()->setContextProperty("labels", &labelsModel);
   window.setSource(QUrl("qrc:ui.qml"));
-
-  MouseShapeController mouseShapeController;
-  PickingController pickingController(scene);
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),

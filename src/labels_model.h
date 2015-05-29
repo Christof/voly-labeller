@@ -6,6 +6,7 @@
 #include <memory>
 
 class Nodes;
+class PickingController;
 
 /**
  * \brief
@@ -16,7 +17,8 @@ class LabelsModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  explicit LabelsModel(std::shared_ptr<Nodes> nodes);
+  LabelsModel(std::shared_ptr<Nodes> nodes,
+              PickingController &pickingController);
 
   enum ForceRoles
   {
@@ -58,6 +60,7 @@ class LabelsModel : public QAbstractTableModel
 
  private:
   std::shared_ptr<Nodes> nodes;
+  PickingController &pickingController;
   bool isVisible = true;
 };
 

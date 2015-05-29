@@ -160,8 +160,10 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 }
 
-void Scene::pick(Eigen::Vector2f position)
+void Scene::pick(Eigen::Vector2f position,
+                 std::function<void(Eigen::Vector3f)> callback)
 {
+  pickingCallback = callback;
   pickingPosition = position;
   performPicking = true;
 }
@@ -190,5 +192,6 @@ void Scene::doPick()
   qWarning() << "picked:" << positionWorld;
 
   performPicking = false;
+  pickingCallback(toVector3f(positionWorld));
 }
 
