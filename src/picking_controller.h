@@ -7,7 +7,7 @@
 #include "./math/eigen.h"
 
 class Scene;
-class Label;
+struct Label;
 
 /**
  * \brief Triggers picking of 3d position on mouse click and set anchor position
