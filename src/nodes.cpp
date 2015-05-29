@@ -93,7 +93,12 @@ void Nodes::saveSceneTo(QUrl url)
 
 void Nodes::saveSceneTo(std::string filename)
 {
-  Persister::save(nodes, filename);
+  std::vector<std::shared_ptr<Node>> persistableNodes;
+  for (auto node : nodes)
+    if (node->isPersistable())
+      persistableNodes.push_back(node);
+
+  Persister::save(persistableNodes, filename);
 }
 
 void Nodes::clear()
