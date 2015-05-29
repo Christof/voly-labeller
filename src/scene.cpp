@@ -46,6 +46,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
 Scene::~Scene()
 {
+  qDebug() << "Destructor of Scene";
 }
 
 void Scene::initialize()
