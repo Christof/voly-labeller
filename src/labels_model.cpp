@@ -94,7 +94,7 @@ void LabelsModel::resetModel()
 
 void LabelsModel::changeText(int row, QString text)
 {
-  auto labels =nodes->getLabelNodes();
+  auto labels = nodes->getLabelNodes();
   if (row < 0 || row >= static_cast<int>(labels.size()))
     return;
 
@@ -103,7 +103,7 @@ void LabelsModel::changeText(int row, QString text)
 
 void LabelsModel::changeSizeX(int row, float sizeX)
 {
-  auto labels =nodes->getLabelNodes();
+  auto labels = nodes->getLabelNodes();
   if (row < 0 || row >= static_cast<int>(labels.size()))
     return;
 
@@ -112,7 +112,7 @@ void LabelsModel::changeSizeX(int row, float sizeX)
 
 void LabelsModel::changeSizeY(int row, float sizeY)
 {
-  auto labels =nodes->getLabelNodes();
+  auto labels = nodes->getLabelNodes();
   if (row < 0 || row >= static_cast<int>(labels.size()))
     return;
 
