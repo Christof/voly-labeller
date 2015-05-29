@@ -192,6 +192,7 @@ void Scene::doPick()
   qWarning() << "picked:" << positionWorld;
 
   performPicking = false;
-  pickingCallback(toVector3f(positionWorld));
+  if (pickingCallback)
+    pickingCallback(toVector3f(positionWorld));
 }
 
