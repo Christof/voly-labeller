@@ -270,36 +270,53 @@ Item {
         }
       }
     }
-    TableView {
-      visible: labels.isVisible
-      TableViewColumn {
-        role: "name"
-        title: "Name"
-        width: 150
-        delegate: labelNameDelegate
+    Column {
+      id: lablesItem
+      x: 8
+      y: 192
+      width: 441
+      height: 197
+      Button {
+          x: 10
+          text: "Add Label"
+          onClicked: {
+            if (labels) labels.addLabel();
+          }
       }
-      TableViewColumn {
-        role: "sizeX"
-        title: "Width"
-        width: 100
-        delegate: sizeXDelegate
+
+      TableView {
+        visible: labels.isVisible
+        TableViewColumn {
+          role: "name"
+          title: "Name"
+          width: 150
+          delegate: labelNameDelegate
+        }
+        TableViewColumn {
+          role: "sizeX"
+          title: "Width"
+          width: 100
+          delegate: sizeXDelegate
+        }
+        TableViewColumn {
+          role: "sizeY"
+          title: "Height"
+          width: 100
+          delegate: sizeYDelegate
+        }
+        TableViewColumn {
+          title: "Anchor"
+          width: 46
+          delegate: anchorDelegate
+        }
+        x: 10; y: 240
+        width: 417
+        height: 190
+        model: labels
+        focus: true
+        clip: true
       }
-      TableViewColumn {
-        role: "sizeY"
-        title: "Height"
-        width: 100
-        delegate: sizeYDelegate
-      }
-      TableViewColumn {
-        title: "Anchor"
-        width: 46
-        delegate: anchorDelegate
-      }
-      x: 10; y: 200
-      width: 400
-      model: labels
-      focus: true
-      clip: true
     }
+
   }
 }

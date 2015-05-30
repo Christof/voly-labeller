@@ -53,6 +53,7 @@ class LabelsModel : public QAbstractTableModel
   void changeSizeX(int row, float sizeX);
   void changeSizeY(int row, float sizeY);
   void pick(int row);
+  void addLabel();
 
  signals:
   void isVisibleChanged();

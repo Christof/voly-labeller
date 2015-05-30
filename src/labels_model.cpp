@@ -132,3 +132,10 @@ void LabelsModel::pick(int row)
   emit startPicking();
 }
 
+void LabelsModel::addLabel()
+{
+  auto labels = nodes->getLabelNodes();
+  nodes->addNode(std::make_shared<LabelNode>(
+      Label(10, "Change text", Eigen::Vector3f(0, 0, 0))));
+}
+
