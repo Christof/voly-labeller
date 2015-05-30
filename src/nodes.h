@@ -31,7 +31,6 @@ class Nodes : public QObject
   void render(Gl *gl, RenderData renderData);
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
-  void addNode(std::shared_ptr<Node> node);
   void removeNode(std::shared_ptr<Node> node);
  public slots:
   void addSceneNodesFrom(std::string filename);
@@ -47,6 +46,7 @@ class Nodes : public QObject
 
   void toggleBoundingVolumes();
 
+  void addNode(std::shared_ptr<Node> node);
  signals:
   void nodesChanged();
 
