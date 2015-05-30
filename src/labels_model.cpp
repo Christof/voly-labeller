@@ -135,7 +135,14 @@ void LabelsModel::pick(int row)
 void LabelsModel::addLabel()
 {
   auto labels = nodes->getLabelNodes();
+  auto maxIdLabelNode = std::max_element(
+      labels.begin(), labels.end(),
+      [](std::shared_ptr<LabelNode> a, std::shared_ptr<LabelNode> b)
+      {
+        return a->getLabel().id < b->getLabel().id;
+      });
+  int maxId = (*maxIdLabelNode)->getLabel().id;
   nodes->addNode(std::make_shared<LabelNode>(
-      Label(10, "Change text", Eigen::Vector3f(0, 0, 0))));
+      Label(maxId + 1, "Change text", Eigen::Vector3f(0, 0, 0))));
 }
 
