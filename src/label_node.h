@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <boost/serialization/nvp.hpp>
 #include <memory>
+#include <string>
 #include "./node.h"
 #include "./label.h"
 
