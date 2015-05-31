@@ -161,12 +161,13 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 }
 
-void Scene::pick(Eigen::Vector2f position,
+void Scene::pick(int id, Eigen::Vector2f position,
                  std::function<void(Eigen::Vector3f)> callback)
 {
   pickingCallback = callback;
   pickingPosition = position;
   performPicking = true;
+  pickingLabelId = id;
 }
 
 void Scene::doPick()
@@ -193,7 +194,10 @@ void Scene::doPick()
   qWarning() << "picked:" << positionWorld;
 
   performPicking = false;
+  Eigen::Vector3f anchorPosition = toVector3f(positionWorld);
   if (pickingCallback)
-    pickingCallback(toVector3f(positionWorld));
+    pickingCallback(anchorPosition);
+
+  labeller->updateLabel(pickingLabelId, anchorPosition);
 }
 

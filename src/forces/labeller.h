@@ -31,6 +31,7 @@ class Labeller
 
   void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
                 Eigen::Vector2f size);
+  void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 

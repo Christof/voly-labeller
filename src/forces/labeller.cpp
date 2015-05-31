@@ -26,6 +26,18 @@ void Labeller::addLabel(int id, std::string text,
   labels.push_back(LabelState(id, text, anchorPosition, size));
 }
 
+void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
+{
+  for (auto &labelState : labels)
+  {
+    if (labelState.id != id)
+      continue;
+
+    labelState.anchorPosition = anchorPosition;
+    labelState.labelPosition = 1.3f * anchorPosition.normalized();
+  }
+}
+
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {

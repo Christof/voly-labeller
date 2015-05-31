@@ -21,8 +21,8 @@ void PickingController::pick(QEvent *event)
     return;
 
   auto position = toEigen(mouseEvent->localPos());
-  scene->pick(position, std::bind(&PickingController::pickedPosition, this,
-                                  std::placeholders::_1));
+  scene->pick(label->id, position, std::bind(&PickingController::pickedPosition,
+                                             this, std::placeholders::_1));
 }
 
 void PickingController::pickedPosition(Eigen::Vector3f position)
