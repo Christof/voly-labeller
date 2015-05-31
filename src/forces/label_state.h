@@ -27,7 +27,7 @@ class LabelState
              Eigen::Vector2f size);
 
   const int id;
-  const Eigen::Vector3f anchorPosition;
+  Eigen::Vector3f anchorPosition;
   Eigen::Vector3f labelPosition;
   Eigen::Vector2f size;
 
