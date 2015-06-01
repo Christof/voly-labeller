@@ -11,14 +11,24 @@
 
 namespace Forces
 {
-Labeller::Labeller(std::shared_ptr<Labels> labels)
-  : labels(labels)
+Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
   srand(9);
   addForce(new CenterForce());
   addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
+
+  labels->subscribe([this](const Label &label)
+                    {
+                      addLabel(label.id, label.text, label.anchorPosition,
+                               label.size);
+                    });
+}
+
+Labeller::~Labeller()
+{
+  // TODO unsubscribe
 }
 
 void Labeller::addLabel(int id, std::string text,

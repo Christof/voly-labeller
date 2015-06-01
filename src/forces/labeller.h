@@ -29,9 +29,8 @@ class Labeller
 {
  public:
   explicit Labeller(std::shared_ptr<Labels> labels);
+  ~Labeller();
 
-  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
-                Eigen::Vector2f size);
   void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
@@ -43,6 +42,8 @@ class Labeller
   bool updatePositions = true;
 
  private:
+  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
+                Eigen::Vector2f size);
   std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;
 

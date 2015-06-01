@@ -83,11 +83,7 @@ void Scene::initialize()
   nodes->addSceneNodesFrom("config/scene.xml");
 
   for (auto &labelNode : nodes->getLabelNodes())
-  {
-    auto label = labelNode->getLabel();
-    labels->add(label);
-    labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
-  }
+    labels->add(labelNode->getLabel());
 
   quad = std::make_shared<Quad>();
 
