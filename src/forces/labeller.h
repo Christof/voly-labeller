@@ -42,7 +42,7 @@ class Labeller
   bool updatePositions = true;
 
  private:
-  std::vector<LabelState> labels;
+  std::vector<LabelState> labelStates;
 
   template <class T> void addForce(T *force);
   void enforceAnchorDepthForLabel(LabelState &label,

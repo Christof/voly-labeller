@@ -23,12 +23,12 @@ Labeller::Labeller()
 void Labeller::addLabel(int id, std::string text,
                         Eigen::Vector3f anchorPosition, Eigen::Vector2f size)
 {
-  labels.push_back(LabelState(id, text, anchorPosition, size));
+  labelStates.push_back(LabelState(id, text, anchorPosition, size));
 }
 
 void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
 {
-  for (auto &labelState : labels)
+  for (auto &labelState : labelStates)
   {
     if (labelState.id != id)
       continue;
@@ -44,11 +44,11 @@ Labeller::update(const LabellerFrameData &frameData)
   std::map<int, Eigen::Vector3f> positions;
 
   for (auto &force : forces)
-    force->beforeAll(labels);
+    force->beforeAll(labelStates);
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
-  for (auto &label : labels)
+  for (auto &label : labelStates)
   {
     auto anchor2D = frameData.project(label.anchorPosition);
     label.anchorPosition2D = anchor2D.head<2>();
@@ -59,7 +59,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
-      forceOnLabel += force->calculateForce(label, labels, frameData);
+      forceOnLabel += force->calculateForce(label, labelStates, frameData);
 
     if (updatePositions)
       label.labelPosition2D += forceOnLabel * frameData.frameTime;
@@ -82,7 +82,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
 std::vector<LabelState> Labeller::getLabels()
 {
-  return labels;
+  return labelStates;
 }
 
 template <class T> void Labeller::addForce(T *force)
