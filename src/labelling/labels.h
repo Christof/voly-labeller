@@ -21,8 +21,8 @@ class Labels
   subscribe(std::function<void(const Label &)> subscriber);
 
   void add(Label label);
-
   std::vector<Label> getLabels();
+  void updateAnchor(int id, Eigen::Vector3f anchorPosition);
  private:
   std::map<int, Label> labels;
   std::vector<std::function<void(const Label &)>> subscribers;

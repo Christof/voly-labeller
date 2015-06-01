@@ -29,6 +29,12 @@ std::vector<Label> Labels::getLabels()
   return result;
 }
 
+void Labels::updateAnchor(int id, Eigen::Vector3f anchorPosition)
+{
+  labels[id].anchorPosition = anchorPosition;
+  notify(labels[id]);
+}
+
 void Labels::notify(const Label& label)
 {
   for (auto &subscriber : subscribers)
