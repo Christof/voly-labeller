@@ -1,6 +1,6 @@
-#ifndef SRC_LABELS_H_
+#ifndef SRC_LABELLING_LABELS_H_
 
-#define SRC_LABELS_H_
+#define SRC_LABELLING_LABELS_H_
 
 #include <map>
 #include <vector>
@@ -31,4 +31,4 @@ class Labels
   void notify(const Label& label);
 };
 
-#endif  // SRC_LABELS_H_
+#endif  // SRC_LABELLING_LABELS_H_

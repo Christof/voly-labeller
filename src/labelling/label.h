@@ -1,6 +1,6 @@
-#ifndef SRC_LABEL_H_
+#ifndef SRC_LABELLING_LABEL_H_
 
-#define SRC_LABEL_H_
+#define SRC_LABELLING_LABEL_H_
 
 #include <Eigen/Core>
 #include <boost/serialization/nvp.hpp>
@@ -49,4 +49,4 @@ void serialize(Archive &ar, Label &label, const unsigned int version)
 }  // namespace serialization
 }  // namespace boost
 
-#endif  // SRC_LABEL_H_
+#endif  // SRC_LABELLING_LABEL_H_
