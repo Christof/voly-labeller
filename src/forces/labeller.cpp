@@ -11,7 +11,8 @@
 
 namespace Forces
 {
-Labeller::Labeller()
+Labeller::Labeller(std::shared_ptr<Labels> labels)
+  : labels(labels)
 {
   srand(9);
   addForce(new CenterForce());

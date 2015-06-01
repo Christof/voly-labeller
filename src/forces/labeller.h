@@ -10,6 +10,7 @@
 #include "./label_state.h"
 #include "./force.h"
 #include "./labeller_frame_data.h"
+#include "../labelling/labels.h"
 
 /**
  * \brief Contains classes for the force simulation part of label placement
@@ -27,7 +28,7 @@ namespace Forces
 class Labeller
 {
  public:
-  Labeller();
+  explicit Labeller(std::shared_ptr<Labels> labels);
 
   void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
                 Eigen::Vector2f size);
@@ -42,6 +43,7 @@ class Labeller
   bool updatePositions = true;
 
  private:
+  std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;
 
   template <class T> void addForce(T *force);
