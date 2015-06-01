@@ -27,9 +27,10 @@ BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes,
+             std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> labeller)
 
-  : nodes(nodes), labeller(labeller)
+  : nodes(nodes), labels(labels), labeller(labeller)
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
@@ -84,6 +85,7 @@ void Scene::initialize()
   for (auto &labelNode : nodes->getLabelNodes())
   {
     auto label = labelNode->getLabel();
+    labels->add(label);
     labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
   }
 

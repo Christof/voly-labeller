@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   auto labeller = std::make_shared<Forces::Labeller>(labels);
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
-  auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
+  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
 
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);
