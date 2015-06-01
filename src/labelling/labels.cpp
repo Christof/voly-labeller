@@ -1,6 +1,5 @@
 #include "./labels.h"
 #include <vector>
-#include "./label.h"
 
 std::function<void()>
 Labels::subscribe(std::function<void(const Label &)> subscriber)

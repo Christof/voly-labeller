@@ -10,9 +10,10 @@
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
-#include "./picking_controller.h"
 #include "./labeller_model.h"
 #include "./labels_model.h"
+#include "./labelling/labels.h"
+#include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
 
 int main(int argc, char **argv)
@@ -27,7 +28,8 @@ int main(int argc, char **argv)
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
-  auto labeller = std::make_shared<Forces::Labeller>();
+  auto labels = std::make_shared<Labels>();
+  auto labeller = std::make_shared<Forces::Labeller>(labels);
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);

@@ -5,8 +5,7 @@
 #include <map>
 #include <vector>
 #include <functional>
-
-struct Label;
+#include "./label.h"
 
 /**
  * \brief
