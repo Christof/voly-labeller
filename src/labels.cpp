@@ -20,8 +20,18 @@ void Labels::add(Label label)
   notify(label);
 }
 
+std::vector<Label> Labels::getLabels()
+{
+  std::vector<Label> result(labels.size());
+  for (auto &pair : labels)
+    result.push_back(pair.second);
+
+  return result;
+}
+
 void Labels::notify(const Label& label)
 {
   for (auto &subscriber : subscribers)
     subscriber(label);
 }
+

@@ -22,6 +22,8 @@ class Labels
   subscribe(std::function<void(const Label &)> subscriber);
 
   void add(Label label);
+
+  std::vector<Label> getLabels();
  private:
   std::map<int, Label> labels;
   std::vector<std::function<void(const Label &)>> subscribers;
