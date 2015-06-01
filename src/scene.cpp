@@ -196,6 +196,6 @@ void Scene::doPick()
   if (pickingCallback)
     pickingCallback(anchorPosition);
 
-  labeller->updateLabel(pickingLabelId, anchorPosition);
+  labels->updateAnchor(pickingLabelId, anchorPosition);
 }
 

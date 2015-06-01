@@ -42,14 +42,13 @@ class Labeller
   bool updatePositions = true;
 
  private:
-  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
-                Eigen::Vector2f size);
   std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;
 
   template <class T> void addForce(T *force);
   void enforceAnchorDepthForLabel(LabelState &label,
                                   const Eigen::Matrix4f &viewMatrix);
+  void setLabel(const Label &label);
 };
 }  // namespace Forces
 

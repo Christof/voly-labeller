@@ -19,11 +19,8 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
 
-  labels->subscribe([this](const Label &label)
-                    {
-                      addLabel(label.id, label.text, label.anchorPosition,
-                               label.size);
-                    });
+  labels->subscribe(
+      std::bind(&Labeller::setLabel, this, std::placeholders::_1));
 }
 
 Labeller::~Labeller()
@@ -31,10 +28,17 @@ Labeller::~Labeller()
   // TODO unsubscribe
 }
 
-void Labeller::addLabel(int id, std::string text,
-                        Eigen::Vector3f anchorPosition, Eigen::Vector2f size)
+void Labeller::setLabel(const Label &label)
 {
-  labelStates.push_back(LabelState(id, text, anchorPosition, size));
+  labelStates.erase(std::remove_if(labelStates.begin(), labelStates.end(),
+                                   [label](const LabelState labelState)
+                                   {
+                      return labelState.id == label.id;
+                    }),
+                    labelStates.end());
+
+  labelStates.push_back(
+      LabelState(label.id, label.text, label.anchorPosition, label.size));
 }
 
 void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
