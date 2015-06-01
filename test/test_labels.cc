@@ -1,7 +1,7 @@
 #include <Eigen/Core>
 #include "./test.h"
-#include "../src/labels.h"
-#include "../src/label.h"
+#include "../src/labelling/labels.h"
+#include "../src/labelling/label.h"
 
 TEST(Test_Labels, ChangeNotification)
 {

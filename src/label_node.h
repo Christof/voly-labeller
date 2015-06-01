@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 #include "./node.h"
-#include "./label.h"
+#include "./labelling/label.h"
 
 class Gl;
 class Mesh;

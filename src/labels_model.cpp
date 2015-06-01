@@ -1,7 +1,7 @@
 #include "./labels_model.h"
 #include "./nodes.h"
 #include "./label_node.h"
-#include "./label.h"
+#include "./labelling/label.h"
 #include "./picking_controller.h"
 
 LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes,

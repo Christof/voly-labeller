@@ -2,7 +2,7 @@
 #include <QMouseEvent>
 #include "./math/eigen.h"
 #include "./scene.h"
-#include "./label.h"
+#include "./labelling/label.h"
 
 PickingController::PickingController(std::shared_ptr<Scene> scene)
   : scene(scene)

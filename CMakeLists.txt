@@ -5,6 +5,7 @@ project(voly-labeller)
 add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
+add_subdirectory(src/labelling)
 add_subdirectory(src/forces)
 
 option(test "Build all tests." ON)
@@ -43,7 +44,6 @@ set(SOURCES
   src/coordinate_system_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
-  src/labels.cpp
   src/scene.cpp
   src/camera_controller.cpp
   src/mouse_dragging_controller.cpp
@@ -63,6 +63,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
+  $<TARGET_OBJECTS:labelling>
   $<TARGET_OBJECTS:forces>
   $<TARGET_OBJECTS:math>
   )
