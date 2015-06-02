@@ -4,11 +4,12 @@
 #include "./labelling/label.h"
 #include "./picking_controller.h"
 
-LabelsModel::LabelsModel(std::shared_ptr<Nodes> nodes,
+LabelsModel::LabelsModel(std::shared_ptr<Labels> labels,
                          PickingController &pickingController)
-  : nodes(nodes), pickingController(pickingController)
+  : labels(labels), pickingController(pickingController)
 {
-  connect(nodes.get(), SIGNAL(nodesChanged()), this, SLOT(resetModel()),
+  labels->subscribe(std::bind(&LabelsModel::labelUpdated, this));
+  connect(this, SIGNAL(labelUpdated()), this, SLOT(resetModel()),
           Qt::QueuedConnection);
 }
 
@@ -25,7 +26,7 @@ QHash<int, QByteArray> LabelsModel::roleNames() const
 int LabelsModel::rowCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
-  return nodes->getLabelNodes().size();
+  return labels->count();
 }
 
 int LabelsModel::columnCount(const QModelIndex &parent) const
@@ -36,11 +37,12 @@ int LabelsModel::columnCount(const QModelIndex &parent) const
 
 QVariant LabelsModel::data(const QModelIndex &index, int role) const
 {
-  auto labels = nodes->getLabelNodes();
-  if (index.row() < 0 || index.row() >= static_cast<int>(labels.size()))
+  if (index.row() < 0 || index.row() >= labels->count())
     return QVariant();
 
-  auto &label = labels[index.row()]->getLabel();
+  auto labelsVector = labels->getLabels();
+  auto label = labelsVector[index.row()];
+  qWarning() << label.text.c_str();
   switch (role)
   {
   case NameRole:
@@ -97,52 +99,46 @@ void LabelsModel::resetModel()
 
 void LabelsModel::changeText(int row, QString text)
 {
-  auto labels = nodes->getLabelNodes();
-  if (row < 0 || row >= static_cast<int>(labels.size()))
+  if (row < 0 || row >= labels->count())
     return;
 
-  labels[row]->getLabel().text = text.toStdString();
+  // labels->updateText(text.toStdString());
 }
 
 void LabelsModel::changeSizeX(int row, float sizeX)
 {
-  auto labels = nodes->getLabelNodes();
-  if (row < 0 || row >= static_cast<int>(labels.size()))
+  if (row < 0 || row >= labels->count())
     return;
 
-  labels[row]->getLabel().size.x() = sizeX;
+  // labels[row]->getLabel().size.x() = sizeX;
 }
 
 void LabelsModel::changeSizeY(int row, float sizeY)
 {
-  auto labels = nodes->getLabelNodes();
-  if (row < 0 || row >= static_cast<int>(labels.size()))
+  if (row < 0 || row >= labels->count())
     return;
 
-  labels[row]->getLabel().size.y() = sizeY;
+  // labels[row]->getLabel().size.y() = sizeY;
 }
 
 void LabelsModel::pick(int row)
 {
-  auto labels = nodes->getLabelNodes();
-  if (row < 0 || row >= static_cast<int>(labels.size()))
+  if (row < 0 || row >= labels->count())
     return;
 
-  pickingController.startPicking(&labels[row]->getLabel());
+  pickingController.startPicking(&labels->getLabels()[row]);
   emit startPicking();
 }
 
 void LabelsModel::addLabel()
 {
-  auto labels = nodes->getLabelNodes();
+  auto labelsVector = labels->getLabels();
   auto maxIdLabelNode = std::max_element(
-      labels.begin(), labels.end(),
-      [](std::shared_ptr<LabelNode> a, std::shared_ptr<LabelNode> b)
+      labelsVector.begin(), labelsVector.end(), [](Label a, Label b)
       {
-        return a->getLabel().id < b->getLabel().id;
+        return a.id < b.id;
       });
-  int maxId = (*maxIdLabelNode)->getLabel().id;
-  nodes->addNode(std::make_shared<LabelNode>(
-      Label(maxId + 1, "Change text", Eigen::Vector3f(0, 0, 0))));
+  int maxId = maxIdLabelNode->id;
+  labels->add(Label(maxId + 1, "Change text", Eigen::Vector3f(0, 0, 0)));
 }
 

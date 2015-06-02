@@ -53,7 +53,7 @@ int main(int argc, char **argv)
   });
   window.rootContext()->setContextProperty("labeller", &labellerModel);
 
-  LabelsModel labelsModel(nodes, pickingController);
+  LabelsModel labelsModel(labels, pickingController);
   window.rootContext()->setContextProperty("labels", &labelsModel);
   window.setSource(QUrl("qrc:ui.qml"));
 

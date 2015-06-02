@@ -4,8 +4,8 @@
 
 #include <QAbstractTableModel>
 #include <memory>
+#include "./labelling/labels.h"
 
-class Nodes;
 class PickingController;
 
 /**
@@ -17,7 +17,7 @@ class LabelsModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  LabelsModel(std::shared_ptr<Nodes> nodes,
+  LabelsModel(std::shared_ptr<Labels> labels,
               PickingController &pickingController);
 
   enum ForceRoles
@@ -56,11 +56,12 @@ class LabelsModel : public QAbstractTableModel
   void addLabel();
 
  signals:
+  void labelUpdated();
   void isVisibleChanged();
   void startPicking();
 
  private:
-  std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<Labels> labels;
   PickingController &pickingController;
   bool isVisible = true;
 };
