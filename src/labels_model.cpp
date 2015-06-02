@@ -42,7 +42,6 @@ QVariant LabelsModel::data(const QModelIndex &index, int role) const
 
   auto labelsVector = labels->getLabels();
   auto label = labelsVector[index.row()];
-  qWarning() << label.text.c_str();
   switch (role)
   {
   case NameRole:
@@ -102,7 +101,12 @@ void LabelsModel::changeText(int row, QString text)
   if (row < 0 || row >= labels->count())
     return;
 
-  // labels->updateText(text.toStdString());
+  auto label = labels->getLabels()[row];
+  if (label.text != text.toStdString())
+  {
+    label.text = text.toStdString();
+    labels->add(label);
+  }
 }
 
 void LabelsModel::changeSizeX(int row, float sizeX)
@@ -110,7 +114,12 @@ void LabelsModel::changeSizeX(int row, float sizeX)
   if (row < 0 || row >= labels->count())
     return;
 
-  // labels[row]->getLabel().size.x() = sizeX;
+  auto label = labels->getLabels()[row];
+  if (label.size.x() != sizeX)
+  {
+    label.size.x() = sizeX;
+    labels->add(label);
+  }
 }
 
 void LabelsModel::changeSizeY(int row, float sizeY)
@@ -118,7 +127,12 @@ void LabelsModel::changeSizeY(int row, float sizeY)
   if (row < 0 || row >= labels->count())
     return;
 
-  // labels[row]->getLabel().size.y() = sizeY;
+  auto label = labels->getLabels()[row];
+  if (label.size.y() != sizeY)
+  {
+    label.size.y() = sizeY;
+    labels->add(label);
+  }
 }
 
 void LabelsModel::pick(int row)
