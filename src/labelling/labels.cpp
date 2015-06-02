@@ -29,6 +29,11 @@ std::vector<Label> Labels::getLabels()
   return result;
 }
 
+int Labels::count()
+{
+  return labels.size();
+}
+
 void Labels::updateAnchor(int id, Eigen::Vector3f anchorPosition)
 {
   labels[id].anchorPosition = anchorPosition;
