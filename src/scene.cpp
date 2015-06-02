@@ -26,8 +26,7 @@ BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
-             std::shared_ptr<Nodes> nodes,
-             std::shared_ptr<Labels> labels,
+             std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> labeller)
 
   : nodes(nodes), labels(labels), labeller(labeller)
@@ -83,7 +82,14 @@ void Scene::initialize()
   nodes->addSceneNodesFrom("config/scene.xml");
 
   for (auto &labelNode : nodes->getLabelNodes())
-    labels->add(labelNode->getLabel());
+  {
+    labels->add(labelNode->label);
+    labels->subscribe([labelNode](const Label &label)
+                      {
+                        if (labelNode->label.id == label.id)
+                          labelNode->label = label;
+                      });
+  }
 
   quad = std::make_shared<Quad>();
 
@@ -103,7 +109,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    labelNode->labelPosition = newPositions[labelNode->getLabel().id];
+    labelNode->labelPosition = newPositions[labelNode->label.id];
   }
 }
 
