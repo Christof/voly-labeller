@@ -22,7 +22,7 @@ void Labels::add(Label label)
 
 std::vector<Label> Labels::getLabels()
 {
-  std::vector<Label> result(labels.size());
+  std::vector<Label> result;
   for (auto &pair : labels)
     result.push_back(pair.second);
 
