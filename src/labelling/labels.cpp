@@ -29,6 +29,11 @@ std::vector<Label> Labels::getLabels()
   return result;
 }
 
+Label Labels::getById(int id)
+{
+  return labels[id];
+}
+
 int Labels::count()
 {
   return labels.size();

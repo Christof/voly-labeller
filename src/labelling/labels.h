@@ -22,6 +22,7 @@ class Labels
 
   void add(Label label);
   std::vector<Label> getLabels();
+  Label getById(int id);
   int count();
   void updateAnchor(int id, Eigen::Vector3f anchorPosition);
  private:
