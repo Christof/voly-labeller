@@ -140,7 +140,7 @@ void LabelsModel::pick(int row)
   if (row < 0 || row >= labels->count())
     return;
 
-  pickingController.startPicking(&labels->getLabels()[row]);
+  pickingController.startPicking(labels->getLabels()[row]);
   emit startPicking();
 }
 

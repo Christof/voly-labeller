@@ -39,8 +39,7 @@ class Scene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
-  void pick(int id, Eigen::Vector2f position,
-            std::function<void(Eigen::Vector3f)> callback);
+  void pick(int id, Eigen::Vector2f position);
 
  private:
   Camera camera;
@@ -65,7 +64,6 @@ class Scene : public AbstractScene
   bool performPicking;
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
-  std::function<void(Eigen::Vector3f)> pickingCallback;
   void doPick();
 };
 

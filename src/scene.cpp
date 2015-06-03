@@ -160,10 +160,8 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 }
 
-void Scene::pick(int id, Eigen::Vector2f position,
-                 std::function<void(Eigen::Vector3f)> callback)
+void Scene::pick(int id, Eigen::Vector2f position)
 {
-  pickingCallback = callback;
   pickingPosition = position;
   performPicking = true;
   pickingLabelId = id;
@@ -194,8 +192,6 @@ void Scene::doPick()
 
   performPicking = false;
   Eigen::Vector3f anchorPosition = toVector3f(positionWorld);
-  if (pickingCallback)
-    pickingCallback(anchorPosition);
 
   labels->updateAnchor(pickingLabelId, anchorPosition);
 }
