@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
 #include "./label_state.h"
 #include "./force.h"
 #include "./labeller_frame_data.h"
@@ -44,6 +45,7 @@ class Labeller
  private:
   std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;
+  std::function<void()> unsubscribeLabelChanges;
 
   template <class T> void addForce(T *force);
   void enforceAnchorDepthForLabel(LabelState &label,

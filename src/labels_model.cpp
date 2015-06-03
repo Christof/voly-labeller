@@ -8,9 +8,16 @@ LabelsModel::LabelsModel(std::shared_ptr<Labels> labels,
                          PickingController &pickingController)
   : labels(labels), pickingController(pickingController)
 {
-  labels->subscribe(std::bind(&LabelsModel::labelUpdated, this));
+  unsubscribeLabelChanges =
+      labels->subscribe(std::bind(&LabelsModel::labelUpdated, this));
   connect(this, SIGNAL(labelUpdated()), this, SLOT(resetModel()),
           Qt::QueuedConnection);
+}
+
+LabelsModel::~LabelsModel()
+{
+  disconnect();
+  unsubscribeLabelChanges();
 }
 
 QHash<int, QByteArray> LabelsModel::roleNames() const

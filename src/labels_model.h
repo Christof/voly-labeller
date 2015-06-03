@@ -4,6 +4,7 @@
 
 #include <QAbstractTableModel>
 #include <memory>
+#include <functional>
 #include "./labelling/labels.h"
 
 class PickingController;
@@ -18,6 +19,7 @@ class LabelsModel : public QAbstractTableModel
  public:
   LabelsModel(std::shared_ptr<Labels> labels,
               PickingController &pickingController);
+  ~LabelsModel();
 
   enum ForceRoles
   {
@@ -63,6 +65,7 @@ class LabelsModel : public QAbstractTableModel
   std::shared_ptr<Labels> labels;
   PickingController &pickingController;
   bool isVisible = true;
+  std::function<void()> unsubscribeLabelChanges;
 };
 
 #endif  // SRC_LABELS_MODEL_H_

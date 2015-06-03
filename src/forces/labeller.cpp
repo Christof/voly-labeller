@@ -19,13 +19,13 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
 
-  labels->subscribe(
+  unsubscribeLabelChanges = labels->subscribe(
       std::bind(&Labeller::setLabel, this, std::placeholders::_1));
 }
 
 Labeller::~Labeller()
 {
-  // TODO unsubscribe
+  unsubscribeLabelChanges();
 }
 
 void Labeller::setLabel(const Label &label)

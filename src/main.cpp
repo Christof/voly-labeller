@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
 
-  labels->subscribe(
+  auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1));
 
   Window window(scene);
@@ -100,5 +100,9 @@ int main(int argc, char **argv)
 
   window.show();
 
-  return application.exec();
+  auto resultCode = application.exec();
+
+  unsubscribeLabelChanges();
+
+  return resultCode;
 }
