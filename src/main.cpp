@@ -6,6 +6,7 @@
 #include "./window.h"
 #include "./scene.h"
 #include "./nodes.h"
+#include "./label_node.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
@@ -15,6 +16,26 @@
 #include "./labelling/labels.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+
+void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
+                                    const Label &label)
+{
+  auto labelNodes = nodes->getLabelNodes();
+  auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
+                                [label](std::shared_ptr<LabelNode> labelNode)
+                                {
+    return labelNode->label.id == label.id;
+  });
+
+  if (labelNode == labelNodes.end())
+  {
+    nodes->addNode(std::make_shared<LabelNode>(label));
+  }
+  else
+  {
+    (*labelNode)->label = label;
+  }
+};
 
 int main(int argc, char **argv)
 {
@@ -33,6 +54,9 @@ int main(int argc, char **argv)
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
+
+  labels->subscribe(
+      std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1));
 
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);

@@ -85,20 +85,6 @@ void Scene::initialize()
   {
     labels->add(labelNode->label);
   }
-  labels->subscribe([this](const Label &label)
-                    {
-                      auto labelNodes = nodes->getLabelNodes();
-                      auto labelNode = std::find_if(
-                          labelNodes.begin(), labelNodes.end(),
-                          [label](std::shared_ptr<LabelNode> labelNode)
-                          {
-                            return labelNode->label.id == label.id;
-                          });
-                      if (labelNode == labelNodes.end())
-                        nodes->addNode(std::make_shared<LabelNode>(label));
-                      else
-                        (*labelNode)->label = label;
-                    });
 
   quad = std::make_shared<Quad>();
 
