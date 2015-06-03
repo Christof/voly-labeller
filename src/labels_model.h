@@ -9,8 +9,7 @@
 class PickingController;
 
 /**
- * \brief
- *
+ * \brief Model to display, edit and add labels
  *
  */
 class LabelsModel : public QAbstractTableModel

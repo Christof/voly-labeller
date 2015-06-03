@@ -8,9 +8,10 @@
 #include "./label.h"
 
 /**
- * \brief
+ * \brief Collection of all labels
  *
- *
+ * Provides an observer mechanism to subscribe to changes of
+ * labels or the addition of a new one.
  */
 class Labels
 {
