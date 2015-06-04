@@ -32,6 +32,7 @@ class Nodes : public QObject
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
   void removeNode(std::shared_ptr<Node> node);
+  std::vector<std::shared_ptr<Node>> getNodes();
  public slots:
   void addSceneNodesFrom(std::string filename);
   void addSceneNodesFrom(QUrl url);

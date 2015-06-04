@@ -137,3 +137,11 @@ void Camera::resize(float width, float height)
   projection = createProjection(fieldOfView, width / height, 0.1f, 100.0f);
 }
 
+void Camera::updateNearAndFarPlanes(float near, float far)
+{
+  this->near = near;
+  this->far = far;
+
+  projection = createProjection(fieldOfView, 16.0f / 9.0f, near, far);
+}
+

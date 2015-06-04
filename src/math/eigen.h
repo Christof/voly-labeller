@@ -5,16 +5,20 @@
 #include <Eigen/Core>
 #include <QPoint>
 
-inline Eigen::Vector4f mul(const Eigen::Matrix4f &matrix,
-                           const Eigen::Vector3f &vector)
-{
-  Eigen::Vector4f operand(vector.x(), vector.y(), vector.z(), 1.0f);
-  return matrix * operand;
-}
-
 inline Eigen::Vector3f toVector3f(const Eigen::Vector4f vector)
 {
   return Eigen::Vector3f(vector.x(), vector.y(), vector.z());
+}
+
+inline Eigen::Vector4f toVector4f(const Eigen::Vector3f vector)
+{
+  return Eigen::Vector4f(vector.x(), vector.y(), vector.z(), 1.0f);
+}
+
+inline Eigen::Vector4f mul(const Eigen::Matrix4f &matrix,
+                           const Eigen::Vector3f &vector)
+{
+  return matrix * toVector4f(vector);
 }
 
 inline Eigen::Vector2f toEigen(const QPoint &pos)
