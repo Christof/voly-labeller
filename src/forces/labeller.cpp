@@ -30,15 +30,23 @@ Labeller::~Labeller()
 
 void Labeller::setLabel(const Label &label)
 {
-  labelStates.erase(std::remove_if(labelStates.begin(), labelStates.end(),
-                                   [label](const LabelState labelState)
-                                   {
-                      return labelState.id == label.id;
-                    }),
-                    labelStates.end());
+  auto predicate = [label](const LabelState labelState)
+  {
+    return labelState.id == label.id;
+  };
 
-  labelStates.push_back(
-      LabelState(label.id, label.text, label.anchorPosition, label.size));
+  auto oldLabelState =
+      std::find_if(labelStates.begin(), labelStates.end(), predicate);
+
+  LabelState labelState(label.id, label.text, label.anchorPosition, label.size);
+  if (oldLabelState != labelStates.end() &&
+      oldLabelState->anchorPosition == label.anchorPosition)
+    labelState.labelPosition = oldLabelState->labelPosition;
+
+  labelStates.erase(
+      std::remove_if(labelStates.begin(), labelStates.end(), predicate),
+      labelStates.end());
+  labelStates.push_back(labelState);
 }
 
 void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
