@@ -109,11 +109,8 @@ void LabelsModel::changeText(int row, QString text)
     return;
 
   auto label = labels->getLabels()[row];
-  if (label.text != text.toStdString())
-  {
-    label.text = text.toStdString();
-    labels->add(label);
-  }
+  label.text = text.toStdString();
+  labels->update(label);
 }
 
 void LabelsModel::changeSizeX(int row, float sizeX)
@@ -122,11 +119,8 @@ void LabelsModel::changeSizeX(int row, float sizeX)
     return;
 
   auto label = labels->getLabels()[row];
-  if (label.size.x() != sizeX)
-  {
-    label.size.x() = sizeX;
-    labels->add(label);
-  }
+  label.size.x() = sizeX;
+  labels->update(label);
 }
 
 void LabelsModel::changeSizeY(int row, float sizeY)
@@ -135,11 +129,8 @@ void LabelsModel::changeSizeY(int row, float sizeY)
     return;
 
   auto label = labels->getLabels()[row];
-  if (label.size.y() != sizeY)
-  {
-    label.size.y() = sizeY;
-    labels->add(label);
-  }
+  label.size.y() = sizeY;
+  labels->update(label);
 }
 
 void LabelsModel::pick(int row)
