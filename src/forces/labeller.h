@@ -7,9 +7,11 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <functional>
 #include "./label_state.h"
 #include "./force.h"
 #include "./labeller_frame_data.h"
+#include "../labelling/labels.h"
 
 /**
  * \brief Contains classes for the force simulation part of label placement
@@ -27,10 +29,10 @@ namespace Forces
 class Labeller
 {
  public:
-  Labeller();
+  explicit Labeller(std::shared_ptr<Labels> labels);
+  ~Labeller();
 
-  void addLabel(int id, std::string text, Eigen::Vector3f anchorPosition,
-                Eigen::Vector2f size);
+  void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
@@ -41,11 +43,14 @@ class Labeller
   bool updatePositions = true;
 
  private:
-  std::vector<LabelState> labels;
+  std::shared_ptr<Labels> labels;
+  std::vector<LabelState> labelStates;
+  std::function<void()> unsubscribeLabelChanges;
 
   template <class T> void addForce(T *force);
   void enforceAnchorDepthForLabel(LabelState &label,
                                   const Eigen::Matrix4f &viewMatrix);
+  void setLabel(Labels::Action action, const Label &label);
 };
 }  // namespace Forces
 

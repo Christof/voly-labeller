@@ -5,6 +5,8 @@
 
 CoordinateSystemNode::CoordinateSystemNode()
 {
+  persistable = false;
+
   x = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
                                   Eigen::Vector3f(1, 0, 0));
   x->color = Eigen::Vector4f(1, 0, 0, 1);

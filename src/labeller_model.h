@@ -3,7 +3,6 @@
 #define SRC_LABELLER_MODEL_H_
 
 #include <QAbstractTableModel>
-#include <QList>
 #include <memory>
 #include "./forces/labeller.h"
 
@@ -40,6 +39,7 @@ class LabellerModel : public QAbstractTableModel
                  isVisibleChanged)
 
   bool getIsVisible() const;
+
  public slots:
   void changeEnabled(int row, QVariant newValue);
   void changeWeight(int row, QVariant newValue);

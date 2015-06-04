@@ -12,7 +12,7 @@
 
 Nodes::Nodes()
 {
-  nodes.push_back(std::make_shared<CoordinateSystemNode>());
+  addNode(std::make_shared<CoordinateSystemNode>());
 }
 
 std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
@@ -32,6 +32,8 @@ std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
 void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
+
+  emit nodesChanged();
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)
@@ -51,7 +53,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
       Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
 
   for (auto &m : loadedNodes)
-    nodes.push_back(m);
+    addNode(m);
 }
 
 void Nodes::importFrom(std::string filename)
@@ -62,7 +64,7 @@ void Nodes::importFrom(std::string filename)
 
   for (size_t i = 0; i < meshes.size(); ++i)
   {
-    nodes.push_back(
+    addNode(
         std::make_shared<MeshNode>(filename, i, meshes[i], Eigen::Matrix4f()));
   }
 }
@@ -91,7 +93,12 @@ void Nodes::saveSceneTo(QUrl url)
 
 void Nodes::saveSceneTo(std::string filename)
 {
-  Persister::save(nodes, filename);
+  std::vector<std::shared_ptr<Node>> persistableNodes;
+  for (auto node : nodes)
+    if (node->isPersistable())
+      persistableNodes.push_back(node);
+
+  Persister::save(persistableNodes, filename);
 }
 
 void Nodes::clear()

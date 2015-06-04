@@ -27,14 +27,9 @@ LabelNode::~LabelNode()
 {
 }
 
-const Label &LabelNode::getLabel()
-{
-  return label;
-}
-
 void LabelNode::render(Gl *gl, RenderData renderData)
 {
-  if (!texture.get())
+  if (!texture.get() || textureText != label.text)
   {
     texture = std::make_shared<Texture>(renderLabelTextToQImage());
     texture->initialize(gl);
@@ -95,6 +90,8 @@ QImage *LabelNode::renderLabelTextToQImage()
   painter.setFont(QFont("Arial", 72));
   painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
   painter.end();
+
+  textureText = label.text;
 
   return image;
 }

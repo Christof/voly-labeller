@@ -5,6 +5,7 @@ project(voly-labeller)
 add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
+add_subdirectory(src/labelling)
 add_subdirectory(src/forces)
 
 option(test "Build all tests." ON)
@@ -52,6 +53,7 @@ set(SOURCES
   src/picking_controller.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
+  src/labels_model.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
@@ -61,6 +63,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
+  $<TARGET_OBJECTS:labelling>
   $<TARGET_OBJECTS:forces>
   $<TARGET_OBJECTS:math>
   )

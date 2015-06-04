@@ -8,6 +8,11 @@ PickingController::PickingController(std::shared_ptr<Scene> scene)
 {
 }
 
+void PickingController::startPicking(Label label)
+{
+  this->label = label;
+}
+
 void PickingController::pick(QEvent *event)
 {
   auto mouseEvent = static_cast<QMouseEvent *>(event);
@@ -15,5 +20,5 @@ void PickingController::pick(QEvent *event)
     return;
 
   auto position = toEigen(mouseEvent->localPos());
-  scene->pick(position);
+  scene->pick(label.id, position);
 }

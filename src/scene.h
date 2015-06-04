@@ -3,9 +3,11 @@
 #define SRC_SCENE_H_
 
 #include <memory>
+#include <functional>
 #include "./abstract_scene.h"
 #include "./camera.h"
 #include "./forces/labeller.h"
+#include "./labelling/labels.h"
 
 class Nodes;
 class InvokeManager;
@@ -28,6 +30,7 @@ class Scene : public AbstractScene
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes,
+        std::shared_ptr<Labels> labels,
         std::shared_ptr<Forces::Labeller> labeller);
   ~Scene();
 
@@ -36,7 +39,7 @@ class Scene : public AbstractScene
   virtual void render();
   virtual void resize(int width, int height);
 
-  void pick(Eigen::Vector2f position);
+  void pick(int id, Eigen::Vector2f position);
 
  private:
   Camera camera;
@@ -47,6 +50,7 @@ class Scene : public AbstractScene
   double frameTime;
 
   std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Quad> quad;
   std::unique_ptr<FrameBufferObject> fbo;
@@ -59,6 +63,7 @@ class Scene : public AbstractScene
 
   bool performPicking;
   Eigen::Vector2f pickingPosition;
+  int pickingLabelId;
   void doPick();
 };
 

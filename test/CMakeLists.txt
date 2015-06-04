@@ -17,6 +17,7 @@ add_executable(tests ${TESTS} ${SOURCES}
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
+  $<TARGET_OBJECTS:labelling>
   $<TARGET_OBJECTS:forces>
   $<TARGET_OBJECTS:math>
   )

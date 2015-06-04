@@ -8,6 +8,7 @@ Gl::Gl()
 
 Gl::~Gl()
 {
+  qDebug() << "Destructor of Gl";
   if (paintDevice)
   {
     delete paintDevice;

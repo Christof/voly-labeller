@@ -32,10 +32,17 @@ class Node
     return std::shared_ptr<Math::Obb>();
   }
 
+  bool isPersistable()
+  {
+    return persistable;
+  }
+
  protected:
   Node()
   {
   }
+
+  bool persistable = true;
 
  private:
   friend class boost::serialization::access;
