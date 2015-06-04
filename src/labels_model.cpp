@@ -154,3 +154,8 @@ void LabelsModel::addLabel()
   labels->add(Label(maxId + 1, "Change text", Eigen::Vector3f(0.5f, 0, 0)));
 }
 
+void LabelsModel::deleteLabel(int row)
+{
+  qWarning() << "selected row:" << row;
+}
+

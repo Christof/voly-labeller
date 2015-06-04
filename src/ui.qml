@@ -272,20 +272,29 @@ Item {
     }
     Column {
       id: lablesItem
-      x: 8
+      x: 10
       y: 192
       width: 441
       height: 197
-      Button {
-          x: 10
+      visible: labels.isVisible
+      Row {
+        Button {
           text: "Add Label"
           onClicked: {
             if (labels) labels.addLabel();
           }
+        }
+        Button {
+          text: "Delete Label"
+          onClicked: {
+            if (labels) labels.deleteLabel(labelsView.currentRow);
+          }
+        }
       }
 
+
       TableView {
-        visible: labels.isVisible
+        id: labelsView
         TableViewColumn {
           role: "name"
           title: "Name"
@@ -309,7 +318,6 @@ Item {
           width: 46
           delegate: anchorDelegate
         }
-        x: 10; y: 240
         width: 417
         height: 190
         model: labels
