@@ -6,6 +6,7 @@
 #include <functional>
 #include "./abstract_scene.h"
 #include "./camera.h"
+#include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./labelling/labels.h"
 
@@ -54,6 +55,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Quad> quad;
   std::unique_ptr<FrameBufferObject> fbo;
+  FrustumOptimizer frustumOptimizer;
 
   int width;
   int height;

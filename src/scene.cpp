@@ -29,7 +29,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> labeller)
 
-  : nodes(nodes), labels(labels), labeller(labeller)
+  : nodes(nodes), labels(labels), labeller(labeller), frustumOptimizer(nodes)
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
@@ -98,6 +98,10 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   cameraRotationController->setFrameTime(frameTime);
   cameraZoomController->setFrameTime(frameTime);
   cameraMoveController->setFrameTime(frameTime);
+
+  frustumOptimizer.update(camera.getViewMatrix());
+  camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                frustumOptimizer.getFar());
 
   auto newPositions = labeller->update(Forces::LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
