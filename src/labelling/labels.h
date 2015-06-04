@@ -16,10 +16,17 @@
 class Labels
 {
  public:
+  enum Action
+  {
+    Add,
+    Update,
+    Delete
+  };
+
   Labels() = default;
 
   std::function<void()>
-  subscribe(std::function<void(const Label &)> subscriber);
+  subscribe(std::function<void(Action action, const Label &)> subscriber);
 
   void add(Label label);
   void update(Label label);
@@ -27,11 +34,12 @@ class Labels
   Label getById(int id);
   int count();
   void updateAnchor(int id, Eigen::Vector3f anchorPosition);
+
  private:
   std::map<int, Label> labels;
-  std::vector<std::function<void(const Label &)>> subscribers;
+  std::vector<std::function<void(Action action, const Label &)>> subscribers;
 
-  void notify(const Label& label);
+  void notify(Action action, const Label &label);
 };
 
 #endif  // SRC_LABELLING_LABELS_H_

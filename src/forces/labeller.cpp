@@ -19,8 +19,8 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
 
-  unsubscribeLabelChanges = labels->subscribe(
-      std::bind(&Labeller::setLabel, this, std::placeholders::_1));
+  unsubscribeLabelChanges = labels->subscribe(std::bind(
+      &Labeller::setLabel, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 Labeller::~Labeller()
@@ -28,7 +28,7 @@ Labeller::~Labeller()
   unsubscribeLabelChanges();
 }
 
-void Labeller::setLabel(const Label &label)
+void Labeller::setLabel(Labels::Action action, const Label &label)
 {
   auto predicate = [label](const LabelState labelState)
   {

@@ -18,7 +18,7 @@
 #include "./forces_visualizer_node.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
-                                    const Label &label)
+                                    Labels::Action action, const Label &label)
 {
   auto labelNodes = nodes->getLabelNodes();
   auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
@@ -56,7 +56,8 @@ int main(int argc, char **argv)
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
 
   auto unsubscribeLabelChanges = labels->subscribe(
-      std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1));
+      std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
+                std::placeholders::_2));
 
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);

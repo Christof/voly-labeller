@@ -2,7 +2,7 @@
 #include <vector>
 
 std::function<void()>
-Labels::subscribe(std::function<void(const Label &)> subscriber)
+Labels::subscribe(std::function<void(Action action, const Label &)> subscriber)
 {
   int erasePosition = subscribers.size();
   subscribers.push_back(subscriber);
@@ -13,11 +13,10 @@ Labels::subscribe(std::function<void(const Label &)> subscriber)
   };
 }
 
-
 void Labels::add(Label label)
 {
   labels[label.id] = label;
-  notify(label);
+  notify(Action::Add, label);
 }
 
 void Labels::update(Label label)
@@ -27,7 +26,7 @@ void Labels::update(Label label)
   labels[label.id] = label;
 
   if (notifyChanges)
-    notify(label);
+    notify(Action::Update, label);
 }
 
 std::vector<Label> Labels::getLabels()
@@ -52,12 +51,12 @@ int Labels::count()
 void Labels::updateAnchor(int id, Eigen::Vector3f anchorPosition)
 {
   labels[id].anchorPosition = anchorPosition;
-  notify(labels[id]);
+  notify(Action::Update, labels[id]);
 }
 
-void Labels::notify(const Label& label)
+void Labels::notify(Action action, const Label &label)
 {
   for (auto &subscriber : subscribers)
-    subscriber(label);
+    subscriber(action, label);
 }
 

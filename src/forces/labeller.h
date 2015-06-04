@@ -50,7 +50,7 @@ class Labeller
   template <class T> void addForce(T *force);
   void enforceAnchorDepthForLabel(LabelState &label,
                                   const Eigen::Matrix4f &viewMatrix);
-  void setLabel(const Label &label);
+  void setLabel(Labels::Action action, const Label &label);
 };
 }  // namespace Forces
 
