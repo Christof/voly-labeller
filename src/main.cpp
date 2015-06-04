@@ -31,6 +31,10 @@ void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
   {
     nodes->addNode(std::make_shared<LabelNode>(label));
   }
+  else if (action == Labels::Action::Delete)
+  {
+    nodes->removeNode(*labelNode);
+  }
   else
   {
     (*labelNode)->label = label;

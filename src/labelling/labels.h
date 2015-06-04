@@ -30,6 +30,7 @@ class Labels
 
   void add(Label label);
   void update(Label label);
+  void remove(Label label);
   std::vector<Label> getLabels();
   Label getById(int id);
   int count();

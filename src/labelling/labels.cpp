@@ -29,6 +29,12 @@ void Labels::update(Label label)
     notify(Action::Update, label);
 }
 
+void Labels::remove(Label label)
+{
+  labels.erase(labels.find(label.id));
+  notify(Action::Delete, label);
+}
+
 std::vector<Label> Labels::getLabels()
 {
   std::vector<Label> result;

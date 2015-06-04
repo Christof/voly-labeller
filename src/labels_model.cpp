@@ -156,6 +156,10 @@ void LabelsModel::addLabel()
 
 void LabelsModel::deleteLabel(int row)
 {
-  qWarning() << "selected row:" << row;
+  if (row < 0 || row >= labels->count())
+    return;
+
+  auto label = labels->getLabels()[row];
+  labels->remove(label);
 }
 

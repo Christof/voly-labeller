@@ -46,7 +46,9 @@ void Labeller::setLabel(Labels::Action action, const Label &label)
   labelStates.erase(
       std::remove_if(labelStates.begin(), labelStates.end(), predicate),
       labelStates.end());
-  labelStates.push_back(labelState);
+
+  if (action != Labels::Action::Delete)
+    labelStates.push_back(labelState);
 }
 
 void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
