@@ -22,6 +22,7 @@ class Labels
   subscribe(std::function<void(const Label &)> subscriber);
 
   void add(Label label);
+  void update(Label label);
   std::vector<Label> getLabels();
   Label getById(int id);
   int count();

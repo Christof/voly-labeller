@@ -20,6 +20,16 @@ void Labels::add(Label label)
   notify(label);
 }
 
+void Labels::update(Label label)
+{
+  bool notifyChanges = labels[label.id] != label;
+
+  labels[label.id] = label;
+
+  if (notifyChanges)
+    notify(label);
+}
+
 std::vector<Label> Labels::getLabels()
 {
   std::vector<Label> result;
