@@ -7,7 +7,7 @@
 #include <memory>
 #include <string>
 #include "./node.h"
-#include "./label.h"
+#include "./labelling/label.h"
 
 class Gl;
 class Mesh;
@@ -35,9 +35,8 @@ class LabelNode : public Node
 
   Eigen::Vector3f labelPosition;
 
-  Label &getLabel();
- private:
   Label label;
+ private:
   std::string textureText;
 
   friend class boost::serialization::access;

@@ -6,14 +6,36 @@
 #include "./window.h"
 #include "./scene.h"
 #include "./nodes.h"
+#include "./label_node.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
-#include "./picking_controller.h"
 #include "./labeller_model.h"
 #include "./labels_model.h"
+#include "./labelling/labels.h"
+#include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+
+void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
+                                    const Label &label)
+{
+  auto labelNodes = nodes->getLabelNodes();
+  auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
+                                [label](std::shared_ptr<LabelNode> labelNode)
+                                {
+    return labelNode->label.id == label.id;
+  });
+
+  if (labelNode == labelNodes.end())
+  {
+    nodes->addNode(std::make_shared<LabelNode>(label));
+  }
+  else
+  {
+    (*labelNode)->label = label;
+  }
+};
 
 int main(int argc, char **argv)
 {
@@ -27,10 +49,14 @@ int main(int argc, char **argv)
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
-  auto labeller = std::make_shared<Forces::Labeller>();
+  auto labels = std::make_shared<Labels>();
+  auto labeller = std::make_shared<Forces::Labeller>(labels);
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
-  auto scene = std::make_shared<Scene>(invokeManager, nodes, labeller);
+  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
+
+  auto unsubscribeLabelChanges = labels->subscribe(
+      std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1));
 
   Window window(scene);
   window.setResizeMode(QQuickView::SizeRootObjectToView);
@@ -51,7 +77,7 @@ int main(int argc, char **argv)
   });
   window.rootContext()->setContextProperty("labeller", &labellerModel);
 
-  LabelsModel labelsModel(nodes, pickingController);
+  LabelsModel labelsModel(labels, pickingController);
   window.rootContext()->setContextProperty("labels", &labelsModel);
   window.setSource(QUrl("qrc:ui.qml"));
 
@@ -74,5 +100,9 @@ int main(int argc, char **argv)
 
   window.show();
 
-  return application.exec();
+  auto resultCode = application.exec();
+
+  unsubscribeLabelChanges();
+
+  return resultCode;
 }

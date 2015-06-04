@@ -26,10 +26,10 @@ BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
-             std::shared_ptr<Nodes> nodes,
+             std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> labeller)
 
-  : nodes(nodes), labeller(labeller)
+  : nodes(nodes), labels(labels), labeller(labeller)
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
@@ -83,8 +83,7 @@ void Scene::initialize()
 
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    auto label = labelNode->getLabel();
-    labeller->addLabel(label.id, label.text, label.anchorPosition, label.size);
+    labels->add(labelNode->label);
   }
 
   quad = std::make_shared<Quad>();
@@ -105,7 +104,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    labelNode->labelPosition = newPositions[labelNode->getLabel().id];
+    labelNode->labelPosition = newPositions[labelNode->label.id];
   }
 }
 
@@ -161,10 +160,8 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 }
 
-void Scene::pick(int id, Eigen::Vector2f position,
-                 std::function<void(Eigen::Vector3f)> callback)
+void Scene::pick(int id, Eigen::Vector2f position)
 {
-  pickingCallback = callback;
   pickingPosition = position;
   performPicking = true;
   pickingLabelId = id;
@@ -195,9 +192,7 @@ void Scene::doPick()
 
   performPicking = false;
   Eigen::Vector3f anchorPosition = toVector3f(positionWorld);
-  if (pickingCallback)
-    pickingCallback(anchorPosition);
 
-  labeller->updateLabel(pickingLabelId, anchorPosition);
+  labels->updateAnchor(pickingLabelId, anchorPosition);
 }
 

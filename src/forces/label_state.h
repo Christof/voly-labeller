@@ -26,7 +26,7 @@ class LabelState
   LabelState(int id, std::string text, Eigen::Vector3f anchorPosition,
              Eigen::Vector2f size);
 
-  const int id;
+  int id;
   Eigen::Vector3f anchorPosition;
   Eigen::Vector3f labelPosition;
   Eigen::Vector2f size;
@@ -35,7 +35,7 @@ class LabelState
   Eigen::Vector2f labelPosition2D;
   float labelPositionDepth;
 
-  const std::string text;
+  std::string text;
 
   std::map<Force *, Eigen::Vector2f> forces;
 };
