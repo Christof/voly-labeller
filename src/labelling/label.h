@@ -32,6 +32,18 @@ struct Label
   std::string text;
   Eigen::Vector3f anchorPosition;
   Eigen::Vector2f size;
+
+  bool operator==(const Label &other)
+  {
+    return id == other.id && text == other.text &&
+           anchorPosition == other.anchorPosition && size == other.size;
+  }
+
+  bool operator!=(const Label &other)
+  {
+    return id != other.id || text != other.text ||
+           anchorPosition != other.anchorPosition || size != other.size;
+  }
 };
 
 namespace boost
