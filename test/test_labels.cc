@@ -27,3 +27,28 @@ TEST(Test_Labels, ChangeNotification)
 
   ASSERT_EQ(1, changedLabelId);
 }
+
+TEST(Test_Labels, Remove)
+{
+  Labels labels;
+
+  Label label(1, "Label text", Eigen::Vector3f(1, 2, 3));
+  labels.add(label);
+
+  ASSERT_EQ(1, labels.count());
+
+  int changedLabelId = -1;
+  Labels::Action receivedAction;
+  auto removeSubscription = labels.subscribe([&changedLabelId, &receivedAction](
+      Labels::Action action, const Label &label)
+                                             {
+                                               receivedAction = action;
+                                               changedLabelId = label.id;
+                                             });
+  labels.remove(label);
+
+  ASSERT_EQ(0, labels.count());
+  ASSERT_EQ(1, changedLabelId);
+  ASSERT_EQ(Labels::Action::Delete, receivedAction);
+}
+
