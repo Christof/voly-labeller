@@ -120,6 +120,7 @@ void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
   auto view = renderData.viewMatrix;
   shader->setUniform("cameraDirection",
                      Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
+  shader->setUniform("lightPosition", renderData.cameraPosition);
   shader->setUniform("shininess", shininess);
 }
 
