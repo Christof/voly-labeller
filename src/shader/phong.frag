@@ -14,7 +14,7 @@ uniform float shininess = 256.0f;
 
 void main()
 {
-  vec3 dir = normalize(lightPosition - outPosition);
+  vec3 dir = normalize(outPosition - lightPosition );
   vec3 reflectionDir = normalize(-reflect(dir, outNormal)); 
   color = outColor;
   // display normals for debugging
