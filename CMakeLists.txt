@@ -86,6 +86,9 @@ add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
 add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --root=${CMAKE_CURRENT_SOURCE_DIR} --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int,-whitespace/indent ${CMAKE_CURRENT_SOURCE_DIR}/src/*.* ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.*)
 add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all VERBATIM)
 
+# Testing
+add_custom_target(unit test/tests)
+
 # Documentation
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
 add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
