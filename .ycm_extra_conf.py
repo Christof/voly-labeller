@@ -89,6 +89,8 @@ flags = [
 '/usr/local/Qt/5.4/gcc_64/include/QtQml',
 '-isystem',
 '/usr/local/include/eigen3/',
+'-isystem',
+'/usr/include/ITK-4.7/',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
