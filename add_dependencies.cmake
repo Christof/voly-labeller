@@ -30,6 +30,9 @@ include_directories(${Qt5Quick_INCLUDE_DIRS})
 find_package(Boost 1.57.0 COMPONENTS date_time filesystem system serialization REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 
+FIND_PACKAGE (ITK REQUIRED)
+include(${ITK_USE_FILE})
+
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

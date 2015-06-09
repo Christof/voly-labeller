@@ -81,6 +81,7 @@ target_link_libraries(voly-labeller
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${ITK_LIBRARIES}
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
