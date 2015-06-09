@@ -52,4 +52,4 @@ make
 
 ## Testing
 - GTest
-- lcov (from source or at least 1.11)
+- lcov (from [source](https://github.com/linux-test-project/lcov) or at least 1.11)
