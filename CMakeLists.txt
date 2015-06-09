@@ -23,6 +23,9 @@ set(CMAKE_CXX_FLAGS_MEMORY "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=memory -fno-omi
 set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsanitize-blacklist=${CMAKE_SOURCE_DIR}/blacklist.txt -fno-omit-frame-pointer" CACHE STRING # -stdlib=libc++
   "Flags used by the C++ compiler during address sanitization builds." FORCE)
 
+set(CMAKE_CXX_FLAGS_COV "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ftest-coverage" CACHE STRING
+    "Flags used by the C++ compiler during coverage builds for GCC." FORCE)
+
 set(SOURCES
   src/window.cpp
   src/gl.cpp
@@ -88,6 +91,19 @@ add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all
 
 # Testing
 add_custom_target(unit test/tests)
+
+# Coverage
+set(LCOV_DIRS  -b ${CMAKE_CURRENT_SOURCE_DIR}/src --directory . )
+add_custom_target(cov
+  rm coverage.* &&
+  lcov -z ${LCOV_DIRS} &&
+  make unit &&
+  lcov --compat split_crc=off --capture ${LCOV_DIRS} --output-file coverage.info &&
+  lcov --remove coverage.info 'usr/*' 'boost/*' 'test/*' 'tmp/*' '**/moc_*' --output-file coverage.info.cleaned &&
+  ${CMAKE_CURRENT_SOURCE_DIR}/scripts/complete_coverage.sh &&
+  genhtml coverage.info.complete --output-directory coverage-output --ignore-errors source)
+
+add_custom_target(cov-open xdg-open ./coverage-output/index.html)
 
 # Documentation
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
