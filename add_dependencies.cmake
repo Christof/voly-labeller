@@ -32,6 +32,7 @@ include_directories(${Boost_INCLUDE_DIR})
 
 FIND_PACKAGE (ITK REQUIRED)
 include(${ITK_USE_FILE})
+add_definitions("-DVCL_CAN_STATIC_CONST_INIT_FLOAT=0")
 
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC")
 
