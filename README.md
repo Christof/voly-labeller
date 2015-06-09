@@ -49,4 +49,7 @@ make
 - Eigen3
 - Assimp
 - Boost 1.57
+
+## Testing
 - GTest
+- lcov (from source or at least 1.11)
