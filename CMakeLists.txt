@@ -58,6 +58,7 @@ set(SOURCES
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   src/labels_model.cpp
+  src/volume_reader.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
