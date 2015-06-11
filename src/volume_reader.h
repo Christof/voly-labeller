@@ -23,7 +23,8 @@ class VolumeReader
   float min;
   float max;
 
-  void normalizeToCT(itk::ImageRegionIterator<ImageType> it);
+  void normalizeToCT(itk::ImageRegionIterator<ImageType> imageIterator);
+  void normalizeTo01(itk::ImageRegionIterator<ImageType> imageIterator);
 };
 
 #endif  // SRC_VOLUME_READER_H_

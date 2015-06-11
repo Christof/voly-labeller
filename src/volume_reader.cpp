@@ -23,7 +23,7 @@ VolumeReader::VolumeReader(std::string filename)
   ImageType::SizeType size = region.GetSize();
   */
 
-  itk::ImageRegionIterator<ImageType> it(image, image->GetRequestedRegion());
+  itk::ImageRegionIterator<ImageType> imageIterator(image, image->GetRequestedRegion());
   MinMaxCalculator::Pointer calculator = MinMaxCalculator::New();
 
   calculator->SetImage(image);
@@ -32,7 +32,8 @@ VolumeReader::VolumeReader(std::string filename)
   max = calculator->GetMaximum();
   min = calculator->GetMinimum();
 
-  normalizeToCT(it);
+  // normalizeToCT(imageIterator);
+  normalizeTo01(imageIterator);
 
   std::cout << "min" << min << std::endl;
   std::cout << "max" << max << std::endl;
@@ -42,19 +43,21 @@ VolumeReader::~VolumeReader()
 {
 }
 
-void VolumeReader::normalizeToCT(itk::ImageRegionIterator<ImageType> it)
+void
+VolumeReader::normalizeToCT(itk::ImageRegionIterator<ImageType> imageIterator)
 {
   const float maxAllowedValue = 3071;
   const float minAllowedValue = -1024;
 
-  for (it.GoToBegin(); !it.IsAtEnd(); ++it)
+  for (imageIterator.GoToBegin(); !imageIterator.IsAtEnd(); ++imageIterator)
   {
-    float value = (it.Get() > maxAllowedValue) ? maxAllowedValue : it.Get();
+    float value = (imageIterator.Get() > maxAllowedValue) ? maxAllowedValue
+                                                          : imageIterator.Get();
     value = (value < minAllowedValue) ? minAllowedValue : value;
 
     auto normalizedValue =
         (value - minAllowedValue) / (maxAllowedValue - minAllowedValue);
-    it.Set(normalizedValue);
+    imageIterator.Set(normalizedValue);
   }
 
   if (min < minAllowedValue)
@@ -67,6 +70,16 @@ void VolumeReader::normalizeToCT(itk::ImageRegionIterator<ImageType> it)
   {
     std::cout << "VolumeReader adjusting max value!" << std::endl;
     max = maxAllowedValue;
+  }
+}
+
+void
+VolumeReader::normalizeTo01(itk::ImageRegionIterator<ImageType> imageIterator)
+{
+  for (imageIterator.GoToBegin(); !imageIterator.IsAtEnd(); ++imageIterator)
+  {
+    auto normalizedValue = (imageIterator.Get() - min) / (max - min);
+    imageIterator.Set(normalizedValue);
   }
 }
 
