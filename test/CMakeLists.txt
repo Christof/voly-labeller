@@ -34,6 +34,7 @@ target_link_libraries(tests
   ${ASSIMP_LIBRARIES}
   ${Boost_LIBRARIES}
   -lpthread
+  ${ITK_LIBRARIES}
   )
 
 add_test(tests tests)

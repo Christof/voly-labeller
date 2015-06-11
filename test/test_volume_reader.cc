@@ -3,5 +3,5 @@
 
 TEST(Test_VolumeReader, test)
 {
-  VolumeReader reader("assets/datasets/MANIX.raw");
+  VolumeReader reader("assets/datasets/MANIX.mhd");
 }
