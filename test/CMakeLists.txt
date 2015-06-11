@@ -33,6 +33,7 @@ target_link_libraries(tests
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
   ${Boost_LIBRARIES}
+  -lpthread
   )
 
 add_test(tests tests)
