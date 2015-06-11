@@ -16,14 +16,8 @@ VolumeReader::VolumeReader(std::string filename)
   reader->Update();
   image = reader->GetOutput();
 
-  /*
-  itk::Point<float,3> origin = image->GetOrigin();
-  ImageType::DirectionType direction = image->GetDirection();
-  ImageType::RegionType region = image->GetLargestPossibleRegion();
-  ImageType::SizeType size = region.GetSize();
-  */
-
-  itk::ImageRegionIterator<ImageType> imageIterator(image, image->GetRequestedRegion());
+  itk::ImageRegionIterator<ImageType> imageIterator(
+      image, image->GetRequestedRegion());
   MinMaxCalculator::Pointer calculator = MinMaxCalculator::New();
 
   calculator->SetImage(image);
@@ -40,9 +34,28 @@ VolumeReader::~VolumeReader()
 {
 }
 
-float* VolumeReader::getDataPointer()
+float *VolumeReader::getDataPointer()
 {
   return image->GetBufferPointer();
+}
+
+Eigen::Matrix4f VolumeReader::getTransformationMatrix()
+{
+  itk::Point<float, 3> originItk = image->GetOrigin();
+  Eigen::Vector3f origin(originItk[0], originItk[1], originItk[2]);
+
+  ImageType::DirectionType directionItk = image->GetDirection();
+
+  Eigen::Matrix3f rotation;
+  for (int rowIndex = 0; rowIndex < 3; ++rowIndex)
+    for (int columnIndex = 0; columnIndex < 3; ++columnIndex)
+      rotation(rowIndex, columnIndex) = directionItk(rowIndex, columnIndex);
+
+  Eigen::Matrix4f transformation = Eigen::Matrix4f::Identity();
+  transformation.block<3, 3>(0, 0) = rotation;
+  transformation.col(3).head<3>() = origin;
+
+  return transformation;
 }
 
 Eigen::Vector3i VolumeReader::getSize()
