@@ -90,7 +90,7 @@ flags = [
 '-isystem',
 '/usr/local/include/eigen3/',
 '-isystem',
-'/usr/include/ITK-4.7/',
+'/usr/local/include/ITK-4.7/',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
