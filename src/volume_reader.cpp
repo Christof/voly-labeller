@@ -14,7 +14,7 @@ VolumeReader::VolumeReader(std::string filename)
   reader->SetFileName(absolutePathOfProjectRelativePath(filename).c_str());
 
   reader->Update();
-  ImageType::Pointer image = reader->GetOutput();
+  image = reader->GetOutput();
 
   /*
   itk::Point<float,3> origin = image->GetOrigin();
@@ -34,13 +34,23 @@ VolumeReader::VolumeReader(std::string filename)
 
   // normalizeToCT(imageIterator);
   normalizeTo01(imageIterator);
-
-  std::cout << "min" << min << std::endl;
-  std::cout << "max" << max << std::endl;
 }
 
 VolumeReader::~VolumeReader()
 {
+}
+
+float* VolumeReader::getDataPointer()
+{
+  return image->GetBufferPointer();
+}
+
+Eigen::Vector3i VolumeReader::getSize()
+{
+  ImageType::RegionType region = image->GetLargestPossibleRegion();
+  ImageType::SizeType size = region.GetSize();
+
+  return Eigen::Vector3i(size[0], size[1], size[2]);
 }
 
 void

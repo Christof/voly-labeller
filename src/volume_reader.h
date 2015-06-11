@@ -5,6 +5,7 @@
 #include <string>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
+#include <Eigen/Core>
 
 typedef itk::Image<float, 3> ImageType;
 
@@ -19,7 +20,10 @@ class VolumeReader
   VolumeReader(std::string filename);
   virtual ~VolumeReader();
 
+  float* getDataPointer();
+  Eigen::Vector3i getSize();
  private:
+  ImageType::Pointer image;
   float min;
   float max;
 
