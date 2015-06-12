@@ -3,6 +3,7 @@
 #define SRC_QUAD_H_
 
 #include <memory>
+#include <string>
 #include "./render_data.h"
 #include "./renderable.h"
 
@@ -16,6 +17,7 @@ class Quad : public Renderable
 {
  public:
   Quad();
+  Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename);
   virtual ~Quad();
 
  protected:
