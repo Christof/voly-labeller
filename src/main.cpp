@@ -52,6 +52,8 @@ int main(int argc, char **argv)
 
   QGuiApplication application(argc, argv);
 
+  qDebug() << "Application start";
+
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
