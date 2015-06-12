@@ -9,6 +9,7 @@
 
 struct RenderData;
 class VolumeReader;
+class Quad;
 
 /**
  * \brief
@@ -31,6 +32,7 @@ class VolumeNode : public Node
  private:
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
+  std::unique_ptr<Quad> quad;
   GLuint texture = 0;
 
   void initializeTexture(Gl *gl);

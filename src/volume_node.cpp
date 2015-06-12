@@ -1,10 +1,12 @@
 #include "./volume_node.h"
 #include "./render_data.h"
 #include "./volume_reader.h"
+#include "./quad.h"
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
+  quad = std::unique_ptr<Quad>(new Quad(":shader/label.vert", ":shader/slice.frag"));
 }
 
 VolumeNode::~VolumeNode()
@@ -15,6 +17,10 @@ void VolumeNode::render(Gl *gl, RenderData renderData)
 {
   if (texture == 0)
     initializeTexture(gl);
+
+  glAssert(gl->glActiveTexture(GL_TEXTURE0));
+  glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
+  quad->render(gl, renderData);
 }
 
 void VolumeNode::initializeTexture(Gl *gl)

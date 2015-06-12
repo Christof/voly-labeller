@@ -6,6 +6,7 @@
         <file>shader/label.vert</file>
         <file>shader/line.frag</file>
         <file>shader/line.vert</file>
+        <file>shader/slice.frag</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
