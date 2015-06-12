@@ -2,28 +2,28 @@
 
 #define SRC_VOLUME_READER_H_
 
+#include <Eigen/Core>
 #include <string>
 #include <itkImage.h>
 #include <itkImageRegionIterator.h>
-#include <Eigen/Core>
 
 typedef itk::Image<float, 3> ImageType;
 
 /**
- * \brief
- *
+ * \brief Read volume data and meta information from given filename
  *
  */
 class VolumeReader
 {
  public:
-  VolumeReader(std::string filename);
+  explicit VolumeReader(std::string filename);
   virtual ~VolumeReader();
 
-  float* getDataPointer();
+  float *getDataPointer();
   Eigen::Vector3i getSize();
   Eigen::Matrix4f getTransformationMatrix();
   bool isCT();
+
  private:
   ImageType::Pointer image;
   float min;
