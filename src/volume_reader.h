@@ -23,6 +23,7 @@ class VolumeReader
   float* getDataPointer();
   Eigen::Vector3i getSize();
   Eigen::Matrix4f getTransformationMatrix();
+  bool isCT();
  private:
   ImageType::Pointer image;
   float min;

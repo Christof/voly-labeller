@@ -1,7 +1,7 @@
 #include "./test.h"
 #include "../src/volume_reader.h"
 
-TEST(Test_VolumeReader, test)
+TEST(IntegrationTest_VolumeReader, test)
 {
   VolumeReader reader("assets/datasets/MANIX.mhd");
 
@@ -9,6 +9,8 @@ TEST(Test_VolumeReader, test)
   EXPECT_EQ(512, size.x());
   EXPECT_EQ(512, size.y());
   EXPECT_EQ(460, size.z());
+
+  EXPECT_TRUE(reader.isCT());
 
   auto matrix = reader.getTransformationMatrix();
   Eigen::Matrix4f expected;

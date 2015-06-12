@@ -66,6 +66,12 @@ Eigen::Vector3i VolumeReader::getSize()
   return Eigen::Vector3i(size[0], size[1], size[2]);
 }
 
+bool VolumeReader::isCT()
+{
+  auto size = getSize();
+  return size.x() == 512 && size.y() == 512;
+}
+
 void
 VolumeReader::normalizeToCT(itk::ImageRegionIterator<ImageType> imageIterator)
 {
