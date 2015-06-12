@@ -68,6 +68,12 @@ Eigen::Vector3i VolumeReader::getSize()
   return Eigen::Vector3i(size[0], size[1], size[2]);
 }
 
+Eigen::Vector3f VolumeReader::getSpacing()
+{
+  ImageType::SpacingType spacingItk = image->GetSpacing();
+  return Eigen::Vector3f(spacingItk[0], spacingItk[1], spacingItk[2]);
+}
+
 bool VolumeReader::isCT()
 {
   auto size = getSize();
