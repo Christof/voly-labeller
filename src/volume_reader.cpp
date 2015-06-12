@@ -26,8 +26,10 @@ VolumeReader::VolumeReader(std::string filename)
   max = calculator->GetMaximum();
   min = calculator->GetMinimum();
 
-  // normalizeToCT(imageIterator);
-  normalizeTo01(imageIterator);
+  if (isCT())
+    normalizeToCT(imageIterator);
+  else
+    normalizeTo01(imageIterator);
 }
 
 VolumeReader::~VolumeReader()
