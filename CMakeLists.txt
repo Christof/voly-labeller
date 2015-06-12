@@ -43,6 +43,7 @@ set(SOURCES
   src/mesh_node.cpp
   src/label_node.cpp
   src/obb_node.cpp
+  src/volume_node.cpp
   src/forces_visualizer_node.cpp
   src/coordinate_system_node.cpp
   src/nodes.cpp
