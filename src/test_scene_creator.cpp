@@ -5,10 +5,12 @@
 #include "./nodes.h"
 #include "./mesh_node.h"
 #include "./label_node.h"
+#include "./volume_node.h"
 #include "./utils/persister.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
+BOOST_CLASS_EXPORT_GUID(VolumeNode, "VolumeNode")
 
 TestSceneCreator::TestSceneCreator(std::shared_ptr<Nodes> nodes,
                                    std::shared_ptr<Labels> labels)
@@ -41,6 +43,9 @@ void TestSceneCreator::create()
 
   auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
   meshNodes.push_back(std::make_shared<LabelNode>(label4));
+
+  meshNodes.push_back(
+      std::make_shared<VolumeNode>("assets/datasets/MANIX.mhd"));
 
   Persister::save(meshNodes, "config/scene.xml");
 
