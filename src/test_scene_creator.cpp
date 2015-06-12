@@ -45,7 +45,7 @@ void TestSceneCreator::create()
   meshNodes.push_back(std::make_shared<LabelNode>(label4));
 
   meshNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/MANIX.mhd"));
+      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
 
   Persister::save(meshNodes, "config/scene.xml");
 

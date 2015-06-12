@@ -122,7 +122,7 @@
 	</item>
 	<item>
 		<px class_id="8" class_name="VolumeNode" tracking_level="1" version="0" object_id="_6">
-			<filename>assets/datasets/MANIX.mhd</filename>
+			<filename>assets/datasets/neurochirurgie_test.mhd</filename>
 		</px>
 	</item>
 </data>
