@@ -3,10 +3,12 @@
 #define SRC_VOLUME_NODE_H_
 
 #include <string>
+#include <memory>
 #include "./node.h"
+#include "./gl.h"
 
-class Gl;
-class RenderData;
+struct RenderData;
+class VolumeReader;
 
 /**
  * \brief
@@ -25,8 +27,13 @@ class VolumeNode : public Node
   {
     ar << BOOST_SERIALIZATION_NVP(filename);
   };
+
  private:
   std::string filename;
+  std::unique_ptr<VolumeReader> volumeReader;
+  GLuint texture = 0;
+
+  void initializeTexture(Gl *gl);
 
   friend class boost::serialization::access;
   template <class Archive>
