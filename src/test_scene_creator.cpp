@@ -20,40 +20,53 @@ TestSceneCreator::TestSceneCreator(std::shared_ptr<Nodes> nodes,
 
 void TestSceneCreator::create()
 {
+  std::vector<std::shared_ptr<Node>> sceneNodes;
+  addMeshNodesTo(sceneNodes);
+  addLabelNodesTo(sceneNodes);
+  sceneNodes.push_back(
+      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
+  Persister::save(sceneNodes, "config/scene.xml");
+
+  nodes->addSceneNodesFrom("config/scene.xml");
+
+  addLabelsFromLabelNodes();
+}
+
+void
+TestSceneCreator::addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
   const std::string filename = "assets/assets.dae";
   Importer importer;
 
-  std::vector<std::shared_ptr<Node>> meshNodes;
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
     auto node =
         new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
-    meshNodes.push_back(std::unique_ptr<MeshNode>(node));
+    sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
+}
+
+void TestSceneCreator::addLabelNodesTo(
+    std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
   auto label = Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
-  meshNodes.push_back(std::make_shared<LabelNode>(label));
+  sceneNodes.push_back(std::make_shared<LabelNode>(label));
 
   auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.334f, 0.317f, -0.013f));
-  meshNodes.push_back(std::make_shared<LabelNode>(label2));
+  sceneNodes.push_back(std::make_shared<LabelNode>(label2));
 
   auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f),
                       Eigen::Vector2f(0.14f, 0.14f));
-  meshNodes.push_back(std::make_shared<LabelNode>(label3));
+  sceneNodes.push_back(std::make_shared<LabelNode>(label3));
 
   auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
-  meshNodes.push_back(std::make_shared<LabelNode>(label4));
+  sceneNodes.push_back(std::make_shared<LabelNode>(label4));
+}
 
-  meshNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
-
-  Persister::save(meshNodes, "config/scene.xml");
-
-  nodes->addSceneNodesFrom("config/scene.xml");
-
+void TestSceneCreator::addLabelsFromLabelNodes()
+{
   for (auto &labelNode : nodes->getLabelNodes())
-  {
     labels->add(labelNode->label);
-  }
 }
 

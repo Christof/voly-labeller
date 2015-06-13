@@ -3,9 +3,11 @@
 #define SRC_TEST_SCENE_CREATOR_H_
 
 #include <memory>
+#include <vector>
 #include "./labelling/labels.h"
 
 class Nodes;
+class Node;
 
 /**
  * \brief Creates the default test scene, persists it and then loads it
@@ -24,6 +26,10 @@ class TestSceneCreator
  private:
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
+
+  void addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes);
+  void addLabelNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes);
+  void addLabelsFromLabelNodes();
 };
 
 #endif  // SRC_TEST_SCENE_CREATOR_H_
