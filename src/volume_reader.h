@@ -23,6 +23,7 @@ class VolumeReader
   Eigen::Vector3i getSize();
   Eigen::Matrix4f getTransformationMatrix();
   Eigen::Vector3f getSpacing();
+  Eigen::Vector3f getPhysicalSize();
   bool isCT();
 
  private:

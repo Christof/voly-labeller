@@ -44,7 +44,8 @@ float *VolumeReader::getDataPointer()
 Eigen::Matrix4f VolumeReader::getTransformationMatrix()
 {
   itk::Point<float, 3> originItk = image->GetOrigin();
-  Eigen::Vector3f origin(originItk[0], originItk[1], originItk[2]);
+  Eigen::Vector3f origin =
+      0.001f * Eigen::Vector3f(originItk[0], originItk[1], originItk[2]);
 
   ImageType::DirectionType directionItk = image->GetDirection();
 
@@ -71,7 +72,12 @@ Eigen::Vector3i VolumeReader::getSize()
 Eigen::Vector3f VolumeReader::getSpacing()
 {
   ImageType::SpacingType spacingItk = image->GetSpacing();
-  return Eigen::Vector3f(spacingItk[0], spacingItk[1], spacingItk[2]);
+  return Eigen::Vector3f(spacingItk[0], spacingItk[1], spacingItk[2]) * 0.001f;
+}
+
+Eigen::Vector3f VolumeReader::getPhysicalSize()
+{
+  return getSpacing().cwiseProduct(getSize().cast<float>());
 }
 
 bool VolumeReader::isCT()
