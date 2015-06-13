@@ -2,12 +2,14 @@
 #include "./render_data.h"
 #include "./volume_reader.h"
 #include "./quad.h"
+#include "./cube.h"
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
   quad = std::unique_ptr<Quad>(
       new Quad(":shader/label.vert", ":shader/slice.frag"));
+  cube = std::unique_ptr<Cube>(new Cube());
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
@@ -28,6 +30,14 @@ void VolumeNode::render(Gl *gl, RenderData renderData)
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
   quad->render(gl, renderData);
+
+  auto transformation = volumeReader->getTransformationMatrix();
+  auto size = volumeReader->getPhysicalSize();
+  transformation.col(3).head<3>() -= 0.5f * size;
+  Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
+  scale.diagonal().head<3>() = size;
+  renderData.modelMatrix = transformation * scale;
+  cube->render(gl, renderData);
 }
 
 std::shared_ptr<Math::Obb> VolumeNode::getObb()
