@@ -13,7 +13,7 @@ BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 BOOST_CLASS_EXPORT_GUID(VolumeNode, "VolumeNode")
 
 DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
-                                   std::shared_ptr<Labels> labels)
+                                         std::shared_ptr<Labels> labels)
   : nodes(nodes), labels(labels)
 {
 }
@@ -32,8 +32,8 @@ void DefaultSceneCreator::create()
   addLabelsFromLabelNodes();
 }
 
-void
-DefaultSceneCreator::addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes)
+void DefaultSceneCreator::addMeshNodesTo(
+    std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   const std::string filename = "assets/assets.dae";
   Importer importer;

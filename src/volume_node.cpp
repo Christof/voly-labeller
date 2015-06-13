@@ -1,4 +1,5 @@
 #include "./volume_node.h"
+#include <string>
 #include "./render_data.h"
 #include "./volume_reader.h"
 #include "./quad.h"
