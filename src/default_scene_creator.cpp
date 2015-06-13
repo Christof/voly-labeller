@@ -1,4 +1,4 @@
-#include "./test_scene_creator.h"
+#include "./default_scene_creator.h"
 #include <string>
 #include <vector>
 #include "./importer.h"
@@ -12,13 +12,13 @@ BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 BOOST_CLASS_EXPORT_GUID(VolumeNode, "VolumeNode")
 
-TestSceneCreator::TestSceneCreator(std::shared_ptr<Nodes> nodes,
+DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
                                    std::shared_ptr<Labels> labels)
   : nodes(nodes), labels(labels)
 {
 }
 
-void TestSceneCreator::create()
+void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
   addMeshNodesTo(sceneNodes);
@@ -33,7 +33,7 @@ void TestSceneCreator::create()
 }
 
 void
-TestSceneCreator::addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes)
+DefaultSceneCreator::addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   const std::string filename = "assets/assets.dae";
   Importer importer;
@@ -47,7 +47,7 @@ TestSceneCreator::addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes)
   }
 }
 
-void TestSceneCreator::addLabelNodesTo(
+void DefaultSceneCreator::addLabelNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   auto label = Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
@@ -64,7 +64,7 @@ void TestSceneCreator::addLabelNodesTo(
   sceneNodes.push_back(std::make_shared<LabelNode>(label4));
 }
 
-void TestSceneCreator::addLabelsFromLabelNodes()
+void DefaultSceneCreator::addLabelsFromLabelNodes()
 {
   for (auto &labelNode : nodes->getLabelNodes())
     labels->add(labelNode->label);

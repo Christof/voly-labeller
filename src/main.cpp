@@ -16,7 +16,7 @@
 #include "./labelling/labels.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
-#include "./test_scene_creator.h"
+#include "./default_scene_creator.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
 
-  TestSceneCreator sceneCreator(nodes, labels);
+  DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
 

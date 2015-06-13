@@ -60,7 +60,7 @@ set(SOURCES
   src/labeller_model.cpp
   src/labels_model.cpp
   src/volume_reader.cpp
-  src/test_scene_creator.cpp
+  src/default_scene_creator.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})

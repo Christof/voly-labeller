@@ -1,6 +1,6 @@
-#ifndef SRC_TEST_SCENE_CREATOR_H_
+#ifndef SRC_DEFAULT_SCENE_CREATOR_H_
 
-#define SRC_TEST_SCENE_CREATOR_H_
+#define SRC_DEFAULT_SCENE_CREATOR_H_
 
 #include <memory>
 #include <vector>
@@ -15,10 +15,10 @@ class Node;
  * This is usefull to provide a default scene and also to test saving and
  * loading on every application start.
  */
-class TestSceneCreator
+class DefaultSceneCreator
 {
  public:
-  TestSceneCreator(std::shared_ptr<Nodes> nodes,
+  DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
                    std::shared_ptr<Labels> labels);
 
   void create();
@@ -32,4 +32,4 @@ class TestSceneCreator
   void addLabelsFromLabelNodes();
 };
 
-#endif  // SRC_TEST_SCENE_CREATOR_H_
+#endif  // SRC_DEFAULT_SCENE_CREATOR_H_
