@@ -24,6 +24,13 @@ Obb::Obb(Eigen::MatrixXf points)
   calculateCorners();
 }
 
+Obb::Obb(Eigen::Vector3f center, Eigen::Vector3f halfWidths,
+         Eigen::Matrix3f axes)
+  : axes(axes), halfWidths(halfWidths), center(center)
+{
+  calculateCorners();
+}
+
 Eigen::Vector3f Obb::getCenter()
 {
   return center;
