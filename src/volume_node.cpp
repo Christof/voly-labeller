@@ -6,7 +6,14 @@
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
-  quad = std::unique_ptr<Quad>(new Quad(":shader/label.vert", ":shader/slice.frag"));
+  quad = std::unique_ptr<Quad>(
+      new Quad(":shader/label.vert", ":shader/slice.frag"));
+
+  auto transformation = volumeReader->getTransformationMatrix();
+  Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
+  Eigen::Vector3f center = transformation.col(3).head<3>() - halfWidths;
+  obb = std::make_shared<Math::Obb>(center, halfWidths,
+                                    transformation.block<3, 3>(0, 0));
 }
 
 VolumeNode::~VolumeNode()
@@ -21,6 +28,11 @@ void VolumeNode::render(Gl *gl, RenderData renderData)
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
   quad->render(gl, renderData);
+}
+
+std::shared_ptr<Math::Obb> VolumeNode::getObb()
+{
+  return obb;
 }
 
 void VolumeNode::initializeTexture(Gl *gl)

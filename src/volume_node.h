@@ -6,6 +6,7 @@
 #include <memory>
 #include "./node.h"
 #include "./gl.h"
+#include "./math/obb.h"
 
 struct RenderData;
 class VolumeReader;
@@ -29,10 +30,13 @@ class VolumeNode : public Node
     ar << BOOST_SERIALIZATION_NVP(filename);
   };
 
+  Eigen::Matrix4f getTransformation();
+  virtual std::shared_ptr<Math::Obb> getObb();
  private:
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
   std::unique_ptr<Quad> quad;
+  std::shared_ptr<Math::Obb> obb;
   GLuint texture = 0;
 
   void initializeTexture(Gl *gl);
