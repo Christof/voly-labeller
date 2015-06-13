@@ -49,6 +49,7 @@ make
 - Eigen3
 - Assimp
 - Boost 1.57
+- ITK 4.7
 
 ## Testing
 - GTest
