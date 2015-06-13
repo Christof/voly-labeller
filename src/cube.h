@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <string>
 #include "./render_data.h"
 #include "./renderable.h"
 
@@ -15,7 +16,7 @@
 class Cube : public Renderable
 {
  public:
-  Cube();
+  Cube(std::string vertexShaderPath, std::string fragmentShaderPath);
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);

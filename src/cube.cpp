@@ -4,8 +4,8 @@
 #include "./shader_program.h"
 #include "./render_object.h"
 
-Cube::Cube()
-  : Renderable(":/shader/texture3d.vert", ":/shader/texture3dAsColor.frag")
+Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
+  : Renderable(vertexShaderPath, fragmentShaderPath)
 {
 }
 
