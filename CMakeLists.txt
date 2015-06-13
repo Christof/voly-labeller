@@ -38,6 +38,7 @@ set(SOURCES
   src/quad.cpp
   src/frame_buffer_object.cpp
   src/connector.cpp
+  src/cube.cpp
   src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
