@@ -15,7 +15,7 @@ VolumeNode::VolumeNode(std::string filename) : filename(filename)
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
-  Eigen::Vector3f center = transformation.col(3).head<3>() - halfWidths;
+  Eigen::Vector3f center = transformation.col(3).head<3>();
   obb = std::make_shared<Math::Obb>(center, halfWidths,
                                     transformation.block<3, 3>(0, 0));
 }
@@ -35,7 +35,6 @@ void VolumeNode::render(Gl *gl, RenderData renderData)
 
   auto transformation = volumeReader->getTransformationMatrix();
   auto size = volumeReader->getPhysicalSize();
-  transformation.col(3).head<3>() -= 0.5f * size;
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
   renderData.modelMatrix = transformation * scale;

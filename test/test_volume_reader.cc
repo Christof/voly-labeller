@@ -20,7 +20,7 @@ TEST(IntegrationTest_VolumeReader, TestReadingOfCTData)
 
   auto transformation = reader.getTransformationMatrix();
   Eigen::Matrix4f expectedTransformation;
-  expectedTransformation << 1, 0, 0, -0.125f, 0, 1, 0, -0.063f, 0, 0, 1, -0.858, 0, 0, 0,
+  expectedTransformation << 1, 0, 0, 0, 0, 1, 0, 0.062f, 0, 0, 1, -0.69699f, 0, 0, 0,
       1;
   EXPECT_Matrix4f_NEAR(expectedTransformation, transformation, 1E-5);
 }

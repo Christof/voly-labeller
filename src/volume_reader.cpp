@@ -44,8 +44,10 @@ float *VolumeReader::getDataPointer()
 Eigen::Matrix4f VolumeReader::getTransformationMatrix()
 {
   itk::Point<float, 3> originItk = image->GetOrigin();
+  Eigen::Vector3f offset = 0.5f * getPhysicalSize().cast<float>();
   Eigen::Vector3f origin =
-      0.001f * Eigen::Vector3f(originItk[0], originItk[1], originItk[2]);
+      0.001f * Eigen::Vector3f(originItk[0], originItk[1], originItk[2]) +
+      offset;
 
   ImageType::DirectionType directionItk = image->GetDirection();
 
