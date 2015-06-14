@@ -95,7 +95,7 @@ add_custom_target(unit test/tests)
 # Coverage
 set(LCOV_DIRS  -b ${CMAKE_CURRENT_SOURCE_DIR}/src --directory . )
 add_custom_target(cov
-  rm coverage.* &&
+  rm -f coverage.* &&
   lcov -z ${LCOV_DIRS} &&
   make unit &&
   lcov --compat split_crc=off --capture ${LCOV_DIRS} --output-file coverage.info &&
