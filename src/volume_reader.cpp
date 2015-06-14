@@ -30,6 +30,9 @@ VolumeReader::VolumeReader(std::string filename)
     normalizeToCT(imageIterator);
   else
     normalizeTo01(imageIterator);
+
+  calculateSizes();
+  calculateTransformationMatrix();
 }
 
 VolumeReader::~VolumeReader()
@@ -43,43 +46,22 @@ float *VolumeReader::getDataPointer()
 
 Eigen::Matrix4f VolumeReader::getTransformationMatrix()
 {
-  itk::Point<float, 3> originItk = image->GetOrigin();
-  Eigen::Vector3f offset = 0.5f * getPhysicalSize().cast<float>();
-  Eigen::Vector3f origin =
-      0.001f * Eigen::Vector3f(originItk[0], originItk[1], originItk[2]) +
-      offset;
-
-  ImageType::DirectionType directionItk = image->GetDirection();
-
-  Eigen::Matrix3f rotation;
-  for (int rowIndex = 0; rowIndex < 3; ++rowIndex)
-    for (int columnIndex = 0; columnIndex < 3; ++columnIndex)
-      rotation(rowIndex, columnIndex) = directionItk(rowIndex, columnIndex);
-
-  Eigen::Matrix4f transformation = Eigen::Matrix4f::Identity();
-  transformation.block<3, 3>(0, 0) = rotation;
-  transformation.col(3).head<3>() = origin;
-
   return transformation;
 }
 
 Eigen::Vector3i VolumeReader::getSize()
 {
-  ImageType::RegionType region = image->GetLargestPossibleRegion();
-  ImageType::SizeType size = region.GetSize();
-
-  return Eigen::Vector3i(size[0], size[1], size[2]);
+  return size;
 }
 
 Eigen::Vector3f VolumeReader::getSpacing()
 {
-  ImageType::SpacingType spacingItk = image->GetSpacing();
-  return Eigen::Vector3f(spacingItk[0], spacingItk[1], spacingItk[2]) * 0.001f;
+  return spacing;
 }
 
 Eigen::Vector3f VolumeReader::getPhysicalSize()
 {
-  return getSpacing().cwiseProduct(getSize().cast<float>());
+  return physicalSize;
 }
 
 bool VolumeReader::isCT()
@@ -126,5 +108,38 @@ VolumeReader::normalizeTo01(itk::ImageRegionIterator<ImageType> imageIterator)
     auto normalizedValue = (imageIterator.Get() - min) / (max - min);
     imageIterator.Set(normalizedValue);
   }
+}
+
+void VolumeReader::calculateTransformationMatrix()
+{
+  itk::Point<float, 3> originItk = image->GetOrigin();
+  Eigen::Vector3f offset = 0.5f * getPhysicalSize().cast<float>();
+  Eigen::Vector3f origin =
+      0.001f * Eigen::Vector3f(originItk[0], originItk[1], originItk[2]) +
+      offset;
+
+  ImageType::DirectionType directionItk = image->GetDirection();
+
+  Eigen::Matrix3f rotation;
+  for (int rowIndex = 0; rowIndex < 3; ++rowIndex)
+    for (int columnIndex = 0; columnIndex < 3; ++columnIndex)
+      rotation(rowIndex, columnIndex) = directionItk(rowIndex, columnIndex);
+
+  transformation = Eigen::Matrix4f::Identity();
+  transformation.block<3, 3>(0, 0) = rotation;
+  transformation.col(3).head<3>() = origin;
+}
+
+void VolumeReader::calculateSizes()
+{
+  ImageType::RegionType region = image->GetLargestPossibleRegion();
+  ImageType::SizeType sizeItk = region.GetSize();
+  size = Eigen::Vector3i(sizeItk[0], sizeItk[1], sizeItk[2]);
+
+  ImageType::SpacingType spacingItk = image->GetSpacing();
+  spacing =
+      Eigen::Vector3f(spacingItk[0], spacingItk[1], spacingItk[2]) * 0.001f;
+
+  physicalSize = spacing.cwiseProduct(size.cast<float>());
 }
 
