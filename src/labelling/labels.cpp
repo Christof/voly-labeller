@@ -54,12 +54,6 @@ int Labels::count()
   return labels.size();
 }
 
-void Labels::updateAnchor(int id, Eigen::Vector3f anchorPosition)
-{
-  labels[id].anchorPosition = anchorPosition;
-  notify(Action::Update, labels[id]);
-}
-
 void Labels::notify(Action action, const Label &label)
 {
   for (auto &subscriber : subscribers)
