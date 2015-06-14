@@ -14,8 +14,7 @@ class Quad;
 class Cube;
 
 /**
- * \brief
- *
+ * \brief Node which renders a volume
  *
  */
 class VolumeNode : public Node

@@ -9,8 +9,7 @@
 #include "./renderable.h"
 
 /**
- * \brief
- *
+ * \brief Draws a cube of size 1x1x1 centered at the origin
  *
  */
 class Cube : public Renderable
