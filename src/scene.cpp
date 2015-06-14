@@ -195,8 +195,9 @@ void Scene::doPick()
   qWarning() << "picked:" << positionWorld;
 
   performPicking = false;
-  Eigen::Vector3f anchorPosition = toVector3f(positionWorld);
+  auto label = labels->getById(pickingLabelId);
+  label.anchorPosition = toVector3f(positionWorld);
 
-  labels->updateAnchor(pickingLabelId, anchorPosition);
+  labels->update(label);
 }
 
