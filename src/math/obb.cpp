@@ -24,6 +24,16 @@ Obb::Obb(Eigen::MatrixXf points)
   calculateCorners();
 }
 
+Eigen::Vector3f Obb::getCenter()
+{
+  return center;
+}
+
+Eigen::Vector3f Obb::getHalfWidths()
+{
+  return halfWidths;
+}
+
 void Obb::calculateCenterAndHalfWidhts(Eigen::MatrixXf &onAxes)
 {
   float max = std::numeric_limits<float>::max();

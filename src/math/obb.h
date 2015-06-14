@@ -23,6 +23,8 @@ class Obb
 
   Eigen::Vector3f corners[8];
 
+  Eigen::Vector3f getCenter();
+  Eigen::Vector3f getHalfWidths();
  private:
   Eigen::Matrix3f axes;
 
