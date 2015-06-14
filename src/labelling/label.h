@@ -33,13 +33,13 @@ struct Label
   Eigen::Vector3f anchorPosition;
   Eigen::Vector2f size;
 
-  bool operator==(const Label &other)
+  bool operator==(const Label &other) const
   {
     return id == other.id && text == other.text &&
            anchorPosition == other.anchorPosition && size == other.size;
   }
 
-  bool operator!=(const Label &other)
+  bool operator!=(const Label &other) const
   {
     return id != other.id || text != other.text ||
            anchorPosition != other.anchorPosition || size != other.size;
