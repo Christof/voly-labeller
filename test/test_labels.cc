@@ -81,3 +81,22 @@ TEST(Test_Labels, UpdateTriggersANotification)
   removeSubscription();
 }
 
+TEST(Test_Labels, GetLabelsReturnsCopyOfAllLabels)
+{
+  Labels labels;
+
+  Label label(1, "Label text", Eigen::Vector3f(1, 2, 3));
+  labels.add(label);
+  Label label2(2, "Other Label text", Eigen::Vector3f(1, 2, 3));
+  labels.add(label2);
+
+  auto labelsVector = labels.getLabels();
+  EXPECT_EQ(2, labels.count());
+  EXPECT_EQ(label, labelsVector[0]);
+  EXPECT_EQ(label2, labelsVector[1]);
+
+  labelsVector[0].text = "Changed text";
+
+  EXPECT_EQ(label.text, labels.getLabels()[0].text);
+}
+
