@@ -13,6 +13,12 @@
   EXPECT_NEAR(expected.y(), actual.y(), delta);                                \
   EXPECT_NEAR(expected.z(), actual.z(), delta);
 
+#define EXPECT_Vector4f_NEAR(expected, actual, delta)                          \
+  EXPECT_NEAR(expected.x(), actual.x(), delta);                                \
+  EXPECT_NEAR(expected.y(), actual.y(), delta);                                \
+  EXPECT_NEAR(expected.z(), actual.z(), delta);                                \
+  EXPECT_NEAR(expected.w(), actual.w(), delta);
+
 #define EXPECT_Matrix4f_NEAR(expected, actual, delta)                          \
   EXPECT_NEAR(expected(0, 0), actual(0, 0), delta);                            \
   EXPECT_NEAR(expected(0, 1), actual(0, 1), delta);                            \
