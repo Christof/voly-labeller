@@ -41,7 +41,7 @@ class Persister
   }
 
  private:
-  Persister();
+  Persister() = default;
 };
 
 namespace boost
