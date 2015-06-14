@@ -22,11 +22,21 @@ QDebug operator<<(QDebug dbg, const Eigen::Vector4f &vector)
   return dbg.maybeSpace();
 }
 
-QDebug operator<<(QDebug dbg, const Eigen::Matrix4f &vector)
+QDebug operator<<(QDebug dbg, const Eigen::Matrix4f &matrix)
 {
   const Eigen::IOFormat cleanFormat(4, 0, ", ", "\n", "\t[", "]");
   std::stringstream stream;
-  stream << vector.format(cleanFormat);
+  stream << matrix.format(cleanFormat);
+  dbg << "\n" << stream.str().c_str();
+
+  return dbg.maybeSpace();
+}
+
+QDebug operator<<(QDebug dbg, const Eigen::Matrix3f &matrix)
+{
+  const Eigen::IOFormat cleanFormat(4, 0, ", ", "\n", "\t[", "]");
+  std::stringstream stream;
+  stream << matrix.format(cleanFormat);
   dbg << "\n" << stream.str().c_str();
 
   return dbg.maybeSpace();
