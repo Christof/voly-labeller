@@ -104,7 +104,7 @@ add_custom_target(cov
   lcov -z ${LCOV_DIRS} &&
   make unit &&
   lcov --compat split_crc=off --capture ${LCOV_DIRS} --output-file coverage.info &&
-  lcov --remove coverage.info 'usr/*' 'boost/*' 'test/*' 'tmp/*' '**/moc_*' --output-file coverage.info.cleaned &&
+  lcov --remove coverage.info 'usr/*' 'boost/*' 'test/*' 'tmp/*' '**/moc_*' 'build*/*' --output-file coverage.info.cleaned &&
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/complete_coverage.sh &&
   genhtml coverage.info.complete --output-directory coverage-output --ignore-errors source)
 
