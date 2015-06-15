@@ -305,7 +305,7 @@ TEST_F(Test_ScxmlImporter, StateChangeWithControlKey)
 TEST_F(Test_ScxmlImporter, EventTransition)
 {
   MockHandler handler;
-  invokeManager->addHandler("Window", &handler);
+  invokeManager->addHandler(&handler);
   expectSingleStateWithName("idle");
 
   QPointF mousePosition(123.1f, 56.0f);
