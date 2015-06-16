@@ -46,14 +46,6 @@ QSurfaceFormat Window::createSurfaceFormat()
   return format;
 }
 
-void Window::initializeContext(QSurfaceFormat format)
-{
-  setPersistentOpenGLContext(true);
-  context = new QOpenGLContext(this);
-  context->setFormat(format);
-  context->create();
-}
-
 void Window::initializeOpenGL()
 {
   context = openglContext();
