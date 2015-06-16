@@ -1,5 +1,6 @@
 #include "./cube.h"
 #include <vector>
+#include <string>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
