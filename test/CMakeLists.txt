@@ -28,6 +28,7 @@ target_link_libraries(tests
   Qt5::Core
   Qt5::Widgets
   Qt5::OpenGL
+  Qt5::OpenGLExtensions
   Qt5::Gui
   Qt5::Quick
   ${OPENGL_LIBRARIES}
