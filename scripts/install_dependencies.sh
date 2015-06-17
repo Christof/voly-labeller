@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 #Terminate on error
