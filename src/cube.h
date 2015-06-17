@@ -1,24 +1,21 @@
-#ifndef SRC_QUAD_H_
+#ifndef SRC_CUBE_H_
 
-#define SRC_QUAD_H_
+#define SRC_CUBE_H_
 
-#include <memory>
+#include <Eigen/Core>
+#include <vector>
 #include <string>
 #include "./render_data.h"
 #include "./renderable.h"
 
-class Gl;
-class ShaderProgram;
-
 /**
- * \brief Class to draw a quad which is used for the label
+ * \brief Draws a cube of size 1x1x1 centered at the origin
+ *
  */
-class Quad : public Renderable
+class Cube : public Renderable
 {
  public:
-  Quad();
-  Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename);
-  virtual ~Quad();
+  Cube(std::string vertexShaderPath, std::string fragmentShaderPath);
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
@@ -27,7 +24,8 @@ class Quad : public Renderable
   virtual void draw(Gl *gl);
 
  private:
-  static const int indexCount = 6;
+  std::vector<Eigen::Vector3f> points;
+  static const int indexCount = 36;
 };
 
-#endif  // SRC_QUAD_H_
+#endif  // SRC_CUBE_H_

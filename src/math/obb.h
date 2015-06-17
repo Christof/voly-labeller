@@ -20,6 +20,7 @@ class Obb
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   Obb() = default;
   explicit Obb(Eigen::MatrixXf points);
+  Obb(Eigen::Vector3f center, Eigen::Vector3f halfWidths, Eigen::Matrix3f axes);
 
   Eigen::Vector3f corners[8];
 

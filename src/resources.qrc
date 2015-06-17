@@ -6,6 +6,9 @@
         <file>shader/label.vert</file>
         <file>shader/line.frag</file>
         <file>shader/line.vert</file>
+        <file>shader/slice.frag</file>
+        <file>shader/texture3d.vert</file>
+        <file>shader/texture3dAsColor.frag</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

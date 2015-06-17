@@ -38,11 +38,13 @@ set(SOURCES
   src/quad.cpp
   src/frame_buffer_object.cpp
   src/connector.cpp
+  src/cube.cpp
   src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
   src/obb_node.cpp
+  src/volume_node.cpp
   src/forces_visualizer_node.cpp
   src/coordinate_system_node.cpp
   src/nodes.cpp
@@ -58,6 +60,8 @@ set(SOURCES
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   src/labels_model.cpp
+  src/volume_reader.cpp
+  src/default_scene_creator.cpp
   ${RESOURCES})
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
@@ -81,6 +85,7 @@ target_link_libraries(voly-labeller
   ${OPENGL_LIBRARIES}
   ${ASSIMP_LIBRARIES}
   ${Boost_LIBRARIES}
+  ${ITK_LIBRARIES}
 )
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
@@ -99,7 +104,7 @@ add_custom_target(cov
   lcov -z ${LCOV_DIRS} &&
   make unit &&
   lcov --compat split_crc=off --capture ${LCOV_DIRS} --output-file coverage.info &&
-  lcov --remove coverage.info 'usr/*' 'boost/*' 'test/*' 'tmp/*' '**/moc_*' --output-file coverage.info.cleaned &&
+  lcov --remove coverage.info 'usr/*' 'boost/*' 'test/*' 'tmp/*' '**/moc_*' 'build*/*' --output-file coverage.info.cleaned &&
   ${CMAKE_CURRENT_SOURCE_DIR}/scripts/complete_coverage.sh &&
   genhtml coverage.info.complete --output-directory coverage-output --ignore-errors source)
 

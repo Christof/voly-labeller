@@ -1,7 +1,13 @@
 #include "./quad.h"
+#include <string>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
+
+Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
+  : Renderable(vertexShaderFilename, fragmentShaderFilename)
+{
+}
 
 Quad::Quad() : Renderable(":shader/label.vert", ":shader/label.frag")
 {

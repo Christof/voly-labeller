@@ -16,6 +16,7 @@
 #include "./labelling/labels.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+#include "./default_scene_creator.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
@@ -51,12 +52,17 @@ int main(int argc, char **argv)
 
   QGuiApplication application(argc, argv);
 
+  qDebug() << "Application start";
+
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
   auto labeller = std::make_shared<Forces::Labeller>(labels);
   auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
   nodes->addNode(forcesVisualizerNode);
+
+  DefaultSceneCreator sceneCreator(nodes, labels);
+  sceneCreator.create();
   auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
 
   auto unsubscribeLabelChanges = labels->subscribe(

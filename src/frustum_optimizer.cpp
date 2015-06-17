@@ -1,4 +1,6 @@
 #include "./frustum_optimizer.h"
+#include <limits>
+#include <algorithm>
 #include "./nodes.h"
 
 FrustumOptimizer::FrustumOptimizer(std::shared_ptr<Nodes> nodes) : nodes(nodes)
