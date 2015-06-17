@@ -50,11 +50,6 @@ void Window::initializeOpenGL()
 {
   context = openglContext();
   gl = new Gl();
-  if (!gl)
-  {
-    qWarning() << "Could not obtain required OpenGL context version";
-    exit(1);
-  }
   gl->initialize(size());
   glCheckError();
 
