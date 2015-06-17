@@ -88,18 +88,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:math>
   )
 
-target_link_libraries(voly-labeller
-  Qt5::Core
-  Qt5::Widgets
-  Qt5::OpenGL
-  Qt5::OpenGLExtensions
-  Qt5::Gui
-  Qt5::Quick
-  ${OPENGL_LIBRARIES}
-  ${ASSIMP_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${ITK_LIBRARIES}
-)
+target_link_libraries(voly-labeller ${LIBRARIES})
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
