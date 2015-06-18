@@ -1,7 +1,8 @@
 #include "./shader_program.h"
 #include <string>
-#include <fstream>
-#include <sstream>
+#include <QFile>
+#include <QString>
+#include <QTextStream>
 #include "./gl.h"
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
@@ -84,15 +85,17 @@ void ShaderProgram::setUniform(const char *name, int value)
   glAssert(gl->glUniform1i(location, value));
 }
 
-std::string ShaderProgram::readFileAndHandleIncludes(std::string path)
+QString ShaderProgram::readFileAndHandleIncludes(QString path)
 {
-  std::ifstream fileStream(path);
-  if (!fileStream.good())
-    throw std::runtime_error("The file '" + path + "' doesn't exist!");
+  QFile file(path);
+
+  if (!file.open(QFile::ReadOnly | QFile::Text))
+    throw std::runtime_error("The file '" + path.toStdString() +
+                             "' doesn't exist!");
 
   std::stringstream buffer;
-  buffer << fileStream.rdbuf();
+  QTextStream in(&file);
 
-  return buffer.str();
+  return in.readAll();
 }
 

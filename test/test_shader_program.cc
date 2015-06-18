@@ -5,7 +5,7 @@
 TEST(Test_ShaderProgram, readFileAndHandleIncludes)
 {
   auto output = ShaderProgram::readFileAndHandleIncludes(
-      absolutePathOfProjectRelativePath(std::string("test/test_shader.vert")));
+      absolutePathOfProjectRelativePath(QString("test/test_shader.vert")));
 
   ASSERT_EQ("#version 330\n", output);
 }
