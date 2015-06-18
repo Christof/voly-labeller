@@ -95,7 +95,7 @@ add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --r
 add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all VERBATIM)
 
 # Testing
-add_custom_target(unit test/tests)
+add_custom_target(unit test/tests --gtest_filter=Test*)
 
 # Coverage
 set(LCOV_DIRS  -b ${CMAKE_CURRENT_SOURCE_DIR}/src --directory . )
