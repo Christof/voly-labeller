@@ -1,5 +1,7 @@
 #include "./shader_program.h"
 #include <string>
+#include <fstream>
+#include <sstream>
 #include "./gl.h"
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
@@ -81,3 +83,16 @@ void ShaderProgram::setUniform(const char *name, int value)
   auto location = shaderProgram.uniformLocation(name);
   glAssert(gl->glUniform1i(location, value));
 }
+
+std::string ShaderProgram::readFileAndHandleIncludes(std::string path)
+{
+  std::ifstream fileStream(path);
+  if (!fileStream.good())
+    throw std::runtime_error("The file '" + path + "' doesn't exist!");
+
+  std::stringstream buffer;
+  buffer << fileStream.rdbuf();
+
+  return buffer.str();
+}
+

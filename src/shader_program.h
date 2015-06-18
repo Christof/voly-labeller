@@ -32,6 +32,7 @@ class ShaderProgram
   void setUniform(const char* name, float value);
   void setUniform(const char* name, int value);
 
+  static std::string readFileAndHandleIncludes(std::string path);
  private:
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
