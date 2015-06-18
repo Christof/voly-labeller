@@ -9,13 +9,15 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
   : gl(gl)
 {
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                             vertexShaderPath.c_str()))
+  if (!shaderProgram.addShaderFromSourceCode(
+          QOpenGLShader::Vertex,
+          readFileAndHandleIncludes(vertexShaderPath.c_str())))
   {
     qCritical() << "error";
   }
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                             fragmentShaderPath.c_str()))
+  if (!shaderProgram.addShaderFromSourceCode(
+          QOpenGLShader::Fragment,
+          readFileAndHandleIncludes(fragmentShaderPath.c_str())))
   {
     qCritical() << "error";
   }
