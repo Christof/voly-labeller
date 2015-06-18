@@ -110,16 +110,18 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
   auto directory = QFileInfo(path).absoluteDir().path() + "/";
   auto source = readFile(path);
 
-  QRegularExpression regex("[ ]*#include[ ]+[\"<](.*)[\">].*");
+  QRegularExpression regex("^[ ]*#include[ ]+[\"<](.*)[\">].*");
+  regex.setPatternOptions(QRegularExpression::MultilineOption);
   int searchPosition = 0;
   auto match = regex.match(source, searchPosition);
   if (match.hasMatch())
   {
     auto filename = match.captured(1);
-    std::cout << filename.toStdString() << " path " << directory.toStdString() << std::endl;
+    std::cout << filename.toStdString() << " path " << directory.toStdString()
+              << std::endl;
     auto includeSource = readFile(directory + filename);
     source = source.replace(match.capturedStart(0), match.capturedLength(0),
-        includeSource);
+                            includeSource);
   }
   else
     std::cout << "no match" << std::endl;

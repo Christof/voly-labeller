@@ -13,5 +13,19 @@ TEST(Test_ShaderProgram, replacesASingleInclude)
       "float special()\n"
       "{\n"
       "  return 47.11f;\n"
-      "}\n\n", output.toStdString());
+      "}\n\n\n"
+      "void main() {}\n", output.toStdString());
+}
+
+TEST(Test_ShaderProgram, commentedIncludesAreIgnored)
+{
+  auto output = ShaderProgram::readFileAndHandleIncludes(
+      absolutePathOfProjectRelativePath(QString("test/test_shader/commented_include.vert")));
+
+  ASSERT_EQ(
+      "#version 330\n"
+      "\n"
+      "// #include \"test_common_shader_functions.glsl\"\n"
+      "\n"
+      "void main() {}\n", output.toStdString());
 }
