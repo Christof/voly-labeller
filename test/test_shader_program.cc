@@ -30,6 +30,22 @@ TEST(Test_ShaderProgram, commentedIncludesAreIgnored)
       "void main() {}\n", output.toStdString());
 }
 
+TEST(Test_ShaderProgram, removesVersionFromIncludedFile)
+{
+  auto output = ShaderProgram::readFileAndHandleIncludes(
+      absolutePathOfProjectRelativePath(QString("test/test_shader/multiple_version_statements.vert")));
+
+  ASSERT_EQ(
+      "#version 330\n"
+      "\n"
+      "\n"
+      "\n"
+      "void something() {}\n"
+      "\n"
+      "\n"
+      "void main() {}\n", output.toStdString());
+}
+
 TEST(Test_ShaderProgram, multipleIncludes)
 {
   auto output = ShaderProgram::readFileAndHandleIncludes(
@@ -38,7 +54,7 @@ TEST(Test_ShaderProgram, multipleIncludes)
   ASSERT_EQ(
       "#version 330\n"
       "\n"
-      "#version 440\n"
+      "\n"
       "\n"
       "void something() {}\n"
       "\n"

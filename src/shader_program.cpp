@@ -120,6 +120,10 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
     std::cout << filename.toStdString() << " path " << directory.toStdString()
               << std::endl;
     auto includeSource = readFile(directory + filename);
+    includeSource = includeSource.replace(
+        QRegularExpression("^[ ]*#version \\d*.*$",
+                           QRegularExpression::MultilineOption),
+        "");
     source = source.replace(match.capturedStart(0), match.capturedLength(0),
                             includeSource);
 
