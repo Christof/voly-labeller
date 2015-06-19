@@ -62,19 +62,20 @@ int ShaderProgram::getId()
 
 void ShaderProgram::setUniform(const char *name, Eigen::Matrix4f matrix)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniformMatrix4fv(location, 1, GL_FALSE, matrix.data()));
+  glAssert(gl->glProgramUniformMatrix4fv(getId(), getLocation(name), 1,
+                                         GL_FALSE, matrix.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector4f vector)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform4fv(location, 1, vector.data()));
+  glAssert(
+      gl->glProgramUniform4fv(getId(), getLocation(name), 1, vector.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector3f vector)
 {
-  glAssert(gl->glUniform3fv(getLocation(name), 1, vector.data()));
+  glAssert(
+      gl->glProgramUniform3fv(getId(), getLocation(name), 1, vector.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
@@ -85,14 +86,12 @@ void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
 
 void ShaderProgram::setUniform(const char *name, float value)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform1f(location, value));
+  glAssert(gl->glProgramUniform1f(getId(), getLocation(name), value));
 }
 
 void ShaderProgram::setUniform(const char *name, int value)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform1i(location, value));
+  glAssert(gl->glProgramUniform1i(getId(), getLocation(name), value));
 }
 
 QString readFile(QString path)
