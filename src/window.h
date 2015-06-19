@@ -39,7 +39,6 @@ class Window : public QQuickView
  private:
   QSurfaceFormat createSurfaceFormat();
   void handleLazyInitialization();
-  void initializeContext(QSurfaceFormat format);
   void initializeOpenGL();
 
   QElapsedTimer timer;

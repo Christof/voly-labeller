@@ -1,5 +1,6 @@
 #include "./window.h"
 #include <QOpenGLContext>
+#include <QtOpenGLExtensions>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -46,24 +47,17 @@ QSurfaceFormat Window::createSurfaceFormat()
   return format;
 }
 
-void Window::initializeContext(QSurfaceFormat format)
-{
-  setPersistentOpenGLContext(true);
-  context = new QOpenGLContext(this);
-  context->setFormat(format);
-  context->create();
-}
-
 void Window::initializeOpenGL()
 {
   context = openglContext();
   gl = new Gl();
-  if (!gl)
-  {
-    qWarning() << "Could not obtain required OpenGL context version";
-    exit(1);
-  }
   gl->initialize(size());
+
+  qWarning() << "Has GL_NV_shader_buffer_load:"
+             << context->hasExtension("GL_NV_shader_buffer_load");
+  QOpenGLExtension_NV_shader_buffer_load *b =
+      new QOpenGLExtension_NV_shader_buffer_load();
+  b->initializeOpenGLFunctions();
   glCheckError();
 
   gl->glEnable(GL_DEPTH_TEST);
