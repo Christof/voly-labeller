@@ -25,6 +25,7 @@ class ShaderProgram
   void bind();
   void release();
   void enableAndSetAttributes(std::string usage, int perVertexElements);
+  int getId();
 
   void setUniform(const char *name, Eigen::Matrix4f matrix);
   void setUniform(const char *name, Eigen::Vector4f vector);

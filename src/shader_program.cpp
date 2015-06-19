@@ -55,6 +55,11 @@ void ShaderProgram::enableAndSetAttributes(std::string usage,
   glCheckError();
 }
 
+int ShaderProgram::getId()
+{
+  return shaderProgram.programId();
+}
+
 void ShaderProgram::setUniform(const char *name, Eigen::Matrix4f matrix)
 {
   auto location = shaderProgram.uniformLocation(name);
@@ -69,14 +74,13 @@ void ShaderProgram::setUniform(const char *name, Eigen::Vector4f vector)
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector3f vector)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform3fv(location, 1, vector.data()));
+  glAssert(gl->glUniform3fv(getLocation(name), 1, vector.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
 {
-  auto location = shaderProgram.uniformLocation(name);
-  glAssert(gl->glUniform2fv(location, 1, vector.data()));
+  glAssert(
+      gl->glProgramUniform2fv(getId(), getLocation(name), 1, vector.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, float value)
