@@ -1,18 +1,27 @@
 #include "./shader_program.h"
 #include <string>
+#include <QFile>
+#include <QUrl>
+#include <QString>
+#include <QRegularExpression>
+#include <QTextStream>
+#include <QDir>
 #include "./gl.h"
+#include <iostream>
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
   : gl(gl)
 {
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                             vertexShaderPath.c_str()))
+  if (!shaderProgram.addShaderFromSourceCode(
+          QOpenGLShader::Vertex,
+          readFileAndHandleIncludes(vertexShaderPath.c_str())))
   {
     qCritical() << "error";
   }
-  if (!shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                             fragmentShaderPath.c_str()))
+  if (!shaderProgram.addShaderFromSourceCode(
+          QOpenGLShader::Fragment,
+          readFileAndHandleIncludes(fragmentShaderPath.c_str())))
   {
     qCritical() << "error";
   }
@@ -81,3 +90,46 @@ void ShaderProgram::setUniform(const char *name, int value)
   auto location = shaderProgram.uniformLocation(name);
   glAssert(gl->glUniform1i(location, value));
 }
+
+QString readFile(QString path)
+{
+  QFile file(path);
+
+  if (!file.open(QFile::ReadOnly | QFile::Text))
+    throw std::runtime_error("The file '" + path.toStdString() +
+                             "' doesn't exist!");
+
+  std::stringstream buffer;
+  QTextStream in(&file);
+
+  return in.readAll();
+}
+
+QString ShaderProgram::readFileAndHandleIncludes(QString path)
+{
+  auto directory = QFileInfo(path).absoluteDir().path() + "/";
+  auto source = readFile(path);
+
+  QRegularExpression regex("^[ ]*#include[ ]+[\"<](.*)[\">].*");
+  regex.setPatternOptions(QRegularExpression::MultilineOption);
+
+  auto match = regex.match(source);
+  while (match.hasMatch())
+  {
+    auto filename = match.captured(1);
+    std::cout << filename.toStdString() << " path " << directory.toStdString()
+              << std::endl;
+    auto includeSource = readFile(directory + filename);
+    includeSource = includeSource.replace(
+        QRegularExpression("^[ ]*#version \\d*.*$",
+                           QRegularExpression::MultilineOption),
+        "");
+    source = source.replace(match.capturedStart(0), match.capturedLength(0),
+                            includeSource);
+
+    match = regex.match(source, match.capturedEnd(0));
+  }
+
+  return source;
+}
+

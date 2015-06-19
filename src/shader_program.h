@@ -3,6 +3,7 @@
 #define SRC_SHADER_PROGRAM_H_
 
 #include <QOpenGLShaderProgram>
+#include <QString>
 #include <Eigen/Core>
 #include <string>
 
@@ -32,6 +33,7 @@ class ShaderProgram
   void setUniform(const char* name, float value);
   void setUniform(const char* name, int value);
 
+  static QString readFileAndHandleIncludes(QString path);
  private:
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
