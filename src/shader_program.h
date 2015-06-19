@@ -37,6 +37,8 @@ class ShaderProgram
  private:
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
+
+  int getLocation(const char *name);
 };
 
 #endif  // SRC_SHADER_PROGRAM_H_

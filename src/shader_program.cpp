@@ -133,3 +133,8 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
   return source;
 }
 
+int ShaderProgram::getLocation(const char *name)
+{
+  return shaderProgram.uniformLocation(name);
+}
+
