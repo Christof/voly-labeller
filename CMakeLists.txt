@@ -64,10 +64,22 @@ set(SOURCES
   src/default_scene_creator.cpp
   ${RESOURCES})
 
+set(SHADER
+  src/shader/label.frag
+  src/shader/label.vert
+  src/shader/line.frag
+  src/shader/line.vert
+  src/shader/phong.frag
+  src/shader/phong.vert
+  src/shader/slice.frag
+  src/shader/texture3dAsColor.frag
+  src/shader/texture3d.vert)
+
 add_library(voly-labeller-lib OBJECT ${SOURCES})
 
 add_executable(voly-labeller
   src/main.cpp
+  ${SHADER}
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
