@@ -117,7 +117,19 @@ void Window::resizeOpenGL()
 
 void Window::update()
 {
-  scene->update(timer.restart() / 1000.0, keysPressed);
+  double frameTime = timer.restart() / 1000.0;
+  runningTime += frameTime;
+  if (runningTime > 1.0)
+  {
+    avgFrameTime = runningTime / framesInSecond;
+    emit averageFrameTimeUpdated();
+
+    framesInSecond = 0;
+    runningTime = 0;
+  }
+  ++framesInSecond;
+
+  scene->update(frameTime, keysPressed);
 }
 
 void Window::toggleFullscreen()
