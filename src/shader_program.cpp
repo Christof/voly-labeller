@@ -1,11 +1,11 @@
 #include "./shader_program.h"
-#include <string>
 #include <QFile>
 #include <QUrl>
 #include <QString>
 #include <QRegularExpression>
 #include <QTextStream>
 #include <QDir>
+#include <string>
 #include "./gl.h"
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
