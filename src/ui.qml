@@ -326,5 +326,15 @@ Item {
       }
     }
 
+    Label {
+        id: averageFrameTimeLabel
+        text: (window.averageFrameTime * 1000).toFixed(2) + " ms";
+        anchors.right: parent.right
+        anchors.rightMargin: 8
+        anchors.top: parent.top
+        anchors.topMargin: 28
+        horizontalAlignment: Text.AlignRight
+    }
+
   }
 }

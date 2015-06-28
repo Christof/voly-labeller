@@ -12,7 +12,7 @@
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
-  : QQuickView(parent), scene(scene), frameCount(0)
+  : QQuickView(parent), scene(scene)
 {
   setClearBeforeRendering(false);
 
@@ -101,8 +101,6 @@ void Window::render()
   // Use to check for missing release calls
   // resetOpenGLState();
 
-  ++frameCount;
-
   QQuickView::update();
 }
 
@@ -117,12 +115,30 @@ void Window::resizeOpenGL()
 
 void Window::update()
 {
-  scene->update(timer.restart() / 1000.0, keysPressed);
+  double frameTime = timer.restart() / 1000.0;
+  updateAverageFrameTime(frameTime);
+
+  scene->update(frameTime, keysPressed);
 }
 
 void Window::toggleFullscreen()
 {
   setVisibility(visibility() == QWindow::Windowed ? QWindow::FullScreen
                                                   : QWindow::Windowed);
+}
+
+void Window::updateAverageFrameTime(double frameTime)
+{
+  runningTime += frameTime;
+  ++framesInSecond;
+
+  if (runningTime > 1.0)
+  {
+    avgFrameTime = runningTime / framesInSecond;
+    emit averageFrameTimeUpdated();
+
+    framesInSecond = 0;
+    runningTime = 0;
+  }
 }
 

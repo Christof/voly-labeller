@@ -1,13 +1,12 @@
 #include "./shader_program.h"
-#include <string>
 #include <QFile>
 #include <QUrl>
 #include <QString>
 #include <QRegularExpression>
 #include <QTextStream>
 #include <QDir>
+#include <string>
 #include "./gl.h"
-#include <iostream>
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
@@ -120,15 +119,16 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
   while (match.hasMatch())
   {
     auto filename = match.captured(1);
-    std::cout << filename.toStdString() << " path " << directory.toStdString()
-              << std::endl;
-    auto includeSource = readFile(directory + filename);
+    auto includePath = directory + filename;
+    auto includeSource = readFile(includePath);
     includeSource = includeSource.replace(
         QRegularExpression("^[ ]*#version \\d*.*$",
                            QRegularExpression::MultilineOption),
         "");
     source = source.replace(match.capturedStart(0), match.capturedLength(0),
                             includeSource);
+
+    qDebug() << path << "includes" << includePath;
 
     match = regex.match(source, match.capturedEnd(0));
   }
