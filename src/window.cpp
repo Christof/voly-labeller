@@ -118,16 +118,7 @@ void Window::resizeOpenGL()
 void Window::update()
 {
   double frameTime = timer.restart() / 1000.0;
-  runningTime += frameTime;
-  if (runningTime > 1.0)
-  {
-    avgFrameTime = runningTime / framesInSecond;
-    emit averageFrameTimeUpdated();
-
-    framesInSecond = 0;
-    runningTime = 0;
-  }
-  ++framesInSecond;
+  updateAverageFrameTime(frameTime);
 
   scene->update(frameTime, keysPressed);
 }
@@ -136,5 +127,20 @@ void Window::toggleFullscreen()
 {
   setVisibility(visibility() == QWindow::Windowed ? QWindow::FullScreen
                                                   : QWindow::Windowed);
+}
+
+void Window::updateAverageFrameTime(double frameTime)
+{
+  runningTime += frameTime;
+  ++framesInSecond;
+
+  if (runningTime > 1.0)
+  {
+    avgFrameTime = runningTime / framesInSecond;
+    emit averageFrameTimeUpdated();
+
+    framesInSecond = 0;
+    runningTime = 0;
+  }
 }
 

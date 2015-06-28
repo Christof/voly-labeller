@@ -20,7 +20,8 @@ class Gl;
 class Window : public QQuickView
 {
   Q_OBJECT
-  Q_PROPERTY(double averageFrameTime MEMBER avgFrameTime NOTIFY averageFrameTimeUpdated)
+  Q_PROPERTY(double averageFrameTime MEMBER avgFrameTime NOTIFY
+                 averageFrameTimeUpdated)
  public:
   explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
   ~Window();
@@ -45,6 +46,7 @@ class Window : public QQuickView
   QSurfaceFormat createSurfaceFormat();
   void handleLazyInitialization();
   void initializeOpenGL();
+  void updateAverageFrameTime(double frameTime);
 
   QElapsedTimer timer;
   QOpenGLContext *context;
