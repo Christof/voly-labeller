@@ -12,7 +12,7 @@
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
-  : QQuickView(parent), scene(scene), frameCount(0)
+  : QQuickView(parent), scene(scene)
 {
   setClearBeforeRendering(false);
 
@@ -100,8 +100,6 @@ void Window::render()
 
   // Use to check for missing release calls
   // resetOpenGLState();
-
-  ++frameCount;
 
   QQuickView::update();
 }

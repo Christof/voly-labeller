@@ -53,7 +53,6 @@ class Window : public QQuickView
   Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
-  long frameCount;
   QSet<Qt::Key> keysPressed;
 
   int framesInSecond = 0;
