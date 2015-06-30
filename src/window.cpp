@@ -1,6 +1,5 @@
 #include "./window.h"
 #include <QOpenGLContext>
-#include <QtOpenGLExtensions>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -51,14 +50,7 @@ void Window::initializeOpenGL()
 {
   context = openglContext();
   gl = new Gl();
-  gl->initialize(size());
-
-  qWarning() << "Has GL_NV_shader_buffer_load:"
-             << context->hasExtension("GL_NV_shader_buffer_load");
-  QOpenGLExtension_NV_shader_buffer_load *b =
-      new QOpenGLExtension_NV_shader_buffer_load();
-  b->initializeOpenGLFunctions();
-  glCheckError();
+  gl->initialize(context, size());
 
   gl->glEnable(GL_DEPTH_TEST);
   gl->glEnable(GL_BLEND);

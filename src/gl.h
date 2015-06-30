@@ -3,6 +3,7 @@
 #define SRC_GL_H_
 
 #include <QOpenGLFunctions_4_3_Core>
+#include <QtOpenGLExtensions>
 #include <QSize>
 
 #ifndef NDEBUG  // debug mode
@@ -58,11 +59,15 @@ class Gl : public QOpenGLFunctions_4_3_Core
 
   void setSize(QSize size);
 
-  void initialize(QSize size);
+  void initialize(QOpenGLContext *context, QSize size);
 
   QOpenGLPaintDevice *paintDevice;
   QSize size;
-};
 
+  const QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
+
+ private:
+  QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
+};
 
 #endif  // SRC_GL_H_
