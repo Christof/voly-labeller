@@ -64,10 +64,12 @@ class Gl : public QOpenGLFunctions_4_3_Core
   QOpenGLPaintDevice *paintDevice;
   QSize size;
 
-  const QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
+  QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
+  QOpenGLExtension_EXT_direct_state_access *getDirectStateAccess() const;
 
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
+  QOpenGLExtension_EXT_direct_state_access *directStateAccess;
 };
 
 #endif  // SRC_GL_H_

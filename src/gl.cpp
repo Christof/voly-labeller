@@ -28,6 +28,13 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
 
+  bool hasDirectStateAccess =
+      context->hasExtension("GL_EXT_direct_state_access");
+  qWarning() << "Has GL_EXT_direct_state_access:" << hasDirectStateAccess;
+  directStateAccess = new QOpenGLExtension_EXT_direct_state_access();
+  directStateAccess->initializeOpenGLFunctions();
+  glCheckError();
+
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
 }
@@ -39,7 +46,13 @@ void Gl::setSize(QSize size)
     paintDevice->setSize(size);
 }
 
-const QOpenGLExtension_NV_shader_buffer_load *Gl::getShaderBufferLoad() const
+QOpenGLExtension_NV_shader_buffer_load *Gl::getShaderBufferLoad() const
 {
   return shaderBufferLoad;
 }
+
+QOpenGLExtension_EXT_direct_state_access *Gl::getDirectStateAccess() const
+{
+  return directStateAccess;
+}
+
