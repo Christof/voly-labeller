@@ -62,6 +62,7 @@ set(SOURCES
   src/labels_model.cpp
   src/volume_reader.cpp
   src/default_scene_creator.cpp
+  src/graphics/buffer.cpp
   ${RESOURCES})
 
 set(SHADER
