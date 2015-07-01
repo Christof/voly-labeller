@@ -8,6 +8,9 @@
 #include <string>
 #include "./gl.h"
 
+namespace Graphics
+{
+
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
   : gl(gl)
@@ -147,3 +150,4 @@ int ShaderProgram::getLocation(const char *name)
   return shaderProgram.uniformLocation(name);
 }
 
+}  // namespace Graphics

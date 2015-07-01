@@ -1,6 +1,6 @@
-#ifndef SRC_MESH_H_
+#ifndef SRC_GRAPHICS_MESH_H_
 
-#define SRC_MESH_H_
+#define SRC_GRAPHICS_MESH_H_
 
 #include <assimp/scene.h>
 #include <assimp/material.h>
@@ -10,9 +10,12 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "./render_data.h"
-#include "./math/obb.h"
+#include "../render_data.h"
+#include "../math/obb.h"
 #include "./renderable.h"
+
+namespace Graphics
+{
 
 class Gl;
 
@@ -44,12 +47,14 @@ class Mesh : public Renderable
   int vertexCount;
   int indexCount;
   unsigned int *indexData;
-  float* positionData;
-  float* normalData;
+  float *positionData;
+  float *normalData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
   float shininess;
 };
 
-#endif  // SRC_MESH_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_MESH_H_

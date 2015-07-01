@@ -1,6 +1,6 @@
-#ifndef SRC_GL_H_
+#ifndef SRC_GRAPHICS_GL_H_
 
-#define SRC_GL_H_
+#define SRC_GRAPHICS_GL_H_
 
 #include <QOpenGLFunctions_4_3_Core>
 #include <QtOpenGLExtensions>
@@ -11,6 +11,13 @@
 #include <iostream>
 #include <cassert>
 #include <string>
+
+
+class QOpenGLContext;
+class QOpenGLPaintDevice;
+
+namespace Graphics
+{
 
 #ifndef __TO_STR
 #define __TO_STR(x) __EVAL_STR(x)
@@ -32,7 +39,7 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glAssert(code)                                                         \
   code;                                                                        \
   {                                                                            \
-    glCheckErrorFunction(__FILE__, __LINE__);                                  \
+    Graphics::glCheckErrorFunction(__FILE__, __LINE__);                                  \
   }
 
 #define glCheckError() glCheckErrorFunction(__FILE__, __LINE__)
@@ -41,9 +48,6 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glAssert(code) code;
 #define glCheckError()
 #endif
-
-class QOpenGLContext;
-class QOpenGLPaintDevice;
 
 /**
  * \brief Provides access to OpenGL functions
@@ -72,4 +76,6 @@ class Gl : public QOpenGLFunctions_4_3_Core
   QOpenGLExtension_EXT_direct_state_access *directStateAccess;
 };
 
-#endif  // SRC_GL_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_GL_H_

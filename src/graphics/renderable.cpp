@@ -2,6 +2,9 @@
 #include <string>
 #include "./render_object.h"
 
+namespace Graphics
+{
+
 Renderable::Renderable(std::string vertexShaderPath,
                        std::string fragmentShaderPath)
   : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath)
@@ -37,3 +40,4 @@ void Renderable::render(Gl *gl, const RenderData &renderData)
   renderObject->release();
 }
 
+}  // namespace Graphics

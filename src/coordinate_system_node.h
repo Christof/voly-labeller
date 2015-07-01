@@ -5,9 +5,8 @@
 #include <memory>
 #include "./node.h"
 #include "./render_data.h"
-
-class Gl;
-class Connector;
+#include "./graphics/connector.h"
+#include "./graphics/gl.h"
 
 /**
  * \brief Node which draws a coordinate system
@@ -21,12 +20,12 @@ class CoordinateSystemNode : public Node
   CoordinateSystemNode();
   virtual ~CoordinateSystemNode();
 
-  void render(Gl *gl, RenderData renderData);
+  void render(Graphics::Gl *gl, RenderData renderData);
 
  private:
-  std::shared_ptr<Connector> x;
-  std::shared_ptr<Connector> y;
-  std::shared_ptr<Connector> z;
+  std::shared_ptr<Graphics::Connector> x;
+  std::shared_ptr<Graphics::Connector> y;
+  std::shared_ptr<Graphics::Connector> z;
 };
 
 #endif  // SRC_COORDINATE_SYSTEM_NODE_H_

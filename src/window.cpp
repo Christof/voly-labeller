@@ -7,7 +7,7 @@
 #include <QAbstractState>
 #include <QAbstractTransition>
 #include <iostream>
-#include "./gl.h"
+#include "./graphics/gl.h"
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
@@ -49,7 +49,7 @@ QSurfaceFormat Window::createSurfaceFormat()
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = new Gl();
+  gl = new Graphics::Gl();
   gl->initialize(context, size());
 
   gl->glEnable(GL_DEPTH_TEST);

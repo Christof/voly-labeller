@@ -13,10 +13,8 @@
 #include "./node.h"
 #include "./math/obb.h"
 #include "./importer.h"
-#include "./connector.h"
-
-class Mesh;
-class Gl;
+#include "./graphics/mesh.h"
+#include "./graphics/gl.h"
 
 /**
  * \brief Node which renders a Mesh
@@ -25,14 +23,15 @@ class MeshNode : public Node
 {
  public:
   /**
-   * \brief Construct the mesh from the given asset filename and mesh index in 
+   * \brief Construct the mesh from the given asset filename and mesh index in
    * that asset file
    */
-  MeshNode(std::string assetFilename, int meshIndex, std::shared_ptr<Mesh> mesh,
+  MeshNode(std::string assetFilename, int meshIndex,
+           std::shared_ptr<Graphics::Mesh> mesh,
            Eigen::Matrix4f transformation);
   virtual ~MeshNode();
 
-  void render(Gl *gl, RenderData renderData);
+  void render(Graphics::Gl *gl, RenderData renderData);
 
   Eigen::Matrix4f getTransformation();
   void setTransformation(Eigen::Matrix4f transformation);
@@ -65,7 +64,7 @@ class MeshNode : public Node
 
   std::string assetFilename;
   int meshIndex;
-  std::shared_ptr<Mesh> mesh;
+  std::shared_ptr<Graphics::Mesh> mesh;
   Eigen::Matrix4f transformation;
 };
 

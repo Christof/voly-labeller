@@ -5,13 +5,13 @@
 #include <string>
 #include <memory>
 #include "./node.h"
-#include "./gl.h"
+#include "./graphics/gl.h"
 #include "./math/obb.h"
+#include "./graphics/quad.h"
+#include "./graphics/cube.h"
 
 struct RenderData;
 class VolumeReader;
-class Quad;
-class Cube;
 
 /**
  * \brief Node which renders a volume
@@ -23,7 +23,7 @@ class VolumeNode : public Node
   explicit VolumeNode(std::string filename);
   virtual ~VolumeNode();
 
-  void render(Gl *gl, RenderData renderData);
+  void render(Graphics::Gl *gl, RenderData renderData);
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
@@ -35,12 +35,12 @@ class VolumeNode : public Node
  private:
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
-  std::unique_ptr<Quad> quad;
-  std::unique_ptr<Cube> cube;
+  std::unique_ptr<Graphics::Quad> quad;
+  std::unique_ptr<Graphics::Cube> cube;
   std::shared_ptr<Math::Obb> obb;
   GLuint texture = 0;
 
-  void initializeTexture(Gl *gl);
+  void initializeTexture(Graphics::Gl *gl);
 
   friend class boost::serialization::access;
   template <class Archive>

@@ -1,10 +1,10 @@
-#include "./test.h"
-#include "../src/shader_program.h"
-#include "../src/utils/path_helper.h"
+#include "../test.h"
+#include "../../src/graphics/shader_program.h"
+#include "../../src/utils/path_helper.h"
 
 TEST(Test_ShaderProgram, replacesASingleInclude)
 {
-  auto output = ShaderProgram::readFileAndHandleIncludes(
+  auto output = Graphics::ShaderProgram::readFileAndHandleIncludes(
       absolutePathOfProjectRelativePath(QString("test/test_shader/single_include.vert")));
 
   ASSERT_EQ(
@@ -19,7 +19,7 @@ TEST(Test_ShaderProgram, replacesASingleInclude)
 
 TEST(Test_ShaderProgram, commentedIncludesAreIgnored)
 {
-  auto output = ShaderProgram::readFileAndHandleIncludes(
+  auto output = Graphics::ShaderProgram::readFileAndHandleIncludes(
       absolutePathOfProjectRelativePath(QString("test/test_shader/commented_include.vert")));
 
   ASSERT_EQ(
@@ -32,7 +32,7 @@ TEST(Test_ShaderProgram, commentedIncludesAreIgnored)
 
 TEST(Test_ShaderProgram, removesVersionFromIncludedFile)
 {
-  auto output = ShaderProgram::readFileAndHandleIncludes(
+  auto output = Graphics::ShaderProgram::readFileAndHandleIncludes(
       absolutePathOfProjectRelativePath(QString("test/test_shader/multiple_version_statements.vert")));
 
   ASSERT_EQ(
@@ -48,7 +48,7 @@ TEST(Test_ShaderProgram, removesVersionFromIncludedFile)
 
 TEST(Test_ShaderProgram, multipleIncludes)
 {
-  auto output = ShaderProgram::readFileAndHandleIncludes(
+  auto output = Graphics::ShaderProgram::readFileAndHandleIncludes(
       absolutePathOfProjectRelativePath(QString("test/test_shader/multiple_includes.vert")));
 
   ASSERT_EQ(

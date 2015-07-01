@@ -1,12 +1,15 @@
-#ifndef SRC_CUBE_H_
+#ifndef SRC_GRAPHICS_CUBE_H_
 
-#define SRC_CUBE_H_
+#define SRC_GRAPHICS_CUBE_H_
 
 #include <Eigen/Core>
 #include <vector>
 #include <string>
-#include "./render_data.h"
+#include "../render_data.h"
 #include "./renderable.h"
+
+namespace Graphics
+{
 
 /**
  * \brief Draws a cube of size 1x1x1 centered at the origin
@@ -28,4 +31,6 @@ class Cube : public Renderable
   static const int indexCount = 36;
 };
 
-#endif  // SRC_CUBE_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_CUBE_H_

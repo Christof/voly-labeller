@@ -8,8 +8,8 @@
 #include <memory>
 #include "./render_data.h"
 #include "./math/obb.h"
+#include "./graphics/gl.h"
 
-class Gl;
 
 /**
  * \brief Base class for nodes which are managed by the
@@ -25,7 +25,7 @@ class Node
   {
   }
 
-  virtual void render(Gl *gl, RenderData renderData) = 0;
+  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
 
   virtual std::shared_ptr<Math::Obb> getObb()
   {

@@ -1,5 +1,9 @@
 #include "./render_object.h"
 #include <string>
+#include "./gl.h"
+
+namespace Graphics
+{
 
 RenderObject::RenderObject(Gl *gl, std::string vertexShaderPath,
                            std::string fragmentShaderPath)
@@ -32,4 +36,6 @@ void RenderObject::releaseBuffers()
   for (auto &buffer : buffers)
     buffer.release();
 }
+
+}  // namespace Graphics
 

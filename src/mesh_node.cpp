@@ -1,10 +1,9 @@
 #include "./mesh_node.h"
 #include <string>
-#include "./mesh.h"
-#include "./gl.h"
+#include "./graphics/gl.h"
 
 MeshNode::MeshNode(std::string assetFilename, int meshIndex,
-                   std::shared_ptr<Mesh> mesh, Eigen::Matrix4f transformation)
+                   std::shared_ptr<Graphics::Mesh> mesh, Eigen::Matrix4f transformation)
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {
@@ -19,7 +18,7 @@ std::shared_ptr<Math::Obb> MeshNode::getObb()
   return mesh->obb;
 }
 
-void MeshNode::render(Gl *gl, RenderData renderData)
+void MeshNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   renderData.modelMatrix = transformation;
   mesh->render(gl, renderData);

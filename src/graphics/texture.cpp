@@ -3,6 +3,9 @@
 #include <QDebug>
 #include <string>
 
+namespace Graphics
+{
+
 Texture::Texture(std::string filename)
 {
   try
@@ -62,3 +65,4 @@ int Texture::getHeight() const
   return height;
 }
 
+}  // namespace Graphics

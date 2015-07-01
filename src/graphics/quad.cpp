@@ -4,6 +4,10 @@
 #include "./shader_program.h"
 #include "./render_object.h"
 
+namespace Graphics
+{
+
+
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
   : Renderable(vertexShaderFilename, fragmentShaderFilename)
 {
@@ -44,3 +48,4 @@ void Quad::draw(Gl *gl)
   glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 }
 
+}  // namespace Graphics

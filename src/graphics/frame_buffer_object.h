@@ -1,8 +1,11 @@
-#ifndef SRC_FRAME_BUFFER_OBJECT_H_
+#ifndef SRC_GRAPHICS_FRAME_BUFFER_OBJECT_H_
 
-#define SRC_FRAME_BUFFER_OBJECT_H_
+#define SRC_GRAPHICS_FRAME_BUFFER_OBJECT_H_
 
 #include <memory>
+
+namespace Graphics
+{
 
 class Gl;
 
@@ -10,13 +13,16 @@ class Gl;
  * \brief Encapsulates a frame buffer with textures for color and depth
  * attachments
  *
- * FrameBufferObject::initialize must be called once, and FrameBufferObject::resize
- * if the window is resized (mind that it must be called from the rendering thread).
+ * FrameBufferObject::initialize must be called once, and
+ *FrameBufferObject::resize
+ * if the window is resized (mind that it must be called from the rendering
+ *thread).
  *
  * The draw into the frame buffer call FrameBufferObject::bind. After drawing
  * call FrameBufferObject::unbind.
  *
- * Using FrameBufferObject::bindColorTexture or FrameBufferObject::bindDepthTexture
+ * Using FrameBufferObject::bindColorTexture or
+ *FrameBufferObject::bindDepthTexture
  * the corresponding textures can be used.
  */
 class FrameBufferObject
@@ -47,4 +53,6 @@ class FrameBufferObject
                      unsigned int format, unsigned int type);
 };
 
-#endif  // SRC_FRAME_BUFFER_OBJECT_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_FRAME_BUFFER_OBJECT_H_

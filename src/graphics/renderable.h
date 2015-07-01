@@ -1,10 +1,14 @@
-#ifndef SRC_RENDERABLE_H_
+#ifndef SRC_GRAPHICS_RENDERABLE_H_
 
-#define SRC_RENDERABLE_H_
+#define SRC_GRAPHICS_RENDERABLE_H_
 
 #include <memory>
 #include <string>
-#include "./render_data.h"
+#include "../render_data.h"
+
+
+namespace Graphics
+{
 
 class Gl;
 class RenderObject;
@@ -35,4 +39,5 @@ class Renderable
   std::shared_ptr<RenderObject> renderObject;
 };
 
-#endif  // SRC_RENDERABLE_H_
+}  // namespace Graphics
+#endif  // SRC_GRAPHICS_RENDERABLE_H_

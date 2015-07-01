@@ -2,6 +2,9 @@
 #include <QDebug>
 #include <QOpenGLPaintDevice>
 
+namespace Graphics
+{
+
 Gl::Gl()
 {
 }
@@ -56,3 +59,4 @@ QOpenGLExtension_EXT_direct_state_access *Gl::getDirectStateAccess() const
   return directStateAccess;
 }
 
+}  // namespace Graphics

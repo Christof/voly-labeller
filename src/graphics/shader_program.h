@@ -1,12 +1,15 @@
-#ifndef SRC_SHADER_PROGRAM_H_
+#ifndef SRC_GRAPHICS_SHADER_PROGRAM_H_
 
-#define SRC_SHADER_PROGRAM_H_
+#define SRC_GRAPHICS_SHADER_PROGRAM_H_
 
 #include <QOpenGLShaderProgram>
 #include <QString>
 #include <Eigen/Core>
 #include <string>
-#include "./graphics/buffer.h"
+#include "./buffer.h"
+
+namespace Graphics
+{
 
 class Gl;
 
@@ -45,4 +48,6 @@ class ShaderProgram
   int getLocation(const char *name);
 };
 
-#endif  // SRC_SHADER_PROGRAM_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_SHADER_PROGRAM_H_

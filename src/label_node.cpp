@@ -4,21 +4,16 @@
 #include <QPoint>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include "./gl.h"
 #include "./importer.h"
-#include "./mesh.h"
-#include "./quad.h"
-#include "./texture.h"
-#include "./connector.h"
 
 LabelNode::LabelNode(Label label) : label(label)
 {
   Importer importer;
 
   anchorMesh = importer.import("assets/anchor.dae", 0);
-  quad = std::make_shared<Quad>();
+  quad = std::make_shared<Graphics::Quad>();
 
-  connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
+  connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
                                           Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
@@ -27,11 +22,11 @@ LabelNode::~LabelNode()
 {
 }
 
-void LabelNode::render(Gl *gl, RenderData renderData)
+void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   if (!texture.get() || textureText != label.text)
   {
-    texture = std::make_shared<Texture>(renderLabelTextToQImage());
+    texture = std::make_shared<Graphics::Texture>(renderLabelTextToQImage());
     texture->initialize(gl);
   }
 
@@ -40,7 +35,7 @@ void LabelNode::render(Gl *gl, RenderData renderData)
   renderLabel(gl, renderData);
 }
 
-void LabelNode::renderConnector(Gl *gl, RenderData renderData)
+void LabelNode::renderConnector(Graphics::Gl *gl, RenderData renderData)
 {
   Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
   auto length = anchorToPosition.norm();
@@ -54,7 +49,7 @@ void LabelNode::renderConnector(Gl *gl, RenderData renderData)
   connector->render(gl, renderData);
 }
 
-void LabelNode::renderAnchor(Gl *gl, RenderData renderData)
+void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
 {
   Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
                                  Eigen::Scaling(0.005f));
@@ -62,7 +57,7 @@ void LabelNode::renderAnchor(Gl *gl, RenderData renderData)
   anchorMesh->render(gl, renderData);
 }
 
-void LabelNode::renderLabel(Gl *gl, RenderData renderData)
+void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
 {
   Eigen::Affine3f labelTransform(
       Eigen::Translation3f(labelPosition) *

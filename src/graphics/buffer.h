@@ -2,7 +2,7 @@
 
 #define SRC_GRAPHICS_BUFFER_H_
 
-#include "../gl.h"
+#include "./gl.h"
 
 namespace Graphics
 {

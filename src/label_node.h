@@ -8,12 +8,11 @@
 #include <string>
 #include "./node.h"
 #include "./labelling/label.h"
-
-class Gl;
-class Mesh;
-class Quad;
-class Texture;
-class Connector;
+#include "./graphics/quad.h"
+#include "./graphics/connector.h"
+#include "./graphics/mesh.h"
+#include "./graphics/gl.h"
+#include "./graphics/texture.h"
 
 /**
  * \brief Node for a label
@@ -26,7 +25,7 @@ class LabelNode : public Node
   explicit LabelNode(Label label);
   virtual ~LabelNode();
 
-  void render(Gl *gl, RenderData renderData);
+  void render(Graphics::Gl *gl, RenderData renderData);
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
@@ -47,15 +46,15 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
-  void renderConnector(Gl *gl, RenderData renderData);
-  void renderAnchor(Gl *gl, RenderData renderData);
-  void renderLabel(Gl *gl, RenderData renderData);
+  void renderConnector(Graphics::Gl *gl, RenderData renderData);
+  void renderAnchor(Graphics::Gl *gl, RenderData renderData);
+  void renderLabel(Graphics::Gl *gl, RenderData renderData);
   QImage *renderLabelTextToQImage();
 
-  std::shared_ptr<Mesh> anchorMesh;
-  std::shared_ptr<Quad> quad;
-  std::shared_ptr<Texture> texture;
-  std::shared_ptr<Connector> connector;
+  std::shared_ptr<Graphics::Mesh> anchorMesh;
+  std::shared_ptr<Graphics::Quad> quad;
+  std::shared_ptr<Graphics::Texture> texture;
+  std::shared_ptr<Graphics::Connector> connector;
 };
 
 namespace boost

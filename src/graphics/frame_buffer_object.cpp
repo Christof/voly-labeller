@@ -2,6 +2,9 @@
 #include <QDebug>
 #include "./gl.h"
 
+namespace Graphics
+{
+
 FrameBufferObject::~FrameBufferObject()
 {
   glAssert(gl->glDeleteBuffers(1, &framebuffer));
@@ -91,3 +94,4 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
                             component, type, NULL));
 }
 
+}  // namespace Graphics

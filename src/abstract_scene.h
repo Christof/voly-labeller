@@ -3,15 +3,16 @@
 #define SRC_ABSTRACT_SCENE_H_
 
 #include <QKeyEvent>
+#include "./graphics/gl.h"
 
 class QOpenGLContext;
-class Gl;
 
 /**
  * \brief Base class for all scenes.
  *
  * It consists of the following virtual methods:
- * - AbstractScene::initialize is called before the scene is rendered the first time
+ * - AbstractScene::initialize is called before the scene is rendered the first
+ *   time
  * - AbstractScene::update is called every frame to update the scene
  * - AbstractScene::render is called every frame to render the scene
  * - AbstractScene::resize is called when the window size is changed
@@ -27,7 +28,7 @@ class AbstractScene
   {
   }
 
-  void setContext(QOpenGLContext *context, Gl *gl)
+  void setContext(QOpenGLContext *context, Graphics::Gl *gl)
   {
     this->context = context;
     this->gl = gl;
@@ -43,7 +44,7 @@ class AbstractScene
 
  protected:
   QOpenGLContext *context;
-  Gl *gl;
+  Graphics::Gl *gl;
 };
 
 #endif  // SRC_ABSTRACT_SCENE_H_

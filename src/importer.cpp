@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <string>
 #include <vector>
-#include "./mesh.h"
 #include "./utils/path_helper.h"
 
 Importer::Importer()
@@ -36,19 +35,19 @@ const aiScene *Importer::readScene(std::string filename)
   return scene;
 }
 
-std::shared_ptr<Mesh> Importer::import(std::string filename, int meshIndex)
+std::shared_ptr<Graphics::Mesh> Importer::import(std::string filename, int meshIndex)
 {
   const aiScene *scene = readScene(filename);
   auto importedMesh = scene->mMeshes[meshIndex];
-  return std::shared_ptr<Mesh>(
-      new Mesh(importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+  return std::shared_ptr<Graphics::Mesh>(
+      new Graphics::Mesh(importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
 }
 
-std::vector<std::shared_ptr<Mesh>> Importer::importAll(std::string filename)
+std::vector<std::shared_ptr<Graphics::Mesh>> Importer::importAll(std::string filename)
 {
   const aiScene *scene = readScene(filename);
 
-  std::vector<std::shared_ptr<Mesh>> result;
+  std::vector<std::shared_ptr<Graphics::Mesh>> result;
   for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
     result.push_back(import(filename, i));
 

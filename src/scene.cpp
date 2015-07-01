@@ -4,7 +4,7 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
-#include "./gl.h"
+#include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./render_data.h"
 #include "./camera_controller.h"
@@ -13,8 +13,6 @@
 #include "./camera_move_controller.h"
 #include "./nodes.h"
 #include "./label_node.h"
-#include "./quad.h"
-#include "./frame_buffer_object.h"
 #include "./forces/labeller_frame_data.h"
 #include "./eigen_qdebug.h"
 
@@ -34,7 +32,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   invokeManager->addHandler("cameraZoom", cameraZoomController.get());
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 
-  fbo = std::unique_ptr<FrameBufferObject>(new FrameBufferObject());
+  fbo = std::unique_ptr<Graphics::FrameBufferObject>(
+      new Graphics::FrameBufferObject());
 }
 
 Scene::~Scene()
@@ -46,7 +45,7 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Quad>();
+  quad = std::make_shared<Graphics::Quad>();
 
   fbo->initialize(gl, width, height);
 }

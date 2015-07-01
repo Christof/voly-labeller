@@ -4,7 +4,6 @@
 #include <vector>
 #include "./utils/persister.h"
 #include "./importer.h"
-#include "./gl.h"
 #include "./mesh_node.h"
 #include "./label_node.h"
 #include "./obb_node.h"
@@ -79,7 +78,7 @@ void Nodes::importFrom(QUrl url)
   importFrom(url.path().toStdString());
 }
 
-void Nodes::render(Gl *gl, RenderData renderData)
+void Nodes::render(Graphics::Gl *gl, RenderData renderData)
 {
   for (auto &node : nodes)
     node->render(gl, renderData);
