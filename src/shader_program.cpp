@@ -93,6 +93,12 @@ void ShaderProgram::setUniform(const char *name, int value)
   glAssert(gl->glProgramUniform1i(getId(), getLocation(name), value));
 }
 
+void ShaderProgram::setUniform(const char *name, const Graphics::Buffer &value)
+{
+  glAssert(gl->getShaderBufferLoad()->glProgramUniformui64NV(
+      getId(), getLocation(name), value.getGpuPointer()));
+}
+
 QString readFile(QString path)
 {
   QFile file(path);
