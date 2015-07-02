@@ -8,7 +8,7 @@
 #include <vector>
 #include <memory>
 #include "./node.h"
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./graphics/gl.h"
 
 class LabelNode;

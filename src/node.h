@@ -6,7 +6,7 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <memory>
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./math/obb.h"
 #include "./graphics/gl.h"
 

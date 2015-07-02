@@ -1,6 +1,6 @@
-#ifndef SRC_RENDER_DATA_H_
+#ifndef SRC_GRAPHICS_RENDER_DATA_H_
 
-#define SRC_RENDER_DATA_H_
+#define SRC_GRAPHICS_RENDER_DATA_H_
 
 #include <Eigen/Core>
 
@@ -20,4 +20,4 @@ struct RenderData
   Eigen::Vector3f cameraPosition;
 };
 
-#endif  // SRC_RENDER_DATA_H_
+#endif  // SRC_GRAPHICS_RENDER_DATA_H_

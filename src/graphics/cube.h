@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <string>
-#include "../render_data.h"
+#include "./render_data.h"
 #include "./renderable.h"
 
 namespace Graphics

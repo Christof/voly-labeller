@@ -10,7 +10,7 @@
 #include <vector>
 #include <memory>
 #include <string>
-#include "../render_data.h"
+#include "./render_data.h"
 #include "../math/obb.h"
 #include "./renderable.h"
 

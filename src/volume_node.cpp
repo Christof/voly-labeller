@@ -1,6 +1,6 @@
 #include "./volume_node.h"
 #include <string>
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./volume_reader.h"
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)

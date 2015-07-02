@@ -6,7 +6,7 @@
 #include <vector>
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
 #include "./camera_zoom_controller.h"
