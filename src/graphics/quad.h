@@ -7,7 +7,6 @@
 #include "../render_data.h"
 #include "./renderable.h"
 
-
 namespace Graphics
 {
 
@@ -25,9 +24,11 @@ class Quad : public Graphics::Renderable
   virtual ~Quad();
 
  protected:
-  virtual void createBuffers(std::shared_ptr<Graphics::RenderObject> renderObject);
-  virtual void setUniforms(std::shared_ptr<Graphics::ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
+  virtual void
+  createBuffers(std::shared_ptr<Graphics::RenderObject> renderObject);
+  virtual void
+  setUniforms(std::shared_ptr<Graphics::ShaderProgram> shaderProgram,
+              const RenderData &renderData);
   virtual void draw(Gl *gl);
 
  private:

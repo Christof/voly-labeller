@@ -12,7 +12,6 @@
 #include <cassert>
 #include <string>
 
-
 class QOpenGLContext;
 class QOpenGLPaintDevice;
 
@@ -39,7 +38,7 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glAssert(code)                                                         \
   code;                                                                        \
   {                                                                            \
-    Graphics::glCheckErrorFunction(__FILE__, __LINE__);                                  \
+    Graphics::glCheckErrorFunction(__FILE__, __LINE__);                        \
   }
 
 #define glCheckError() glCheckErrorFunction(__FILE__, __LINE__)

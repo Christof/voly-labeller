@@ -47,6 +47,7 @@ class Buffer
   uint size;
   static const GLuint bufferType = GL_TEXTURE_BUFFER;
 };
-}  // namespace
+
+}  // namespace Graphics
 
 #endif  // SRC_GRAPHICS_BUFFER_H_

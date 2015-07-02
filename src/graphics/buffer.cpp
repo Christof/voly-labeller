@@ -40,7 +40,6 @@ GLuint64 Buffer::getGpuPointer() const
   return gpuPointer;
 }
 
-
 void Buffer::adopt(Buffer const &buffer)
 {
   id = buffer.id;
@@ -149,8 +148,8 @@ void Buffer::getData(void *raw, uint byteCount, uint offset)
   assert(id != 0);
   assert(offset + byteCount <= size);
 
-  glAssert(gl->getDirectStateAccess()->glGetNamedBufferSubDataEXT(id, offset,
-                                                                  byteCount, raw));
+  glAssert(gl->getDirectStateAccess()->glGetNamedBufferSubDataEXT(
+      id, offset, byteCount, raw));
 }
 
 Buffer::~Buffer()

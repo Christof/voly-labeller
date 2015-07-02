@@ -3,7 +3,8 @@
 #include "./graphics/gl.h"
 
 MeshNode::MeshNode(std::string assetFilename, int meshIndex,
-                   std::shared_ptr<Graphics::Mesh> mesh, Eigen::Matrix4f transformation)
+                   std::shared_ptr<Graphics::Mesh> mesh,
+                   Eigen::Matrix4f transformation)
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {

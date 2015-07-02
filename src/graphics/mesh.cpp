@@ -131,5 +131,5 @@ void Mesh::draw(Gl *gl)
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
-}  // namespace Grapics
+}  // namespace Graphics
 
