@@ -24,6 +24,7 @@ class Buffer
   GLuint getType() const;
   uint getSize() const;
   GLuint64 getGpuPointer() const;
+  bool isInitialized() const;
 
   void adopt(Buffer const &buffer);
   void forget();

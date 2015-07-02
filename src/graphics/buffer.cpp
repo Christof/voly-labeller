@@ -40,6 +40,11 @@ GLuint64 Buffer::getGpuPointer() const
   return gpuPointer;
 }
 
+bool Buffer::isInitialized() const
+{
+  return id > 0;
+};
+
 void Buffer::adopt(Buffer const &buffer)
 {
   id = buffer.id;
