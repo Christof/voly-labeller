@@ -64,6 +64,7 @@ set(SOURCES
   src/graphics/mesh.cpp
   src/graphics/texture.cpp
   src/graphics/frame_buffer_object.cpp
+  src/graphics/ha_buffer.cpp
   ${RESOURCES})
 
 set(SHADER
