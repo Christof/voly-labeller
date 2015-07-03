@@ -1,5 +1,6 @@
 #include "./ha_buffer.h"
 #include "./shader_program.h"
+#include <iostream>
 
 namespace Graphics
 {
@@ -10,11 +11,12 @@ HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 
 void HABuffer::initialize(Gl *gl)
 {
-  initializeShadersHash(gl);
-  initializeBufferHash(gl);
+  this->gl = gl;
+  initializeShadersHash();
+  initializeBufferHash();
 }
 
-void HABuffer::initializeShadersHash(Gl *gl)
+void HABuffer::initializeShadersHash()
 {
 
   printf("initShaders %d %d\n", size(0), size(1));
@@ -73,7 +75,7 @@ void HABuffer::initializeShadersHash(Gl *gl)
   */
 }
 
-void HABuffer::initializeBufferHash(Gl *gl)
+void HABuffer::initializeBufferHash()
 {
   habufferScreenSize = std::max(size[0], size[1]);
   uint num_records = habufferScreenSize * habufferScreenSize * 8;
@@ -98,7 +100,8 @@ void HABuffer::initializeBufferHash(Gl *gl)
     CountsBuffer.resize(habufferCountsSize * sizeof(uint));
 
   if (!FragmentDataBuffer.isInitialized())
-    FragmentDataBuffer.initialize(gl, habufferNumRecords * sizeof(FragmentData));
+    FragmentDataBuffer.initialize(gl,
+                                  habufferNumRecords * sizeof(FragmentData));
   else
     FragmentDataBuffer.resize(habufferNumRecords * sizeof(FragmentData));
 
@@ -119,6 +122,86 @@ void HABuffer::initializeBufferHash(Gl *gl)
   setOrtho(ProjClear, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
   setOrtho(ProjResolve, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
   */
+}
+
+void HABuffer::begin(const RenderData &renderData)
+{
+  buildShader->setUniform("u_Projection", renderData.projectionMatrix);
+  buildShader->setUniform("u_View", renderData.viewMatrix);
+
+#if !USE_TEXTURE
+  Eigen::Matrix4f modelViewMatrixIT = modelViewMatrix.inverse().transpose();
+  buildShader->setUniform("u_ModelView_IT", modelViewMatrixIT);
+#endif
+
+  // checkGLError("displayRenderHABuffer - before drawModel");
+
+  // Render the model
+
+  glAssert(gl->glDisable(GL_CULL_FACE));
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+}
+
+bool HABuffer::end()
+{
+#if 1
+  glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
+#endif
+  glAssert(gl->glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT));
+
+  uint numInserted = 1;
+  CountsBuffer.getData(&numInserted, sizeof(uint),
+                       CountsBuffer.getSize() - sizeof(uint));
+
+  bool overflow = false;
+  if (numInserted >= habufferNumRecords)
+  {
+    overflow = true;
+    printf("Frame was interrupted: %u\n", numInserted);
+  }
+  else if (numInserted > habufferNumRecords * 0.8)
+  {
+    printf("inserted %u / %u\n", numInserted, habufferNumRecords);
+  }
+
+  displayStatistics("after render");
+
+  return overflow;
+}
+
+void HABuffer::displayStatistics(const char *label)
+{
+
+  uint *lcounts = new uint[habufferCountsSize];
+
+  CountsBuffer.getData(lcounts, CountsBuffer.getSize());
+
+  int avgdepth = 0;
+  int num = 0;
+  for (uint c = 0; c < habufferCountsSize - 1; c++)
+  {
+    if (lcounts[c] > 0)
+    {
+      num++;
+      avgdepth += lcounts[c];
+    }
+  }
+  if (num == 0)
+    num = 1;
+
+  double rec_percentage = lcounts[habufferCountsSize - 1] /
+                          static_cast<double>(habufferNumRecords) * 100.0;
+
+  if (rec_percentage > 80.0)
+  {
+    std::cerr << label << " habufferCountsSize:" << habufferCountsSize
+              << "<avg:" << avgdepth / (float)num
+              << " max: " << lcounts[habufferCountsSize - 1] << "/"
+              << habufferNumRecords << "(" << rec_percentage << "% " << '>'
+              << std::endl;
+  }
+
+  delete[] lcounts;
 }
 
 }  // namespace Graphics

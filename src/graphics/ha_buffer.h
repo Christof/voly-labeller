@@ -36,7 +36,10 @@ class HABuffer
 
   void initialize(Gl *gl);
 
-  bool build(const RenderData &renderData);
+  // build is now begin() and end(); because in the middle the models are
+  // rendered
+  void begin(const RenderData &renderData);
+  bool end();
   void render();
   void clear();
 
@@ -48,10 +51,12 @@ class HABuffer
                       */
 
  private:
-  void initializeShadersHash(Gl *gl);
-  void initializeBufferHash(Gl *gl);
+  void initializeShadersHash();
+  void initializeBufferHash();
+  void displayStatistics(const char *label);
 
   Eigen::Vector2i size;
+  Gl *gl;
   std::unique_ptr<ShaderProgram> buildShader;
   std::unique_ptr<ShaderProgram> renderShader;
   std::unique_ptr<ShaderProgram> clearShader;
