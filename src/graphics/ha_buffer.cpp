@@ -178,7 +178,7 @@ void HABuffer::render()
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  //drawQuad(renderShader);
+  // drawQuad(renderShader);
   // TODO(SIRK): draw Quad
 
   glAssert(gl->glDepthMask(GL_TRUE));
@@ -199,6 +199,56 @@ void HABuffer::render()
     printf("Render time %lf ms\n", rendertime);
   }
   */
+}
+
+void HABuffer::clear()
+{
+  static uint offsets[512];
+
+  for (int i = 0; i < 512; i++)
+  {
+    offsets[i] = rand() ^ (rand() << 8) ^ (rand() << 16);
+    offsets[i] = offsets[i] % habufferTableSize;
+  }
+
+  Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
+  clearShader->setUniform("u_Projection", identity);
+  clearShader->setUniform("u_NumRecords", habufferNumRecords);
+  clearShader->setUniform("u_ScreenSz", habufferScreenSize);
+  clearShader->setUniform("u_Records", RecordsBuffer);
+  clearShader->setUniform("u_Counts", CountsBuffer);
+
+  buildShader->setUniform("u_NumRecords", habufferNumRecords);
+  buildShader->setUniform("u_ScreenSz", habufferScreenSize);
+  buildShader->setUniform("u_HashSz", habufferTableSize);
+  buildShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
+
+  buildShader->setUniform("u_ZNear", habufferZNear);
+  buildShader->setUniform("u_ZFar", habufferZFar);
+  buildShader->setUniform("Opacity", habufferOpacity);
+  buildShader->setUniform("u_Records", RecordsBuffer);
+  buildShader->setUniform("u_Counts", CountsBuffer);
+  buildShader->setUniform("u_FragmentData", FragmentDataBuffer);
+
+  renderShader->setUniform("u_ScreenSz", habufferScreenSize);
+  renderShader->setUniform("u_HashSz", habufferTableSize);
+  renderShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
+  renderShader->setUniform("u_Records", RecordsBuffer);
+  renderShader->setUniform("u_Counts", CountsBuffer);
+  renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
+
+  // Render the full screen quad
+  glAssert(gl->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE,
+                           GL_FALSE));  // no effect on screen
+
+  // drawQuad(clearShader);
+  // TODO(SIRK): draw Quad
+
+  glAssert(gl->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE,
+                           GL_TRUE));  // reenable screen drawing
+
+  // Ensure that all global memory write are done before starting to render
+  glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
 }
 
 void HABuffer::displayStatistics(const char *label)

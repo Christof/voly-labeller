@@ -70,6 +70,11 @@ class HABuffer
   Buffer RecordsBuffer;
   Buffer CountsBuffer;
   Buffer FragmentDataBuffer;
+
+  float habufferZNear = 0.01f;
+  float habufferZFar = 20.0f;
+  float habufferOpacity = 0.5f;
+  float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
 };
 
 }  // namespace Graphics
