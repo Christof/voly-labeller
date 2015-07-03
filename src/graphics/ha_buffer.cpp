@@ -118,11 +118,6 @@ void HABuffer::initializeBufferHash()
            (habufferScreenSize * habufferScreenSize + 1) * sizeof(uint)) /
           1024) /
              1024.0f);
-
-  /*
-  setOrtho(ProjClear, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-  setOrtho(ProjResolve, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-  */
 }
 
 void HABuffer::begin(const RenderData &renderData)
@@ -168,6 +163,42 @@ bool HABuffer::end()
   displayStatistics("after render");
 
   return overflow;
+}
+
+void HABuffer::render()
+{
+  Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
+  renderShader->setUniform("u_Projection", identity);
+  renderShader->setUniform("u_View", identity);
+  renderShader->setUniform("u_Model", identity);
+
+  // Ensure that all global memory write are done before resolving
+  glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
+
+  glAssert(gl->glDepthMask(GL_FALSE));
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+
+  //drawQuad(renderShader);
+  // TODO(SIRK): draw Quad
+
+  glAssert(gl->glDepthMask(GL_TRUE));
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
+
+  // TODO(SIRK): print timing
+  /*
+  float tm_threshold = TIMING_THRESHOLD;
+  float cleartime = g_TmClear.waitResult();
+  float buildtime = g_TmBuild.waitResult();
+  float rendertime = g_TmRender.waitResult();
+  if (cleartime > tm_threshold ||
+      buildtime > tm_threshold ||
+      rendertime > tm_threshold)
+  {
+    printf("Clear time %lf ms\n", cleartime);
+    printf("Build time %lf ms\n", buildtime);
+    printf("Render time %lf ms\n", rendertime);
+  }
+  */
 }
 
 void HABuffer::displayStatistics(const char *label)
