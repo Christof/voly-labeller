@@ -107,6 +107,18 @@ void ShaderProgram::setUniform(const char *name, const Graphics::Buffer &value)
       getId(), getLocation(name), value.getGpuPointer()));
 }
 
+void ShaderProgram::setUniformAsVec2Array(const char *name, float *values,
+                                          int count)
+{
+  glAssert(gl->glProgramUniform2fv(getId(), getLocation(name), count, values));
+}
+
+void ShaderProgram::setUniformAsVec2Array(const char *name,
+                                          unsigned int *values, int count)
+{
+  glAssert(gl->glProgramUniform2uiv(getId(), getLocation(name), count, values));
+}
+
 QString readFile(QString path)
 {
   QFile file(path);

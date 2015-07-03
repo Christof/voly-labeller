@@ -40,6 +40,9 @@ class ShaderProgram
   void setUniform(const char *name, unsigned int value);
   void setUniform(const char *name, const Graphics::Buffer &value);
 
+  void setUniformAsVec2Array(const char *name, float *values, int count);
+  void setUniformAsVec2Array(const char *name, unsigned int *values, int count);
+
   static QString readFileAndHandleIncludes(QString path);
 
  private:
