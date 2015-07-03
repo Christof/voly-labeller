@@ -2,8 +2,8 @@
 
 #define SRC_GRAPHICS_HA_BUFFER_H_
 
-#include <memory>
 #include <Eigen/Core>
+#include <memory>
 #include "./render_data.h"
 #include "./gl.h"
 #include "./buffer.h"
@@ -11,7 +11,7 @@
 namespace Graphics
 {
 
-// TODO change with size
+// TODO(SIRK) change with size
 struct FragmentData
 {
   float color[4];
@@ -32,7 +32,7 @@ class ShaderProgram;
 class HABuffer
 {
  public:
-  HABuffer(Eigen::Vector2i size);
+  explicit HABuffer(Eigen::Vector2i size);
 
   void initialize(Gl *gl);
 

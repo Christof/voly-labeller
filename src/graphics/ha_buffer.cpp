@@ -1,6 +1,7 @@
 #include "./ha_buffer.h"
-#include "./shader_program.h"
 #include <iostream>
+#include <algorithm>
+#include "./shader_program.h"
 
 namespace Graphics
 {
@@ -18,7 +19,6 @@ void HABuffer::initialize(Gl *gl)
 
 void HABuffer::initializeShadersHash()
 {
-
   printf("initShaders %d %d\n", size(0), size(1));
 
   buildShader = std::unique_ptr<ShaderProgram>(new ShaderProgram(
@@ -80,7 +80,8 @@ void HABuffer::initializeBufferHash()
   habufferScreenSize = std::max(size[0], size[1]);
   uint num_records = habufferScreenSize * habufferScreenSize * 8;
   habufferTableSize =
-      std::max(habufferScreenSize, (uint)ceil(sqrt((float)num_records)));
+      std::max(habufferScreenSize,
+               static_cast<uint>(ceil(sqrt(static_cast<float>(num_records)))));
   habufferNumRecords = habufferTableSize * habufferTableSize;
   habufferCountsSize = habufferScreenSize * habufferScreenSize + 1;
   printf("HA-Buffer: Screen size: %d %d\n"
@@ -171,7 +172,6 @@ bool HABuffer::end()
 
 void HABuffer::displayStatistics(const char *label)
 {
-
   uint *lcounts = new uint[habufferCountsSize];
 
   CountsBuffer.getData(lcounts, CountsBuffer.getSize());
@@ -195,7 +195,7 @@ void HABuffer::displayStatistics(const char *label)
   if (rec_percentage > 80.0)
   {
     std::cerr << label << " habufferCountsSize:" << habufferCountsSize
-              << "<avg:" << avgdepth / (float)num
+              << "<avg:" << avgdepth / static_cast<float>(num)
               << " max: " << lcounts[habufferCountsSize - 1] << "/"
               << habufferNumRecords << "(" << rec_percentage << "% " << '>'
               << std::endl;
