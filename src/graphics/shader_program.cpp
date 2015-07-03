@@ -96,6 +96,11 @@ void ShaderProgram::setUniform(const char *name, int value)
   glAssert(gl->glProgramUniform1i(getId(), getLocation(name), value));
 }
 
+void ShaderProgram::setUniform(const char *name, unsigned int value)
+{
+  glAssert(gl->glProgramUniform1ui(getId(), getLocation(name), value));
+}
+
 void ShaderProgram::setUniform(const char *name, const Graphics::Buffer &value)
 {
   glAssert(gl->getShaderBufferLoad()->glProgramUniformui64NV(

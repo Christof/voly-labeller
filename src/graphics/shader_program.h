@@ -37,6 +37,7 @@ class ShaderProgram
   void setUniform(const char *name, Eigen::Vector2f vector);
   void setUniform(const char *name, float value);
   void setUniform(const char *name, int value);
+  void setUniform(const char *name, unsigned int value);
   void setUniform(const char *name, const Graphics::Buffer &value);
 
   static QString readFileAndHandleIncludes(QString path);
