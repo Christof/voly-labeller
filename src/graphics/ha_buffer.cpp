@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include "./shader_program.h"
+#include "./quad.h"
 
 namespace Graphics
 {
@@ -13,6 +14,9 @@ HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 void HABuffer::initialize(Gl *gl)
 {
   this->gl = gl;
+
+  quad = std::make_shared<Quad>();
+  quad->skipSettingUniforms = true;
   initializeShadersHash();
   initializeBufferHash();
 }
@@ -178,8 +182,8 @@ void HABuffer::render()
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  // drawQuad(renderShader);
-  // TODO(SIRK): draw Quad
+  quad->setShaderProgram(renderShader);
+  quad->render(gl, RenderData());
 
   glAssert(gl->glDepthMask(GL_TRUE));
   glAssert(gl->glEnable(GL_DEPTH_TEST));
@@ -241,8 +245,8 @@ void HABuffer::clear()
   glAssert(gl->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE,
                            GL_FALSE));  // no effect on screen
 
-  // drawQuad(clearShader);
-  // TODO(SIRK): draw Quad
+  quad->setShaderProgram(clearShader);
+  quad->render(gl, RenderData());
 
   glAssert(gl->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE,
                            GL_TRUE));  // reenable screen drawing

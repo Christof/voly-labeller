@@ -23,6 +23,7 @@ struct FragmentData
 #define USE_TEXTURE 1
 
 class ShaderProgram;
+class Quad;
 
 /**
  * \brief
@@ -57,6 +58,7 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
+  std::shared_ptr<Quad> quad;
   std::shared_ptr<ShaderProgram> buildShader;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
