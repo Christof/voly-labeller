@@ -40,4 +40,9 @@ void Renderable::render(Gl *gl, const RenderData &renderData)
   renderObject->release();
 }
 
+void Renderable::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
+{
+  renderObject->shaderProgram = shaderProgram;
+}
+
 }  // namespace Graphics
