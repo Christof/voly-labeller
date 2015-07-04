@@ -11,6 +11,7 @@
 #include "./labelling/labels.h"
 #include "./graphics/quad.h"
 #include "./graphics/frame_buffer_object.h"
+#include "./graphics/ha_buffer.h"
 
 class Nodes;
 class InvokeManager;
@@ -55,6 +56,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
+  std::unique_ptr<Graphics::HABuffer> haBuffer;
   FrustumOptimizer frustumOptimizer;
 
   int width;

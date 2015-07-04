@@ -48,6 +48,9 @@ void Scene::initialize()
   quad = std::make_shared<Graphics::Quad>();
 
   fbo->initialize(gl, width, height);
+  haBuffer = std::unique_ptr<Graphics::HABuffer>(
+      new Graphics::HABuffer(Eigen::Vector2i(width, height)));
+  haBuffer->initialize(gl);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
