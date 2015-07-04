@@ -57,9 +57,9 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::unique_ptr<ShaderProgram> buildShader;
-  std::unique_ptr<ShaderProgram> renderShader;
-  std::unique_ptr<ShaderProgram> clearShader;
+  std::shared_ptr<ShaderProgram> buildShader;
+  std::shared_ptr<ShaderProgram> renderShader;
+  std::shared_ptr<ShaderProgram> clearShader;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;

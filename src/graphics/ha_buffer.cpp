@@ -21,12 +21,12 @@ void HABuffer::initializeShadersHash()
 {
   printf("initShaders %d %d\n", size(0), size(1));
 
-  buildShader = std::unique_ptr<ShaderProgram>(new ShaderProgram(
-      gl, ":shader/buildHABuffer.vert", ":shader/buildHABuffer.frag"));
-  renderShader = std::unique_ptr<ShaderProgram>(new ShaderProgram(
-      gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag"));
-  clearShader = std::unique_ptr<ShaderProgram>(new ShaderProgram(
-      gl, ":shader/clearHABuffer.vert", ":shader/clearHABuffer.frag"));
+  buildShader = std::make_shared<ShaderProgram>(
+      gl, ":shader/buildHABuffer.vert", ":shader/buildHABuffer.frag");
+  renderShader = std::make_shared<ShaderProgram>(
+      gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
+  clearShader = std::make_shared<ShaderProgram>(
+      gl, ":shader/clearHABuffer.vert", ":shader/clearHABuffer.frag");
 
   /*
   /// clear shader parameter initialization
