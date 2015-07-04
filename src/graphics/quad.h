@@ -23,6 +23,7 @@ class Quad : public Graphics::Renderable
   Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename);
   virtual ~Quad();
 
+  bool skipSettingUniforms = false;
  protected:
   virtual void
   createBuffers(std::shared_ptr<Graphics::RenderObject> renderObject);
