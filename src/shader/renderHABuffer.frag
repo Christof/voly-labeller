@@ -1,6 +1,6 @@
 #version 440
-#extension GL_NV_shader_buffer_load  : enable
-#extension GL_NV_gpu_shader5         : enable
+#extension GL_NV_shader_buffer_load : enable
+#extension GL_NV_gpu_shader5 : enable
 #extension GL_NV_shader_atomic_int64 : enable
 
 // --------------------------------------------
@@ -9,34 +9,34 @@
 
 // --------------------------------------------
 
-in  vec4  u_Pos;
+in vec4 u_Pos;
 
-out vec4  o_PixColor;
-layout (depth_any) out float gl_FragDepth;
+out vec4 o_PixColor;
+layout(depth_any) out float gl_FragDepth;
 
 // --------------------------------------------
 
-//uniform float InnerDensity  = 1.0;
-//uniform float InnerOpacity  = 1.0;
-//uniform float InnerExponent = 1.5;
-//uniform vec3  InnerColor    = vec3(0.5,0.5,0.5);
-uniform vec3  BkgColor      = vec3(1.0,1.0,1.0);
-//uniform vec3  BkgColor      = vec3(0.0,0.0,0.0);
+// uniform float InnerDensity  = 1.0;
+// uniform float InnerOpacity  = 1.0;
+// uniform float InnerExponent = 1.5;
+// uniform vec3  InnerColor    = vec3(0.5,0.5,0.5);
+uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
+// uniform vec3  BkgColor      = vec3(0.0,0.0,0.0);
 
 uniform float ZNear;
 uniform float ZFar;
 
 // --------------------------------------------
 
-#define M 64 // Maximum number of fragments for post sort
+#define M 64  // Maximum number of fragments for post sort
 
 // --------------------------------------------
 
 // Blending equation for in-order traversal
 
-vec4 blend(vec4 clr,vec4 srf)
+vec4 blend(vec4 clr, vec4 srf)
 {
-  return clr + (1.0 - clr.w) * vec4(srf.xyz * srf.w , srf.w);  
+  return clr + (1.0 - clr.w) * vec4(srf.xyz * srf.w, srf.w);
 }
 
 // --------------------------------------------

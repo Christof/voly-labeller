@@ -17,9 +17,9 @@ out vec3 v_Vertex;
 out vec2 v_Tex;
 out flat int v_drawID;
 
-layout (std140, binding = 0) buffer CB0
+layout(std140, binding = 0) buffer CB0
 {
-    mat4 Transforms[];
+  mat4 Transforms[];
 };
 
 void main()
