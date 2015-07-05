@@ -132,6 +132,18 @@ void HABuffer::begin(const RenderData &renderData)
   buildShader->setUniform("u_Projection", renderData.projectionMatrix);
   buildShader->setUniform("u_View", renderData.viewMatrix);
 
+  buildShader->setUniform("u_NumRecords", habufferNumRecords);
+  buildShader->setUniform("u_ScreenSz", habufferScreenSize);
+  buildShader->setUniform("u_HashSz", habufferTableSize);
+  buildShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
+
+  buildShader->setUniform("u_ZNear", habufferZNear);
+  buildShader->setUniform("u_ZFar", habufferZFar);
+  buildShader->setUniform("Opacity", habufferOpacity);
+  buildShader->setUniform("u_Records", RecordsBuffer);
+  buildShader->setUniform("u_Counts", CountsBuffer);
+  buildShader->setUniform("u_FragmentData", FragmentDataBuffer);
+
 #if !USE_TEXTURE
   Eigen::Matrix4f modelViewMatrixIT = modelViewMatrix.inverse().transpose();
   buildShader->setUniform("u_ModelView_IT", modelViewMatrixIT);
@@ -180,6 +192,13 @@ void HABuffer::render()
   renderShader->setUniform("u_View", identity);
   renderShader->setUniform("u_Model", identity);
 
+  renderShader->setUniform("u_ScreenSz", habufferScreenSize);
+  renderShader->setUniform("u_HashSz", habufferTableSize);
+  renderShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
+  renderShader->setUniform("u_Records", RecordsBuffer);
+  renderShader->setUniform("u_Counts", CountsBuffer);
+  renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
+
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
 
@@ -211,8 +230,6 @@ void HABuffer::render()
 
 void HABuffer::clear()
 {
-  static uint offsets[512];
-
   for (int i = 0; i < 512; i++)
   {
     offsets[i] = rand() ^ (rand() << 8) ^ (rand() << 16);
@@ -226,25 +243,6 @@ void HABuffer::clear()
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
   clearShader->setUniform("u_Records", RecordsBuffer);
   clearShader->setUniform("u_Counts", CountsBuffer);
-
-  buildShader->setUniform("u_NumRecords", habufferNumRecords);
-  buildShader->setUniform("u_ScreenSz", habufferScreenSize);
-  buildShader->setUniform("u_HashSz", habufferTableSize);
-  buildShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
-
-  buildShader->setUniform("u_ZNear", habufferZNear);
-  buildShader->setUniform("u_ZFar", habufferZFar);
-  buildShader->setUniform("Opacity", habufferOpacity);
-  buildShader->setUniform("u_Records", RecordsBuffer);
-  buildShader->setUniform("u_Counts", CountsBuffer);
-  buildShader->setUniform("u_FragmentData", FragmentDataBuffer);
-
-  renderShader->setUniform("u_ScreenSz", habufferScreenSize);
-  renderShader->setUniform("u_HashSz", habufferTableSize);
-  renderShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
-  renderShader->setUniform("u_Records", RecordsBuffer);
-  renderShader->setUniform("u_Counts", CountsBuffer);
-  renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
 
   // Render the full screen quad
   glAssert(gl->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE,
