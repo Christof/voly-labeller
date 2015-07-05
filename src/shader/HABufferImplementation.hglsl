@@ -16,109 +16,122 @@ Please visit http://www.antexel.com/research/gpupro5 for updates.
 */
 // -------------------------------------------------
 
-#define MAX_DEPTH              (1u<<24u) // limited to 24 bits
+#define MAX_DEPTH (1u << 24u)  // limited to 24 bits
 
 // -------------------------------------------------
 
 struct FragmentData
 {
- vec4 color;
- vec4 pos;
+  vec4 color;
+  vec4 pos;
 };
 
-uint64_t atomicMax64(coherent uint64_t *ptr,uint64_t val)
+uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 {
   uint64_t cur = *ptr;
   bool done = (val <= cur);
-  while ( ! done ) {
+  while (!done)
+  {
     uint64_t prev = cur;
-    cur = atomicCompSwap( ptr, cur, val );
-    if (cur == prev) {
-       return cur;
-       // done = true;
-    } else {
-       done = (val <= cur);
+    cur = atomicCompSwap(ptr, cur, val);
+    if (cur == prev)
+    {
+      return cur;
+      // done = true;
+    }
+    else
+    {
+      done = (val <= cur);
     }
   }
   return cur;
-} 
+}
 
-coherent uniform uint64_t *u_Records; // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *u_Counts;  // auxiliary counters
-coherent uniform FragmentData *u_FragmentData;    // RGBA color of fragments
+coherent uniform
+    uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
+coherent uniform uint32_t *u_Counts;            // auxiliary counters
+coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
 
 // global variable for temporary pointers
 coherent uint64_t *recordsPtr;
 coherent uint32_t *countsPtr;
 
-uniform uint  u_NumRecords;
-uniform uint  u_ScreenSz;
-uniform uint  u_HashSz;
+uniform uint u_NumRecords;
+uniform uint u_ScreenSz;
+uniform uint u_HashSz;
 
-uniform uvec2 u_Offsets[256]; 
-
-
-// --------------------------------------------
+uniform uvec2 u_Offsets[256];
 
 vec4 RGBA(uint32_t rgba)
 {
-  return vec4( float((rgba>>24u)&255u),float((rgba>>16u)&255u),float((rgba>>8u)&255u),float(rgba&255u) ) / 255.0;
+  return vec4(float((rgba >> 24u) & 255u), float((rgba >> 16u) & 255u),
+              float((rgba >> 8u) & 255u), float(rgba & 255u)) /
+         255.0;
+}
+
+#define HA_MAX_DEPTH_1 ((MAX_DEPTH)-1u)
+#define HA_KEY(a, depth)                                                       \
+  ((uint32_t(a /*&uint32_t(   255)*/)                                          \
+    << uint32_t(24)) |                            /* age   on  8 bits, MSB */  \
+   (uint32_t(depth /*&uint32_t( MAX_DEPTH-1u)*/)) /* depth on 22 bits      */  \
+   )
+#define HA_PACK_DATA(a, depth, data)                                           \
+  ((uint64_t(HA_KEY(a, depth)) << uint64_t(32)) + uint64_t(data))
+#define HA_AGE(k)                                                              \
+  uint32_t((uint32_t(k) >> uint32_t(24)) /*  & uint32_t(      255)*/)
+#define HA_DEPTH(k) uint32_t((uint32_t(k)) & uint32_t(HA_MAX_DEPTH_1))
+#define HA_INC_AGE_64 (uint64_t(1) << uint64_t(24 + 32))
+#define HA_AGE_MASK_64 ((uint64_t(0x00ffffffu) << uint64_t(32)) + 0xffffffffu)
+#define HA_WRITE_AGE_64(K, a)                                                  \
+  ((K & HA_AGE_MASK_64) + (uint64_t(a) << uint64_t(32 + 24)))
+
+uint64_t Saddr(uvec2 l)
+{
+  return uint64_t(l.x + l.y * u_ScreenSz);
+}
+uint64_t Haddr(uvec2 l)
+{
+  return uint64_t(l.x + l.y * u_HashSz);
 }
 
 // -------------------------------------------------
 
-#define HA_MAX_DEPTH_1         ((MAX_DEPTH)-1u)
-#define HA_KEY(a,depth) ( \
-                            (uint32_t(a     /*&uint32_t(   255)*/       )<<uint32_t(24)) | /* age   on  8 bits, MSB */ \
-                            (uint32_t(depth /*&uint32_t( MAX_DEPTH-1u)*/)                ) /* depth on 22 bits      */ \
-								        )
-#define HA_PACK_DATA(a,depth,data)  ( ( uint64_t(HA_KEY(a,depth)) << uint64_t(32) ) + uint64_t(data) )
-#define HA_AGE(k)                    uint32_t( (uint32_t(k)>>uint32_t(24))/*  & uint32_t(      255)*/ )
-#define HA_DEPTH(k)                  uint32_t( (uint32_t(k)              )    & uint32_t( HA_MAX_DEPTH_1 ) )
-#define HA_INC_AGE_64                (uint64_t(1) << uint64_t(24+32))
-#define HA_AGE_MASK_64               ((uint64_t(0x00ffffffu)<<uint64_t(32))+ 0xffffffffu )
-#define HA_WRITE_AGE_64(K,a)         (( K & HA_AGE_MASK_64 ) + (uint64_t(a) << uint64_t(32+24)))
-
-uint64_t Saddr(uvec2 l) { return uint64_t( l.x + l.y * u_ScreenSz ); }
-uint64_t Haddr(uvec2 l) { return uint64_t( l.x + l.y * u_HashSz   ); }
-
-// -------------------------------------------------
-
-bool insert_preopen( uint32_t depth,uvec2 ij,uint32_t data )
-{ 
+bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
+{
   // limit depth
-  depth             = depth & uint32_t( HA_MAX_DEPTH_1 );
+  depth = depth & uint32_t(HA_MAX_DEPTH_1);
 
-  uint  age         = 1u;
-  uint64_t key_info = HA_PACK_DATA(age,depth,data);
+  uint age = 1u;
+  uint64_t key_info = HA_PACK_DATA(age, depth, data);
 
-  countsPtr = u_Counts+Saddr(ij);
+  countsPtr = u_Counts + Saddr(ij);
 
-  
-  while(true) {
+  while (true)
+  {
 
-    uvec2 l   = ( ij + u_Offsets[age] );
-    uint64_t h   = Haddr( l % uvec2(u_HashSz) );
-      
+    uvec2 l = (ij + u_Offsets[age]);
+    uint64_t h = Haddr(l % uvec2(u_HashSz));
 
     recordsPtr = u_Records + h;
-    uint64_t old = atomicMax64( recordsPtr , key_info );
-        
-   // -> decide what to do next
-    if (old < key_info) {
-      // key_info was inserted!
-      // -> update max age table
+    uint64_t old = atomicMax64(recordsPtr, key_info);
 
-      atomicMax(countsPtr, age );
+    // -> decide what to do next
+    if (old < key_info)
+    {
+      // key_info was inserted! -> update max age table
+      atomicMax(countsPtr, age);
 
-      if (old == 0) {
+      if (old == 0)
+      {
         // -> stop on success
         break;
-      } else {
+      }
+      else
+      {
         // -> evict
-        age      = uint32_t( old >> uint64_t(32+24) );
+        age = uint32_t(old >> uint64_t(32 + 24));
         // recompute coordinates from offset
-        ij       = uvec2( (l + uvec2(u_HashSz)) - u_Offsets[age] ) % uvec2(u_HashSz);		
+        ij = uvec2((l + uvec2(u_HashSz)) - u_Offsets[age]) % uvec2(u_HashSz);
 
         countsPtr = u_Counts + Saddr(ij);
 
@@ -127,12 +140,10 @@ bool insert_preopen( uint32_t depth,uvec2 ij,uint32_t data )
       }
     }
     // else, failed: try next age
-
-    age ++;
+    age++;
     key_info = key_info + HA_INC_AGE_64;
+  }
 
- }
- return true;
+  return true;
 }
 
-// -------------------------------------------------
