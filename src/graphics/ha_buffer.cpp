@@ -17,6 +17,8 @@ void HABuffer::initialize(Gl *gl)
 
   quad = std::make_shared<Quad>();
   quad->skipSettingUniforms = true;
+  quad->initialize(gl);
+
   initializeShadersHash();
   initializeBufferHash();
 }
@@ -126,6 +128,7 @@ void HABuffer::initializeBufferHash()
 
 void HABuffer::begin(const RenderData &renderData)
 {
+  buildShader->bind();
   buildShader->setUniform("u_Projection", renderData.projectionMatrix);
   buildShader->setUniform("u_View", renderData.viewMatrix);
 
@@ -171,6 +174,7 @@ bool HABuffer::end()
 
 void HABuffer::render()
 {
+  renderShader->bind();
   Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
   renderShader->setUniform("u_Projection", identity);
   renderShader->setUniform("u_View", identity);
@@ -215,6 +219,7 @@ void HABuffer::clear()
     offsets[i] = offsets[i] % habufferTableSize;
   }
 
+  clearShader->bind();
   Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
   clearShader->setUniform("u_Projection", identity);
   clearShader->setUniform("u_NumRecords", habufferNumRecords);
