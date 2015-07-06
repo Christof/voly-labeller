@@ -51,6 +51,8 @@ class HABuffer
                       float znear, float zfar);
                       */
 
+  std::shared_ptr<ShaderProgram> buildShader;
+
  private:
   void initializeShadersHash();
   void initializeBufferHash();
@@ -59,7 +61,6 @@ class HABuffer
   Eigen::Vector2i size;
   Gl *gl;
   std::shared_ptr<Quad> quad;
-  std::shared_ptr<ShaderProgram> buildShader;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
 
