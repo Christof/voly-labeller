@@ -113,7 +113,6 @@ void HABuffer::initializeBufferHash()
     FragmentDataBuffer.resize(habufferNumRecords * sizeof(FragmentData));
 
   // clear counts
-
   CountsBuffer.clear(0);
 
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
@@ -148,10 +147,6 @@ void HABuffer::begin(const RenderData &renderData)
   Eigen::Matrix4f modelViewMatrixIT = modelViewMatrix.inverse().transpose();
   buildShader->setUniform("u_ModelView_IT", modelViewMatrixIT);
 #endif
-
-  // checkGLError("displayRenderHABuffer - before drawModel");
-
-  // Render the model
 
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
