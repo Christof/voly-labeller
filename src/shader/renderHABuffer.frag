@@ -44,62 +44,63 @@ vec4 blend(vec4 clr, vec4 srf)
 void main()
 {
 
- o_PixColor = vec4(0);
+  o_PixColor = vec4(0);
 
- if (gl_SampleMaskIn[0] == 0)  { 
-   // Ignore helper pixels
-   //o_PixColor = vec4(1.0, 1.0, 0.3, 1.0);
- } else {
-
-
-  vec2  pos      = ( u_Pos.xy * 0.5 + 0.5 ) * float(u_ScreenSz);
-
-  if (pos.x>=u_ScreenSz || pos.y>=u_ScreenSz || pos.x <0 || pos.y < 0)
+  if (gl_SampleMaskIn[0] == 0)
   {
-    o_PixColor = vec4(1.0, 1.0, 0.3, 1.0);
-    return;
+    // Ignore helper pixels
+    // o_PixColor = vec4(1.0, 1.0, 0.3, 1.0);
   }
-
-  //vec2  pos      = ( u_Pos.xy*0.5  ) * float(u_ScreenSz);
-	uvec2 ij       = uvec2(pos.xy);
-  uint32_t pix   = (ij.x + ij.y * u_ScreenSz);
-  
-  gl_FragDepth   = 0.0;
-  
-  vec4  clr      = vec4(0,0,0,0);
-
-  uint maxage = u_Counts[ Saddr(ij) ];
-
-  if (maxage == 0)
+  else
   {
-    //o_PixColor = vec4(1.0, 0.5, 0.8, 0.5);
-    //return;
 
-    discard; // no fragment, early exit
-  }
-  for (uint a = 1 ; a <= maxage ; a++ ) // all fragments
-  //for (uint a = 1 ; a <= 1 ; a++ ) // just first fragment
-  {
-    uvec2     l   = ( ij + u_Offsets[a] );
-    uint64_t  h   = Haddr( l % uvec2(u_HashSz) );
+    vec2 pos = (u_Pos.xy * 0.5 + 0.5) * float(u_ScreenSz);
 
-    uint64_t  rec = u_Records[ h ];
-
-    uint32_t  key = uint32_t(rec >> uint64_t(32));
-    if ( HA_AGE(key) == a )
+    if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
     {
-      //clr = blend(clr,RGBA(uint32_t(rec)));
-      const FragmentData fragment = u_FragmentData[uint32_t(rec)];
-      clr = blend(clr, fragment.color);
-
+      o_PixColor = vec4(1.0, 1.0, 0.3, 1.0);
+      return;
     }
-  }
 
-  // background
-  clr = blend(clr,vec4(BkgColor,1.0));
-  // done
-  o_PixColor = clr;  
+    // vec2  pos      = ( u_Pos.xy*0.5  ) * float(u_ScreenSz);
+    uvec2 ij = uvec2(pos.xy);
+    uint32_t pix = (ij.x + ij.y * u_ScreenSz);
+
+    gl_FragDepth = 0.0;
+
+    vec4 clr = vec4(0, 0, 0, 0);
+
+    uint maxage = u_Counts[Saddr(ij)];
+
+    if (maxage == 0)
+    {
+      // o_PixColor = vec4(1.0, 0.5, 0.8, 0.5);
+      // return;
+
+      discard;  // no fragment, early exit
+    }
+    for (uint a = 1; a <= maxage; a++)  // all fragments
+    // for (uint a = 1 ; a <= 1 ; a++ ) // just first fragment
+    {
+      uvec2 l = (ij + u_Offsets[a]);
+      uint64_t h = Haddr(l % uvec2(u_HashSz));
+
+      uint64_t rec = u_Records[h];
+
+      uint32_t key = uint32_t(rec >> uint64_t(32));
+      if (HA_AGE(key) == a)
+      {
+        // clr = blend(clr,RGBA(uint32_t(rec)));
+        const FragmentData fragment = u_FragmentData[uint32_t(rec)];
+        clr = blend(clr, fragment.color);
+      }
+    }
+
+    // background
+    clr = blend(clr, vec4(BkgColor, 1.0));
+    // done
+    o_PixColor = clr;
   }
-} 
+}
 
 // --------------------------------------------

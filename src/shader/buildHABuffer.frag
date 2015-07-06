@@ -143,18 +143,16 @@ void main()
   success = insert_preopen(depth, pix, count);
 
   // fragment counter for overflow detection
-  //atomicCounterIncrement( u_Counter );
+  // atomicCounterIncrement( u_Counter );
 
-  //o_PixColor = vec4(0,1,0,0);
-
-
+  // o_PixColor = vec4(0,1,0,0);
 
   // if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
   //{
   //  success = false;
   //}
-  //o_PixColor = success ? vec4(0,1,0,1) : vec4(1,0,0,0);
-  o_PixColor = success ? fragment.color : vec4(1,0,0,0);
+  // o_PixColor = success ? vec4(0,1,0,1) : vec4(1,0,0,0);
+  o_PixColor = success ? fragment.color : vec4(1, 0, 0, 0);
 
   // if (u_ZNear == u_ZFar)
   //{
