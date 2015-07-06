@@ -240,8 +240,10 @@ void HABuffer::clear()
   clearShader->setUniform("u_Counts", CountsBuffer);
 
   // Render the full screen quad
+  /*
   glAssert(gl->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE,
                            GL_FALSE));  // no effect on screen
+                           */
 
   quad->setShaderProgram(clearShader);
   quad->render(gl, RenderData());
