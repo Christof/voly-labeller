@@ -61,17 +61,7 @@ vec4 Texture(Tex2DAddress addr, vec2 uv)
 {
   vec3 texc = vec3(uv.x * addr.texScale.x, uv.y * addr.texScale.y, addr.Page);
 
-  vec4 color = texture(sampler2DArray(addr.Container), texc);
-  /*if (texc.x >0.95) color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-  if (texc.x < 0.05) color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-  if (texc.y >0.95) color = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-  if (texc.y < 0.05) color = vec4(0.0f, 1.0f, 1.0f, 1.0f);*/
-  /*if (uv.x >0.90) color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-    if (uv.x < 0.1) color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
-    if (uv.y >0.90) color = vec4(0.0f, 0.0f, 1.0f, 1.0f);
-    if (uv.y < 0.1) color = vec4(0.0f, 1.0f, 1.0f, 1.0f);*/
-  return color;
-  // return texture(sampler2DArray(addr.Container), vec3(uv, 0.0));
+  return texture(sampler2DArray(addr.Container), texc);
 }
 
 FragmentData computeData()
@@ -87,19 +77,10 @@ FragmentData computeData()
   }
   else
   {
-    // clr = (max(0.2,dot(nrm,light))) * v_Color.xyz;
     clr = (max(0.2, dot(nrm, light))) * vec4(v_Tex.xy, 0, Opacity);
   }
-  // clr.r = 0.3;
-  // vec3 clr      = v_Color.xyz;
-  // vec3 clr      = vec3(0.4f, 0.85f, 0.0f);
-  // vec3 clr = shadeStrips(v_Tex);
-  // vec3 clr      = vec3(1.0f, 0.0, 0.0);
-  // return (uint32_t(clr.x*255.0) << 24u) + (uint32_t(clr.y*255.0) << 16u) +
-  // (uint32_t(clr.z*255.0) << 8u) + (uint32_t(Opacity*255.0));
   FragmentData fd;
   fd.color = vec4(clr.xyz, Opacity);
-  // fd.color = clr;
   fd.pos = v_Pos;
 
   return fd;
