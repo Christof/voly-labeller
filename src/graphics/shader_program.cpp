@@ -19,17 +19,18 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
           QOpenGLShader::Vertex,
           readFileAndHandleIncludes(vertexShaderPath.c_str())))
   {
-    qCritical() << "error";
+    qCritical() << "error during compilation of" << vertexShaderPath.c_str();
   }
   if (!shaderProgram.addShaderFromSourceCode(
           QOpenGLShader::Fragment,
           readFileAndHandleIncludes(fragmentShaderPath.c_str())))
   {
-    qCritical() << "error";
+    qCritical() << "error during compiliation of" << fragmentShaderPath.c_str();
   }
   if (!shaderProgram.link())
   {
-    qCritical() << "error";
+    qCritical() << "error during linking of" << vertexShaderPath.c_str() << "/"
+                << fragmentShaderPath.c_str();
   }
   glCheckError();
 }
