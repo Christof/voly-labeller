@@ -74,10 +74,10 @@ void main()
 
     if (maxage == 0)
     {
-      // o_PixColor = vec4(1.0, 0.5, 0.8, 0.5);
-      // return;
+      o_PixColor = vec4(0.0, 0.5, 0.8, 1.0);
+       return;
 
-      discard;  // no fragment, early exit
+      // discard;  // no fragment, early exit
     }
     for (uint a = 1; a <= maxage; a++)  // all fragments
     // for (uint a = 1 ; a <= 1 ; a++ ) // just first fragment

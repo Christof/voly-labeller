@@ -71,6 +71,7 @@ FragmentData computeData()
   vec3 light = normalize(LightPos - v_View);
   int drawID = int(v_drawID);
   vec4 clr;
+  /*
   if (texAddress[drawID].Container > 0)
   {
     clr = Texture(texAddress[drawID], v_Tex.xy);
@@ -79,6 +80,8 @@ FragmentData computeData()
   {
     clr = (max(0.2, dot(nrm, light))) * vec4(v_Tex.xy, 0, Opacity);
   }
+  */
+  clr = vec4(1, 0, 1, 1);
   FragmentData fd;
   fd.color = vec4(clr.xyz, Opacity);
   fd.pos = v_Pos;
