@@ -7,7 +7,6 @@ coherent uniform uint32_t *u_Counts;  // auxiliary counters
 
 uniform uint u_NumRecords;
 uniform uint u_ScreenSz;
-uniform uint u_HashSz;
 
 in vec4 u_Pos;
 out vec4 o_PixColor;
