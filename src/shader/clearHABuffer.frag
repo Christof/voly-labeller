@@ -38,7 +38,6 @@ void main()
     u_Counts[u_ScreenSz * u_ScreenSz] = uint32_t(0);
   }
 
-  // o_PixColor = vec4(0, 0, 1, 1);
   discard;
 }
 

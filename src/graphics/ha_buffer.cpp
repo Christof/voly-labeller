@@ -240,16 +240,9 @@ void HABuffer::clear()
   clearShader->setUniform("u_Counts", CountsBuffer);
 
   // Render the full screen quad
-  /*
-  glAssert(gl->glColorMask(GL_FALSE, GL_FALSE, GL_FALSE,
-                           GL_FALSE));  // no effect on screen
-                           */
 
   quad->setShaderProgram(clearShader);
   quad->render(gl, RenderData());
-
-  glAssert(gl->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE,
-                           GL_TRUE));  // reenable screen drawing
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
