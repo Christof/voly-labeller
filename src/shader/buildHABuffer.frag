@@ -52,10 +52,10 @@ vec3 shadeStrips(vec3 texcoord)
 
 // --------------------------------------------
 
-uniform vec3 Color;
+// uniform vec3 Color;
 uniform float Opacity = 0.6;
-uniform vec3 LightPos;
-uniform sampler2D Tex;
+uniform vec3 LightPos = vec3(0, 2, 0);
+// uniform sampler2D Tex;
 
 vec4 Texture(Tex2DAddress addr, vec2 uv)
 {
