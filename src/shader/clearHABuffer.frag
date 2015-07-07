@@ -9,12 +9,9 @@ uniform uint u_NumRecords;
 uniform uint u_ScreenSz;
 
 in vec4 u_Pos;
-out vec4 o_PixColor;
 
 void main()
 {
-  o_PixColor = vec4(0);
-
   // Ignore helper pixels
   if (gl_SampleMaskIn[0] == 0)
     discard;
