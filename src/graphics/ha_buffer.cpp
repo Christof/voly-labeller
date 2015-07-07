@@ -97,11 +97,6 @@ void HABuffer::begin(const RenderData &renderData)
   buildShader->setUniform("u_Counts", CountsBuffer);
   buildShader->setUniform("u_FragmentData", FragmentDataBuffer);
 
-#if !USE_TEXTURE
-  Eigen::Matrix4f modelViewMatrixIT = modelViewMatrix.inverse().transpose();
-  buildShader->setUniform("u_ModelView_IT", modelViewMatrixIT);
-#endif
-
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 }
