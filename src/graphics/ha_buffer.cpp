@@ -41,8 +41,6 @@ void HABuffer::initializeShadersHash()
   u_Records_clear.init(clearShader, "u_Records");
   u_Counts_clear.init(clearShader, "u_Counts");
 
-  u_Projection_clear.init(clearShader, "u_Projection");
-
   /// build shader parameter initialization
   u_NumRecords_build.init(buildShader, "u_NumRecords");
   u_ScreenSize_build.init(buildShader, "u_ScreenSz");
@@ -232,8 +230,6 @@ void HABuffer::clear()
   }
 
   clearShader->bind();
-  Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
-  clearShader->setUniform("u_Projection", identity);
   clearShader->setUniform("u_NumRecords", habufferNumRecords);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
   clearShader->setUniform("u_Records", RecordsBuffer);
