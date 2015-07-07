@@ -33,50 +33,6 @@ void HABuffer::initializeShadersHash()
       gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
   clearShader = std::make_shared<ShaderProgram>(
       gl, ":shader/clearHABuffer.vert", ":shader/clearHABuffer.frag");
-
-  /*
-  /// clear shader parameter initialization
-  u_NumRecords_clear.init(clearShader, "u_NumRecords");
-  u_ScreenSize_clear.init(clearShader, "u_ScreenSz");
-  u_Records_clear.init(clearShader, "u_Records");
-  u_Counts_clear.init(clearShader, "u_Counts");
-
-  /// build shader parameter initialization
-  u_NumRecords_build.init(buildShader, "u_NumRecords");
-  u_ScreenSize_build.init(buildShader, "u_ScreenSz");
-  u_HashSize_build.init(buildShader, "u_HashSz");
-  u_Offsets_build.init(buildShader, "u_Offsets");
-  u_ZNear_build.init(buildShader, "u_ZNear");
-  u_ZFar_build.init(buildShader, "u_ZFar");
-  u_Opacity_build.init(buildShader, "Opacity");
-  u_Records_build.init(buildShader, "u_Records");
-  u_Counts_build.init(buildShader, "u_Counts");
-  u_FragmentData_build.init(buildShader, "u_FragmentData");
-
-  u_Projection_build.init(buildShader, "u_Projection");
-  u_View_build.init(buildShader, "u_View");
-#if !USE_INDIRECT
-  u_Model_build.init(buildShader, "u_Model");
-#endif
-#if !USE_TEXTURE
-  u_ModelView_IT_build.init(buildShader, "u_ModelView_IT");
-#endif
-
-  /// render shader parameter initialization
-  // u_NumRecords_render.init(renderShader, "u_NumRecords");
-  u_ScreenSize_render.init(renderShader, "u_ScreenSz");
-  u_HashSize_render.init(renderShader, "u_HashSz");
-  u_Offsets_render.init(renderShader, "u_Offsets");
-  u_Records_render.init(renderShader, "u_Records");
-  u_Counts_render.init(renderShader, "u_Counts");
-  u_FragmentData_render.init(renderShader, "u_FragmentData");
-
-  u_Projection_render.init(renderShader, "u_Projection");
-  u_View_render.init(renderShader, "u_View");
-  u_Model_render.init(renderShader, "u_Model");
-
-  GL_CHECK_ERROR;
-  */
 }
 
 void HABuffer::initializeBufferHash()

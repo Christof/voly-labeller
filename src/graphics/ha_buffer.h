@@ -44,13 +44,6 @@ class HABuffer
   void render();
   void clear();
 
-  /*
-  void setOrtho(Eigen::Matrix4f &mat, float l, float r, float b, float t,
-                float zn, float zf);
-  void setPerspective(Eigen::Matrix4f &mat, float fov, float aspect,
-                      float znear, float zfar);
-                      */
-
   std::shared_ptr<ShaderProgram> buildShader;
 
  private:
