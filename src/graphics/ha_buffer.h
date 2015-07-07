@@ -67,8 +67,8 @@ class HABuffer
   Buffer CountsBuffer;
   Buffer FragmentDataBuffer;
 
-  float habufferZNear = 0.01f;
-  float habufferZFar = 20.0f;
+  float habufferZNear = 0.1f;
+  float habufferZFar = 5.0f;
   float habufferOpacity = 0.5f;
   float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
   uint offsets[512];
