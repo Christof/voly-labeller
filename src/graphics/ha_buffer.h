@@ -39,17 +39,15 @@ class HABuffer
 
   // build is now begin() and end(); because in the middle the models are
   // rendered
+  void setBuildHABufferUniforms(std::shared_ptr<ShaderProgram> shader);
   void begin(const RenderData &renderData);
   bool end();
   void render();
   void clear();
 
-  std::shared_ptr<ShaderProgram> buildShader;
-
  private:
   void initializeShadersHash();
   void initializeBufferHash();
-  void setBuildHABufferUniforms(std::shared_ptr<ShaderProgram> shader);
   void displayStatistics(const char *label);
 
   Eigen::Vector2i size;

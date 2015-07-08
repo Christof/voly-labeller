@@ -107,9 +107,9 @@ void Scene::render()
   renderData.modelMatrix = modelTransform.matrix();
   //renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  anchorMesh->setShaderProgram(haBuffer->buildShader);
   haBuffer->clear();
 
+  haBuffer->setBuildHABufferUniforms(anchorMesh->getShaderProgram());
   haBuffer->begin(renderData);
 
   anchorMesh->render(gl, renderData);

@@ -9,8 +9,7 @@ namespace Graphics
 {
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
-  : Renderable(":/shader/renderHABuffer.vert", ":/shader/renderHABuffer.frag")
-  //: Renderable(":/shader/phong.vert", ":/shader/phong.frag")
+  : Renderable(":/shader/phong.vert", ":/shader/phong.frag")
 {
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)

@@ -27,8 +27,6 @@ void HABuffer::initializeShadersHash()
 {
   printf("initShaders %d %d\n", size(0), size(1));
 
-  buildShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/phong.vert", ":shader/phong.frag");
   renderShader = std::make_shared<ShaderProgram>(
       gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
   clearShader = std::make_shared<ShaderProgram>(
@@ -81,13 +79,6 @@ void HABuffer::initializeBufferHash()
 
 void HABuffer::begin(const RenderData &renderData)
 {
-  buildShader->bind();
-  buildShader->setUniform("u_Projection", renderData.projectionMatrix);
-  buildShader->setUniform("u_View", renderData.viewMatrix);
-  buildShader->setUniform("model", renderData.modelMatrix);
-
-  setBuildHABufferUniforms(buildShader);
-
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 }
