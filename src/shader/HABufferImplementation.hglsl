@@ -25,7 +25,7 @@ struct FragmentData
   vec4 color;
   vec4 pos;
 };
-
+#ifndef GL_NV_shader_atomic_int64
 uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 {
   uint64_t cur = *ptr;
@@ -46,6 +46,7 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
   }
   return cur;
 }
+#endif
 
 coherent uniform
     uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
@@ -113,7 +114,11 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
     uint64_t h = Haddr(l % uvec2(u_HashSz));
 
     recordsPtr = u_Records + h;
+#ifdef GL_NV_shader_atomic_int64
+    uint64_t old = atomicMax(recordsPtr, key_info);
+#else
     uint64_t old = atomicMax64(recordsPtr, key_info);
+#endif
 
     // -> decide what to do next
     if (old < key_info)
