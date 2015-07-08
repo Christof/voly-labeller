@@ -106,13 +106,13 @@ void main()
   }
 
   // Compute fragment data
-  vec2 prj = v_Pos.xy / v_Pos.w;
-  vec3 pos =
-      (vec3(prj * 0.5 + 0.5, 1.0 - (v_Pos.z + u_ZNear) / (u_ZFar + u_ZNear)));
 
   FragmentData fragment = computeData();
   u_FragmentData[count] = fragment;
 
+  vec2 prj = fragment.pos.xy / fragment.pos.w;
+  vec3 pos =
+      (vec3(prj * 0.5 + 0.5, 1.0 - (fragment.pos.z + u_ZNear) / (u_ZFar + u_ZNear)));
   uint32_t depth = uint32_t(pos.z * MAX_DEPTH);
   uvec2 pix = uvec2(pos.xy * u_ScreenSz);
 
