@@ -99,8 +99,6 @@ void main()
 
   // Detect main buffer overflow
   uint32_t count = atomicAdd(u_Counts + u_ScreenSz * u_ScreenSz, 1);
-  // uint32_t count = atomicCounter( u_Counter );
-  // atomicIncrement(u_Counts[ u_ScreenSz*u_ScreenSz ]);
   if (count > u_NumRecords)
   {
     u_Counts[u_ScreenSz * u_ScreenSz] = u_NumRecords;
@@ -108,7 +106,6 @@ void main()
   }
 
   // Compute fragment data
-
   vec2 prj = v_Pos.xy / v_Pos.w;
   vec3 pos =
       (vec3(prj * 0.5 + 0.5, 1.0 - (v_Pos.z + u_ZNear) / (u_ZFar + u_ZNear)));
@@ -119,32 +116,9 @@ void main()
   uint32_t depth = uint32_t(pos.z * MAX_DEPTH);
   uvec2 pix = uvec2(pos.xy * u_ScreenSz);
 
-  // Selects the chosen method/variant depending on defines
+  bool success = insert_preopen(depth, pix, count);
 
-  bool success = true;
-
-  // success = insert_preopen( depth, pix, data );
-  success = insert_preopen(depth, pix, count);
-
-  // fragment counter for overflow detection
-  // atomicCounterIncrement( u_Counter );
-
-  // o_PixColor = vec4(0,1,0,0);
-
-  // if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
-  //{
-  //  success = false;
-  //}
-  // o_PixColor = success ? vec4(0,1,0,1) : vec4(1,0,0,0);
   o_PixColor = success ? fragment.color : vec4(1, 0, 0, 0);
-
-  // if (u_ZNear == u_ZFar)
-  //{
-  //  o_PixColor = fragment.color;
-  //  o_PixColor = RGBA(data);
-  //}
-
-  // discard;
 }
 
 // --------------------------------------------
