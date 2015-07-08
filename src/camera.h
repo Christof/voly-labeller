@@ -50,6 +50,7 @@ class Camera
   float declination;
 
   float fieldOfView;
+  float aspectRatio = 16.0f / 9.0f;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);
