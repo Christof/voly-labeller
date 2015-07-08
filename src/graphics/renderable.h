@@ -27,6 +27,7 @@ class Renderable
   void render(Gl *gl, const RenderData &renderData);
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
+  std::shared_ptr<ShaderProgram> getShaderProgram();
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject) = 0;

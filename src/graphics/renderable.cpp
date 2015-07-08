@@ -45,4 +45,9 @@ void Renderable::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
   renderObject->shaderProgram = shaderProgram;
 }
 
+std::shared_ptr<ShaderProgram> Renderable::getShaderProgram()
+{
+  return renderObject->shaderProgram;
+}
+
 }  // namespace Graphics
