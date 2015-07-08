@@ -49,6 +49,7 @@ class HABuffer
  private:
   void initializeShadersHash();
   void initializeBufferHash();
+  void setBuildHABufferUniforms(std::shared_ptr<ShaderProgram> shader);
   void displayStatistics(const char *label);
 
   Eigen::Vector2i size;

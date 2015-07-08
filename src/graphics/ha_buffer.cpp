@@ -86,17 +86,7 @@ void HABuffer::begin(const RenderData &renderData)
   buildShader->setUniform("u_View", renderData.viewMatrix);
   buildShader->setUniform("model", renderData.modelMatrix);
 
-  buildShader->setUniform("u_NumRecords", habufferNumRecords);
-  buildShader->setUniform("u_ScreenSz", habufferScreenSize);
-  buildShader->setUniform("u_HashSz", habufferTableSize);
-  buildShader->setUniformAsVec2Array("u_Offsets", offsets, 512);
-
-  buildShader->setUniform("u_ZNear", habufferZNear);
-  buildShader->setUniform("u_ZFar", habufferZFar);
-  buildShader->setUniform("Opacity", habufferOpacity);
-  buildShader->setUniform("u_Records", RecordsBuffer);
-  buildShader->setUniform("u_Counts", CountsBuffer);
-  buildShader->setUniform("u_FragmentData", FragmentDataBuffer);
+  setBuildHABufferUniforms(buildShader);
 
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
@@ -194,6 +184,21 @@ void HABuffer::clear()
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
+}
+
+void HABuffer::setBuildHABufferUniforms(std::shared_ptr<ShaderProgram> shader)
+{
+  shader->setUniform("u_NumRecords", habufferNumRecords);
+  shader->setUniform("u_ScreenSz", habufferScreenSize);
+  shader->setUniform("u_HashSz", habufferTableSize);
+  shader->setUniformAsVec2Array("u_Offsets", offsets, 512);
+
+  shader->setUniform("u_ZNear", habufferZNear);
+  shader->setUniform("u_ZFar", habufferZFar);
+  shader->setUniform("Opacity", habufferOpacity);
+  shader->setUniform("u_Records", RecordsBuffer);
+  shader->setUniform("u_Counts", CountsBuffer);
+  shader->setUniform("u_FragmentData", FragmentDataBuffer);
 }
 
 void HABuffer::displayStatistics(const char *label)
