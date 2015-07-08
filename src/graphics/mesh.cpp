@@ -112,7 +112,6 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
-  /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *
                                         renderData.modelMatrix;
@@ -126,7 +125,6 @@ void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                      Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
   shader->setUniform("lightPosition", renderData.cameraPosition);
   shader->setUniform("shininess", shininess);
-  */
 }
 
 void Mesh::draw(Gl *gl)

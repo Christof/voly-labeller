@@ -16,6 +16,7 @@
         <file>shader/renderHABuffer.vert</file>
         <file>shader/renderHABuffer.frag</file>
         <file>shader/HABufferImplementation.hglsl</file>
+        <file>shader/buildHABuffer.hglsl</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

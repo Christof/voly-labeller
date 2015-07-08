@@ -28,7 +28,7 @@ void HABuffer::initializeShadersHash()
   printf("initShaders %d %d\n", size(0), size(1));
 
   buildShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/buildHABuffer.vert", ":shader/buildHABuffer.frag");
+      gl, ":shader/phong.vert", ":shader/phong.frag");
   renderShader = std::make_shared<ShaderProgram>(
       gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
   clearShader = std::make_shared<ShaderProgram>(
