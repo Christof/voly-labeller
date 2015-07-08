@@ -23,6 +23,7 @@ struct FragmentData
 #define USE_TEXTURE 1
 
 class ShaderProgram;
+class Quad;
 
 /**
  * \brief
@@ -43,12 +44,7 @@ class HABuffer
   void render();
   void clear();
 
-  /*
-  void setOrtho(Eigen::Matrix4f &mat, float l, float r, float b, float t,
-                float zn, float zf);
-  void setPerspective(Eigen::Matrix4f &mat, float fov, float aspect,
-                      float znear, float zfar);
-                      */
+  std::shared_ptr<ShaderProgram> buildShader;
 
  private:
   void initializeShadersHash();
@@ -57,9 +53,9 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::unique_ptr<ShaderProgram> buildShader;
-  std::unique_ptr<ShaderProgram> renderShader;
-  std::unique_ptr<ShaderProgram> clearShader;
+  std::shared_ptr<Quad> quad;
+  std::shared_ptr<ShaderProgram> renderShader;
+  std::shared_ptr<ShaderProgram> clearShader;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;
@@ -71,10 +67,11 @@ class HABuffer
   Buffer CountsBuffer;
   Buffer FragmentDataBuffer;
 
-  float habufferZNear = 0.01f;
-  float habufferZFar = 20.0f;
+  float habufferZNear = 0.1f;
+  float habufferZFar = 5.0f;
   float habufferOpacity = 0.5f;
   float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
+  uint offsets[512];
 };
 
 }  // namespace Graphics

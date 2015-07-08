@@ -35,6 +35,9 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject)
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
+  if (skipSettingUniforms)
+    return;
+
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
   shader->setUniform("modelViewProjectionMatrix", modelViewProjection);

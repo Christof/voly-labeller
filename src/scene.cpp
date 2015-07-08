@@ -16,6 +16,8 @@
 #include "./forces/labeller_frame_data.h"
 #include "./eigen_qdebug.h"
 
+#include "./importer.h"
+
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> labeller)
@@ -47,7 +49,15 @@ void Scene::initialize()
 
   quad = std::make_shared<Graphics::Quad>();
 
+
+  Importer importer;
+  anchorMesh = importer.import("assets/anchor.dae", 0);
+  anchorMesh->initialize(gl);
+
   fbo->initialize(gl, width, height);
+  haBuffer = std::unique_ptr<Graphics::HABuffer>(
+      new Graphics::HABuffer(Eigen::Vector2i(width, height)));
+  haBuffer->initialize(gl);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -62,6 +72,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                 frustumOptimizer.getFar());
 
+  /*
   auto newPositions = labeller->update(Forces::LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
@@ -69,6 +80,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   {
     labelNode->labelPosition = newPositions[labelNode->label.id];
   }
+  */
 }
 
 void Scene::render()
@@ -82,7 +94,7 @@ void Scene::render()
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  fbo->bind();
+  // fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -90,15 +102,27 @@ void Scene::render()
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
   renderData.cameraPosition = camera.getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  Eigen::Affine3f modelTransform(Eigen::Translation3f(0, 0, 0) *
+                                 Eigen::Scaling(0.4f));
+  renderData.modelMatrix = modelTransform.matrix();
+  //renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  nodes->render(gl, renderData);
+  anchorMesh->setShaderProgram(haBuffer->buildShader);
+  haBuffer->clear();
+
+  haBuffer->begin(renderData);
+
+  anchorMesh->render(gl, renderData);
+
+  haBuffer->end();
+  haBuffer->render();
 
   doPick();
 
-  fbo->unbind();
+  //nodes->render(gl, renderData);
+  //fbo->unbind();
 
-  renderScreenQuad();
+  //renderScreenQuad();
 }
 
 void Scene::renderScreenQuad()

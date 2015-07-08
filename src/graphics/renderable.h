@@ -6,7 +6,6 @@
 #include <string>
 #include "./render_data.h"
 
-
 namespace Graphics
 {
 
@@ -26,6 +25,8 @@ class Renderable
   void initialize(Gl *gl);
 
   void render(Gl *gl, const RenderData &renderData);
+
+  void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject) = 0;

@@ -11,6 +11,9 @@
 #include "./labelling/labels.h"
 #include "./graphics/quad.h"
 #include "./graphics/frame_buffer_object.h"
+#include "./graphics/ha_buffer.h"
+
+#include "./graphics/mesh.h"
 
 class Nodes;
 class InvokeManager;
@@ -55,6 +58,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Forces::Labeller> labeller;
   std::shared_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
+  std::unique_ptr<Graphics::HABuffer> haBuffer;
   FrustumOptimizer frustumOptimizer;
 
   int width;
@@ -67,6 +71,8 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void doPick();
+
+  std::shared_ptr<Graphics::Mesh> anchorMesh;
 };
 
 #endif  // SRC_SCENE_H_
