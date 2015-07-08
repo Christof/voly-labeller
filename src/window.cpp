@@ -15,6 +15,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 {
   setClearBeforeRendering(false);
 
+  setMinimumSize(QSize(800,800));
+  setMaximumSize(QSize(800,800));
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
 
