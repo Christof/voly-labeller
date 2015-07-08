@@ -84,6 +84,7 @@ void HABuffer::begin(const RenderData &renderData)
   buildShader->bind();
   buildShader->setUniform("u_Projection", renderData.projectionMatrix);
   buildShader->setUniform("u_View", renderData.viewMatrix);
+  buildShader->setUniform("model", renderData.modelMatrix);
 
   buildShader->setUniform("u_NumRecords", habufferNumRecords);
   buildShader->setUniform("u_ScreenSz", habufferScreenSize);
