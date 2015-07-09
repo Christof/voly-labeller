@@ -1,8 +1,4 @@
 #version 440
-#extension GL_NV_shader_buffer_load : enable
-#extension GL_NV_gpu_shader5 : enable
-#extension GL_NV_shader_atomic_int64 : enable
-
 #include "HABufferImplementation.hglsl"
 
 in vec4 u_Pos;
