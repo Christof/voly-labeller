@@ -16,6 +16,10 @@ Please visit http://www.antexel.com/research/gpupro5 for updates.
 */
 // -------------------------------------------------
 
+#extension GL_NV_shader_buffer_load : enable
+#extension GL_NV_gpu_shader5 : enable
+#extension GL_NV_shader_atomic_int64 : enable
+
 #define MAX_DEPTH (1u << 24u)  // limited to 24 bits
 
 // -------------------------------------------------
