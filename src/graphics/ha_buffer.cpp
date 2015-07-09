@@ -9,6 +9,12 @@ namespace Graphics
 
 HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 {
+  offsets = new unsigned int[512];
+}
+
+HABuffer::~HABuffer()
+{
+  delete[] offsets;
 }
 
 void HABuffer::initialize(Gl *gl)

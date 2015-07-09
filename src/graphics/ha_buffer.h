@@ -34,6 +34,7 @@ class HABuffer
 {
  public:
   explicit HABuffer(Eigen::Vector2i size);
+  ~HABuffer();
 
   void initialize(Gl *gl);
 
@@ -70,7 +71,7 @@ class HABuffer
   float habufferZFar = 5.0f;
   float habufferOpacity = 0.5f;
   float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
-  uint offsets[512];
+  uint *offsets;
 };
 
 }  // namespace Graphics
