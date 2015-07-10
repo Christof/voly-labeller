@@ -9,8 +9,6 @@
         <file>shader/slice.frag</file>
         <file>shader/texture3d.vert</file>
         <file>shader/texture3dAsColor.frag</file>
-        <file>shader/buildHABuffer.vert</file>
-        <file>shader/buildHABuffer.frag</file>
         <file>shader/clearHABuffer.vert</file>
         <file>shader/clearHABuffer.frag</file>
         <file>shader/renderHABuffer.vert</file>
