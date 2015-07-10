@@ -49,7 +49,6 @@ void Scene::initialize()
 
   quad = std::make_shared<Graphics::Quad>();
 
-
   Importer importer;
   anchorMesh = importer.import("assets/anchor.dae", 0);
   anchorMesh->initialize(gl);
@@ -68,9 +67,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   cameraZoomController->setFrameTime(frameTime);
   cameraMoveController->setFrameTime(frameTime);
 
+  /*
   frustumOptimizer.update(camera.getViewMatrix());
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                 frustumOptimizer.getFar());
+                                */
 
   /*
   auto newPositions = labeller->update(Forces::LabellerFrameData(
@@ -105,7 +106,7 @@ void Scene::render()
   Eigen::Affine3f modelTransform(Eigen::Translation3f(0, 0, 0) *
                                  Eigen::Scaling(0.4f));
   renderData.modelMatrix = modelTransform.matrix();
-  //renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  // renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
   haBuffer->clear();
 
@@ -119,10 +120,10 @@ void Scene::render()
 
   doPick();
 
-  //nodes->render(gl, renderData);
-  //fbo->unbind();
+  // nodes->render(gl, renderData);
+  // fbo->unbind();
 
-  //renderScreenQuad();
+  // renderScreenQuad();
 }
 
 void Scene::renderScreenQuad()
