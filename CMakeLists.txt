@@ -75,6 +75,13 @@ set(SHADER
   src/shader/phong.frag
   src/shader/phong.vert
   src/shader/slice.frag
+  src/shader/clearHABuffer.vert
+  src/shader/clearHABuffer.frag
+  src/shader/buildHABuffer.vert
+  src/shader/buildHABuffer.frag
+  src/shader/renderHABuffer.vert
+  src/shader/renderHABuffer.frag
+  src/shader/buildHABuffer.hglsl
   src/shader/texture3dAsColor.frag
   src/shader/texture3d.vert)
 
