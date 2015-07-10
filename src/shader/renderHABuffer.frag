@@ -7,8 +7,6 @@ out vec4 o_PixColor;
 layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
-uniform float ZNear;
-uniform float ZFar;
 
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
