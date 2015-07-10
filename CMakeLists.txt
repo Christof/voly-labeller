@@ -77,8 +77,6 @@ set(SHADER
   src/shader/slice.frag
   src/shader/clearHABuffer.vert
   src/shader/clearHABuffer.frag
-  src/shader/buildHABuffer.vert
-  src/shader/buildHABuffer.frag
   src/shader/renderHABuffer.vert
   src/shader/renderHABuffer.frag
   src/shader/buildHABuffer.hglsl
