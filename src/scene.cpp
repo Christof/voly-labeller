@@ -110,8 +110,7 @@ void Scene::render()
 
   haBuffer->clear();
 
-  haBuffer->setBuildHABufferUniforms(anchorMesh->getShaderProgram());
-  haBuffer->begin(renderData);
+  haBuffer->begin(anchorMesh->getShaderProgram(), renderData);
 
   anchorMesh->render(gl, renderData);
 

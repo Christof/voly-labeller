@@ -83,8 +83,10 @@ void HABuffer::initializeBufferHash()
              1024.0f);
 }
 
-void HABuffer::begin(const RenderData &renderData)
+void HABuffer::begin(std::shared_ptr<ShaderProgram> shader,
+                     const RenderData &renderData)
 {
+  setUniforms(shader);
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 }
@@ -183,7 +185,7 @@ void HABuffer::clear()
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
 }
 
-void HABuffer::setBuildHABufferUniforms(std::shared_ptr<ShaderProgram> shader)
+void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 {
   shader->setUniform("u_NumRecords", habufferNumRecords);
   shader->setUniform("u_ScreenSz", habufferScreenSize);
