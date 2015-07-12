@@ -110,7 +110,7 @@ void Scene::render()
 
   haBuffer->clear();
 
-  // nodes->render(gl, haBuffer, renderData);
+  nodes->render(gl, haBuffer, renderData);
   anchorMesh->render(gl, haBuffer, renderData);
 
   Eigen::Affine3f modelTransform2(Eigen::Translation3f(1, 0, 0) *
