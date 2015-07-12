@@ -24,6 +24,7 @@ FragmentData computeData()
   vec3 specular = pow(max(dot(reflectionDir, -cameraDirection), 0.0), 0.3 * shininess) *
     specularColor.rgb;
   color.rgb += specular;
+  color.a = 0.5;
 
   FragmentData data;
   data.color = color;
