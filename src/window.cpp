@@ -41,7 +41,7 @@ QSurfaceFormat Window::createSurfaceFormat()
   format.setDepthBufferSize(24);
   format.setMajorVersion(4);
   format.setMinorVersion(3);
-  format.setSamples(4);
+  // format.setSamples(4);
 
   return format;
 }
