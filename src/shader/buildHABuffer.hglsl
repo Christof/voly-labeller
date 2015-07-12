@@ -33,6 +33,7 @@ void main()
 
   bool success = insert_preopen(depth, pix, count);
 
-  o_PixColor = success ? fragment.color : vec4(1, 0, 0, 0);
+  // o_PixColor = success ? fragment.color : vec4(1, 0, 0, 0);
+  discard;
 }
 
