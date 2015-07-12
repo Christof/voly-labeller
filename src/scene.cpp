@@ -12,11 +12,8 @@
 #include "./camera_zoom_controller.h"
 #include "./camera_move_controller.h"
 #include "./nodes.h"
-#include "./label_node.h"
 #include "./forces/labeller_frame_data.h"
 #include "./eigen_qdebug.h"
-
-#include "./importer.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -48,10 +45,6 @@ void Scene::initialize()
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
   quad = std::make_shared<Graphics::Quad>();
-
-  Importer importer;
-  anchorMesh = importer.import("assets/anchor.dae", 0);
-  anchorMesh->initialize(gl);
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -103,22 +96,12 @@ void Scene::render()
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
   renderData.cameraPosition = camera.getPosition();
-  Eigen::Affine3f modelTransform(Eigen::Translation3f(0, 0, 0) *
-                                 Eigen::Scaling(0.4f));
-  renderData.modelMatrix = modelTransform.matrix();
-  // renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
   haBuffer->clear();
 
   nodes->render(gl, haBuffer, renderData);
-  anchorMesh->render(gl, haBuffer, renderData);
 
-  Eigen::Affine3f modelTransform2(Eigen::Translation3f(1, 0, 0) *
-                                  Eigen::Scaling(0.4f));
-  renderData.modelMatrix = modelTransform2.matrix();
-  anchorMesh->render(gl, haBuffer, renderData);
-
-  haBuffer->end();
   haBuffer->render();
 
   doPick();

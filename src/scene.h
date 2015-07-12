@@ -13,8 +13,6 @@
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
 
-#include "./graphics/mesh.h"
-
 class Nodes;
 class InvokeManager;
 class CameraController;
@@ -71,8 +69,6 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void doPick();
-
-  std::shared_ptr<Graphics::Mesh> anchorMesh;
 };
 
 #endif  // SRC_SCENE_H_
