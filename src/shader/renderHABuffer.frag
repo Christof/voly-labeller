@@ -48,7 +48,6 @@ void main()
 
   vec4 clr = vec4(0, 0, 0, 0);
   for (uint a = 1; a <= maxage; a++)  // all fragments
-  // for (uint a = 1 ; a <= 1 ; a++ ) // just first fragment
   {
     uvec2 l = (ij + u_Offsets[a]);
     uint64_t h = Haddr(l % uvec2(u_HashSz));
@@ -61,6 +60,7 @@ void main()
       // clr = blend(clr,RGBA(uint32_t(rec)));
       const FragmentData fragment = u_FragmentData[uint32_t(rec)];
       clr = blend(clr, fragment.color);
+      // break; // just the first fragment
     }
   }
 
