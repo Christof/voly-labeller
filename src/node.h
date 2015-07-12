@@ -25,7 +25,6 @@ class Node
   {
   }
 
-  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
 
   void render(Graphics::Gl *gl, std::shared_ptr<Graphics::HABuffer> haBuffer,
               RenderData renderData)
@@ -48,6 +47,8 @@ class Node
   Node()
   {
   }
+
+  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
 
   bool persistable = true;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
