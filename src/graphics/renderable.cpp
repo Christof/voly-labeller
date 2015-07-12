@@ -1,6 +1,7 @@
 #include "./renderable.h"
 #include <string>
 #include "./render_object.h"
+#include "./ha_buffer.h"
 
 namespace Graphics
 {
@@ -26,16 +27,19 @@ void Renderable::initialize(Gl *gl)
   renderObject->releaseBuffers();
 }
 
-void Renderable::render(Gl *gl, const RenderData &renderData)
+void Renderable::render(Gl *gl, std::shared_ptr<HABuffer> haBuffer,
+                        const RenderData &renderData)
 {
   if (!renderObject.get())
     initialize(gl);
 
   renderObject->bind();
 
+  haBuffer->begin(renderObject->shaderProgram, renderData);
   setUniforms(renderObject->shaderProgram, renderData);
 
   draw(gl);
+  haBuffer->end();
 
   renderObject->release();
 }

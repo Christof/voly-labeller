@@ -24,8 +24,8 @@ CoordinateSystemNode::~CoordinateSystemNode()
 
 void CoordinateSystemNode::render(Graphics::Gl *gl, RenderData renderData)
 {
-  x->render(gl, renderData);
-  y->render(gl, renderData);
-  z->render(gl, renderData);
+  x->render(gl, haBuffer, renderData);
+  y->render(gl, haBuffer, renderData);
+  z->render(gl, haBuffer, renderData);
 }
 

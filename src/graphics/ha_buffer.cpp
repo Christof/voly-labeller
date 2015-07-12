@@ -140,7 +140,7 @@ void HABuffer::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
   quad->setShaderProgram(renderShader);
-  quad->render(gl, RenderData());
+  quad->renderToFrameBuffer(gl, RenderData());
 
   glAssert(gl->glDepthMask(GL_TRUE));
   glAssert(gl->glEnable(GL_DEPTH_TEST));
@@ -179,7 +179,7 @@ void HABuffer::clear()
   // Render the full screen quad
 
   quad->setShaderProgram(clearShader);
-  quad->render(gl, RenderData());
+  quad->renderToFrameBuffer(gl, RenderData());
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));

@@ -110,21 +110,19 @@ void Scene::render()
 
   haBuffer->clear();
 
-  haBuffer->begin(anchorMesh->getShaderProgram(), renderData);
-
-  anchorMesh->render(gl, renderData);
+  // nodes->render(gl, haBuffer, renderData);
+  anchorMesh->render(gl, haBuffer, renderData);
 
   Eigen::Affine3f modelTransform2(Eigen::Translation3f(1, 0, 0) *
                                   Eigen::Scaling(0.4f));
   renderData.modelMatrix = modelTransform2.matrix();
-  anchorMesh->render(gl, renderData);
+  anchorMesh->render(gl, haBuffer, renderData);
 
   haBuffer->end();
   haBuffer->render();
 
   doPick();
 
-  // nodes->render(gl, renderData);
   // fbo->unbind();
 
   // renderScreenQuad();
@@ -141,7 +139,7 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->render(gl, renderData);
+  quad->renderToFrameBuffer(gl, renderData);
 }
 
 void Scene::resize(int width, int height)
