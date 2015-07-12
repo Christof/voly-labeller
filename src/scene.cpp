@@ -115,6 +115,11 @@ void Scene::render()
 
   anchorMesh->render(gl, renderData);
 
+  Eigen::Affine3f modelTransform2(Eigen::Translation3f(1, 0, 0) *
+                                  Eigen::Scaling(0.4f));
+  renderData.modelMatrix = modelTransform2.matrix();
+  anchorMesh->render(gl, renderData);
+
   haBuffer->end();
   haBuffer->render();
 
