@@ -9,6 +9,7 @@
 #include <memory>
 #include "./node.h"
 #include "./graphics/render_data.h"
+#include "./graphics/ha_buffer.h"
 #include "./graphics/gl.h"
 
 class LabelNode;
@@ -28,7 +29,8 @@ class Nodes : public QObject
   Q_OBJECT
  public:
   Nodes();
-  void render(Graphics::Gl *gl, RenderData renderData);
+  void render(Graphics::Gl *gl, std::shared_ptr<Graphics::HABuffer> haBuffer,
+              RenderData renderData);
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
   void removeNode(std::shared_ptr<Node> node);
