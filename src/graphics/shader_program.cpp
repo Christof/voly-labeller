@@ -169,7 +169,13 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
 
 int ShaderProgram::getLocation(const char *name)
 {
-  return shaderProgram.uniformLocation(name);
+  if (locationCache.count(name))
+    return locationCache[name];
+
+  int location = shaderProgram.uniformLocation(name);
+  locationCache[name] = location;
+
+  return location;
 }
 
 }  // namespace Graphics

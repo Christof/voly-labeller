@@ -6,6 +6,7 @@
 #include <QString>
 #include <Eigen/Core>
 #include <string>
+#include <map>
 #include "./buffer.h"
 
 namespace Graphics
@@ -48,8 +49,9 @@ class ShaderProgram
  private:
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
+  std::map<std::string, int> locationCache;
 
-  int getLocation(const char *name);
+  inline int getLocation(const char *name);
 };
 
 }  // namespace Graphics
