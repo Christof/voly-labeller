@@ -121,10 +121,6 @@ bool HABuffer::end()
 void HABuffer::render()
 {
   renderShader->bind();
-  Eigen::Matrix4f identity = Eigen::Matrix4f::Identity();
-  renderShader->setUniform("u_Projection", identity);
-  renderShader->setUniform("u_View", identity);
-  renderShader->setUniform("u_Model", identity);
 
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
   renderShader->setUniform("u_HashSz", habufferTableSize);
