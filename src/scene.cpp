@@ -13,6 +13,7 @@
 #include "./camera_move_controller.h"
 #include "./nodes.h"
 #include "./forces/labeller_frame_data.h"
+#include "./label_node.h"
 #include "./eigen_qdebug.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
@@ -66,7 +67,6 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
                                 frustumOptimizer.getFar());
                                 */
 
-  /*
   auto newPositions = labeller->update(Forces::LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
@@ -74,7 +74,6 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   {
     labelNode->labelPosition = newPositions[labelNode->label.id];
   }
-  */
 }
 
 void Scene::render()
