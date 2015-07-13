@@ -4,10 +4,12 @@ in vec3 position;
 
 uniform mat4 modelViewProjectionMatrix;
 
-out vec3 outTexCoord;
+out vec3 vertexTexCoord3d;
+out vec4 vertexPosition;
 
 void main()
 {
-  gl_Position = modelViewProjectionMatrix * vec4(position, 1.0f);
-  outTexCoord = position + vec3(0.5f, 0.5f, 0.5f);
+  vertexPosition = modelViewProjectionMatrix * vec4(position, 1.0f);
+  gl_Position = vertexPosition;
+  vertexTexCoord3d = position + vec3(0.5f, 0.5f, 0.5f);
 }
