@@ -1,10 +1,18 @@
-#version 430 core
+#version 440
 
-in vec4 outColor;
+#include "HABufferImplementation.hglsl"
 
-out vec4 color;
+in vec4 vertexColor;
+in vec4 vertexPosition;
 
-void main()
+FragmentData computeData()
 {
-  color = outColor;
+  FragmentData data;
+  data.color = vertexColor;
+  data.pos = vertexPosition;
+
+  return data;
 }
+
+#include "buildHABuffer.hglsl"
+
