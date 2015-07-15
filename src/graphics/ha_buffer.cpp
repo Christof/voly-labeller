@@ -87,21 +87,23 @@ void HABuffer::initializeBufferHash()
              1024.0f);
 }
 
-void HABuffer::begin(std::shared_ptr<ShaderProgram> shader,
-                     const RenderData &renderData)
+void HABuffer::beginAll()
 {
   buildTimer.start();
 
-  if (lastUsedProgram != shader->getId())
-    setUniforms(shader);
-
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
+}
+
+void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
+{
+  if (lastUsedProgram != shader->getId())
+    setUniforms(shader);
 
   lastUsedProgram = shader->getId();
 }
 
-bool HABuffer::end()
+bool HABuffer::endAll()
 {
 #if 1
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
@@ -158,14 +160,14 @@ void HABuffer::render()
 
   float tm_threshold = TIMING_THRESHOLD;
   float cleartime = clearTimer.waitResult();
-  float buildtime = buildTimer.waitResult();
+  // float buildtime = buildTimer.waitResult();
   float rendertime = renderTimer.waitResult();
   if (cleartime > tm_threshold ||
-      buildtime > tm_threshold ||
+      // buildtime > tm_threshold ||
       rendertime > tm_threshold)
   {
     printf("Clear time %lf ms\n", cleartime);
-    printf("Build time %lf ms\n", buildtime);
+    // printf("Build time %lf ms\n", buildtime);
     printf("Render time %lf ms\n", rendertime);
   }
 }

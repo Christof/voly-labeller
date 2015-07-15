@@ -35,11 +35,10 @@ void Renderable::render(Gl *gl, std::shared_ptr<HABuffer> haBuffer,
 
   renderObject->bind();
 
-  haBuffer->begin(renderObject->shaderProgram, renderData);
+  haBuffer->begin(renderObject->shaderProgram);
   setUniforms(renderObject->shaderProgram, renderData);
 
   draw(gl);
-  haBuffer->end();
 
   renderObject->release();
 }

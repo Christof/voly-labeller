@@ -39,10 +39,11 @@ class HABuffer
 
   void initialize(Gl *gl);
 
+  void beginAll();
   // build is now begin() and end(); because in the middle the models are
   // rendered
-  void begin(std::shared_ptr<ShaderProgram> shader, const RenderData &renderData);
-  bool end();
+  void begin(std::shared_ptr<ShaderProgram> shader);
+  bool endAll();
   void render();
   void clear();
 
