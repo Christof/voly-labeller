@@ -41,12 +41,19 @@ void Timer::stop()
 
 double Timer::waitResult()
 {
+  int count = 0;
+
   while (true)
   {
     GLint64 elapsedTime = done();
 
     if (elapsedTime >= 0)
       return static_cast<double>(elapsedTime) * 1e-6;
+
+    count++;
+
+    if (count > 5000)
+      return -1.0;
   }
 }
 
