@@ -1,11 +1,13 @@
 #include "./ha_buffer.h"
-#include <iostream>
+#include <QLoggingCategory>
 #include <algorithm>
 #include "./shader_program.h"
 #include "./quad.h"
 
 namespace Graphics
 {
+
+QLoggingCategory channel("Graphics::HABuffer");
 
 HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 {
@@ -35,7 +37,7 @@ void HABuffer::initialize(Gl *gl)
 
 void HABuffer::initializeShadersHash()
 {
-  printf("initShaders %d %d\n", size(0), size(1));
+  qCDebug(channel) << "initializeShadersHash for size" << size(0) << size(1);
 
   renderShader = std::make_shared<ShaderProgram>(
       gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
@@ -52,10 +54,8 @@ void HABuffer::initializeBufferHash()
                static_cast<uint>(ceil(sqrt(static_cast<float>(num_records)))));
   habufferNumRecords = habufferTableSize * habufferTableSize;
   habufferCountsSize = habufferScreenSize * habufferScreenSize + 1;
-  printf("HA-Buffer: Screen size: %d %d\n"
-         "             # records: %d (%d x %d)\n",
-         size.x(), size.y(), habufferNumRecords, habufferTableSize,
-         habufferTableSize);
+  qCDebug(channel, "Screen size: %d %d\n# records: %d (%d x %d)\n", size.x(),
+          size.y(), habufferNumRecords, habufferTableSize, habufferTableSize);
 
   // HA-Buffer records
   if (!RecordsBuffer.isInitialized())
@@ -79,12 +79,13 @@ void HABuffer::initializeBufferHash()
 
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-  printf("[HABuffer] Memory usage: %.2fMB",
-         ((habufferNumRecords * sizeof(uint) * 2 +
-           habufferNumRecords * sizeof(FragmentData) +
-           (habufferScreenSize * habufferScreenSize + 1) * sizeof(uint)) /
-          1024) /
-             1024.0f);
+  qCDebug(channel) << "Memory usage:"
+                   << ((habufferNumRecords * sizeof(uint) * 2 +
+                        habufferNumRecords * sizeof(FragmentData) +
+                        (habufferScreenSize * habufferScreenSize + 1) *
+                            sizeof(uint)) /
+                       1024) /
+                          1024.0f << "MB";
 }
 
 void HABuffer::beginAll()
@@ -118,11 +119,12 @@ bool HABuffer::endAll()
   if (numInserted >= habufferNumRecords)
   {
     overflow = true;
-    printf("Frame was interrupted: %u\n", numInserted);
+    qCWarning(channel) << "Frame was interrupted:" << numInserted;
   }
   else if (numInserted > habufferNumRecords * 0.8)
   {
-    printf("inserted %u / %u\n", numInserted, habufferNumRecords);
+    qCWarning(channel) << "inserted" << numInserted << "/"
+                       << habufferNumRecords;
   }
 
   buildTimer.stop();
@@ -158,18 +160,12 @@ void HABuffer::render()
 
   renderTimer.stop();
 
-  float tm_threshold = TIMING_THRESHOLD;
-  float cleartime = clearTimer.waitResult();
-  float buildtime = buildTimer.waitResult();
-  float rendertime = renderTimer.waitResult();
-  if (cleartime > tm_threshold ||
-      buildtime > tm_threshold ||
-      rendertime > tm_threshold)
-  {
-    printf("Clear time %lf ms\n", cleartime);
-    printf("Build time %lf ms\n", buildtime);
-    printf("Render time %lf ms\n", rendertime);
-  }
+  float clearTime = clearTimer.waitResult();
+  float buildTime = buildTimer.waitResult();
+  float renderTime = renderTimer.waitResult();
+  qCDebug(channel) << "Clear time" << clearTime << "ms";
+  qCDebug(channel) << "Build time" << buildTime << "ms";
+  qCDebug(channel) << "Debug time" << renderTime << "ms";
 }
 
 void HABuffer::clear()
@@ -238,11 +234,11 @@ void HABuffer::displayStatistics(const char *label)
 
   if (rec_percentage > 80.0)
   {
-    std::cerr << label << " habufferCountsSize:" << habufferCountsSize
-              << "<avg:" << avgdepth / static_cast<float>(num)
-              << " max: " << lcounts[habufferCountsSize - 1] << "/"
-              << habufferNumRecords << "(" << rec_percentage << "% " << '>'
-              << std::endl;
+    qCWarning(channel) << label << " habufferCountsSize:" << habufferCountsSize
+                       << "<avg:" << avgdepth / static_cast<float>(num)
+                       << " max: " << lcounts[habufferCountsSize - 1] << "/"
+                       << habufferNumRecords << "(" << rec_percentage << "% "
+                       << '>';
   }
 
   delete[] lcounts;
