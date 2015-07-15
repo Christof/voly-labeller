@@ -6,6 +6,7 @@
 #include <memory>
 #include "./render_data.h"
 #include "./gl.h"
+#include "./timer.h"
 #include "./buffer.h"
 
 namespace Graphics
@@ -19,7 +20,7 @@ struct FragmentData
 };
 
 #define USE_INDIRECT 1
-#define TIMING_THRESHOLD 20.0f
+#define TIMING_THRESHOLD 1.0f
 #define USE_TEXTURE 1
 
 class ShaderProgram;
@@ -74,6 +75,10 @@ class HABuffer
   uint *offsets;
 
   int lastUsedProgram = 0;
+
+  Timer clearTimer;
+  Timer buildTimer;
+  Timer renderTimer;
 };
 
 }  // namespace Graphics

@@ -27,6 +27,10 @@ void HABuffer::initialize(Gl *gl)
 
   initializeShadersHash();
   initializeBufferHash();
+
+  clearTimer.initialize(gl);
+  buildTimer.initialize(gl);
+  renderTimer.initialize(gl);
 }
 
 void HABuffer::initializeShadersHash()
@@ -86,6 +90,8 @@ void HABuffer::initializeBufferHash()
 void HABuffer::begin(std::shared_ptr<ShaderProgram> shader,
                      const RenderData &renderData)
 {
+  buildTimer.start();
+
   if (lastUsedProgram != shader->getId())
     setUniforms(shader);
 
@@ -117,6 +123,8 @@ bool HABuffer::end()
     printf("inserted %u / %u\n", numInserted, habufferNumRecords);
   }
 
+  buildTimer.stop();
+
   displayStatistics("after render");
 
   return overflow;
@@ -124,6 +132,8 @@ bool HABuffer::end()
 
 void HABuffer::render()
 {
+  renderTimer.start();
+
   renderShader->bind();
 
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
@@ -143,14 +153,13 @@ void HABuffer::render()
   quad->renderToFrameBuffer(gl, RenderData());
 
   glAssert(gl->glDepthMask(GL_TRUE));
-  glAssert(gl->glEnable(GL_DEPTH_TEST));
 
-  // TODO(SIRK): print timing
-  /*
+  renderTimer.stop();
+
   float tm_threshold = TIMING_THRESHOLD;
-  float cleartime = g_TmClear.waitResult();
-  float buildtime = g_TmBuild.waitResult();
-  float rendertime = g_TmRender.waitResult();
+  float cleartime = clearTimer.waitResult();
+  float buildtime = buildTimer.waitResult();
+  float rendertime = renderTimer.waitResult();
   if (cleartime > tm_threshold ||
       buildtime > tm_threshold ||
       rendertime > tm_threshold)
@@ -159,11 +168,12 @@ void HABuffer::render()
     printf("Build time %lf ms\n", buildtime);
     printf("Render time %lf ms\n", rendertime);
   }
-  */
 }
 
 void HABuffer::clear()
 {
+  clearTimer.start();
+
   for (int i = 0; i < 512; i++)
   {
     offsets[i] = rand() ^ (rand() << 8) ^ (rand() << 16);
@@ -183,6 +193,8 @@ void HABuffer::clear()
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
+
+  clearTimer.stop();
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)

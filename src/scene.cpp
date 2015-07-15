@@ -97,10 +97,13 @@ void Scene::render()
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
+  std::cout << "clear" << std::endl;
   haBuffer->clear();
 
+  std::cout << "build" << std::endl;
   nodes->render(gl, haBuffer, renderData);
 
+  std::cout << "render" << std::endl;
   haBuffer->render();
 
   doPick();
