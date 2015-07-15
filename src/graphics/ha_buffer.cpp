@@ -86,9 +86,13 @@ void HABuffer::initializeBufferHash()
 void HABuffer::begin(std::shared_ptr<ShaderProgram> shader,
                      const RenderData &renderData)
 {
-  setUniforms(shader);
+  if (lastUsedProgram != shader->getId())
+    setUniforms(shader);
+
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
+
+  lastUsedProgram = shader->getId();
 }
 
 bool HABuffer::end()

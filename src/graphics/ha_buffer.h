@@ -72,6 +72,8 @@ class HABuffer
   float habufferOpacity = 0.5f;
   float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
   uint *offsets;
+
+  int lastUsedProgram = 0;
 };
 
 }  // namespace Graphics
