@@ -38,6 +38,7 @@ class HABuffer
   ~HABuffer();
 
   void initialize(Gl *gl);
+  void updateNearAndFarPlanes(float near, float far);
 
   void beginAll();
   // build is now begin() and end(); because in the middle the models are
@@ -69,8 +70,8 @@ class HABuffer
   Buffer CountsBuffer;
   Buffer FragmentDataBuffer;
 
-  float habufferZNear = 0.1f;
-  float habufferZFar = 5.0f;
+  float zNear = 0.1f;
+  float zFar = 5.0f;
   float habufferOpacity = 0.5f;
   float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
   uint *offsets;

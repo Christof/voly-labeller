@@ -35,6 +35,12 @@ void HABuffer::initialize(Gl *gl)
   renderTimer.initialize(gl);
 }
 
+void HABuffer::updateNearAndFarPlanes(float near, float far)
+{
+  zNear = near;
+  zFar = far;
+}
+
 void HABuffer::initializeShadersHash()
 {
   qCDebug(channel) << "initializeShadersHash for size" << size(0) << size(1);
@@ -200,8 +206,8 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("u_HashSz", habufferTableSize);
   shader->setUniformAsVec2Array("u_Offsets", offsets, 256);
 
-  shader->setUniform("u_ZNear", habufferZNear);
-  shader->setUniform("u_ZFar", habufferZFar);
+  shader->setUniform("u_ZNear", zNear);
+  shader->setUniform("u_ZFar", zFar);
   shader->setUniform("Opacity", habufferOpacity);
   shader->setUniform("u_Records", RecordsBuffer);
   shader->setUniform("u_Counts", CountsBuffer);
