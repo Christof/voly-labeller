@@ -106,9 +106,7 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
 
 bool HABuffer::endAll()
 {
-#if 1
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
-#endif
   glAssert(gl->glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT));
 
   uint numInserted = 1;
