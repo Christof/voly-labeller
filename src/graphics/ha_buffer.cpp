@@ -7,7 +7,7 @@
 namespace Graphics
 {
 
-QLoggingCategory channel("Graphics::HABuffer");
+QLoggingCategory channel("Graphics.HABuffer");
 
 HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 {

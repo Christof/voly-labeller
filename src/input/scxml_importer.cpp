@@ -14,7 +14,7 @@
 #include "./key_helper.h"
 #include "./event_transition.h"
 
-QLoggingCategory channel("Input::ScxmlImporter");
+QLoggingCategory channel("Input.ScxmlImporter");
 
 ScxmlImporter::ScxmlImporter(QUrl url,
                              std::shared_ptr<InvokeManager> invokeManager,
