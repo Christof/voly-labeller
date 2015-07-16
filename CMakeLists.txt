@@ -66,6 +66,7 @@ set(SOURCES
   src/graphics/frame_buffer_object.cpp
   src/graphics/ha_buffer.cpp
   src/graphics/timer.cpp
+  src/graphics/buffer_hole_manager.cpp
   ${RESOURCES})
 
 set(SHADER
