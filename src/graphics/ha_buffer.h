@@ -19,10 +19,6 @@ struct FragmentData
   float pos[4];
 };
 
-#define USE_INDIRECT 1
-#define TIMING_THRESHOLD 1.0f
-#define USE_TEXTURE 1
-
 class ShaderProgram;
 class Quad;
 
