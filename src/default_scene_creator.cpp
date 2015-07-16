@@ -23,10 +23,8 @@ void DefaultSceneCreator::create()
   std::vector<std::shared_ptr<Node>> sceneNodes;
   addMeshNodesTo(sceneNodes);
   addLabelNodesTo(sceneNodes);
-  /*
   sceneNodes.push_back(
       std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
-  */
   Persister::save(sceneNodes, "config/scene.xml");
 
   nodes->addSceneNodesFrom("config/scene.xml");
