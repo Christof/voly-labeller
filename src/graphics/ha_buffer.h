@@ -12,13 +12,6 @@
 namespace Graphics
 {
 
-// TODO(SIRK) change with size
-struct FragmentData
-{
-  float color[4];
-  float pos[4];
-};
-
 class ShaderProgram;
 class Quad;
 
@@ -49,6 +42,9 @@ class HABuffer
   void initializeBufferHash();
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
   void displayStatistics(const char *label);
+
+  // vec4 color and vec4 position
+  const int FRAGMENT_DATA_SIZE = 32;
 
   Eigen::Vector2i size;
   Gl *gl;

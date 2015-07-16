@@ -75,10 +75,9 @@ void HABuffer::initializeBufferHash()
     CountsBuffer.resize(habufferCountsSize * sizeof(uint));
 
   if (!FragmentDataBuffer.isInitialized())
-    FragmentDataBuffer.initialize(gl,
-                                  habufferNumRecords * sizeof(FragmentData));
+    FragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
   else
-    FragmentDataBuffer.resize(habufferNumRecords * sizeof(FragmentData));
+    FragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
 
   // clear counts
   CountsBuffer.clear(0);
@@ -87,7 +86,7 @@ void HABuffer::initializeBufferHash()
 
   qCDebug(channel) << "Memory usage:"
                    << ((habufferNumRecords * sizeof(uint) * 2 +
-                        habufferNumRecords * sizeof(FragmentData) +
+                        habufferNumRecords * FRAGMENT_DATA_SIZE +
                         (habufferScreenSize * habufferScreenSize + 1) *
                             sizeof(uint)) /
                        1024) /
