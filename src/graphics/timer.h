@@ -8,8 +8,7 @@ namespace Graphics
 {
 
 /**
- * \brief
- *
+ * \brief Encapsulates OpenGl timing functionality
  *
  */
 class Timer

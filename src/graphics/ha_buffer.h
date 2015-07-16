@@ -16,9 +16,43 @@ class ShaderProgram;
 class Quad;
 
 /**
- * \brief
+ * \brief Coherent hashing A-Buffer to render transparent objects without
+ * sorting
+ *
+ * Implemented after:
+ * Lefebvre, Sylvain, Samuel Hornus, and Anass Lasram. "Per-Pixel Lists for
+ * Single Pass A-Buffer." GPU Pro 5: Advanced Rendering Techniques (2014).
+ *
+ * The Buffer must be initialized once by calling HABuffer::initialize. Each
+ * frame the buffer must be cleared by means of HABuffer::clearAndPrepare. For
+ * each object which is rendered HABuffer::begin must by called with the shader
+ * of the object. After all objects have been rendered into the HABuffer, the
+ * buffer itself can be resolved and rendered by calling HABuffer::render.
+ *
+ * Fragment shader for object which are rendered into the HABuffer have to
+ * implement a certain interface. The following skeleton describes the requirements:
+ *
+ * \code{glsl}
+ *#version 440
+ *#include "HABufferImplementation.hglsl"
  *
  *
+ *FragmentData computeData()
+ *{
+ *  ...
+ *
+ *  FragmentData data;
+ *  data.color = color;
+ *  data.pos = outPosition;
+ *
+ *  return data;
+ *}
+ *
+ *#include "buildHABuffer.hglsl"
+ *\endcode
+ *
+ * So the two hglsl files must be included and the `computeData` function
+ * must be implemented which sets the color and position.
  */
 class HABuffer
 {

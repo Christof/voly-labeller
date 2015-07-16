@@ -7,8 +7,7 @@
 namespace Graphics
 {
 /**
- * \brief
- *
+ * \brief Encapsulates a direct state access named buffer
  *
  */
 class Buffer
