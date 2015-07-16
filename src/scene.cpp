@@ -97,11 +97,9 @@ void Scene::render()
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  haBuffer->clear();
+  haBuffer->clearAndPrepare();
 
-  haBuffer->beginAll();
   nodes->render(gl, haBuffer, renderData);
-  haBuffer->endAll();
 
   haBuffer->render();
 

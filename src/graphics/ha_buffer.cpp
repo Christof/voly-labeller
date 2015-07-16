@@ -93,8 +93,29 @@ void HABuffer::initializeBufferHash()
                           1024.0f << "MB";
 }
 
-void HABuffer::beginAll()
+void HABuffer::clearAndPrepare()
 {
+  clearTimer.start();
+
+  for (int i = 0; i < 512; i++)
+  {
+    offsets[i] = rand() ^ (rand() << 8) ^ (rand() << 16);
+    offsets[i] = offsets[i] % habufferTableSize;
+  }
+
+  clearShader->bind();
+  clearShader->setUniform("u_NumRecords", habufferNumRecords);
+  clearShader->setUniform("u_ScreenSz", habufferScreenSize);
+  clearShader->setUniform("u_Records", RecordsBuffer);
+  clearShader->setUniform("u_Counts", CountsBuffer);
+
+  quad->setShaderProgram(clearShader);
+  quad->renderToFrameBuffer(gl, RenderData());
+
+  // Ensure that all global memory write are done before starting to render
+  glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
+
+  clearTimer.stop();
   buildTimer.start();
 
   glAssert(gl->glDisable(GL_CULL_FACE));
@@ -109,36 +130,10 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
   lastUsedProgram = shader->getId();
 }
 
-bool HABuffer::endAll()
-{
-  glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
-  glAssert(gl->glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT));
-
-  uint numInserted = 1;
-  CountsBuffer.getData(&numInserted, sizeof(uint),
-                       CountsBuffer.getSize() - sizeof(uint));
-
-  bool overflow = false;
-  if (numInserted >= habufferNumRecords)
-  {
-    overflow = true;
-    qCWarning(channel) << "Frame was interrupted:" << numInserted;
-  }
-  else if (numInserted > habufferNumRecords * 0.8)
-  {
-    qCWarning(channel) << "inserted" << numInserted << "/"
-                       << habufferNumRecords;
-  }
-
-  buildTimer.stop();
-
-  displayStatistics("after render");
-
-  return overflow;
-}
-
 void HABuffer::render()
 {
+  syncAndGetCounts();
+
   renderTimer.start();
 
   renderShader->bind();
@@ -171,33 +166,6 @@ void HABuffer::render()
   qCDebug(channel) << "Debug time" << renderTime << "ms";
 }
 
-void HABuffer::clear()
-{
-  clearTimer.start();
-
-  for (int i = 0; i < 512; i++)
-  {
-    offsets[i] = rand() ^ (rand() << 8) ^ (rand() << 16);
-    offsets[i] = offsets[i] % habufferTableSize;
-  }
-
-  clearShader->bind();
-  clearShader->setUniform("u_NumRecords", habufferNumRecords);
-  clearShader->setUniform("u_ScreenSz", habufferScreenSize);
-  clearShader->setUniform("u_Records", RecordsBuffer);
-  clearShader->setUniform("u_Counts", CountsBuffer);
-
-  // Render the full screen quad
-
-  quad->setShaderProgram(clearShader);
-  quad->renderToFrameBuffer(gl, RenderData());
-
-  // Ensure that all global memory write are done before starting to render
-  glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
-
-  clearTimer.stop();
-}
-
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 {
   shader->setUniform("u_NumRecords", habufferNumRecords);
@@ -212,6 +180,31 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("u_Counts", CountsBuffer);
   shader->setUniform("u_FragmentData", FragmentDataBuffer);
 }
+
+void HABuffer::syncAndGetCounts()
+{
+  glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
+  glAssert(gl->glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT));
+
+  uint numInserted = 1;
+  CountsBuffer.getData(&numInserted, sizeof(uint),
+                       CountsBuffer.getSize() - sizeof(uint));
+
+  if (numInserted >= habufferNumRecords)
+  {
+    qCCritical(channel) << "Frame was interrupted:" << numInserted;
+  }
+  else if (numInserted > habufferNumRecords * 0.8)
+  {
+    qCWarning(channel) << "inserted" << numInserted << "/"
+                       << habufferNumRecords;
+  }
+
+  buildTimer.stop();
+
+  displayStatistics("after render");
+}
+
 
 void HABuffer::displayStatistics(const char *label)
 {

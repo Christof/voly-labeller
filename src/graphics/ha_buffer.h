@@ -29,18 +29,15 @@ class HABuffer
   void initialize(Gl *gl);
   void updateNearAndFarPlanes(float near, float far);
 
-  void beginAll();
-  // build is now begin() and end(); because in the middle the models are
-  // rendered
+  void clearAndPrepare();
   void begin(std::shared_ptr<ShaderProgram> shader);
-  bool endAll();
   void render();
-  void clear();
 
  private:
   void initializeShadersHash();
   void initializeBufferHash();
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
+  void syncAndGetCounts();
   void displayStatistics(const char *label);
 
   // vec4 color and vec4 position
