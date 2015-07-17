@@ -50,7 +50,8 @@ LinesCrossingForce::calculateCrossingForce(const LabelState &current,
 
   Eigen::Vector2f force = direction.dot(orthoDir) * orthoDir;
   force.normalize();
-  qDebug() << "Lines crossing " << current.text.c_str() << " force:" << force;
+  qCDebug(forcesChan) << "Lines crossing " << current.text.c_str()
+                      << " force:" << force;
 
   return force;
 }

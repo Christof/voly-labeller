@@ -25,8 +25,8 @@ Eigen::Vector2f LabelCollisionForce::calculate(LabelState &label,
 
     if (aabb.testAabb(otherAabb))
     {
-      qWarning() << "Collision between:" << label.text.c_str() << "and"
-                 << otherLabel.text.c_str();
+      qCDebug(forcesChan) << "Collision between:" << label.text.c_str() << "and"
+                          << otherLabel.text.c_str();
       Eigen::Vector2f diff = label.labelPosition2D - otherLabel.labelPosition2D;
       result += diff.normalized();
     }
