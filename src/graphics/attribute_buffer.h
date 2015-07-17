@@ -15,10 +15,10 @@ namespace Graphics
 class AttributeBuffer
 {
  protected:
-  GLuint m_glID;
-  uint m_Size;
-  GLuint m_type;
-  static const GLuint c_buf_type = GL_ARRAY_BUFFER;
+  GLuint id;
+  uint count;
+  GLuint bufferType;
+  static const GLuint DEFAULT_BUFFER_TYPE = GL_ARRAY_BUFFER;
 
  public:
   AttributeBuffer(int count, int componentCount);
@@ -30,7 +30,7 @@ class AttributeBuffer
   /*
   GLuint type() const
   {
-    return m_type;
+    return bufferType;
   }
   uint primitiveSize() const
   {
@@ -38,15 +38,12 @@ class AttributeBuffer
   };
   uint size() const
   {
-    return m_Size;
+    return count;
   }
   */
   uint sizeBytes() const;
 
-  void initialize(Gl *gl, uint size, GLuint type = c_buf_type);
-  // void copy(AttributeBuffer const &buffer);
-
-  // void resize(uint size);
+  void initialize(Gl *gl, uint size, GLuint type = DEFAULT_BUFFER_TYPE);
 
   void bindAttrib(int attribnum);
   void bindAttribDivisor(int attribnum, int divisor);
@@ -55,30 +52,30 @@ class AttributeBuffer
 
   template <typename T> void setData(std::vector<T> values, uint offset)
   {
-    assert(m_glID != 0);
+    assert(id != 0);
     assert(sizeof(T) == elementSize());
-    assert(offset + (values.size() / componentCount) <= m_Size);
+    assert(offset + (values.size() / componentCount) <= count);
 
     const uint byteSize =
         values.size() * componentSize;  // no Size, because vector is flat
     const uint byteOffset = offset * elementSize();
 
     glAssert(gl->getDirectStateAccess()->glNamedBufferSubDataEXT(
-        m_glID, byteOffset, byteSize, values.data()));
+        id, byteOffset, byteSize, values.data()));
   }
 
   template <typename T>
   void getData(std::vector<T> &values, uint offset, uint size)
   {
-    assert(m_glID != 0);
+    assert(id != 0);
     assert(sizeof(T) == elementSize());
 
-    values.resize(m_Size);
+    values.resize(count);
     if (size == 0)
-      size = m_Size;
+      size = count;
 
     glAssert(gl->getDirectStateAccess()->glGetNamedBufferSubDataEXT(
-        m_glID, offset * elementSize(), size * elementSize(), values.data()));
+        id, offset * elementSize(), size * elementSize(), values.data()));
   }
 
  private:
