@@ -81,6 +81,7 @@ set(SHADER
   src/shader/renderHABuffer.vert
   src/shader/renderHABuffer.frag
   src/shader/buildHABuffer.hglsl
+  src/shader/texture.frag
   src/shader/texture3dAsColor.frag
   src/shader/texture3d.vert)
 
