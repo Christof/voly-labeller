@@ -2,7 +2,7 @@
 
 #define SRC_GRAPHICS_GL_H_
 
-#include <QOpenGLFunctions_4_3_Core>
+#include <QOpenGLFunctions_4_5_Core>
 #include <QtOpenGLExtensions>
 #include <QSize>
 
@@ -54,7 +54,7 @@ inline void glCheckErrorFunction(std::string file, int line)
  * This is used instead of directly using the Qt type to make
  * changing the OpenGl version easy
  */
-class Gl : public QOpenGLFunctions_4_3_Core
+class Gl : public QOpenGLFunctions_4_5_Core
 {
  public:
   Gl();
