@@ -68,6 +68,7 @@ set(SOURCES
   src/graphics/timer.cpp
   src/graphics/buffer_hole_manager.cpp
   src/graphics/attribute_buffer.cpp
+  src/graphics/buffer_lock_manager.cpp
   ${RESOURCES})
 
 set(SHADER
