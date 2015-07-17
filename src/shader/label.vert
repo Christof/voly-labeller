@@ -7,11 +7,12 @@ uniform mat4 modelViewProjectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 
-out vec2 outTexcoord;
+out vec2 vertexTexCoord;
+out vec4 vertexPosition;
 
 void main()
 {
-  outTexcoord = texcoord;
+  vertexTexCoord = texcoord;
   vec3 cameraRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
   vec3 cameraUp = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
   vec3 labelPosition = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
@@ -20,6 +21,7 @@ void main()
       cameraRight * position.x * size.x +
       cameraUp * position.y * size.y;
 
-  gl_Position = modelViewProjectionMatrix * vec4(pos, 1.0f);
-  gl_Position.z -= 0.01f;
+  vertexPosition = modelViewProjectionMatrix * vec4(pos, 1.0f);
+  vertexPosition.z -= 0.01f;
+  gl_Position = vertexPosition;
 }

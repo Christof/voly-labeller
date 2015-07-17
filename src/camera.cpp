@@ -7,8 +7,8 @@ Camera::Camera()
     radius(1.0f), azimuth(-M_PI / 2.0f), declination(0),
     fieldOfView(M_PI / 2.0f)
 {
-  projection = createProjection(fieldOfView, 16.0f / 9.0f, near, far);
-  // projection = createOrthographicProjection(16.0f / 9.0f, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, near, far);
+  // projection = createOrthographicProjection(aspectRatio, near, far);
 }
 
 Camera::~Camera()
@@ -134,7 +134,8 @@ Eigen::Vector3f Camera::getPosition()
 
 void Camera::resize(float width, float height)
 {
-  projection = createProjection(fieldOfView, width / height, 0.1f, 100.0f);
+  aspectRatio = width / height;
+  projection = createProjection(fieldOfView, aspectRatio, 0.1f, 100.0f);
 }
 
 void Camera::updateNearAndFarPlanes(float near, float far)
@@ -142,6 +143,6 @@ void Camera::updateNearAndFarPlanes(float near, float far)
   this->near = near;
   this->far = far;
 
-  projection = createProjection(fieldOfView, 16.0f / 9.0f, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, near, far);
 }
 

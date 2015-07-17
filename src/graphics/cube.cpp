@@ -5,6 +5,9 @@
 #include "./shader_program.h"
 #include "./render_object.h"
 
+namespace Graphics
+{
+
 Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
   : Renderable(vertexShaderPath, fragmentShaderPath)
 {
@@ -62,3 +65,4 @@ void Cube::draw(Gl *gl)
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
+}  // namespace Graphics

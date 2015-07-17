@@ -1,7 +1,6 @@
 #include "./forces_visualizer_node.h"
 #include <Eigen/Geometry>
 #include <QDebug>
-#include "./connector.h"
 
 ForcesVisualizerNode::ForcesVisualizerNode(
     std::shared_ptr<Forces::Labeller> labeller)
@@ -9,13 +8,13 @@ ForcesVisualizerNode::ForcesVisualizerNode(
 {
   persistable = false;
 
-  connector = std::make_shared<Connector>(Eigen::Vector3f(0, 0, 0),
-                                          Eigen::Vector3f(1, 0, 0));
+  connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
+                                                    Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(1.0f, 0.8f, 0, 1);
   connector->zOffset = -0.02f;
 }
 
-void ForcesVisualizerNode::render(Gl *gl, RenderData renderData)
+void ForcesVisualizerNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   for (auto &label : labeller->getLabels())
   {
@@ -28,7 +27,7 @@ void ForcesVisualizerNode::render(Gl *gl, RenderData renderData)
 }
 
 void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
-                                       Eigen::Vector2f force, Gl *gl,
+                                       Eigen::Vector2f force, Graphics::Gl *gl,
                                        RenderData renderData)
 {
   auto length = force.norm() * 10;
@@ -42,6 +41,6 @@ void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
   renderData.projectionMatrix = Eigen::Matrix4f::Identity();
   renderData.viewMatrix = Eigen::Matrix4f::Identity();
 
-  connector->render(gl, renderData);
+  connector->render(gl, haBuffer, renderData);
 }
 

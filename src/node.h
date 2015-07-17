@@ -6,10 +6,10 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <memory>
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./math/obb.h"
-
-class Gl;
+#include "./graphics/gl.h"
+#include "./graphics/ha_buffer.h"
 
 /**
  * \brief Base class for nodes which are managed by the
@@ -25,7 +25,13 @@ class Node
   {
   }
 
-  virtual void render(Gl *gl, RenderData renderData) = 0;
+
+  void render(Graphics::Gl *gl, std::shared_ptr<Graphics::HABuffer> haBuffer,
+              RenderData renderData)
+  {
+    this->haBuffer = haBuffer;
+    render(gl, renderData);
+  }
 
   virtual std::shared_ptr<Math::Obb> getObb()
   {
@@ -42,7 +48,10 @@ class Node
   {
   }
 
+  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
+
   bool persistable = true;
+  std::shared_ptr<Graphics::HABuffer> haBuffer;
 
  private:
   friend class boost::serialization::access;

@@ -2,9 +2,11 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
-#include "./math/obb.h"
 #include "./render_object.h"
 #include "./shader_program.h"
+
+namespace Graphics
+{
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   : Renderable(":/shader/phong.vert", ":/shader/phong.frag")
@@ -128,4 +130,6 @@ void Mesh::draw(Gl *gl)
 {
   glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
+
+}  // namespace Graphics
 

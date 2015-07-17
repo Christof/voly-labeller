@@ -1,14 +1,18 @@
-#ifndef SRC_CONNECTOR_H_
+#ifndef SRC_GRAPHICS_CONNECTOR_H_
 
-#define SRC_CONNECTOR_H_
+#define SRC_GRAPHICS_CONNECTOR_H_
 
 #include <Eigen/Core>
 #include <vector>
 #include "./render_data.h"
 #include "./renderable.h"
 
-class Gl;
+
+namespace Graphics
+{
+
 class ShaderProgram;
+class Gl;
 
 /**
  * \brief Draws a line between two points or many points
@@ -41,4 +45,6 @@ class Connector : public Renderable
   std::vector<Eigen::Vector3f> points;
 };
 
-#endif  // SRC_CONNECTOR_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_CONNECTOR_H_

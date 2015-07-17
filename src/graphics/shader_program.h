@@ -1,11 +1,16 @@
-#ifndef SRC_SHADER_PROGRAM_H_
+#ifndef SRC_GRAPHICS_SHADER_PROGRAM_H_
 
-#define SRC_SHADER_PROGRAM_H_
+#define SRC_GRAPHICS_SHADER_PROGRAM_H_
 
 #include <QOpenGLShaderProgram>
 #include <QString>
 #include <Eigen/Core>
 #include <string>
+#include <map>
+#include "./buffer.h"
+
+namespace Graphics
+{
 
 class Gl;
 
@@ -33,14 +38,22 @@ class ShaderProgram
   void setUniform(const char *name, Eigen::Vector2f vector);
   void setUniform(const char *name, float value);
   void setUniform(const char *name, int value);
+  void setUniform(const char *name, unsigned int value);
+  void setUniform(const char *name, const Graphics::Buffer &value);
+
+  void setUniformAsVec2Array(const char *name, float *values, int count);
+  void setUniformAsVec2Array(const char *name, unsigned int *values, int count);
 
   static QString readFileAndHandleIncludes(QString path);
 
  private:
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
+  std::map<std::string, int> locationCache;
 
-  int getLocation(const char *name);
+  inline int getLocation(const char *name);
 };
 
-#endif  // SRC_SHADER_PROGRAM_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_SHADER_PROGRAM_H_

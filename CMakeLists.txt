@@ -28,18 +28,8 @@ set(CMAKE_CXX_FLAGS_COV "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ft
 
 set(SOURCES
   src/window.cpp
-  src/gl.cpp
   src/eigen_qdebug.cpp
   src/camera.cpp
-  src/shader_program.cpp
-  src/render_object.cpp
-  src/renderable.cpp
-  src/mesh.cpp
-  src/quad.cpp
-  src/frame_buffer_object.cpp
-  src/connector.cpp
-  src/cube.cpp
-  src/texture.cpp
   src/importer.cpp
   src/mesh_node.cpp
   src/label_node.cpp
@@ -62,6 +52,20 @@ set(SOURCES
   src/labels_model.cpp
   src/volume_reader.cpp
   src/default_scene_creator.cpp
+  src/graphics/gl.cpp
+  src/graphics/shader_program.cpp
+  src/graphics/buffer.cpp
+  src/graphics/render_data.h
+  src/graphics/render_object.cpp
+  src/graphics/renderable.cpp
+  src/graphics/quad.cpp
+  src/graphics/connector.cpp
+  src/graphics/cube.cpp
+  src/graphics/mesh.cpp
+  src/graphics/texture.cpp
+  src/graphics/frame_buffer_object.cpp
+  src/graphics/ha_buffer.cpp
+  src/graphics/timer.cpp
   ${RESOURCES})
 
 set(SHADER
@@ -72,6 +76,12 @@ set(SHADER
   src/shader/phong.frag
   src/shader/phong.vert
   src/shader/slice.frag
+  src/shader/clearHABuffer.vert
+  src/shader/clearHABuffer.frag
+  src/shader/renderHABuffer.vert
+  src/shader/renderHABuffer.frag
+  src/shader/buildHABuffer.hglsl
+  src/shader/texture.frag
   src/shader/texture3dAsColor.frag
   src/shader/texture3d.vert)
 

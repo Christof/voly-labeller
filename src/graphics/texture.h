@@ -1,11 +1,14 @@
-#ifndef SRC_TEXTURE_H_
+#ifndef SRC_GRAPHICS_TEXTURE_H_
 
-#define SRC_TEXTURE_H_
+#define SRC_GRAPHICS_TEXTURE_H_
 
 #include <string>
 #include "./gl.h"
 
 class QImage;
+
+namespace Graphics
+{
 
 /**
  * \brief Loads an image and provides functions to use it as a texture
@@ -39,7 +42,9 @@ class Texture
   GLuint texture;
   int width;
   int height;
-  QImage* image;
+  QImage *image;
 };
 
-#endif  // SRC_TEXTURE_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_TEXTURE_H_

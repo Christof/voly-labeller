@@ -7,10 +7,10 @@
 #include <QElapsedTimer>
 #include <QSet>
 #include <memory>
+#include "./graphics/gl.h"
 
 class AbstractScene;
 class QStateMachine;
-class Gl;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -50,7 +50,7 @@ class Window : public QQuickView
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  Gl *gl = nullptr;
+  Graphics::Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
   bool updatePending;
   QSet<Qt::Key> keysPressed;

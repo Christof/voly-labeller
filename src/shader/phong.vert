@@ -9,7 +9,7 @@ uniform mat4 modelMatrix;
 
 out vec4 outColor;
 out vec3 outNormal;
-out vec3 outPosition;
+out vec4 outPosition;
 
 vec4 mul(mat4 matrix, vec3 vector)
 {
@@ -18,7 +18,7 @@ vec4 mul(mat4 matrix, vec3 vector)
 void main()
 {
   outColor = vertexColor;
-  outPosition = mul(modelMatrix, vertexPosition).xyz;
-  gl_Position = modelViewProjectionMatrix * vec4(vertexPosition, 1.0f);
+  outPosition = modelViewProjectionMatrix * vec4(vertexPosition, 1.0f);
+  gl_Position = outPosition;
   outNormal = mul(modelMatrix, vertexNormal).xyz;
 }

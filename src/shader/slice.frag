@@ -1,14 +1,23 @@
-#version 430 core
+#version 440
 
-in vec2 outTexcoord;
+#include "HABufferImplementation.hglsl"
 
-out vec4 color;
+in vec2 vertexTexCoord;
+in vec4 vertexPosition;
 
 uniform sampler3D textureSampler;
 
-void main()
+FragmentData computeData()
 {
-  vec3 texCoord = vec3(outTexcoord.x, outTexcoord.y, 0);
+  vec3 texCoord = vec3(vertexTexCoord.x, vertexTexCoord.y, 0);
   float value = texture(textureSampler, texCoord).r;
-  color = vec4(value, value, value, 1.0f);
+
+  FragmentData data;
+  data.color = vec4(value, value, value, 1.0f);
+  data.pos = vertexPosition;
+
+  return data;
 }
+
+#include "buildHABuffer.hglsl"
+

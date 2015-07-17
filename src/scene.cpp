@@ -4,18 +4,16 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
-#include "./gl.h"
+#include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
 #include "./camera_zoom_controller.h"
 #include "./camera_move_controller.h"
 #include "./nodes.h"
-#include "./label_node.h"
-#include "./quad.h"
-#include "./frame_buffer_object.h"
 #include "./forces/labeller_frame_data.h"
+#include "./label_node.h"
 #include "./eigen_qdebug.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
@@ -34,7 +32,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   invokeManager->addHandler("cameraZoom", cameraZoomController.get());
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 
-  fbo = std::unique_ptr<FrameBufferObject>(new FrameBufferObject());
+  fbo = std::unique_ptr<Graphics::FrameBufferObject>(
+      new Graphics::FrameBufferObject());
 }
 
 Scene::~Scene()
@@ -46,9 +45,13 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Quad>();
+  quad = std::make_shared<Graphics::Quad>(":shader/label.vert",
+                                          ":shader/texture.frag");
 
   fbo->initialize(gl, width, height);
+  haBuffer =
+      std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
+  haBuffer->initialize(gl);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -62,6 +65,8 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   frustumOptimizer.update(camera.getViewMatrix());
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                 frustumOptimizer.getFar());
+  haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                   frustumOptimizer.getFar());
 
   auto newPositions = labeller->update(Forces::LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
@@ -93,9 +98,13 @@ void Scene::render()
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  nodes->render(gl, renderData);
+  haBuffer->clearAndPrepare();
 
-  doPick();
+  nodes->render(gl, haBuffer, renderData);
+
+  haBuffer->render();
+
+  // doPick();
 
   fbo->unbind();
 
@@ -113,7 +122,7 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->render(gl, renderData);
+  quad->renderToFrameBuffer(gl, renderData);
 }
 
 void Scene::resize(int width, int height)

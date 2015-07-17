@@ -1,17 +1,15 @@
 #include "./volume_node.h"
 #include <string>
-#include "./render_data.h"
+#include "./graphics/render_data.h"
 #include "./volume_reader.h"
-#include "./quad.h"
-#include "./cube.h"
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
-  quad = std::unique_ptr<Quad>(
-      new Quad(":shader/label.vert", ":shader/slice.frag"));
-  cube = std::unique_ptr<Cube>(
-      new Cube(":/shader/texture3d.vert", ":/shader/texture3dAsColor.frag"));
+  quad = std::unique_ptr<Graphics::Quad>(
+      new Graphics::Quad(":shader/label.vert", ":shader/slice.frag"));
+  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube(
+      ":/shader/texture3d.vert", ":/shader/texture3dAsColor.frag"));
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
@@ -24,21 +22,21 @@ VolumeNode::~VolumeNode()
 {
 }
 
-void VolumeNode::render(Gl *gl, RenderData renderData)
+void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   if (texture == 0)
     initializeTexture(gl);
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  quad->render(gl, renderData);
+  quad->render(gl, haBuffer, renderData);
 
   auto transformation = volumeReader->getTransformationMatrix();
   auto size = volumeReader->getPhysicalSize();
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
   renderData.modelMatrix = transformation * scale;
-  cube->render(gl, renderData);
+  cube->render(gl, haBuffer, renderData);
 }
 
 std::shared_ptr<Math::Obb> VolumeNode::getObb()
@@ -46,7 +44,7 @@ std::shared_ptr<Math::Obb> VolumeNode::getObb()
   return obb;
 }
 
-void VolumeNode::initializeTexture(Gl *gl)
+void VolumeNode::initializeTexture(Graphics::Gl *gl)
 {
   auto size = volumeReader->getSize();
   auto textureTarget = GL_TEXTURE_3D;

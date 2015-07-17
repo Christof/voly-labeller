@@ -4,6 +4,9 @@
 #include "./shader_program.h"
 #include "./render_object.h"
 
+namespace Graphics
+{
+
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
   : Renderable(vertexShaderFilename, fragmentShaderFilename)
 {
@@ -31,6 +34,9 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject)
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
+  if (skipSettingUniforms)
+    return;
+
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
   shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
@@ -44,3 +50,17 @@ void Quad::draw(Gl *gl)
   glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 }
 
+void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
+{
+  if (!renderObject.get())
+    initialize(gl);
+
+  renderObject->bind();
+
+  setUniforms(renderObject->shaderProgram, renderData);
+
+  draw(gl);
+
+  renderObject->release();
+}
+}  // namespace Graphics

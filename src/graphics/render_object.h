@@ -1,14 +1,18 @@
-#ifndef SRC_RENDER_OBJECT_H_
+#ifndef SRC_GRAPHICS_RENDER_OBJECT_H_
 
-#define SRC_RENDER_OBJECT_H_
+#define SRC_GRAPHICS_RENDER_OBJECT_H_
 
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <memory>
 #include <string>
 #include <vector>
-#include "./gl.h"
 #include "./shader_program.h"
+
+namespace Graphics
+{
+
+class Gl;
 
 /**
  * \brief Encapsulates buffers and an associated shader program
@@ -55,4 +59,6 @@ class RenderObject
   std::vector<QOpenGLBuffer> buffers;
 };
 
-#endif  // SRC_RENDER_OBJECT_H_
+}  // namespace Graphics
+
+#endif  // SRC_GRAPHICS_RENDER_OBJECT_H_

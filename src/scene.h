@@ -9,6 +9,9 @@
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./labelling/labels.h"
+#include "./graphics/quad.h"
+#include "./graphics/frame_buffer_object.h"
+#include "./graphics/ha_buffer.h"
 
 class Nodes;
 class InvokeManager;
@@ -16,8 +19,6 @@ class CameraController;
 class CameraRotationController;
 class CameraZoomController;
 class CameraMoveController;
-class Quad;
-class FrameBufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -53,8 +54,9 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> labeller;
-  std::shared_ptr<Quad> quad;
-  std::unique_ptr<FrameBufferObject> fbo;
+  std::shared_ptr<Graphics::Quad> quad;
+  std::unique_ptr<Graphics::FrameBufferObject> fbo;
+  std::shared_ptr<Graphics::HABuffer> haBuffer;
   FrustumOptimizer frustumOptimizer;
 
   int width;

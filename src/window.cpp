@@ -1,6 +1,5 @@
 #include "./window.h"
 #include <QOpenGLContext>
-#include <QtOpenGLExtensions>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -8,7 +7,7 @@
 #include <QAbstractState>
 #include <QAbstractTransition>
 #include <iostream>
-#include "./gl.h"
+#include "./graphics/gl.h"
 #include "./abstract_scene.h"
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
@@ -50,19 +49,14 @@ QSurfaceFormat Window::createSurfaceFormat()
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = new Gl();
-  gl->initialize(size());
+  gl = new Graphics::Gl();
+  gl->initialize(context, size());
 
-  qWarning() << "Has GL_NV_shader_buffer_load:"
-             << context->hasExtension("GL_NV_shader_buffer_load");
-  QOpenGLExtension_NV_shader_buffer_load *b =
-      new QOpenGLExtension_NV_shader_buffer_load();
-  b->initializeOpenGLFunctions();
-  glCheckError();
-
-  gl->glEnable(GL_DEPTH_TEST);
-  gl->glEnable(GL_BLEND);
-  gl->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glAssert(gl->glDisable(GL_CULL_FACE));
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  glAssert(gl->glDisable(GL_STENCIL_TEST));
+  glAssert(gl->glDisable(GL_BLEND));
+  glAssert(gl->glDepthMask(GL_FALSE));
 }
 
 void Window::keyReleaseEvent(QKeyEvent *event)

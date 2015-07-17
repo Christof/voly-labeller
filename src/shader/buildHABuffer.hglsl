@@ -1,0 +1,39 @@
+#version 440
+out vec4 o_PixColor;
+
+uniform float u_ZNear;
+uniform float u_ZFar;
+
+// FragmentData computeData() function must be implemented by includee.
+
+void main()
+{
+  o_PixColor = vec4(0);
+  if (gl_SampleMaskIn[0] == 0)
+    discard;
+
+  // Detect main buffer overflow
+  uint32_t count = atomicAdd(u_Counts + u_ScreenSz * u_ScreenSz, 1);
+  if (count > u_NumRecords)
+  {
+    u_Counts[u_ScreenSz * u_ScreenSz] = u_NumRecords;
+    discard;
+  }
+
+  // Compute fragment data
+
+  FragmentData fragment = computeData();
+  u_FragmentData[count] = fragment;
+
+  vec2 prj = fragment.pos.xy / fragment.pos.w;
+  vec3 pos = (vec3(prj * 0.5 + 0.5,
+                   1.0 - (fragment.pos.z + u_ZNear) / (u_ZFar + u_ZNear)));
+  uint32_t depth = uint32_t(pos.z * MAX_DEPTH);
+  uvec2 pix = uvec2(pos.xy * u_ScreenSz);
+
+  bool success = insert_preopen(depth, pix, count);
+
+  // o_PixColor = success ? fragment.color : vec4(1, 0, 0, 0);
+  discard;
+}
+

@@ -8,6 +8,9 @@
 #include <string>
 #include "./gl.h"
 
+namespace Graphics
+{
+
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
   : gl(gl)
@@ -16,18 +19,23 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
           QOpenGLShader::Vertex,
           readFileAndHandleIncludes(vertexShaderPath.c_str())))
   {
-    qCritical() << "error";
+    throw std::runtime_error("error during compilation of" + vertexShaderPath);
   }
+
   if (!shaderProgram.addShaderFromSourceCode(
           QOpenGLShader::Fragment,
           readFileAndHandleIncludes(fragmentShaderPath.c_str())))
   {
-    qCritical() << "error";
+    throw std::runtime_error("error during compiliation of" +
+                             fragmentShaderPath);
   }
+
   if (!shaderProgram.link())
   {
-    qCritical() << "error";
+    throw std::runtime_error("error during linking of" + vertexShaderPath +
+                             "/" + fragmentShaderPath);
   }
+
   glCheckError();
 }
 
@@ -93,6 +101,29 @@ void ShaderProgram::setUniform(const char *name, int value)
   glAssert(gl->glProgramUniform1i(getId(), getLocation(name), value));
 }
 
+void ShaderProgram::setUniform(const char *name, unsigned int value)
+{
+  glAssert(gl->glProgramUniform1ui(getId(), getLocation(name), value));
+}
+
+void ShaderProgram::setUniform(const char *name, const Graphics::Buffer &value)
+{
+  glAssert(gl->getShaderBufferLoad()->glProgramUniformui64NV(
+      getId(), getLocation(name), value.getGpuPointer()));
+}
+
+void ShaderProgram::setUniformAsVec2Array(const char *name, float *values,
+                                          int count)
+{
+  glAssert(gl->glProgramUniform2fv(getId(), getLocation(name), count, values));
+}
+
+void ShaderProgram::setUniformAsVec2Array(const char *name,
+                                          unsigned int *values, int count)
+{
+  glAssert(gl->glProgramUniform2uiv(getId(), getLocation(name), count, values));
+}
+
 QString readFile(QString path)
 {
   QFile file(path);
@@ -138,6 +169,13 @@ QString ShaderProgram::readFileAndHandleIncludes(QString path)
 
 int ShaderProgram::getLocation(const char *name)
 {
-  return shaderProgram.uniformLocation(name);
+  if (locationCache.count(name))
+    return locationCache[name];
+
+  int location = shaderProgram.uniformLocation(name);
+  locationCache[name] = location;
+
+  return location;
 }
 
+}  // namespace Graphics
