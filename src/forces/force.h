@@ -5,11 +5,14 @@
 #include <Eigen/Core>
 #include <vector>
 #include <string>
+#include <QLoggingCategory>
 #include "./labeller_frame_data.h"
 
 namespace Forces
 {
 class LabelState;
+
+Q_DECLARE_LOGGING_CATEGORY(forcesChan)
 
 /**
  * \brief Base class for all forces, which handles meta data and weights

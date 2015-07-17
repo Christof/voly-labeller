@@ -6,6 +6,8 @@
 namespace Forces
 {
 
+Q_LOGGING_CATEGORY(forcesChan, "Forces");
+
 Force::Force(std::string name, float weight)
   : color(Eigen::Vector3f::Random().cwiseAbs()), name(name), weight(weight)
 {
