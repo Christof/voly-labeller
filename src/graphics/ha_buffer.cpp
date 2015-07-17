@@ -184,7 +184,6 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 void HABuffer::syncAndGetCounts()
 {
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
-  glAssert(gl->glMemoryBarrier(GL_BUFFER_UPDATE_BARRIER_BIT));
 
   uint numInserted = 1;
   CountsBuffer.getData(&numInserted, sizeof(uint),
