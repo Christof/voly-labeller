@@ -57,9 +57,6 @@ void Window::initializeOpenGL()
   glAssert(gl->glDisable(GL_STENCIL_TEST));
   glAssert(gl->glDisable(GL_BLEND));
   glAssert(gl->glDepthMask(GL_FALSE));
-  // gl->glEnable(GL_DEPTH_TEST);
-  // gl->glEnable(GL_BLEND);
-  // gl->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Window::keyReleaseEvent(QKeyEvent *event)
