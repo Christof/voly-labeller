@@ -45,7 +45,8 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Graphics::Quad>();
+  quad = std::make_shared<Graphics::Quad>(":shader/label.vert",
+                                          ":shader/texture.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -87,7 +88,7 @@ void Scene::render()
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  // fbo->bind();
+  fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -103,11 +104,11 @@ void Scene::render()
 
   haBuffer->render();
 
-  doPick();
+  // doPick();
 
-  // fbo->unbind();
+  fbo->unbind();
 
-  // renderScreenQuad();
+  renderScreenQuad();
 }
 
 void Scene::renderScreenQuad()
