@@ -87,7 +87,6 @@ class HABuffer
   unsigned int habufferTableSize = 0;
   uint habufferNumRecords = 0;
   uint habufferCountsSize = 0;
-  uint habufferLoopCount = 0;
 
   Buffer RecordsBuffer;
   Buffer CountsBuffer;
@@ -96,7 +95,6 @@ class HABuffer
   float zNear = 0.1f;
   float zFar = 5.0f;
   float habufferOpacity = 0.5f;
-  float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
   uint *offsets;
 
   int lastUsedProgram = 0;
