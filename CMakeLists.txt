@@ -71,6 +71,7 @@ set(SOURCES
   src/graphics/buffer_lock_manager.cpp
   src/graphics/mapped_buffer.h
   src/graphics/circular_buffer.h
+  src/graphics/buffer_manager.cpp
   ${RESOURCES})
 
 set(SHADER
