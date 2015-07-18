@@ -69,6 +69,8 @@ set(SOURCES
   src/graphics/buffer_hole_manager.cpp
   src/graphics/attribute_buffer.cpp
   src/graphics/buffer_lock_manager.cpp
+  src/graphics/mapped_buffer.h
+  src/graphics/circular_buffer.h
   ${RESOURCES})
 
 set(SHADER
