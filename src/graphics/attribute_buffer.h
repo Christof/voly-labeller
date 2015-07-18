@@ -15,17 +15,18 @@ namespace Graphics
 class AttributeBuffer
 {
  protected:
-  GLuint id;
-  uint count;
+  GLuint id = 0;
+  uint count = 0;
   GLuint bufferType;
   static const GLuint DEFAULT_BUFFER_TYPE = GL_ARRAY_BUFFER;
 
  public:
-  AttributeBuffer(int count, int componentCount);
+  AttributeBuffer(int componentCount, int componentSize, GLenum componentType);
   virtual ~AttributeBuffer();
 
   bool isInitialized() const;
   GLuint getId() const;
+  int getComponentCount() const;
 
   /*
   GLuint type() const
@@ -50,7 +51,7 @@ class AttributeBuffer
   void bind();
   void unbind();
 
-  template <typename T> void setData(std::vector<T> values, uint offset)
+  template <typename T> void setData(std::vector<T> values, uint offset = 0)
   {
     assert(id != 0);
     assert(sizeof(T) == elementSize());
@@ -65,7 +66,7 @@ class AttributeBuffer
   }
 
   template <typename T>
-  void getData(std::vector<T> &values, uint offset, uint size)
+  void getData(std::vector<T> &values, uint offset = 0, uint size = 0)
   {
     assert(id != 0);
     assert(sizeof(T) == elementSize());
@@ -81,6 +82,7 @@ class AttributeBuffer
  private:
   const int componentCount;
   const int componentSize;
+  const GLenum componentType;
   Gl *gl;
 
   int elementSize() const;

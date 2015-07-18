@@ -3,9 +3,10 @@
 namespace Graphics
 {
 
-AttributeBuffer::AttributeBuffer(int count, int componentCount)
-  : id(0), count(count), bufferType(DEFAULT_BUFFER_TYPE),
-    componentCount(componentCount), componentSize(4)
+AttributeBuffer::AttributeBuffer(int componentCount, int componentSize,
+                                 GLenum componentType)
+  : bufferType(DEFAULT_BUFFER_TYPE), componentCount(componentCount),
+    componentSize(componentSize), componentType(componentType)
 {
 }
 
@@ -37,6 +38,11 @@ GLuint AttributeBuffer::getId() const
   return id;
 }
 
+int AttributeBuffer::getComponentCount() const
+{
+  return componentCount;
+}
+
 uint AttributeBuffer::sizeBytes() const
 {
   return (count * elementSize());
@@ -62,8 +68,7 @@ void AttributeBuffer::bindAttrib(int attribnum)
   assert(id > 0);
 
   glAssert(gl->glBindBuffer(bufferType, id));
-  // TODO(SIR): get GL_FLOAT from somewhere else
-  glAssert(gl->glVertexAttribPointer(attribnum, componentCount, GL_FLOAT,
+  glAssert(gl->glVertexAttribPointer(attribnum, componentCount, componentType,
                                      GL_FALSE, 0, NULL));
   glAssert(gl->glEnableVertexAttribArray(attribnum));
 }
@@ -72,9 +77,8 @@ void AttributeBuffer::bindAttribDivisor(int attribnum, int divisor)
   assert(id > 0);
 
   glAssert(gl->glBindBuffer(bufferType, id));
-  // TODO(SIR): get GL_UNSIGNED_INT from somewhere else
   glAssert(gl->glVertexAttribIPointer(attribnum, componentCount,
-                                      GL_UNSIGNED_INT, componentSize, nullptr));
+                                      componentType, componentSize, nullptr));
   glAssert(gl->glVertexAttribDivisor(attribnum, divisor));
   glAssert(gl->glEnableVertexAttribArray(attribnum));
 }
