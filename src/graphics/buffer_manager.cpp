@@ -11,7 +11,7 @@ BufferManager::BufferManager()
     texCoordBuffer(2, sizeof(float), GL_FLOAT),
     drawIdBuffer(1, sizeof(uint), GL_UNSIGNED_INT),
     indexBuffer(1, sizeof(uint), GL_UNSIGNED_INT), vertexBufferManager(0),
-    indexBufferManager(0)
+    indexBufferManager(0), commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 {
 }
 
@@ -135,11 +135,11 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   indexBuffer.setData(indices, indexBufferOffset);
 
   ObjectData object;
-  object.VertexOffset = vertexBufferOffset;
-  object.VertexSize = vertexCount;
-  object.IndexOffset = indexBufferOffset;
-  object.IndexSize = indices.size();
-  object.TextureAddress = { 0, 0.0f, 0, 1.0f, 1.0f };
+  object.vertexOffset = vertexBufferOffset;
+  object.vertexSize = vertexCount;
+  object.indexOffset = indexBufferOffset;
+  object.indexSize = indices.size();
+  object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
   object.transform = Eigen::Matrix4f::Identity();
 
   int objectId = objectCount++;
@@ -147,6 +147,81 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   objects.insert(std::make_pair(objectId, object));
 
   return objectId;
+}
+
+void BufferManager::render()
+{
+  glAssert(gl->glBindVertexArray(vertexArrayId));
+
+  // prepare per object buffers
+  uint objectCount = objects.size();
+  DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
+  /*
+  GLMatrix * matrices = m_TransformBuffer.reserve(objectcount);
+  TexAddress * textures = m_TexAddressBuffer.reserve(objectcount);
+  */
+
+  int counter = 0;
+  for (auto objectIterator = objects.begin(); objectIterator != objects.end();
+       ++objectIterator, ++counter)
+  {
+    DrawElementsIndirectCommand *command = &commands[counter];
+    command->count = objectIterator->second.indexSize;
+    command->instanceCount = 1;
+    command->firstIndex = objectIterator->second.indexOffset;
+    command->baseVertex = objectIterator->second.vertexOffset;
+    command->baseInstance = counter;
+
+    /*
+    GLMatrix *transform = &matrices[counter];
+    memcpy(transform, objit->second.m_transform.data(), sizeof(GLMatrix));
+    //std::cout << "matrix:"
+    //          << objit->second.m_transform << std::endl;
+
+    TexAddress *texaddr = &textures[counter];
+    *texaddr = objit->second.m_TextureAddress;
+    //texaddr->m_container_handle = objit->second.m_TextureAddress;
+    //texaddr->m_tex_page = 0.0f;
+
+
+    //printf("counter: %d count: %u firstIndex: %u baseVertex:%u \n",
+    //       counter, command->count,
+    //       command->firstIndex,
+    //       command->baseVertex);
+    //printf("counter: %d handle: %lu slice: %f\n",
+    //       counter, texaddr->m_container_handle, texaddr->m_tex_page);
+    */
+  }
+
+  // printf("objectcount: %u/%ld \n",  objectcount, m_CommandsBuffer.size());
+
+  int mapRange = objectCount;
+
+  mapRange = std::min(128, ((mapRange / 4) + 1) * 4);
+  // m_TransformBuffer.bindBufferRange(0, maprange);
+  // m_TexAddressBuffer.bindBufferRange(1, maprange);
+
+  // We didn't use MAP_COHERENT here - make sure data is on the gpu
+  glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
+
+  // draw
+
+  //  printf("head: %ld headoffset %p objectcount: %u\n",
+  //         m_CommandsBuffer.head(),
+  //         m_CommandsBuffer.headOffset(),
+  //         m_ObjectCount);
+
+  indexBuffer.bind();
+  glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
+                                           commandsBuffer.headOffset(),
+                                           objectCount, 0));
+  indexBuffer.unbind();
+
+  commandsBuffer.onUsageComplete(mapRange);
+  // transformBuffer.onUsageComplete(maprange);
+  // texAddressBuffer.onUsageComplete(maprange);
+
+  glAssert(gl->glBindVertexArray(0));
 }
 
 }  // namespace Graphics

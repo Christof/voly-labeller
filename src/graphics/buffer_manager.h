@@ -7,6 +7,7 @@
 #include <map>
 #include "./gl.h"
 #include "./buffer_hole_manager.h"
+#include "./circular_buffer.h"
 #include "./attribute_buffer.h"
 
 namespace Graphics
@@ -14,23 +15,33 @@ namespace Graphics
 
 struct TexAddress
 {
-  GLuint64 ContainerHandle;
-  GLfloat TexPage;
-  GLint Reserved;
-  GLfloat Texscale[2];
+  GLuint64 containerHandle;
+  GLfloat texPage;
+  GLint reserved;
+  GLfloat texscale[2];
 };
 
 struct ObjectData
 {
-  int VertexOffset;
-  int IndexOffset;
-  int VertexSize;
-  int IndexSize;
+  int vertexOffset;
+  int indexOffset;
+  int vertexSize;
+  int indexSize;
 
-  TexAddress TextureAddress;
+  TexAddress textureAddress;
 
   Eigen::Matrix4f transform;
 };
+
+struct DrawElementsIndirectCommand
+{
+    GLuint count;
+    GLuint instanceCount;
+    GLuint firstIndex;
+    GLuint baseVertex;
+    GLuint baseInstance;
+} ;
+
 
 /**
  * \brief
@@ -51,6 +62,8 @@ class BufferManager
                 const std::vector<uint> &indices);
   bool removeObject(int objID);
 
+  void render();
+
  private:
   int objectCount = 0;
   GLuint vertexArrayId;
@@ -66,6 +79,10 @@ class BufferManager
 
   BufferHoleManager vertexBufferManager;
   BufferHoleManager indexBufferManager;
+
+  // CircularBuffer<GLMatrix> m_TransformBuffer;
+  // CircularBuffer<TexAddress> m_TexAddressBuffer;
+  CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 };
 }  // namespace Graphics
 
