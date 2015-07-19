@@ -104,7 +104,7 @@ int BufferManager::addObject(const std::vector<float> &vertices,
          texCoords.size() /
              static_cast<float>(texCoordBuffer.getComponentCount()));
 
-  const uint numvertices = vertices.size() / positionBuffer.getComponentCount();
+  const uint vertexCount = vertices.size() / positionBuffer.getComponentCount();
 
   // try to reserve buffer storage for objects
 
@@ -112,7 +112,7 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   uint indexBufferOffset;
 
   bool reserve_success =
-      vertexBufferManager.reserve(numvertices, vertexBufferOffset);
+      vertexBufferManager.reserve(vertexCount, vertexBufferOffset);
   if (reserve_success)
   {
     reserve_success =
@@ -134,19 +134,17 @@ int BufferManager::addObject(const std::vector<float> &vertices,
 
   indexBuffer.setData(indices, indexBufferOffset);
 
-  /*
-  ObjectData objdata;
-  objdata.m_VertexOffset = vertexbuffer_offset;
-  objdata.m_VertexSize = numvertices;
-  objdata.m_IndexOffset = indexbuffer_offset;
-  objdata.m_IndexSize = indices.size();
-  objdata.m_TextureAddress = { 0, 0.0f, 0, 1.0f, 1.0f };
-  objdata.m_transform = Eigen::Matrix4f::Identity();
-  */
+  ObjectData object;
+  object.VertexOffset = vertexBufferOffset;
+  object.VertexSize = vertexCount;
+  object.IndexOffset = indexBufferOffset;
+  object.IndexSize = indices.size();
+  object.TextureAddress = { 0, 0.0f, 0, 1.0f, 1.0f };
+  object.transform = Eigen::Matrix4f::Identity();
 
   int objectId = objectCount++;
 
-  //m_objects.insert(std::make_pair(objectId, objdata));
+  objects.insert(std::make_pair(objectId, object));
 
   return objectId;
 }
