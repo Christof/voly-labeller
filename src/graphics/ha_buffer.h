@@ -94,7 +94,6 @@ class HABuffer
 
   float zNear = 0.1f;
   float zFar = 5.0f;
-  float habufferOpacity = 0.5f;
   uint *offsets;
 
   int lastUsedProgram = 0;

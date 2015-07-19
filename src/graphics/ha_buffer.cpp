@@ -175,7 +175,6 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 
   shader->setUniform("u_ZNear", zNear);
   shader->setUniform("u_ZFar", zFar);
-  shader->setUniform("Opacity", habufferOpacity);
   shader->setUniform("u_Records", RecordsBuffer);
   shader->setUniform("u_Counts", CountsBuffer);
   shader->setUniform("u_FragmentData", FragmentDataBuffer);
