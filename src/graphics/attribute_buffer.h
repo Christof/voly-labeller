@@ -55,7 +55,7 @@ class AttributeBuffer
   template <typename T> void setData(std::vector<T> values, uint offset = 0)
   {
     assert(id != 0);
-    assert(sizeof(T) == elementSize());
+    assert(sizeof(T) == componentSize);
     assert(offset + (values.size() / componentCount) <= count);
 
     const uint byteSize =
@@ -70,7 +70,7 @@ class AttributeBuffer
   void getData(std::vector<T> &values, uint offset = 0, uint size = 0)
   {
     assert(id != 0);
-    assert(sizeof(T) == elementSize());
+    assert(sizeof(T) == componentSize);
 
     values.resize(count);
     if (size == 0)
