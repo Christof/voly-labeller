@@ -1,5 +1,6 @@
 #include "./buffer_lock_manager.h"
 #include <cassert>
+#include <vector>
 
 namespace Graphics
 {

@@ -38,7 +38,7 @@ struct BufferLock
 class BufferLockManager
 {
  public:
-  BufferLockManager(bool runUpdatesOnCPU);
+  explicit BufferLockManager(bool runUpdatesOnCPU);
   ~BufferLockManager();
 
   void initialize(Gl *gl);

@@ -1,4 +1,5 @@
 #include "./buffer_manager.h"
+#include <vector>
 
 namespace Graphics
 {
@@ -92,7 +93,6 @@ int BufferManager::addObject(const std::vector<float> &vertices,
                              const std::vector<float> &texCoords,
                              const std::vector<uint> &indices)
 {
-
   assert(vertices.size() /
              static_cast<float>(positionBuffer.getComponentCount()) ==
          normals.size() / static_cast<float>(normalBuffer.getComponentCount()));

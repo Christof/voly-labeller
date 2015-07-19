@@ -11,10 +11,10 @@ namespace Graphics
 template <typename T> class CircularBuffer : public MappedBuffer<T>
 {
  public:
-  CircularBuffer(GLenum target, bool runUpdatesOnCPU = true)
+  explicit CircularBuffer(GLenum target, bool runUpdatesOnCPU = true)
     : MappedBuffer<T>(target, runUpdatesOnCPU)
   {
-  };
+  }
 
   bool initialize(Gl *gl, GLuint count, GLbitfield createFlags,
                   GLbitfield mapFlags)
@@ -61,7 +61,7 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
 
   void *headOffset() const
   {
-    return (void *)(head * sizeof(T));
+    return reinterpret_cast<void *>(head * sizeof(T));
   }
 
  private:

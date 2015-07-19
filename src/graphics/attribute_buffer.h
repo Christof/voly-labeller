@@ -2,8 +2,9 @@
 
 #define SRC_GRAPHICS_ATTRIBUTE_BUFFER_H_
 
-#include "./gl.h"
 #include <cassert>
+#include <vector>
+#include "./gl.h"
 
 namespace Graphics
 {

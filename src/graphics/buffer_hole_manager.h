@@ -14,7 +14,7 @@ namespace Graphics
 class BufferHoleManager
 {
  public:
-  BufferHoleManager(int bufferSize);
+  explicit BufferHoleManager(int bufferSize);
   bool reserve(uint requestsize, uint &offset);
   bool release(uint offset);
 

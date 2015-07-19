@@ -3,6 +3,8 @@
 #define SRC_GRAPHICS_BUFFER_MANAGER_H_
 
 #include <Eigen/Core>
+#include <vector>
+#include <map>
 #include "./gl.h"
 #include "./buffer_hole_manager.h"
 #include "./attribute_buffer.h"
