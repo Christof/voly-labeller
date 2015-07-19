@@ -12,12 +12,12 @@ BufferLockManager::BufferLockManager(bool runUpdatesOnCPU)
 
 BufferLockManager::~BufferLockManager()
 {
-  for (auto it = mBufferLocks.begin(); it != mBufferLocks.end(); ++it)
+  for (auto it = bufferLocks.begin(); it != bufferLocks.end(); ++it)
   {
     cleanup(&*it);
   }
 
-  mBufferLocks.clear();
+  bufferLocks.clear();
 }
 
 void BufferLockManager::initialize(Gl *gl)
@@ -30,7 +30,7 @@ void BufferLockManager::waitForLockedRange(size_t lockBeginBytes,
 {
   BufferRange testRange = { lockBeginBytes, lockLength };
   std::vector<BufferLock> swapLocks;
-  for (auto it = mBufferLocks.begin(); it != mBufferLocks.end(); ++it)
+  for (auto it = bufferLocks.begin(); it != bufferLocks.end(); ++it)
   {
     if (testRange.overlaps(it->range))
     {
@@ -43,16 +43,17 @@ void BufferLockManager::waitForLockedRange(size_t lockBeginBytes,
     }
   }
 
-  mBufferLocks.swap(swapLocks);
+  bufferLocks.swap(swapLocks);
 }
 
 void BufferLockManager::lockRange(size_t lockBeginBytes, size_t lockLength)
 {
   BufferRange newRange = { lockBeginBytes, lockLength };
+  qWarning() << "before sync";
   GLsync syncName = gl->glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
   BufferLock newLock = { newRange, syncName };
 
-  mBufferLocks.push_back(newLock);
+  bufferLocks.push_back(newLock);
 }
 
 void BufferLockManager::wait(GLsync *syncObj)

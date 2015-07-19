@@ -50,10 +50,8 @@ class BufferLockManager
   void wait(GLsync *syncObject);
   void cleanup(BufferLock *bufferLock);
 
-  std::vector<BufferLock> mBufferLocks;
-
+  std::vector<BufferLock> bufferLocks;
   bool runUpdatesOnCPU;
-
   Gl *gl;
 };
 
