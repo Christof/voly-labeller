@@ -21,6 +21,7 @@ template <typename T> class MappedBuffer
   {
     this->gl = gl;
     this->count = count;
+    this->lockManager.initialize(gl);
 
     if (bufferContent)
       terminate();
