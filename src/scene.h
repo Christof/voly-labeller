@@ -12,6 +12,9 @@
 #include "./graphics/quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
+#include "./graphics/buffer_manager.h"
+
+#include "./graphics/shader_program.h"
 
 class Nodes;
 class InvokeManager;
@@ -57,6 +60,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
+  std::unique_ptr<Graphics::BufferManager> bufferManager;
   FrustumOptimizer frustumOptimizer;
 
   int width;
@@ -69,6 +73,9 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void doPick();
+
+  int objectId;
+  std::shared_ptr<Graphics::ShaderProgram> shader;
 };
 
 #endif  // SRC_SCENE_H_

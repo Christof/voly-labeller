@@ -34,6 +34,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
+  bufferManager =
+      std::unique_ptr<Graphics::BufferManager>(new Graphics::BufferManager());
 }
 
 Scene::~Scene()
@@ -52,6 +54,23 @@ void Scene::initialize()
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   haBuffer->initialize(gl);
+
+  bufferManager->initialize(gl, 10, 100);
+  std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
+                                   1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
+  std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+  std::vector<float> colors = {
+    1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
+    0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
+  };
+  std::vector<float> texCoords = { 1.0f, 0.0f, 0.0f, 0.0f,
+                                   1.0f, 1.0f, 0.0f, 1.0f };
+  std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
+  objectId =
+      bufferManager->addObject(positions, normals, colors, texCoords, indices);
+  shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
+                                                     ":/shader/test.frag");
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -101,6 +120,15 @@ void Scene::render()
   haBuffer->clearAndPrepare();
 
   nodes->render(gl, haBuffer, renderData);
+
+  shader->bind();
+  Eigen::Matrix4f mvp = renderData.projectionMatrix * renderData.viewMatrix;
+  shader->setUniform("modelViewProjectionMatrix", mvp);
+  // shader->setUniform("modelMatrix", renderData.modelMatrix);
+  haBuffer->begin(shader);
+
+  bufferManager->render();
+  shader->release();
 
   haBuffer->render();
 
