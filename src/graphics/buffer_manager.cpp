@@ -36,31 +36,31 @@ BufferManager::~BufferManager()
   */
 }
 
-void BufferManager::initialize(Gl *gl, uint maxobjects, uint buffersize)
+void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 {
   this->gl = gl;
   // gl_assert(m_VertexArrayID == 0);
 
   // m_TextureManager.Init(true, 8);
 
-  vertexBufferManager = BufferHoleManager(buffersize);
-  indexBufferManager = BufferHoleManager(buffersize);
+  vertexBufferManager = BufferHoleManager(bufferSize);
+  indexBufferManager = BufferHoleManager(bufferSize);
 
   glAssert(gl->glGenVertexArrays(1, &vertexArrayId));
   glAssert(gl->glBindVertexArray(vertexArrayId));
 
-  positionBuffer.initialize(gl, buffersize);
-  normalBuffer.initialize(gl, buffersize);
-  colorBuffer.initialize(gl, buffersize);
-  texCoordBuffer.initialize(gl, buffersize);
+  positionBuffer.initialize(gl, bufferSize);
+  normalBuffer.initialize(gl, bufferSize);
+  colorBuffer.initialize(gl, bufferSize);
+  texCoordBuffer.initialize(gl, bufferSize);
 
-  indexBuffer.initialize(gl, buffersize, GL_ELEMENT_ARRAY_BUFFER);
+  indexBuffer.initialize(gl, bufferSize, GL_ELEMENT_ARRAY_BUFFER);
 
   // initialize DrawID buffer - ascending ids
-  drawIdBuffer.initialize(gl, maxobjects);
+  drawIdBuffer.initialize(gl, maxObjectCount);
   std::vector<uint> drawids;
   uint idval = 0;
-  drawids.resize(maxobjects);
+  drawids.resize(maxObjectCount);
 
   for_each(drawids.begin(), drawids.end(),
            [&idval](std::vector<uint>::value_type &v)

@@ -53,7 +53,7 @@ class BufferManager
  public:
   BufferManager();
   virtual ~BufferManager();
-  void initialize(Gl *gl, uint maxobjects, uint buffersize);
+  void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
   int addObject(const std::vector<float> &vertices,
                 const std::vector<float> &normals,
