@@ -35,13 +35,12 @@ struct ObjectData
 
 struct DrawElementsIndirectCommand
 {
-    GLuint count;
-    GLuint instanceCount;
-    GLuint firstIndex;
-    GLuint baseVertex;
-    GLuint baseInstance;
-} ;
-
+  GLuint count;
+  GLuint instanceCount;
+  GLuint firstIndex;
+  GLuint baseVertex;
+  GLuint baseInstance;
+};
 
 /**
  * \brief
@@ -65,6 +64,9 @@ class BufferManager
   void render();
 
  private:
+  const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+  const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
+
   int objectCount = 0;
   GLuint vertexArrayId;
   Gl *gl;

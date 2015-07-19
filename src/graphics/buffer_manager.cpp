@@ -80,11 +80,9 @@ void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   glAssert(gl->glBindVertexArray(0));
 
-  /*
-  m_CommandsBuffer.init(3 * maxobjects, c_createFlags, c_mapFlags);
-  m_TransformBuffer.init(3 * maxobjects, c_createFlags, c_mapFlags);
-  m_TexAddressBuffer.init(3 * maxobjects, c_createFlags, c_mapFlags);
-  */
+  commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  // transformBuffer.init(3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  // texAddressBuffer.init(3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 int BufferManager::addObject(const std::vector<float> &vertices,
@@ -184,16 +182,14 @@ void BufferManager::render()
     //texaddr->m_tex_page = 0.0f;
 
 
-    //printf("counter: %d count: %u firstIndex: %u baseVertex:%u \n",
-    //       counter, command->count,
-    //       command->firstIndex,
-    //       command->baseVertex);
-    //printf("counter: %d handle: %lu slice: %f\n",
-    //       counter, texaddr->m_container_handle, texaddr->m_tex_page);
     */
+    printf("counter: %d count: %u firstIndex: %u baseVertex:%u \n", counter,
+           command->count, command->firstIndex, command->baseVertex);
+    // printf("counter: %d handle: %lu slice: %f\n",
+    //       counter, texaddr->m_container_handle, texaddr->m_tex_page);
   }
 
-  // printf("objectcount: %u/%ld \n",  objectcount, m_CommandsBuffer.size());
+  printf("objectcount: %u/%ld \n", objectCount, commandsBuffer.size());
 
   int mapRange = objectCount;
 
@@ -205,11 +201,8 @@ void BufferManager::render()
   glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
 
   // draw
-
-  //  printf("head: %ld headoffset %p objectcount: %u\n",
-  //         m_CommandsBuffer.head(),
-  //         m_CommandsBuffer.headOffset(),
-  //         m_ObjectCount);
+  printf("head: %ld headoffset %p objectcount: %u\n", commandsBuffer.getHead(),
+         commandsBuffer.headOffset(), objectCount);
 
   indexBuffer.bind();
   glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
