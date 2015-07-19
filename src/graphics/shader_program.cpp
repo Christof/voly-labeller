@@ -36,6 +36,8 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              "/" + fragmentShaderPath);
   }
 
+  shaderName = vertexShaderPath + " " + fragmentShaderPath;
+
   glCheckError();
 }
 
@@ -173,6 +175,9 @@ int ShaderProgram::getLocation(const char *name)
     return locationCache[name];
 
   int location = shaderProgram.uniformLocation(name);
+  if (location < 0)
+    qWarning() << "Uniform" << name << "not found in" << shaderName.c_str();
+
   locationCache[name] = location;
 
   return location;

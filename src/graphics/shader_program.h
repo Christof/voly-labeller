@@ -50,6 +50,7 @@ class ShaderProgram
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
   std::map<std::string, int> locationCache;
+  std::string shaderName;
 
   inline int getLocation(const char *name);
 };
