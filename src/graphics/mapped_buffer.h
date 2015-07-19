@@ -33,7 +33,7 @@ template <typename T> class MappedBuffer
     glAssert(
         gl->glBufferStorage(target, sizeof(T) * count, nullptr, createFlags));
     bufferContent = reinterpret_cast<T *>(
-        gl->glMapNamedBufferRange(target, 0, sizeof(T) * count, mapFlags));
+        gl->glMapBufferRange(target, 0, sizeof(T) * count, mapFlags));
     glCheckError();
 
     if (!bufferContent)
