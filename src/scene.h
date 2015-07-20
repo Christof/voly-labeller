@@ -15,6 +15,7 @@
 #include "./graphics/buffer_manager.h"
 
 #include "./graphics/shader_program.h"
+#include "./graphics/texture_manager.h"
 
 class Nodes;
 class InvokeManager;
@@ -76,6 +77,7 @@ class Scene : public AbstractScene
 
   int objectId;
   std::shared_ptr<Graphics::ShaderProgram> shader;
+  std::shared_ptr<Graphics::TextureManager> textureManager;
 };
 
 #endif  // SRC_SCENE_H_

@@ -33,7 +33,9 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   try
   {
     auto image = new QImage(path.c_str());
-    GLenum internalformat = GL_RGBA;
+    qWarning() << image->format();
+
+    GLenum internalformat = GL_RGBA8;
     GLenum format = GL_BGRA;
     GLenum type = GL_UNSIGNED_BYTE;
 
