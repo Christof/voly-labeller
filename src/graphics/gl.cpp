@@ -37,6 +37,9 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   bindlessTexture->initializeOpenGLFunctions();
   glCheckError();
 
+  glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
+      context->getProcAddress("glTexturePageCommitmentEXT"));
+
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
 }

@@ -48,6 +48,10 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glCheckError()
 #endif
 
+typedef void(QOPENGLF_APIENTRYP TexturePageCommitmentEXT)(
+    uint texture, int level, int xoffset, int yoffset, int zoffset,
+    GLsizei width, GLsizei height, GLsizei depth, bool commit);
+
 /**
  * \brief Provides access to OpenGL functions
  *
@@ -70,9 +74,12 @@ class Gl : public QOpenGLFunctions_4_5_Core
   QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
   QOpenGLExtension_NV_bindless_texture *getBindlessTexture() const;
 
+  TexturePageCommitmentEXT glTexturePageCommitmentEXT;
+
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
   QOpenGLExtension_NV_bindless_texture *bindlessTexture;
+  QFunctionPointer glTexturePageCommitmentEXTFunction;
 };
 
 }  // namespace Graphics
