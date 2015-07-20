@@ -69,8 +69,8 @@ void Buffer::copy(Buffer const &buffer)
 
   if (getSize() != 0)
   {
-    glAssert(gl->getDirectStateAccess()->glNamedCopyBufferSubDataEXT(
-        buffer.id, id, 0, 0, buffer.getSize()));
+    glAssert(
+        gl->glCopyNamedBufferSubData(buffer.id, id, 0, 0, buffer.getSize()));
   }
 }
 
@@ -123,20 +123,19 @@ void Buffer::terminate()
 
 void Buffer::clear(uint value)
 {
-  glAssert(gl->getDirectStateAccess()->glClearNamedBufferDataEXT(
-      id, GL_R32UI, GL_RED_INTEGER, GL_UNSIGNED_INT, &value));
+  glAssert(gl->glClearNamedBufferData(id, GL_R32UI, GL_RED_INTEGER,
+                                      GL_UNSIGNED_INT, &value));
 }
 
 void Buffer::clear(int value)
 {
-  glAssert(gl->getDirectStateAccess()->glClearNamedBufferDataEXT(
-      id, GL_R32I, GL_RED_INTEGER, GL_INT, &value));
+  glAssert(
+      gl->glClearNamedBufferData(id, GL_R32I, GL_RED_INTEGER, GL_INT, &value));
 }
 
 void Buffer::clear(float value)
 {
-  glAssert(gl->getDirectStateAccess()->glClearNamedBufferDataEXT(
-      id, GL_R32F, GL_RED, GL_FLOAT, &value));
+  glAssert(gl->glClearNamedBufferData(id, GL_R32F, GL_RED, GL_FLOAT, &value));
 }
 
 void Buffer::setData(const void *raw, uint byteCount, uint offset)
@@ -144,8 +143,7 @@ void Buffer::setData(const void *raw, uint byteCount, uint offset)
   assert(id != 0);
   assert((offset + byteCount) == size);
 
-  glAssert(gl->getDirectStateAccess()->glNamedBufferSubDataEXT(id, offset,
-                                                               byteCount, raw));
+  glAssert(gl->glNamedBufferSubData(id, offset, byteCount, raw));
 }
 
 void Buffer::getData(void *raw, uint byteCount, uint offset)
@@ -153,8 +151,7 @@ void Buffer::getData(void *raw, uint byteCount, uint offset)
   assert(id != 0);
   assert(offset + byteCount <= size);
 
-  glAssert(gl->getDirectStateAccess()->glGetNamedBufferSubDataEXT(
-      id, offset, byteCount, raw));
+  glAssert(gl->glGetNamedBufferSubData(id, offset, byteCount, raw));
 }
 
 Buffer::~Buffer()

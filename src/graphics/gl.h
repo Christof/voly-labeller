@@ -68,11 +68,9 @@ class Gl : public QOpenGLFunctions_4_5_Core
   QSize size;
 
   QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
-  QOpenGLExtension_EXT_direct_state_access *getDirectStateAccess() const;
 
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
-  QOpenGLExtension_EXT_direct_state_access *directStateAccess;
 };
 
 }  // namespace Graphics

@@ -62,8 +62,7 @@ class AttributeBuffer
         values.size() * componentSize;  // no Size, because vector is flat
     const uint byteOffset = offset * elementSize();
 
-    glAssert(gl->getDirectStateAccess()->glNamedBufferSubDataEXT(
-        id, byteOffset, byteSize, values.data()));
+    glAssert(gl->glNamedBufferSubData(id, byteOffset, byteSize, values.data()));
   }
 
   template <typename T>
@@ -76,8 +75,8 @@ class AttributeBuffer
     if (size == 0)
       size = count;
 
-    glAssert(gl->getDirectStateAccess()->glGetNamedBufferSubDataEXT(
-        id, offset * elementSize(), size * elementSize(), values.data()));
+    glAssert(gl->glGetNamedBufferSubData(id, offset * elementSize(),
+                                         size * elementSize(), values.data()));
   }
 
  private:
