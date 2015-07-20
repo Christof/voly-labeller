@@ -68,9 +68,11 @@ class Gl : public QOpenGLFunctions_4_5_Core
   QSize size;
 
   QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
+  QOpenGLExtension_NV_bindless_texture *getBindlessTexture() const;
 
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
+  QOpenGLExtension_NV_bindless_texture *bindlessTexture;
 };
 
 }  // namespace Graphics

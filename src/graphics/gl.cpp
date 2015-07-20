@@ -31,6 +31,12 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
 
+  bool hasBindlessTexture = context->hasExtension("GL_NV_bindless_texture");
+  qWarning() << "Has GL_NV_bindless_texture:" << hasBindlessTexture;
+  bindlessTexture = new QOpenGLExtension_NV_bindless_texture();
+  bindlessTexture->initializeOpenGLFunctions();
+  glCheckError();
+
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
 }
@@ -45,6 +51,11 @@ void Gl::setSize(QSize size)
 QOpenGLExtension_NV_shader_buffer_load *Gl::getShaderBufferLoad() const
 {
   return shaderBufferLoad;
+}
+
+QOpenGLExtension_NV_bindless_texture *Gl::getBindlessTexture() const
+{
+  return bindlessTexture;
 }
 
 }  // namespace Graphics
