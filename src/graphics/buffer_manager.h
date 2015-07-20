@@ -9,17 +9,10 @@
 #include "./buffer_hole_manager.h"
 #include "./circular_buffer.h"
 #include "./attribute_buffer.h"
+#include "./texture_address.h"
 
 namespace Graphics
 {
-
-struct TexAddress
-{
-  GLuint64 containerHandle;
-  GLfloat texPage;
-  GLint reserved;
-  GLfloat texscale[2];
-};
 
 struct ObjectData
 {
@@ -28,7 +21,7 @@ struct ObjectData
   int vertexSize;
   int indexSize;
 
-  TexAddress textureAddress;
+  TextureAddress textureAddress;
 
   Eigen::Matrix4f transform;
 };
