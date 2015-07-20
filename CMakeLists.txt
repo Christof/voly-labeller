@@ -72,6 +72,10 @@ set(SOURCES
   src/graphics/mapped_buffer.h
   src/graphics/circular_buffer.h
   src/graphics/buffer_manager.cpp
+  src/graphics/texture_address.h
+  src/graphics/texture_container.cpp
+  src/graphics/texture2d.cpp
+  src/graphics/texture_manager.cpp
   ${RESOURCES})
 
 set(SHADER
