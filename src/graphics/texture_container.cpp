@@ -132,17 +132,17 @@ void TextureContainer::virtualFree(GLsizei slice)
   freeList.push(slice);
 }
 
-void TextureContainer::commit(Texture2d *_tex)
+void TextureContainer::commit(Texture2d *texture)
 {
-  assert(_tex->getTextureContainer() == this);
+  assert(texture->getTextureContainer() == this);
 
-  changeCommitment(_tex->getSliceNum(), GL_TRUE);
+  changeCommitment(texture->getSliceNum(), GL_TRUE);
 }
 
-void TextureContainer::free(Texture2d *_tex)
+void TextureContainer::free(Texture2d *texture)
 {
-  assert(_tex->getTextureContainer() == this);
-  changeCommitment(_tex->getSliceNum(), GL_FALSE);
+  assert(texture->getTextureContainer() == this);
+  changeCommitment(texture->getSliceNum(), GL_FALSE);
 }
 
 void TextureContainer::compressedTexSubImage3d(GLint level, GLint xoffset,

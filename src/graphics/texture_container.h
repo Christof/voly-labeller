@@ -20,8 +20,8 @@ class TextureContainer
   GLsizei virtualAlloc();
   void virtualFree(GLsizei slice);
 
-  void commit(Texture2d *_tex);
-  void free(Texture2d *_tex);
+  void commit(Texture2d *texture);
+  void free(Texture2d *texture);
 
   void compressedTexSubImage3d(GLint level, GLint xoffset, GLint yoffset,
                                GLint zoffset, GLsizei width, GLsizei height,
