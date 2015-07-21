@@ -1,9 +1,12 @@
 #include "./buffer_manager.h"
 #include <vector>
+#include <QLoggingCategory>
 #include "./texture_manager.h"
 
 namespace Graphics
 {
+
+QLoggingCategory bmChan("Graphics.BufferManager");
 
 BufferManager::BufferManager(std::shared_ptr<TextureManager> textureManager)
   : textureManager(textureManager), positionBuffer(3, sizeof(float), GL_FLOAT),
@@ -70,7 +73,6 @@ void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
            {
     v = idval++;
   });
-  // std::cout << "drawIDs:" << drawids << std::endl;
 
   drawIdBuffer.setData(drawids);
 
@@ -109,7 +111,6 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   const uint vertexCount = vertices.size() / positionBuffer.getComponentCount();
 
   // try to reserve buffer storage for objects
-
   uint vertexBufferOffset;
   uint indexBufferOffset;
 
@@ -157,9 +158,11 @@ bool BufferManager::setObjectTexture(int objectId, uint textureId)
     return false;
 
   objects[objectId].textureAddress = textureManager->getAddressFor(textureId);
-  qDebug("VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
-         objectId, objects[objectId].textureAddress.containerHandle,
-         objects[objectId].textureAddress.texPage);
+  qCDebug(
+      bmChan,
+      "VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
+      objectId, objects[objectId].textureAddress.containerHandle,
+      objects[objectId].textureAddress.texPage);
 
   return true;
 }
@@ -188,19 +191,17 @@ void BufferManager::render()
     auto *transform = &matrices[counter];
     memcpy(transform, objectIterator->second.transform.data(),
            sizeof(float[16]));
-    // std::cout << "matrix:"
-    //          << objit->second.m_transform << std::endl;
 
     TextureAddress *texaddr = &textures[counter];
     *texaddr = objectIterator->second.textureAddress;
 
-    qDebug("counter: %d count: %u firstIndex: %u baseVertex: %u", counter,
-           command->count, command->firstIndex, command->baseVertex);
-    qDebug("counter: %d handle: %lu slice: %f",
-           counter, texaddr->containerHandle, texaddr->texPage);
+    qCDebug(bmChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",
+            counter, command->count, command->firstIndex, command->baseVertex);
+    qCDebug(bmChan, "counter: %d handle: %lu slice: %f", counter,
+            texaddr->containerHandle, texaddr->texPage);
   }
 
-  printf("objectcount: %u/%ld \n", objectCount, commandsBuffer.size());
+  qCDebug(bmChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
 
   int mapRange = objectCount;
 
@@ -212,8 +213,8 @@ void BufferManager::render()
   glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
 
   // draw
-  printf("head: %ld headoffset %p objectcount: %u\n", commandsBuffer.getHead(),
-         commandsBuffer.headOffset(), objectCount);
+  qCDebug(bmChan, "head: %ld headoffset %p objectcount: %un",
+          commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
   indexBuffer.bind();
   glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,

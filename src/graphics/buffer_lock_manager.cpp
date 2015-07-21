@@ -49,7 +49,6 @@ void BufferLockManager::waitForLockedRange(size_t lockBeginBytes,
 void BufferLockManager::lockRange(size_t lockBeginBytes, size_t lockLength)
 {
   BufferRange newRange = { lockBeginBytes, lockLength };
-  qWarning() << "before sync";
   GLsync syncName = gl->glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
   BufferLock newLock = { newRange, syncName };
 
