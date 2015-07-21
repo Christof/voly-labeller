@@ -38,8 +38,8 @@ class TextureContainer
  private:
   Gl *gl;
   GLuint64 handle = 0;
-  GLuint mTexId;
-  std::queue<GLsizei> mFreeList;
+  GLuint textureId;
+  std::queue<GLsizei> freeList;
 
   const GLsizei width;
   const GLsizei height;

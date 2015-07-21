@@ -11,8 +11,8 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
                                    GLsizei height, GLsizei slices)
   : gl(gl), width(width), height(height), levels(levels), slices(slices)
 {
-  glAssert(gl->glGenTextures(1, &mTexId));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, mTexId));
+  glAssert(gl->glGenTextures(1, &textureId));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
 
   if (sparse)
   {
@@ -87,14 +87,14 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 
   for (GLsizei i = 0; i < slices; ++i)
   {
-    mFreeList.push(i);
+    freeList.push(i);
   }
 
   if (sparse)
   {
-    handle = gl->getBindlessTexture()->glGetTextureHandleNV(mTexId);
+    handle = gl->getBindlessTexture()->glGetTextureHandleNV(textureId);
     glCheckError();
-    std::cout << "Container: mTexId: " << mTexId << " handle: " << handle
+    std::cout << "Container: textureId: " << textureId << " handle: " << handle
               << std::endl;
     assert(handle != 0);
     glAssert(gl->getBindlessTexture()->glMakeTextureHandleResidentNV(handle));
@@ -104,7 +104,7 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 TextureContainer::~TextureContainer()
 {
   // If this fires, it means there was a texture leaked somewhere.
-  assert(mFreeList.size() == static_cast<size_t>(slices));
+  assert(freeList.size() == static_cast<size_t>(slices));
 
   if (handle != 0)
   {
@@ -112,24 +112,25 @@ TextureContainer::~TextureContainer()
         gl->getBindlessTexture()->glMakeTextureHandleNonResidentNV(handle));
     handle = 0;
   }
-  glAssert(gl->glDeleteTextures(1, &mTexId));
+  glAssert(gl->glDeleteTextures(1, &textureId));
 }
 
 GLsizei TextureContainer::hasRoom() const
 {
-  return mFreeList.size() > 0;
+  return freeList.size() > 0;
 }
 
 GLsizei TextureContainer::virtualAlloc()
 {
-  GLsizei returnValue = mFreeList.front();
-  mFreeList.pop();
+  GLsizei returnValue = freeList.front();
+  freeList.pop();
+
   return returnValue;
 }
 
 void TextureContainer::virtualFree(GLsizei slice)
 {
-  mFreeList.push(slice);
+  freeList.push(slice);
 }
 
 void TextureContainer::commit(Texture2d *_tex)
@@ -152,7 +153,7 @@ void TextureContainer::CompressedTexSubImage3D(GLint level, GLint xoffset,
                                                GLsizei imageSize,
                                                const GLvoid *data)
 {
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, mTexId));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
   glAssert(gl->glCompressedTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset,
                                          yoffset, zoffset, width, height, depth,
                                          format, imageSize, data));
@@ -164,7 +165,7 @@ void TextureContainer::TexSubImage3D(GLint level, GLint xoffset, GLint yoffset,
                                      GLenum format, GLenum type,
                                      const GLvoid *data)
 {
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, mTexId));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
 
   std::cout << "level: " << level << " xoffset: " << xoffset
             << " yoffset: " << yoffset << " zoffset: " << zoffset
@@ -213,7 +214,7 @@ void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
   for (int level = 0; level < levels; ++level)
   {
     glAssert(gl->glTexturePageCommitmentEXT(
-        mTexId, level, 0, 0, slice, levelWidth, levelHeight, 1, commit));
+        textureId, level, 0, 0, slice, levelWidth, levelHeight, 1, commit));
     levelWidth = std::max(levelWidth / 2, 1);
     levelHeight = std::max(levelHeight / 2, 1);
   }
