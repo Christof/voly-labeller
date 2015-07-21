@@ -34,9 +34,9 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
-  bufferManager =
-      std::unique_ptr<Graphics::BufferManager>(new Graphics::BufferManager());
   textureManager = std::make_shared<Graphics::TextureManager>();
+  bufferManager = std::unique_ptr<Graphics::BufferManager>(
+      new Graphics::BufferManager(textureManager));
 }
 
 Scene::~Scene()
@@ -73,8 +73,10 @@ void Scene::initialize()
   shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
                                                      ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
-  textureManager->addTexture(
+  auto textureId = textureManager->addTexture(
       "/home/christof/Documents/master/volyHA5/scenes/tiger/tiger-atlas.jpg");
+
+  bufferManager->setObjectTexture(objectId, textureId);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
