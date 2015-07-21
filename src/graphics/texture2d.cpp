@@ -56,7 +56,7 @@ void Texture2d::compressedTexSubImage2D(GLint level, GLint xoffset,
   mWidth = width;
   mHeight = height;
 
-  mContainer->CompressedTexSubImage3D(level, xoffset, yoffset, getSliceNum(),
+  mContainer->compressedTexSubImage3d(level, xoffset, yoffset, getSliceNum(),
                                       width, height, 1, format, imageSize,
                                       data);
 }
@@ -67,7 +67,7 @@ void Texture2d::texSubImage2D(GLint level, GLint xoffset, GLint yoffset,
 {
   mWidth = width;
   mHeight = height;
-  mContainer->TexSubImage3D(level, xoffset, yoffset, getSliceNum(), width,
+  mContainer->texSubImage3d(level, xoffset, yoffset, getSliceNum(), width,
                             height, 1, format, type, data);
 }
 

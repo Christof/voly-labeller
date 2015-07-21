@@ -23,11 +23,11 @@ class TextureContainer
   void commit(Texture2d *_tex);
   void free(Texture2d *_tex);
 
-  void CompressedTexSubImage3D(GLint level, GLint xoffset, GLint yoffset,
+  void compressedTexSubImage3d(GLint level, GLint xoffset, GLint yoffset,
                                GLint zoffset, GLsizei width, GLsizei height,
                                GLsizei depth, GLenum format, GLsizei imageSize,
                                const GLvoid *data);
-  void TexSubImage3D(GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
+  void texSubImage3d(GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
                      GLsizei width, GLsizei height, GLsizei depth,
                      GLenum format, GLenum type, const GLvoid *data);
 

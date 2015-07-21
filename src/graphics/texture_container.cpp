@@ -146,7 +146,7 @@ void TextureContainer::free(Texture2d *_tex)
   changeCommitment(_tex->getSliceNum(), GL_FALSE);
 }
 
-void TextureContainer::CompressedTexSubImage3D(GLint level, GLint xoffset,
+void TextureContainer::compressedTexSubImage3d(GLint level, GLint xoffset,
                                                GLint yoffset, GLint zoffset,
                                                GLsizei width, GLsizei height,
                                                GLsizei depth, GLenum format,
@@ -159,7 +159,7 @@ void TextureContainer::CompressedTexSubImage3D(GLint level, GLint xoffset,
                                          format, imageSize, data));
 }
 
-void TextureContainer::TexSubImage3D(GLint level, GLint xoffset, GLint yoffset,
+void TextureContainer::texSubImage3d(GLint level, GLint xoffset, GLint yoffset,
                                      GLint zoffset, GLsizei width,
                                      GLsizei height, GLsizei depth,
                                      GLenum format, GLenum type,
