@@ -32,11 +32,11 @@ class TextureContainer
                      GLenum format, GLenum type, const GLvoid *data);
 
   GLuint64 getHandle() const;
-  GLsizei width() const
+  GLsizei getWidth() const
   {
     return mWidth;
   }
-  GLsizei height() const
+  GLsizei getHeight() const
   {
     return mHeight;
   }

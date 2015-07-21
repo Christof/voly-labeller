@@ -27,14 +27,14 @@ GLsizei Texture2d::getSliceNum() const
 
 TextureAddress Texture2d::address() const
 {
-  printf(" %f %f:\n", static_cast<float>(mWidth) / mContainer->width(),
-         static_cast<float>(mHeight) / mContainer->height());
+  printf(" %f %f:\n", static_cast<float>(mWidth) / mContainer->getWidth(),
+         static_cast<float>(mHeight) / mContainer->getHeight());
   TextureAddress ta = { mContainer->getHandle(),
                         mSliceNum,
                         0,
-                        { static_cast<float>(mWidth) / mContainer->width(),
+                        { static_cast<float>(mWidth) / mContainer->getWidth(),
                           static_cast<float>(mHeight) /
-                              mContainer->height() } };
+                              mContainer->getHeight() } };
   return ta;
 }
 
