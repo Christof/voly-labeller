@@ -38,11 +38,6 @@ TextureAddress Texture2d::address() const
   return ta;
 }
 
-GLuint Texture2d::texId() const
-{
-  return mContainer->texId();
-}
-
 void Texture2d::commit()
 {
   mContainer->commit(this);

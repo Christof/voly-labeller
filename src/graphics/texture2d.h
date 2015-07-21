@@ -35,8 +35,6 @@ class Texture2d
 
   TextureAddress address() const;
 
-  GLuint texId() const;
-
  private:
   TextureContainer *mContainer;
 

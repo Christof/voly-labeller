@@ -31,10 +31,6 @@ class TextureContainer
                      GLsizei width, GLsizei height, GLsizei depth,
                      GLenum format, GLenum type, const GLvoid *data);
 
-  GLuint texId() const
-  {
-    return mTexId;
-  }
   GLuint64 getHandle() const;
   GLsizei width() const
   {
