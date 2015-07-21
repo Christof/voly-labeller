@@ -81,8 +81,8 @@ class BufferManager
   BufferHoleManager vertexBufferManager;
   BufferHoleManager indexBufferManager;
 
-  // CircularBuffer<GLMatrix> m_TransformBuffer;
-  // CircularBuffer<TexAddress> m_TexAddressBuffer;
+  CircularBuffer<float[16]> transformBuffer;
+  CircularBuffer<TextureAddress> textureAddressBuffer;
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 };
 }  // namespace Graphics

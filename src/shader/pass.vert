@@ -20,11 +20,18 @@ vec4 mul(mat4 matrix, vec3 vector)
   return matrix * vec4(vector, 1.0f);
 }
 
+layout (std140, binding = 0) buffer CB0
+{
+    mat4 Transforms[];
+};
+
 void main()
 {
+  mat4 model = Transforms[drawId];
+
   vertexPos = modelViewProjectionMatrix * vec4(pos, 1.0f);
   gl_Position = vertexPos;
-  vertexNormal = normal; //mul(modelMatrix, normal).xyz;
+  vertexNormal = mul(model, normal).xyz; //mul(modelMatrix, normal).xyz;
   vertexColor = color;
   vertexTexCoord = texCoord;
   vertexDrawId = drawId;
