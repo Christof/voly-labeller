@@ -194,10 +194,10 @@ void BufferManager::render()
     TextureAddress *texaddr = &textures[counter];
     *texaddr = objectIterator->second.textureAddress;
 
-    printf("counter: %d count: %u firstIndex: %u baseVertex:%u \n", counter,
+    qDebug("counter: %d count: %u firstIndex: %u baseVertex: %u", counter,
            command->count, command->firstIndex, command->baseVertex);
-    // printf("counter: %d handle: %lu slice: %f\n",
-    //       counter, texaddr->m_container_handle, texaddr->m_tex_page);
+    qDebug("counter: %d handle: %lu slice: %f",
+           counter, texaddr->containerHandle, texaddr->texPage);
   }
 
   printf("objectcount: %u/%ld \n", objectCount, commandsBuffer.size());

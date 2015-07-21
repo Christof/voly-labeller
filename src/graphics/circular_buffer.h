@@ -49,6 +49,7 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
   void bindBufferRange(GLuint index, GLsizeiptr count)
   {
     assert(count <= this->count);
+    assert(head + count <= this->count);
 
     glAssert(gl->glBindBufferRange(this->getTarget(), index, this->id,
                                    head * sizeof(T), count * sizeof(T)));
