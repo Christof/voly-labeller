@@ -69,7 +69,6 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 
   // We've set all the necessary parameters, now it's time to create the sparse
   // texture.
-
   std::cout << "Container: levels:" << levels << " width: " << width
             << " height: " << height << " slices: " << slices
             << " internal format: " << internalformat << std::endl;
@@ -173,19 +172,6 @@ void TextureContainer::texSubImage3d(GLint level, GLint xoffset, GLint yoffset,
             << " depth: " << depth << " format: " << format << " type: " << type
             << std::endl;
 
-  /*
-  unsigned char *xdata = new unsigned char[width*height*3];
-  for (int i =0 ;i< width *height; i++)
-  {
-    xdata[i*3] = 0.5;
-    xdata[i*3 + 1] = 0.1;
-     xdata[i*3 + 2] = 1.0;
-  }
-  glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset, yoffset, zoffset,
-  width, height, depth, format, type, xdata);
-
-  delete [] xdata;
-  */
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset, yoffset,
                                zoffset, width, height, depth, format, type,
                                data));
