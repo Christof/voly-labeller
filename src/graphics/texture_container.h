@@ -32,14 +32,8 @@ class TextureContainer
                      GLenum format, GLenum type, const GLvoid *data);
 
   GLuint64 getHandle() const;
-  GLsizei getWidth() const
-  {
-    return mWidth;
-  }
-  GLsizei getHeight() const
-  {
-    return mHeight;
-  }
+  GLsizei getWidth() const;
+  GLsizei getHeight() const;
 
  private:
   Gl *gl;
@@ -47,8 +41,8 @@ class TextureContainer
   GLuint mTexId;
   std::queue<GLsizei> mFreeList;
 
-  const GLsizei mWidth;
-  const GLsizei mHeight;
+  const GLsizei width;
+  const GLsizei height;
   const GLsizei mLevels;
   const GLsizei mSlices;
   GLsizei mXTileSize = 0;

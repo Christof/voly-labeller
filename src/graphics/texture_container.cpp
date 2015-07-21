@@ -9,7 +9,7 @@ namespace Graphics
 TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
                                    GLenum internalformat, GLsizei width,
                                    GLsizei height, GLsizei slices)
-  : gl(gl), mWidth(width), mHeight(height), mLevels(levels), mSlices(slices)
+  : gl(gl), width(width), height(height), mLevels(levels), mSlices(slices)
 {
   glAssert(gl->glGenTextures(1, &mTexId));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, mTexId));
@@ -197,10 +197,20 @@ GLuint64 TextureContainer::getHandle() const
   return handle;
 }
 
+GLsizei TextureContainer::getWidth() const
+{
+  return width;
+}
+
+GLsizei TextureContainer::getHeight() const
+{
+  return height;
+}
+
 void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
 {
-  GLsizei levelWidth = mWidth;
-  GLsizei levelHeight = mHeight;
+  GLsizei levelWidth = width;
+  GLsizei levelHeight = height;
 
   for (int level = 0; level < mLevels; ++level)
   {
