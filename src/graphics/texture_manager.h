@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "./texture.h"
+#include "./texture_address.h"
 #include "./gl.h"
 
 namespace Graphics
@@ -35,6 +35,8 @@ class TextureManager
   // maxNumTextures <= 0 will cause allocation of maximum number of layers
   bool initialize(Gl *gl, bool sparse = true, GLsizei maxNumTextures = -1);
   void shutdown();
+
+  TextureAddress getAddressFor(int textureId);
 
  private:
   Gl *gl;

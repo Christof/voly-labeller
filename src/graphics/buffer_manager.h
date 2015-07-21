@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <map>
+#include <memory>
 #include "./gl.h"
 #include "./buffer_hole_manager.h"
 #include "./circular_buffer.h"
@@ -13,6 +14,8 @@
 
 namespace Graphics
 {
+
+class TextureManager;
 
 struct ObjectData
 {
@@ -43,7 +46,7 @@ struct DrawElementsIndirectCommand
 class BufferManager
 {
  public:
-  BufferManager();
+  BufferManager(std::shared_ptr<TextureManager> textureManager);
   virtual ~BufferManager();
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
@@ -56,10 +59,13 @@ class BufferManager
 
   void render();
 
+  bool setObjectTexture(int objectId, uint textureId);
+
  private:
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 
+  std::shared_ptr<TextureManager> textureManager;
   int objectCount = 0;
   GLuint vertexArrayId;
   Gl *gl;

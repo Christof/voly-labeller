@@ -1,11 +1,12 @@
 #include "./buffer_manager.h"
 #include <vector>
+#include "./texture_manager.h"
 
 namespace Graphics
 {
 
-BufferManager::BufferManager()
-  : positionBuffer(3, sizeof(float), GL_FLOAT),
+BufferManager::BufferManager(std::shared_ptr<TextureManager> textureManager)
+  : textureManager(textureManager), positionBuffer(3, sizeof(float), GL_FLOAT),
     normalBuffer(3, sizeof(float), GL_FLOAT),
     colorBuffer(4, sizeof(float), GL_FLOAT),
     texCoordBuffer(2, sizeof(float), GL_FLOAT),
@@ -145,6 +146,19 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   objects.insert(std::make_pair(objectId, object));
 
   return objectId;
+}
+
+bool BufferManager::setObjectTexture(int objectId, uint textureId)
+{
+  if (!objects.count(objectId))
+    return false;
+
+  objects[objectId].textureAddress = textureManager->getAddressFor(textureId);
+  qDebug("VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
+         objectId, objects[objectId].textureAddress.containerHandle,
+         objects[objectId].textureAddress.texPage);
+
+  return true;
 }
 
 void BufferManager::render()

@@ -109,6 +109,11 @@ void TextureManager::shutdown()
   mInited = false;
 }
 
+TextureAddress TextureManager::getAddressFor(int textureId)
+{
+  return textures[textureId]->address();
+}
+
 Texture2d *TextureManager::allocateTexture2d(GLsizei levels,
                                              GLenum internalformat,
                                              GLsizei width, GLsizei height)
