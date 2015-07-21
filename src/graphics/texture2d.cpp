@@ -29,7 +29,7 @@ TextureAddress Texture2d::address() const
 {
   printf(" %f %f:\n", static_cast<float>(mWidth) / mContainer->width(),
          static_cast<float>(mHeight) / mContainer->height());
-  TextureAddress ta = { mContainer->handle(),
+  TextureAddress ta = { mContainer->getHandle(),
                         mSliceNum,
                         0,
                         { static_cast<float>(mWidth) / mContainer->width(),

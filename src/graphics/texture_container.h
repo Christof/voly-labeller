@@ -31,15 +31,11 @@ class TextureContainer
                      GLsizei width, GLsizei height, GLsizei depth,
                      GLenum format, GLenum type, const GLvoid *data);
 
-  // Returns the handle to this container.
-  GLuint64 handle() const
-  {
-    return mHandle;
-  }
   GLuint texId() const
   {
     return mTexId;
   }
+  GLuint64 getHandle() const;
   GLsizei width() const
   {
     return mWidth;
@@ -51,7 +47,7 @@ class TextureContainer
 
  private:
   Gl *gl;
-  GLuint64 mHandle = 0;
+  GLuint64 handle = 0;
   GLuint mTexId;
   std::queue<GLsizei> mFreeList;
 

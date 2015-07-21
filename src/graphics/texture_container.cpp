@@ -94,12 +94,12 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 
   if (sparse)
   {
-    mHandle = gl->getBindlessTexture()->glGetTextureHandleNV(mTexId);
+    handle = gl->getBindlessTexture()->glGetTextureHandleNV(mTexId);
     glCheckError();
-    std::cout << "Container: mTexId: " << mTexId << " handle: " << mHandle
+    std::cout << "Container: mTexId: " << mTexId << " handle: " << handle
               << std::endl;
-    assert(mHandle != 0);
-    glAssert(gl->getBindlessTexture()->glMakeTextureHandleResidentNV(mHandle));
+    assert(handle != 0);
+    glAssert(gl->getBindlessTexture()->glMakeTextureHandleResidentNV(handle));
   }
 }
 
@@ -108,11 +108,11 @@ TextureContainer::~TextureContainer()
   // If this fires, it means there was a texture leaked somewhere.
   assert(mFreeList.size() == static_cast<size_t>(mSlices));
 
-  if (mHandle != 0)
+  if (handle != 0)
   {
     glAssert(
-        gl->getBindlessTexture()->glMakeTextureHandleNonResidentNV(mHandle));
-    mHandle = 0;
+        gl->getBindlessTexture()->glMakeTextureHandleNonResidentNV(handle));
+    handle = 0;
   }
   glAssert(gl->glDeleteTextures(1, &mTexId));
 }
@@ -190,6 +190,11 @@ void TextureContainer::TexSubImage3D(GLint level, GLint xoffset, GLint yoffset,
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset, yoffset,
                                zoffset, width, height, depth, format, type,
                                data));
+}
+
+GLuint64 TextureContainer::getHandle() const
+{
+  return handle;
 }
 
 void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
