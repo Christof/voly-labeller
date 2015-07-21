@@ -37,6 +37,8 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   bindlessTexture->initializeOpenGLFunctions();
   glCheckError();
 
+  qWarning() << "Has GL_ARB_sparse_texture:" << context->hasExtension("GL_ARB_sparse_texture");
+
   glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
       context->getProcAddress("glTexturePageCommitmentEXT"));
 
