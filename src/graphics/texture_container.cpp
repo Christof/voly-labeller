@@ -63,8 +63,6 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
     // texture allocation. Need to implement the fallback. TODO: Implement that.
     assert(bestIndex != -1);
 
-    mXTileSize = bestXSize;
-
     glAssert(gl->glTexParameteri(GL_TEXTURE_2D_ARRAY,
                                  GL_VIRTUAL_PAGE_SIZE_INDEX_ARB, bestIndex));
   }

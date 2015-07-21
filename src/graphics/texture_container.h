@@ -43,8 +43,6 @@ class TextureContainer
 
   const GLsizei width;
   const GLsizei height;
-  GLsizei mXTileSize = 0;
-  GLsizei mYTileSize = 0;
   const GLsizei levels;
   const GLsizei slices;
 
