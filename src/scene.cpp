@@ -15,6 +15,7 @@
 #include "./forces/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
+#include "./utils/path_helper.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -73,8 +74,8 @@ void Scene::initialize()
   shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
                                                      ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
-  auto textureId = textureManager->addTexture(
-      "/home/christof/Documents/master/volyHA5/scenes/tiger/tiger-atlas.jpg");
+  auto textureId = textureManager->addTexture(absolutePathOfProjectRelativePath(
+      std::string("assets/tiger/tiger-atlas.jpg")));
 
   bufferManager->setObjectTexture(objectId, textureId);
 }
