@@ -43,10 +43,10 @@ class TextureContainer
 
   const GLsizei width;
   const GLsizei height;
-  const GLsizei mLevels;
-  const GLsizei mSlices;
   GLsizei mXTileSize = 0;
   GLsizei mYTileSize = 0;
+  const GLsizei levels;
+  const GLsizei slices;
 
   void changeCommitment(GLsizei slice, GLboolean commit);
 };

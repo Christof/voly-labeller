@@ -9,7 +9,7 @@ namespace Graphics
 TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
                                    GLenum internalformat, GLsizei width,
                                    GLsizei height, GLsizei slices)
-  : gl(gl), width(width), height(height), mLevels(levels), mSlices(slices)
+  : gl(gl), width(width), height(height), levels(levels), slices(slices)
 {
   glAssert(gl->glGenTextures(1, &mTexId));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, mTexId));
@@ -73,21 +73,21 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
   // texture.
 
   std::cout << "Container: levels:" << levels << " width: " << width
-            << " height: " << height << " slices: " << mSlices
+            << " height: " << height << " slices: " << slices
             << " internal format: " << internalformat << std::endl;
 
   glAssert(gl->glTexStorage3D(GL_TEXTURE_2D_ARRAY, levels, internalformat,
-                              width, height, mSlices));
+                              width, height, slices));
 
-  const uint tsize = width * height * mSlices * 3;
+  const uint tsize = width * height * slices * 3;
   unsigned char *tdata = new unsigned char[tsize];
   for (uint i = 0; i < tsize; i++)
     tdata[i] = 0;
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height,
-                               mSlices, GL_RGB, GL_UNSIGNED_BYTE, tdata));
+                               slices, GL_RGB, GL_UNSIGNED_BYTE, tdata));
 
-  for (GLsizei i = 0; i < mSlices; ++i)
+  for (GLsizei i = 0; i < slices; ++i)
   {
     mFreeList.push(i);
   }
@@ -106,7 +106,7 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 TextureContainer::~TextureContainer()
 {
   // If this fires, it means there was a texture leaked somewhere.
-  assert(mFreeList.size() == static_cast<size_t>(mSlices));
+  assert(mFreeList.size() == static_cast<size_t>(slices));
 
   if (handle != 0)
   {
@@ -212,7 +212,7 @@ void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
   GLsizei levelWidth = width;
   GLsizei levelHeight = height;
 
-  for (int level = 0; level < mLevels; ++level)
+  for (int level = 0; level < levels; ++level)
   {
     glAssert(gl->glTexturePageCommitmentEXT(
         mTexId, level, 0, 0, slice, levelWidth, levelHeight, 1, commit));
