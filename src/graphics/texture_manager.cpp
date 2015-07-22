@@ -109,18 +109,22 @@ TextureAddress TextureManager::getAddressFor(int textureId)
   return textures[textureId]->address();
 }
 
+int computeNextPowerOfTwo(int value)
+{
+  int powerOfTwo = 1;
+  while (powerOfTwo < value)
+    powerOfTwo <<= 1;
+
+  return powerOfTwo;
+}
+
 Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
                                              int width, int height)
 {
   TextureContainer *memArray = nullptr;
 
-  // compute power of two texture size
-  int twidth = 1;
-  int theight = 1;
-  while (twidth < width)
-    twidth <<= 1;
-  while (theight < height)
-    theight <<= 1;
+  int twidth = computeNextPowerOfTwo(width);
+  int theight = computeNextPowerOfTwo(height);
 
   qCDebug(tmChan) << "width/height:" << width << "/" << height << " -> "
                   << twidth << " " << theight;
