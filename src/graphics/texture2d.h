@@ -9,6 +9,7 @@ namespace Graphics
 {
 
 class TextureContainer;
+
 /**
  * \brief
  *
@@ -36,11 +37,10 @@ class Texture2d
   TextureAddress address() const;
 
  private:
-  TextureContainer *mContainer;
+  TextureContainer *container;
 
-  // float for Uniform
-  GLsizei mWidth;
-  GLsizei mHeight;
+  GLsizei width;
+  GLsizei height;
   GLsizei sliceCount;
 };
 

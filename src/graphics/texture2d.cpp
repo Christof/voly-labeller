@@ -5,19 +5,19 @@ namespace Graphics
 {
 
 Texture2d::Texture2d(TextureContainer *container, GLsizei sliceCount)
-  : mContainer(container), sliceCount(sliceCount)
+  : container(container), sliceCount(sliceCount)
 {
 }
 
 Texture2d::~Texture2d()
 {
   free();
-  mContainer->virtualFree(sliceCount);
+  container->virtualFree(sliceCount);
 }
 
 const TextureContainer *Texture2d::getTextureContainer() const
 {
-  return mContainer;
+  return container;
 }
 
 GLsizei Texture2d::getSliceCount() const
@@ -27,25 +27,25 @@ GLsizei Texture2d::getSliceCount() const
 
 TextureAddress Texture2d::address() const
 {
-  printf(" %f %f:\n", static_cast<float>(mWidth) / mContainer->getWidth(),
-         static_cast<float>(mHeight) / mContainer->getHeight());
-  TextureAddress ta = { mContainer->getHandle(),
+  printf(" %f %f:\n", static_cast<float>(width) / container->getWidth(),
+         static_cast<float>(height) / container->getHeight());
+  TextureAddress ta = { container->getHandle(),
                         static_cast<GLfloat>(sliceCount),
                         0,
-                        { static_cast<float>(mWidth) / mContainer->getWidth(),
-                          static_cast<float>(mHeight) /
-                              mContainer->getHeight() } };
+                        { static_cast<float>(width) / container->getWidth(),
+                          static_cast<float>(height) /
+                              container->getHeight() } };
   return ta;
 }
 
 void Texture2d::commit()
 {
-  mContainer->commit(this);
+  container->commit(this);
 }
 
 void Texture2d::free()
 {
-  mContainer->free(this);
+  container->free(this);
 }
 
 void Texture2d::compressedTexSubImage2D(GLint level, GLint xoffset,
@@ -53,22 +53,22 @@ void Texture2d::compressedTexSubImage2D(GLint level, GLint xoffset,
                                         GLsizei height, GLenum format,
                                         GLsizei imageSize, const GLvoid *data)
 {
-  mWidth = width;
-  mHeight = height;
+  this->width = width;
+  this->height = height;
 
-  mContainer->compressedTexSubImage3d(level, xoffset, yoffset, sliceCount,
-                                      width, height, 1, format, imageSize,
-                                      data);
+  container->compressedTexSubImage3d(level, xoffset, yoffset, sliceCount, width,
+                                     height, 1, format, imageSize, data);
 }
 
 void Texture2d::texSubImage2D(GLint level, GLint xoffset, GLint yoffset,
                               GLsizei width, GLsizei height, GLenum format,
                               GLenum type, const GLvoid *data)
 {
-  mWidth = width;
-  mHeight = height;
-  mContainer->texSubImage3d(level, xoffset, yoffset, sliceCount, width,
-                            height, 1, format, type, data);
+  this->width = width;
+  this->height = height;
+
+  container->texSubImage3d(level, xoffset, yoffset, sliceCount, width, height,
+                           1, format, type, data);
 }
 
 }  // namespace Graphics
