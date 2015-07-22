@@ -69,8 +69,8 @@ bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
 {
   this->gl = gl;
 
-  mMaxTextureArrayLevels = maxNumTextures;
-  mSparse = sparse;
+  maxTextureArrayLevels = maxNumTextures;
+  isSparse = sparse;
 
   if (sparse)
   {
@@ -84,11 +84,11 @@ bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
     if (sparse)
     {
       glGetIntegerv(GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB,
-                    &mMaxTextureArrayLevels);
+                    &maxTextureArrayLevels);
     }
     else
     {
-      glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &mMaxTextureArrayLevels);
+      glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArrayLevels);
     }
   }
 
@@ -97,8 +97,8 @@ bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
 
 void TextureManager::shutdown()
 {
-  for (auto containIt = mTexArrays2D.begin(); containIt != mTexArrays2D.end();
-       ++containIt)
+  for (auto containIt = textureContainers.begin();
+       containIt != textureContainers.end(); ++containIt)
   {
     for (auto ptrIt = containIt->second.begin();
          ptrIt != containIt->second.end(); ++ptrIt)
@@ -110,7 +110,7 @@ void TextureManager::shutdown()
     }
   }
 
-  mTexArrays2D.clear();
+  textureContainers.clear();
 }
 
 TextureAddress TextureManager::getAddressFor(int textureId)
@@ -136,12 +136,12 @@ Texture2d *TextureManager::allocateTexture2d(GLsizei levels,
             << " " << theight << std::endl;
 
   auto texType = std::make_tuple(levels, internalformat, twidth, theight);
-  auto arrayIt = mTexArrays2D.find(texType);
-  if (arrayIt == mTexArrays2D.end())
+  auto arrayIt = textureContainers.find(texType);
+  if (arrayIt == textureContainers.end())
   {
-    mTexArrays2D[texType] = std::vector<TextureContainer *>();
-    arrayIt = mTexArrays2D.find(texType);
-    assert(arrayIt != mTexArrays2D.end());
+    textureContainers[texType] = std::vector<TextureContainer *>();
+    arrayIt = textureContainers.find(texType);
+    assert(arrayIt != textureContainers.end());
   }
 
   for (auto it = arrayIt->second.begin(); it != arrayIt->second.end(); ++it)
@@ -155,8 +155,8 @@ Texture2d *TextureManager::allocateTexture2d(GLsizei levels,
 
   if (memArray == nullptr)
   {
-    memArray = new TextureContainer(gl, mSparse, levels, internalformat, twidth,
-                                    theight, mMaxTextureArrayLevels);
+    memArray = new TextureContainer(gl, isSparse, levels, internalformat,
+                                    twidth, theight, maxTextureArrayLevels);
     arrayIt->second.push_back(memArray);
   }
 

@@ -43,10 +43,10 @@ class TextureManager
   Gl *gl;
   std::vector<Texture2d *> textures;
   std::map<std::tuple<GLsizei, GLenum, GLsizei, GLsizei>,
-           std::vector<TextureContainer *>> mTexArrays2D;
-  GLsizei mMaxTextureArrayLevels;
+           std::vector<TextureContainer *>> textureContainers;
+  GLsizei maxTextureArrayLevels;
 
-  bool mSparse;
+  bool isSparse;
 
   Texture2d *allocateTexture2d(GLsizei levels, GLenum internalformat,
                                GLsizei width, GLsizei height);
