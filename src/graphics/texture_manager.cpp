@@ -97,10 +97,7 @@ void TextureManager::shutdown()
     for (auto ptrIt = containIt->second.begin();
          ptrIt != containIt->second.end(); ++ptrIt)
     {
-      {
-        delete *ptrIt;
-        *ptrIt = nullptr;
-      }
+      delete *ptrIt;
     }
   }
 
