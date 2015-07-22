@@ -27,19 +27,6 @@ BufferManager::~BufferManager()
     return;
 
   glAssert(gl->glDeleteVertexArrays(1, &vertexArrayId));
-
-  /*
-  // clear textures
-  for (auto texture = m_Textures.begin(); texture != m_Textures.end();
-  texture++)
-  {
-    delete (*texture);
-    *texture = nullptr;
-  }
-  m_Textures.clear();
-
-  m_TextureManager.Shutdown();
-  */
 }
 
 void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)

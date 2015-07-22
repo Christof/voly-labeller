@@ -9,6 +9,16 @@
 namespace Graphics
 {
 
+TextureManager::~TextureManager()
+{
+  for (auto texture : textures)
+    delete texture;
+
+  textures.clear();
+
+  shutdown();
+}
+
 int TextureManager::addTexture(std::string path)
 {
   int id = textures.size();

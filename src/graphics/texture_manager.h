@@ -23,6 +23,7 @@ class TextureManager
 {
  public:
   TextureManager() = default;
+  ~TextureManager();
 
   int addTexture(std::string path);
 
