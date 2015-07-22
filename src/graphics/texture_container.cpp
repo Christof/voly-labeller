@@ -6,10 +6,10 @@
 namespace Graphics
 {
 
-TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
-                                   GLenum internalformat, GLsizei width,
-                                   GLsizei height, GLsizei slices)
-  : gl(gl), width(width), height(height), levels(levels), slices(slices)
+TextureContainer::TextureContainer(Gl *gl, bool sparse,
+                                   TextureSpaceDescription spaceDescription,
+                                   int slices)
+  : gl(gl), spaceDescription(spaceDescription), slices(slices)
 {
   glAssert(gl->glGenTextures(1, &textureId));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
@@ -25,25 +25,27 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 
     GLint bestIndex = -1, bestXSize = 0, bestYSize = 0;
 
-    glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY, internalformat,
-                                       GL_NUM_VIRTUAL_PAGE_SIZES_ARB, 1,
-                                       &indexCount));
-    std::cout << "Container: indexCount: " << indexCount << " width: " << width
-              << " height: " << height << " internal Format: " << internalformat
+    glAssert(gl->glGetInternalformativ(
+        GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
+        GL_NUM_VIRTUAL_PAGE_SIZES_ARB, 1, &indexCount));
+    std::cout << "Container: indexCount: " << indexCount
+              << " width: " << spaceDescription.width
+              << " height: " << spaceDescription.height
+              << " internal Format: " << spaceDescription.internalFormat
               << std::endl;
 
     for (GLint i = 0; i < indexCount; ++i)
     {
       glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_VIRTUAL_PAGE_SIZE_INDEX_ARB, i);
-      glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY, internalformat,
-                                         GL_VIRTUAL_PAGE_SIZE_X_ARB, 1,
-                                         &xSize));
-      glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY, internalformat,
-                                         GL_VIRTUAL_PAGE_SIZE_Y_ARB, 1,
-                                         &ySize));
-      glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY, internalformat,
-                                         GL_VIRTUAL_PAGE_SIZE_Z_ARB, 1,
-                                         &zSize));
+      glAssert(gl->glGetInternalformativ(
+          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
+          GL_VIRTUAL_PAGE_SIZE_X_ARB, 1, &xSize));
+      glAssert(gl->glGetInternalformativ(
+          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
+          GL_VIRTUAL_PAGE_SIZE_Y_ARB, 1, &ySize));
+      glAssert(gl->glGetInternalformativ(
+          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
+          GL_VIRTUAL_PAGE_SIZE_Z_ARB, 1, &zSize));
 
       // For our purposes, the "best" format is the one that winds up with Z=1
       // and the largest x and y sizes.
@@ -69,19 +71,25 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse, GLsizei levels,
 
   // We've set all the necessary parameters, now it's time to create the sparse
   // texture.
-  std::cout << "Container: levels:" << levels << " width: " << width
-            << " height: " << height << " slices: " << slices
-            << " internal format: " << internalformat << std::endl;
+  std::cout << "Container: levels:" << spaceDescription.levels
+            << " width: " << spaceDescription.width
+            << " height: " << spaceDescription.height << " slices: " << slices
+            << " internal format: " << spaceDescription.internalFormat
+            << std::endl;
 
-  glAssert(gl->glTexStorage3D(GL_TEXTURE_2D_ARRAY, levels, internalformat,
-                              width, height, slices));
+  glAssert(gl->glTexStorage3D(GL_TEXTURE_2D_ARRAY, spaceDescription.levels,
+                              spaceDescription.internalFormat,
+                              spaceDescription.width, spaceDescription.height,
+                              slices));
 
-  const uint tsize = width * height * slices * 3;
+  const uint tsize =
+      spaceDescription.width * spaceDescription.height * slices * 3;
   unsigned char *tdata = new unsigned char[tsize];
   for (uint i = 0; i < tsize; i++)
     tdata[i] = 0;
 
-  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0, width, height,
+  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,
+                               spaceDescription.width, spaceDescription.height,
                                slices, GL_RGB, GL_UNSIGNED_BYTE, tdata));
 
   for (GLsizei i = 0; i < slices; ++i)
@@ -184,20 +192,20 @@ GLuint64 TextureContainer::getHandle() const
 
 GLsizei TextureContainer::getWidth() const
 {
-  return width;
+  return spaceDescription.width;
 }
 
 GLsizei TextureContainer::getHeight() const
 {
-  return height;
+  return spaceDescription.height;
 }
 
 void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
 {
-  GLsizei levelWidth = width;
-  GLsizei levelHeight = height;
+  GLsizei levelWidth = spaceDescription.width;
+  GLsizei levelHeight = spaceDescription.height;
 
-  for (int level = 0; level < levels; ++level)
+  for (int level = 0; level < spaceDescription.levels; ++level)
   {
     glAssert(gl->glTexturePageCommitmentEXT(
         textureId, level, 0, 0, slice, levelWidth, levelHeight, 1, commit));

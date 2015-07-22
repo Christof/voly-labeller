@@ -135,9 +135,8 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 
   if (memArray == nullptr)
   {
-    memArray = new TextureContainer(
-        gl, isSparse, spaceDescription.levels, spaceDescription.internalFormat,
-        spaceDescription.width, spaceDescription.height, maxTextureArrayLevels);
+    memArray = new TextureContainer(gl, isSparse, spaceDescription,
+                                    maxTextureArrayLevels);
     arrayIt->second.push_back(memArray);
   }
 

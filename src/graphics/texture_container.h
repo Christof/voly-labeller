@@ -4,17 +4,17 @@
 
 #include <queue>
 #include "./gl.h"
+#include "./texture_space_description.h"
 
 namespace Graphics
 {
-
 class Texture2d;
 
 class TextureContainer
 {
  public:
-  TextureContainer(Gl *gl, bool sparse, GLsizei levels, GLenum internalformat,
-                   GLsizei width, GLsizei height, GLsizei slices);
+  TextureContainer(Gl *gl, bool sparse,
+                   TextureSpaceDescription spaceDescription, int slices);
   ~TextureContainer();
   GLsizei hasRoom() const;
   GLsizei virtualAlloc();
@@ -41,10 +41,8 @@ class TextureContainer
   GLuint textureId;
   std::queue<GLsizei> freeList;
 
-  const GLsizei width;
-  const GLsizei height;
-  const GLsizei levels;
-  const GLsizei slices;
+  const TextureSpaceDescription spaceDescription;
+  const int slices;
 
   void changeCommitment(GLsizei slice, GLboolean commit);
 };
