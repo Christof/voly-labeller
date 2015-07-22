@@ -2,7 +2,6 @@
 
 #define SRC_GRAPHICS_TEXTURE2D_H_
 
-#include "./gl.h"
 #include "./texture_address.h"
 
 namespace Graphics
@@ -18,30 +17,29 @@ class TextureContainer;
 class Texture2d
 {
  public:
-  Texture2d(TextureContainer *container, GLsizei sliceCount);
+  Texture2d(TextureContainer *container, int sliceCount);
   ~Texture2d();
   void commit();
   void free();
 
-  void compressedTexSubImage2D(GLint level, GLint xOffset, GLint yOffset,
-                               GLsizei width, GLsizei height, GLenum format,
-                               GLsizei imageSize, const GLvoid *data);
-  void texSubImage2D(GLint level, GLint xOffset, GLint yOffset, GLsizei width,
-                     GLsizei height, GLenum format, GLenum type,
-                     const GLvoid *data);
+  void compressedTexSubImage2D(int level, int xOffset, int yOffset, int width,
+                               int height, int format, int imageSize,
+                               const void *data);
+  void texSubImage2D(int level, int xOffset, int yOffset, int width, int height,
+                     int format, int type, const void *data);
 
   const TextureContainer *getTextureContainer() const;
 
-  GLsizei getSliceCount() const;
+  int getSliceCount() const;
 
   TextureAddress address() const;
 
  private:
   TextureContainer *container;
 
-  GLsizei width;
-  GLsizei height;
-  GLsizei sliceCount;
+  int width;
+  int height;
+  int sliceCount;
 };
 
 }  // namespace Graphics
