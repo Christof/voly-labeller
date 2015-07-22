@@ -31,10 +31,10 @@ int TextureManager::addTexture(std::string path)
   return id;
 }
 
-Texture2d *TextureManager::newTexture2d(int levels, int internalFormat,
-                                        int width, int height)
+Texture2d *
+TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
-  Texture2d *texture = allocateTexture2d(levels, internalFormat, width, height);
+  Texture2d *texture = allocateTexture2d(spaceDescription);
   texture->commit();
 
   return texture;
@@ -50,8 +50,8 @@ Texture2d *TextureManager::newTexture2d(std::string path)
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
 
-    Texture2d *texture =
-        allocateTexture2d(1, internalformat, image->width(), image->height());
+    Texture2d *texture = allocateTexture2d(TextureSpaceDescription(
+        1, internalformat, image->width(), image->height()));
     texture->commit();
 
     texture->texSubImage2D(0, 0, 0, image->width(), image->height(), format,
@@ -109,33 +109,18 @@ TextureAddress TextureManager::getAddressFor(int textureId)
   return textures[textureId]->address();
 }
 
-int computeNextPowerOfTwo(int value)
-{
-  int powerOfTwo = 1;
-  while (powerOfTwo < value)
-    powerOfTwo <<= 1;
-
-  return powerOfTwo;
-}
-
-Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
-                                             int width, int height)
+Texture2d *
+TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 {
   TextureContainer *memArray = nullptr;
 
-  int twidth = computeNextPowerOfTwo(width);
-  int theight = computeNextPowerOfTwo(height);
+  spaceDescription.growToNextPowerOfTwo();
 
-  qCDebug(tmChan) << "width/height:" << width << "/" << height << " -> "
-                  << twidth << " " << theight;
-
-  auto texType =
-      TextureSpaceDescription(levels, internalformat, twidth, theight);
-  auto arrayIt = textureContainers.find(texType);
+  auto arrayIt = textureContainers.find(spaceDescription);
   if (arrayIt == textureContainers.end())
   {
-    textureContainers[texType] = std::vector<TextureContainer *>();
-    arrayIt = textureContainers.find(texType);
+    textureContainers[spaceDescription] = std::vector<TextureContainer *>();
+    arrayIt = textureContainers.find(spaceDescription);
     assert(arrayIt != textureContainers.end());
   }
 
@@ -150,8 +135,9 @@ Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
 
   if (memArray == nullptr)
   {
-    memArray = new TextureContainer(gl, isSparse, levels, internalformat,
-                                    twidth, theight, maxTextureArrayLevels);
+    memArray = new TextureContainer(
+        gl, isSparse, spaceDescription.levels, spaceDescription.internalFormat,
+        spaceDescription.width, spaceDescription.height, maxTextureArrayLevels);
     arrayIt->second.push_back(memArray);
   }
 

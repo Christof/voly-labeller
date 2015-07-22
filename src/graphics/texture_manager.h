@@ -28,8 +28,7 @@ class TextureManager
 
   int addTexture(std::string path);
 
-  Texture2d *newTexture2d(int levels, int internalFormat, int width,
-                          int height);
+  Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);
 
   void free(Texture2d *texture);
@@ -48,8 +47,7 @@ class TextureManager
   int maxTextureArrayLevels;
   bool isSparse;
 
-  Texture2d *allocateTexture2d(int levels, int internalformat, int width,
-                               int height);
+  Texture2d *allocateTexture2d(TextureSpaceDescription spaceDescription);
 };
 
 }  // namespace Graphics

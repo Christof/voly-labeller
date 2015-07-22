@@ -14,6 +14,8 @@ struct TextureSpaceDescription
   int internalFormat;
   int width;
   int height;
+
+  void growToNextPowerOfTwo();
 };
 
 bool operator<(const TextureSpaceDescription &left,

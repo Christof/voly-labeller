@@ -35,4 +35,19 @@ bool operator<(const TextureSpaceDescription &left,
   return false;
 }
 
+int computeNextPowerOfTwo(int value)
+{
+  int powerOfTwo = 1;
+  while (powerOfTwo < value)
+    powerOfTwo <<= 1;
+
+  return powerOfTwo;
+}
+
+void TextureSpaceDescription::growToNextPowerOfTwo()
+{
+  width = computeNextPowerOfTwo(width);
+  height = computeNextPowerOfTwo(height);
+}
+
 }  // namespace Graphics
