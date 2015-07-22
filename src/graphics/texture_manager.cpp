@@ -2,13 +2,15 @@
 #include <vector>
 #include <cassert>
 #include <QImage>
+#include <QLoggingCategory>
 #include "./texture_container.h"
 #include "./texture2d.h"
 #include "./gl.h"
-#include <iostream>
 
 namespace Graphics
 {
+
+QLoggingCategory tmChan("Graphics.TextureManager");
 
 TextureManager::~TextureManager()
 {
@@ -43,7 +45,6 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   try
   {
     auto image = new QImage(path.c_str());
-    qWarning() << image->format();
 
     auto internalformat = GL_RGBA8;
     auto format = GL_BGRA;
@@ -60,8 +61,8 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   }
   catch (std::exception &error)
   {
-    qCritical() << "Error loading texture '" << path.c_str()
-                << "': " << error.what();
+    qCCritical(tmChan) << "Error loading texture '" << path.c_str()
+                       << "': " << error.what();
     throw;
   }
 }
@@ -124,8 +125,8 @@ Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
   while (theight < height)
     theight <<= 1;
 
-  std::cout << " width/height: " << width << "/" << height << " -> " << twidth
-            << " " << theight << std::endl;
+  qCDebug(tmChan) << "width/height:" << width << "/" << height << " -> "
+                  << twidth << " " << theight;
 
   auto texType = std::make_tuple(levels, internalformat, twidth, theight);
   auto arrayIt = textureContainers.find(texType);
