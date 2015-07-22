@@ -6,13 +6,13 @@
 #include <vector>
 #include <memory>
 #include "./texture_address.h"
-#include "./gl.h"
 
 namespace Graphics
 {
 
 class TextureContainer;
 class Texture2d;
+class Gl;
 
 /**
  * \brief
@@ -27,14 +27,14 @@ class TextureManager
 
   int addTexture(std::string path);
 
-  Texture2d *newTexture2d(GLsizei levels, GLenum internalformat, GLsizei width,
-                          GLsizei height);
+  Texture2d *newTexture2d(int levels, int internalformat, int width,
+                          int height);
   Texture2d *newTexture2d(std::string path);
 
   void free(Texture2d *_tex);
 
   // maxNumTextures <= 0 will cause allocation of maximum number of layers
-  bool initialize(Gl *gl, bool sparse = true, GLsizei maxNumTextures = -1);
+  bool initialize(Gl *gl, bool sparse = true, int maxNumTextures = -1);
   void shutdown();
 
   TextureAddress getAddressFor(int textureId);
@@ -42,14 +42,14 @@ class TextureManager
  private:
   Gl *gl;
   std::vector<Texture2d *> textures;
-  std::map<std::tuple<GLsizei, GLenum, GLsizei, GLsizei>,
-           std::vector<TextureContainer *>> textureContainers;
-  GLsizei maxTextureArrayLevels;
+  std::map<std::tuple<int, int, int, int>, std::vector<TextureContainer *>>
+      textureContainers;
+  int maxTextureArrayLevels;
 
   bool isSparse;
 
-  Texture2d *allocateTexture2d(GLsizei levels, GLenum internalformat,
-                               GLsizei width, GLsizei height);
+  Texture2d *allocateTexture2d(int levels, int internalformat, int width,
+                               int height);
 };
 
 }  // namespace Graphics

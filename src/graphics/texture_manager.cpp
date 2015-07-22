@@ -4,6 +4,7 @@
 #include <QImage>
 #include "./texture_container.h"
 #include "./texture2d.h"
+#include "./gl.h"
 #include <iostream>
 
 namespace Graphics
@@ -28,8 +29,8 @@ int TextureManager::addTexture(std::string path)
   return id;
 }
 
-Texture2d *TextureManager::newTexture2d(GLsizei levels, GLenum internalformat,
-                                        GLsizei width, GLsizei height)
+Texture2d *TextureManager::newTexture2d(int levels, int internalformat,
+                                        int width, int height)
 {
   Texture2d *retTex = allocateTexture2d(levels, internalformat, width, height);
   retTex->commit();
@@ -44,9 +45,9 @@ Texture2d *TextureManager::newTexture2d(std::string path)
     auto image = new QImage(path.c_str());
     qWarning() << image->format();
 
-    GLenum internalformat = GL_RGBA8;
-    GLenum format = GL_BGRA;
-    GLenum type = GL_UNSIGNED_BYTE;
+    auto internalformat = GL_RGBA8;
+    auto format = GL_BGRA;
+    auto type = GL_UNSIGNED_BYTE;
 
     Texture2d *retTex =
         allocateTexture2d(1, internalformat, image->width(), image->height());
@@ -65,7 +66,7 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   }
 }
 
-bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
+bool TextureManager::initialize(Gl *gl, bool sparse, int maxNumTextures)
 {
   this->gl = gl;
 
@@ -118,9 +119,8 @@ TextureAddress TextureManager::getAddressFor(int textureId)
   return textures[textureId]->address();
 }
 
-Texture2d *TextureManager::allocateTexture2d(GLsizei levels,
-                                             GLenum internalformat,
-                                             GLsizei width, GLsizei height)
+Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
+                                             int width, int height)
 {
   TextureContainer *memArray = nullptr;
 
