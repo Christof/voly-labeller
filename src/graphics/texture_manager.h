@@ -44,7 +44,6 @@ class TextureManager
   std::vector<Texture2d *> textures;
   std::map<std::tuple<GLsizei, GLenum, GLsizei, GLsizei>,
            std::vector<TextureContainer *>> mTexArrays2D;
-  bool mInited;
   GLsizei mMaxTextureArrayLevels;
 
   bool mSparse;

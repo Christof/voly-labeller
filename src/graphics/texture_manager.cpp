@@ -31,7 +31,6 @@ int TextureManager::addTexture(std::string path)
 Texture2d *TextureManager::newTexture2d(GLsizei levels, GLenum internalformat,
                                         GLsizei width, GLsizei height)
 {
-  assert(mInited);
   Texture2d *retTex = allocateTexture2d(levels, internalformat, width, height);
   retTex->commit();
 
@@ -69,7 +68,6 @@ Texture2d *TextureManager::newTexture2d(std::string path)
 bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
 {
   this->gl = gl;
-  // gl_assert(mInited == false);
 
   mMaxTextureArrayLevels = maxNumTextures;
   mSparse = sparse;
@@ -94,8 +92,6 @@ bool TextureManager::initialize(Gl *gl, bool sparse, GLsizei maxNumTextures)
     }
   }
 
-  // mInited = true;
-
   return true;
 }
 
@@ -115,8 +111,6 @@ void TextureManager::shutdown()
   }
 
   mTexArrays2D.clear();
-
-  mInited = false;
 }
 
 TextureAddress TextureManager::getAddressFor(int textureId)
