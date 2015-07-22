@@ -29,13 +29,13 @@ int TextureManager::addTexture(std::string path)
   return id;
 }
 
-Texture2d *TextureManager::newTexture2d(int levels, int internalformat,
+Texture2d *TextureManager::newTexture2d(int levels, int internalFormat,
                                         int width, int height)
 {
-  Texture2d *retTex = allocateTexture2d(levels, internalformat, width, height);
-  retTex->commit();
+  Texture2d *texture = allocateTexture2d(levels, internalFormat, width, height);
+  texture->commit();
 
-  return retTex;
+  return texture;
 }
 
 Texture2d *TextureManager::newTexture2d(std::string path)
@@ -49,14 +49,14 @@ Texture2d *TextureManager::newTexture2d(std::string path)
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
 
-    Texture2d *retTex =
+    Texture2d *texture =
         allocateTexture2d(1, internalformat, image->width(), image->height());
-    retTex->commit();
+    texture->commit();
 
-    retTex->texSubImage2D(0, 0, 0, image->width(), image->height(), format,
-                          type, image->bits());
+    texture->texSubImage2D(0, 0, 0, image->width(), image->height(), format,
+                           type, image->bits());
 
-    return retTex;
+    return texture;
   }
   catch (std::exception &error)
   {
@@ -66,31 +66,23 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   }
 }
 
-bool TextureManager::initialize(Gl *gl, bool sparse, int maxNumTextures)
+bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 {
   this->gl = gl;
+  this->maxTextureArrayLevels = maxTextureArrayLevels;
+  this->isSparse = sparse;
 
-  maxTextureArrayLevels = maxNumTextures;
-  isSparse = sparse;
+  if (maxTextureArrayLevels > 0)
+    return true;
 
   if (sparse)
   {
-    // if (!HasExtension(ARB_sparse_texture)) {
-    //    return false;
-    //}
+    glGetIntegerv(GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB,
+                  &maxTextureArrayLevels);
   }
-
-  if (maxNumTextures <= 0)
+  else
   {
-    if (sparse)
-    {
-      glGetIntegerv(GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB,
-                    &maxTextureArrayLevels);
-    }
-    else
-    {
-      glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArrayLevels);
-    }
+    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArrayLevels);
   }
 
   return true;

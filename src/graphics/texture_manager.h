@@ -27,14 +27,14 @@ class TextureManager
 
   int addTexture(std::string path);
 
-  Texture2d *newTexture2d(int levels, int internalformat, int width,
+  Texture2d *newTexture2d(int levels, int internalFormat, int width,
                           int height);
   Texture2d *newTexture2d(std::string path);
 
-  void free(Texture2d *_tex);
+  void free(Texture2d *texture);
 
   // maxNumTextures <= 0 will cause allocation of maximum number of layers
-  bool initialize(Gl *gl, bool sparse = true, int maxNumTextures = -1);
+  bool initialize(Gl *gl, bool sparse = true, int maxTextureArrayLevels = -1);
   void shutdown();
 
   TextureAddress getAddressFor(int textureId);
@@ -45,7 +45,6 @@ class TextureManager
   std::map<std::tuple<int, int, int, int>, std::vector<TextureContainer *>>
       textureContainers;
   int maxTextureArrayLevels;
-
   bool isSparse;
 
   Texture2d *allocateTexture2d(int levels, int internalformat, int width,
