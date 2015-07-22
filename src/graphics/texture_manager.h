@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include "./texture_address.h"
+#include "./texture_space_description.h"
 
 namespace Graphics
 {
@@ -42,7 +43,7 @@ class TextureManager
  private:
   Gl *gl;
   std::vector<Texture2d *> textures;
-  std::map<std::tuple<int, int, int, int>, std::vector<TextureContainer *>>
+  std::map<TextureSpaceDescription, std::vector<TextureContainer *>>
       textureContainers;
   int maxTextureArrayLevels;
   bool isSparse;

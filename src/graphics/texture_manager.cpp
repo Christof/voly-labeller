@@ -129,7 +129,8 @@ Texture2d *TextureManager::allocateTexture2d(int levels, int internalformat,
   qCDebug(tmChan) << "width/height:" << width << "/" << height << " -> "
                   << twidth << " " << theight;
 
-  auto texType = std::make_tuple(levels, internalformat, twidth, theight);
+  auto texType =
+      TextureSpaceDescription(levels, internalformat, twidth, theight);
   auto arrayIt = textureContainers.find(texType);
   if (arrayIt == textureContainers.end())
   {
