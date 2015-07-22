@@ -1,11 +1,13 @@
 #include "./texture_container.h"
 #include <cassert>
-#include <iostream>
+#include <QLoggingCategory>
 #include "./gl.h"
 #include "./texture2d.h"
 
 namespace Graphics
 {
+
+QLoggingCategory tcChan("Graphics.TextureContainer");
 
 TextureContainer::TextureContainer(Gl *gl, bool sparse,
                                    TextureSpaceDescription spaceDescription,
@@ -29,11 +31,11 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
     glAssert(gl->glGetInternalformativ(
         GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
         GL_NUM_VIRTUAL_PAGE_SIZES_ARB, 1, &indexCount));
-    std::cout << "Container: indexCount: " << indexCount
-              << " width: " << spaceDescription.width
-              << " height: " << spaceDescription.height
-              << " internal Format: " << spaceDescription.internalFormat
-              << std::endl;
+
+    qCDebug(tcChan) << "Container: indexCount:" << indexCount
+                    << "width:" << spaceDescription.width
+                    << "height:" << spaceDescription.height
+                    << "internal Format:" << spaceDescription.internalFormat;
 
     for (int i = 0; i < indexCount; ++i)
     {
@@ -72,11 +74,10 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
   // We've set all the necessary parameters, now it's time to create the sparse
   // texture.
-  std::cout << "Container: levels:" << spaceDescription.levels
-            << " width: " << spaceDescription.width
-            << " height: " << spaceDescription.height << " slices: " << slices
-            << " internal format: " << spaceDescription.internalFormat
-            << std::endl;
+  qCDebug(tcChan) << "Container: levels:" << spaceDescription.levels
+                  << "width:" << spaceDescription.width
+                  << "height:" << spaceDescription.height << "slices:" << slices
+                  << "internal format:" << spaceDescription.internalFormat;
 
   glAssert(gl->glTexStorage3D(GL_TEXTURE_2D_ARRAY, spaceDescription.levels,
                               spaceDescription.internalFormat,
@@ -102,9 +103,11 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
   {
     handle = gl->getBindlessTexture()->glGetTextureHandleNV(textureId);
     glCheckError();
-    std::cout << "Container: textureId: " << textureId << " handle: " << handle
-              << std::endl;
     assert(handle != 0);
+
+    qCDebug(tcChan) << "Container: textureId:" << textureId
+                    << "handle:" << handle;
+
     glAssert(gl->getBindlessTexture()->glMakeTextureHandleResidentNV(handle));
   }
 }
@@ -173,11 +176,10 @@ void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
 {
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
 
-  std::cout << "level: " << level << " xOffset: " << xOffset
-            << " yOffset: " << yOffset << " zOffset: " << zOffset
-            << " width: " << width << " height: " << height
-            << " depth: " << depth << " format: " << format << " type: " << type
-            << std::endl;
+  qCDebug(tcChan) << "In texSubImage3d level:" << level << "xOffset:" << xOffset
+                  << "yOffset:" << yOffset << "zOffset:" << zOffset
+                  << "width:" << width << "height:" << height
+                  << "depth:" << depth << "format:" << format << "type:" << type;
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
                                zOffset, width, height, depth, format, type,
