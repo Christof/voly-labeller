@@ -27,9 +27,6 @@ int Texture2d::getSliceCount() const
 
 TextureAddress Texture2d::address() const
 {
-  printf(" %f %f:\n", static_cast<float>(width) / container->getWidth(),
-         static_cast<float>(height) / container->getHeight());
-
   return { container->getHandle(),
            static_cast<float>(sliceCount),
            0,
@@ -47,9 +44,8 @@ void Texture2d::free()
   container->free(this);
 }
 
-void Texture2d::compressedTexSubImage2D(int level, int xOffset,
-                                        int yOffset, int width,
-                                        int height, int format,
+void Texture2d::compressedTexSubImage2D(int level, int xOffset, int yOffset,
+                                        int width, int height, int format,
                                         int imageSize, const void *data)
 {
   this->width = width;
@@ -59,9 +55,9 @@ void Texture2d::compressedTexSubImage2D(int level, int xOffset,
                                      height, 1, format, imageSize, data);
 }
 
-void Texture2d::texSubImage2D(int level, int xOffset, int yOffset,
-                              int width, int height, int format,
-                              int type, const void *data)
+void Texture2d::texSubImage2D(int level, int xOffset, int yOffset, int width,
+                              int height, int format, int type,
+                              const void *data)
 {
   this->width = width;
   this->height = height;
