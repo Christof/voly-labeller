@@ -29,13 +29,12 @@ TextureAddress Texture2d::address() const
 {
   printf(" %f %f:\n", static_cast<float>(width) / container->getWidth(),
          static_cast<float>(height) / container->getHeight());
-  TextureAddress ta = { container->getHandle(),
-                        static_cast<GLfloat>(sliceCount),
-                        0,
-                        { static_cast<float>(width) / container->getWidth(),
-                          static_cast<float>(height) /
-                              container->getHeight() } };
-  return ta;
+
+  return { container->getHandle(),
+           static_cast<GLfloat>(sliceCount),
+           0,
+           { static_cast<float>(width) / container->getWidth(),
+             static_cast<float>(height) / container->getHeight() } };
 }
 
 void Texture2d::commit()
@@ -48,26 +47,26 @@ void Texture2d::free()
   container->free(this);
 }
 
-void Texture2d::compressedTexSubImage2D(GLint level, GLint xoffset,
-                                        GLint yoffset, GLsizei width,
+void Texture2d::compressedTexSubImage2D(GLint level, GLint xOffset,
+                                        GLint yOffset, GLsizei width,
                                         GLsizei height, GLenum format,
                                         GLsizei imageSize, const GLvoid *data)
 {
   this->width = width;
   this->height = height;
 
-  container->compressedTexSubImage3d(level, xoffset, yoffset, sliceCount, width,
+  container->compressedTexSubImage3d(level, xOffset, yOffset, sliceCount, width,
                                      height, 1, format, imageSize, data);
 }
 
-void Texture2d::texSubImage2D(GLint level, GLint xoffset, GLint yoffset,
+void Texture2d::texSubImage2D(GLint level, GLint xOffset, GLint yOffset,
                               GLsizei width, GLsizei height, GLenum format,
                               GLenum type, const GLvoid *data)
 {
   this->width = width;
   this->height = height;
 
-  container->texSubImage3d(level, xoffset, yoffset, sliceCount, width, height,
+  container->texSubImage3d(level, xOffset, yOffset, sliceCount, width, height,
                            1, format, type, data);
 }
 

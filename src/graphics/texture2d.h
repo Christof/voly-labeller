@@ -23,10 +23,10 @@ class Texture2d
   void commit();
   void free();
 
-  void compressedTexSubImage2D(GLint level, GLint xoffset, GLint yoffset,
+  void compressedTexSubImage2D(GLint level, GLint xOffset, GLint yOffset,
                                GLsizei width, GLsizei height, GLenum format,
                                GLsizei imageSize, const GLvoid *data);
-  void texSubImage2D(GLint level, GLint xoffset, GLint yoffset, GLsizei width,
+  void texSubImage2D(GLint level, GLint xOffset, GLint yOffset, GLsizei width,
                      GLsizei height, GLenum format, GLenum type,
                      const GLvoid *data);
 
