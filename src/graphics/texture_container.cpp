@@ -1,6 +1,7 @@
 #include "./texture_container.h"
 #include <cassert>
 #include <iostream>
+#include "./gl.h"
 #include "./texture2d.h"
 
 namespace Graphics
@@ -21,9 +22,9 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
     // TODO: This could be done once per internal format. For now, just do it
     // every time.
-    GLint indexCount = 0, xSize = 0, ySize = 0, zSize = 0;
+    int indexCount = 0, xSize = 0, ySize = 0, zSize = 0;
 
-    GLint bestIndex = -1, bestXSize = 0, bestYSize = 0;
+    int bestIndex = -1, bestXSize = 0, bestYSize = 0;
 
     glAssert(gl->glGetInternalformativ(
         GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
@@ -34,7 +35,7 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
               << " internal Format: " << spaceDescription.internalFormat
               << std::endl;
 
-    for (GLint i = 0; i < indexCount; ++i)
+    for (int i = 0; i < indexCount; ++i)
     {
       glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_VIRTUAL_PAGE_SIZE_INDEX_ARB, i);
       glAssert(gl->glGetInternalformativ(
@@ -92,7 +93,7 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
                                spaceDescription.width, spaceDescription.height,
                                slices, GL_RGB, GL_UNSIGNED_BYTE, tdata));
 
-  for (GLsizei i = 0; i < slices; ++i)
+  for (int i = 0; i < slices; ++i)
   {
     freeList.push(i);
   }
@@ -122,20 +123,20 @@ TextureContainer::~TextureContainer()
   glAssert(gl->glDeleteTextures(1, &textureId));
 }
 
-GLsizei TextureContainer::hasRoom() const
+int TextureContainer::hasRoom() const
 {
   return freeList.size() > 0;
 }
 
-GLsizei TextureContainer::virtualAlloc()
+int TextureContainer::virtualAlloc()
 {
-  GLsizei returnValue = freeList.front();
+  int returnValue = freeList.front();
   freeList.pop();
 
   return returnValue;
 }
 
-void TextureContainer::virtualFree(GLsizei slice)
+void TextureContainer::virtualFree(int slice)
 {
   freeList.push(slice);
 }
@@ -153,57 +154,55 @@ void TextureContainer::free(Texture2d *texture)
   changeCommitment(texture->getSliceCount(), GL_FALSE);
 }
 
-void TextureContainer::compressedTexSubImage3d(GLint level, GLint xoffset,
-                                               GLint yoffset, GLint zoffset,
-                                               GLsizei width, GLsizei height,
-                                               GLsizei depth, GLenum format,
-                                               GLsizei imageSize,
-                                               const GLvoid *data)
+void TextureContainer::compressedTexSubImage3d(int level, int xOffset,
+                                               int yOffset, int zOffset,
+                                               int width, int height, int depth,
+                                               int format, int imageSize,
+                                               const void *data)
 {
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
-  glAssert(gl->glCompressedTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset,
-                                         yoffset, zoffset, width, height, depth,
+  glAssert(gl->glCompressedTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset,
+                                         yOffset, zOffset, width, height, depth,
                                          format, imageSize, data));
 }
 
-void TextureContainer::texSubImage3d(GLint level, GLint xoffset, GLint yoffset,
-                                     GLint zoffset, GLsizei width,
-                                     GLsizei height, GLsizei depth,
-                                     GLenum format, GLenum type,
-                                     const GLvoid *data)
+void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
+                                     int zOffset, int width, int height,
+                                     int depth, int format, int type,
+                                     const void *data)
 {
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
 
-  std::cout << "level: " << level << " xoffset: " << xoffset
-            << " yoffset: " << yoffset << " zoffset: " << zoffset
+  std::cout << "level: " << level << " xOffset: " << xOffset
+            << " yOffset: " << yOffset << " zOffset: " << zOffset
             << " width: " << width << " height: " << height
             << " depth: " << depth << " format: " << format << " type: " << type
             << std::endl;
 
-  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xoffset, yoffset,
-                               zoffset, width, height, depth, format, type,
+  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
+                               zOffset, width, height, depth, format, type,
                                data));
 }
 
-GLuint64 TextureContainer::getHandle() const
+unsigned long int TextureContainer::getHandle() const
 {
   return handle;
 }
 
-GLsizei TextureContainer::getWidth() const
+int TextureContainer::getWidth() const
 {
   return spaceDescription.width;
 }
 
-GLsizei TextureContainer::getHeight() const
+int TextureContainer::getHeight() const
 {
   return spaceDescription.height;
 }
 
-void TextureContainer::changeCommitment(GLsizei slice, GLboolean commit)
+void TextureContainer::changeCommitment(int slice, bool commit)
 {
-  GLsizei levelWidth = spaceDescription.width;
-  GLsizei levelHeight = spaceDescription.height;
+  int levelWidth = spaceDescription.width;
+  int levelHeight = spaceDescription.height;
 
   for (int level = 0; level < spaceDescription.levels; ++level)
   {

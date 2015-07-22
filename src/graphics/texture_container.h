@@ -3,12 +3,13 @@
 #define SRC_GRAPHICS_TEXTURE_CONTAINER_H_
 
 #include <queue>
-#include "./gl.h"
 #include "./texture_space_description.h"
 
 namespace Graphics
 {
+
 class Texture2d;
+class Gl;
 
 class TextureContainer
 {
@@ -16,35 +17,34 @@ class TextureContainer
   TextureContainer(Gl *gl, bool sparse,
                    TextureSpaceDescription spaceDescription, int slices);
   ~TextureContainer();
-  GLsizei hasRoom() const;
-  GLsizei virtualAlloc();
-  void virtualFree(GLsizei slice);
+  int hasRoom() const;
+  int virtualAlloc();
+  void virtualFree(int slice);
 
   void commit(Texture2d *texture);
   void free(Texture2d *texture);
 
-  void compressedTexSubImage3d(GLint level, GLint xoffset, GLint yoffset,
-                               GLint zoffset, GLsizei width, GLsizei height,
-                               GLsizei depth, GLenum format, GLsizei imageSize,
-                               const GLvoid *data);
-  void texSubImage3d(GLint level, GLint xoffset, GLint yoffset, GLint zoffset,
-                     GLsizei width, GLsizei height, GLsizei depth,
-                     GLenum format, GLenum type, const GLvoid *data);
+  void compressedTexSubImage3d(int level, int xOffset, int yOffset, int zOffset,
+                               int width, int height, int depth, int format,
+                               int imageSize, const void *data);
+  void texSubImage3d(int level, int xOffset, int yOffset, int zOffset,
+                     int width, int height, int depth, int format, int type,
+                     const void *data);
 
-  GLuint64 getHandle() const;
-  GLsizei getWidth() const;
-  GLsizei getHeight() const;
+  unsigned long int getHandle() const;
+  int getWidth() const;
+  int getHeight() const;
 
  private:
   Gl *gl;
-  GLuint64 handle = 0;
-  GLuint textureId;
-  std::queue<GLsizei> freeList;
+  unsigned long int handle = 0;
+  unsigned int textureId;
+  std::queue<int> freeList;
 
   const TextureSpaceDescription spaceDescription;
   const int slices;
 
-  void changeCommitment(GLsizei slice, GLboolean commit);
+  void changeCommitment(int slice, bool commit);
 };
 
 }  // namespace Graphics
