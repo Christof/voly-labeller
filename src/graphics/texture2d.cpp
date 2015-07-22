@@ -4,15 +4,15 @@
 namespace Graphics
 {
 
-Texture2d::Texture2d(TextureContainer *container, GLsizei sliceNum)
-  : mContainer(container), mSliceNum(GLfloat(sliceNum))
+Texture2d::Texture2d(TextureContainer *container, GLsizei sliceCount)
+  : mContainer(container), sliceCount(sliceCount)
 {
 }
 
 Texture2d::~Texture2d()
 {
   free();
-  mContainer->virtualFree(GLsizei(mSliceNum));
+  mContainer->virtualFree(sliceCount);
 }
 
 const TextureContainer *Texture2d::getTextureContainer() const
@@ -20,9 +20,9 @@ const TextureContainer *Texture2d::getTextureContainer() const
   return mContainer;
 }
 
-GLsizei Texture2d::getSliceNum() const
+GLsizei Texture2d::getSliceCount() const
 {
-  return (GLsizei)mSliceNum;
+  return sliceCount;
 }
 
 TextureAddress Texture2d::address() const
@@ -30,7 +30,7 @@ TextureAddress Texture2d::address() const
   printf(" %f %f:\n", static_cast<float>(mWidth) / mContainer->getWidth(),
          static_cast<float>(mHeight) / mContainer->getHeight());
   TextureAddress ta = { mContainer->getHandle(),
-                        mSliceNum,
+                        static_cast<GLfloat>(sliceCount),
                         0,
                         { static_cast<float>(mWidth) / mContainer->getWidth(),
                           static_cast<float>(mHeight) /
@@ -56,7 +56,7 @@ void Texture2d::compressedTexSubImage2D(GLint level, GLint xoffset,
   mWidth = width;
   mHeight = height;
 
-  mContainer->compressedTexSubImage3d(level, xoffset, yoffset, getSliceNum(),
+  mContainer->compressedTexSubImage3d(level, xoffset, yoffset, sliceCount,
                                       width, height, 1, format, imageSize,
                                       data);
 }
@@ -67,7 +67,7 @@ void Texture2d::texSubImage2D(GLint level, GLint xoffset, GLint yoffset,
 {
   mWidth = width;
   mHeight = height;
-  mContainer->texSubImage3d(level, xoffset, yoffset, getSliceNum(), width,
+  mContainer->texSubImage3d(level, xoffset, yoffset, sliceCount, width,
                             height, 1, format, type, data);
 }
 

@@ -136,13 +136,13 @@ void TextureContainer::commit(Texture2d *texture)
 {
   assert(texture->getTextureContainer() == this);
 
-  changeCommitment(texture->getSliceNum(), GL_TRUE);
+  changeCommitment(texture->getSliceCount(), GL_TRUE);
 }
 
 void TextureContainer::free(Texture2d *texture)
 {
   assert(texture->getTextureContainer() == this);
-  changeCommitment(texture->getSliceNum(), GL_FALSE);
+  changeCommitment(texture->getSliceCount(), GL_FALSE);
 }
 
 void TextureContainer::compressedTexSubImage3d(GLint level, GLint xoffset,

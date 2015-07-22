@@ -17,7 +17,7 @@ class TextureContainer;
 class Texture2d
 {
  public:
-  Texture2d(TextureContainer *container, GLsizei sliceNum);
+  Texture2d(TextureContainer *container, GLsizei sliceCount);
   ~Texture2d();
   void commit();
   void free();
@@ -31,7 +31,7 @@ class Texture2d
 
   const TextureContainer *getTextureContainer() const;
 
-  GLsizei getSliceNum() const;
+  GLsizei getSliceCount() const;
 
   TextureAddress address() const;
 
@@ -41,7 +41,7 @@ class Texture2d
   // float for Uniform
   GLsizei mWidth;
   GLsizei mHeight;
-  GLfloat mSliceNum;
+  GLsizei sliceCount;
 };
 
 }  // namespace Graphics
