@@ -50,6 +50,24 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
   normalData = new float[mesh->mNumVertices * 3];
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+  textureCoordinateData = new float[mesh->mNumVertices * 2];
+
+  if (mesh->GetNumUVChannels() > 0)
+  {
+    for (int i = 0; i < vertexCount; ++i)
+    {
+      textureCoordinateData[i * 2] = mesh->mTextureCoords[0][i].x;
+      textureCoordinateData[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
+    }
+  }
+  else
+  {
+    for (int i = 0; i < vertexCount; ++i)
+    {
+      textureCoordinateData[i * 2] = 0.0f;
+      textureCoordinateData[i * 2 + 1] = 0.0f;
+    }
+  }
 
   createObb();
 }
@@ -80,6 +98,11 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
   renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
                              "vertexNormal", 3, vertexCount);
   delete[] normalData;
+
+  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
+                             textureCoordinateData, "vertexTextureCoordinate", 2,
+                             vertexCount);
+  delete[] textureCoordinateData;
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,

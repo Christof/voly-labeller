@@ -49,6 +49,7 @@ class Mesh : public Renderable
   unsigned int *indexData;
   float *positionData;
   float *normalData;
+  float *textureCoordinateData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
