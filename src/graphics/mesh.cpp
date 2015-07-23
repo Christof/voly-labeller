@@ -4,12 +4,14 @@
 #include "./gl.h"
 #include "./render_object.h"
 #include "./shader_program.h"
+#include "./buffer_manager.h"
+#include <iostream>
 
 namespace Graphics
 {
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
-  : Renderable(":/shader/phong.vert", ":/shader/phong.frag")
+  : Renderable(":/shader/pass.vert", ":/shader/test.frag")
 {
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
@@ -89,6 +91,16 @@ void Mesh::createObb()
 
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
 {
+  std::cout << BufferManager::instance << std::endl;
+  std::vector<float> pos(positionData, positionData + vertexCount * 3);
+  std::vector<float> nor(normalData, normalData + vertexCount * 3);
+  std::vector<float> tex(textureCoordinateData,
+                         textureCoordinateData + vertexCount * 2);
+  std::vector<float> col(vertexCount * 4, 0.8f);
+  std::vector<unsigned int> idx(indexData, indexData + indexCount);
+  id = BufferManager::instance->addObject(pos, nor, col, tex, idx);
+
+  /*
   renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
                              "index", 1, indexCount);
   delete[] indexData;
@@ -100,9 +112,10 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
   delete[] normalData;
 
   renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
-                             textureCoordinateData, "vertexTextureCoordinate", 2,
-                             vertexCount);
+                             textureCoordinateData, "vertexTextureCoordinate",
+                             2, vertexCount);
   delete[] textureCoordinateData;
+  */
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -134,6 +147,8 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
+  BufferManager::instance->setObjectTransform(id, renderData.modelMatrix);
+  /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *
                                         renderData.modelMatrix;
@@ -147,11 +162,12 @@ void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                      Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
   shader->setUniform("lightPosition", renderData.cameraPosition);
   shader->setUniform("shininess", shininess);
+  */
 }
 
 void Mesh::draw(Gl *gl)
 {
-  glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
 }  // namespace Graphics

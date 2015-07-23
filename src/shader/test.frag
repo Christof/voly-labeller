@@ -33,8 +33,8 @@ vec4 Texture(Tex2DAddress addr, vec2 uv)
 FragmentData computeData()
 {
   FragmentData data;
-  data.color = Texture(texAddress[vertexDrawId], vertexTexCoord.xy);
-  // data.color = vertexColor;
+  //data.color = Texture(texAddress[vertexDrawId], vertexTexCoord.xy);
+  data.color = vertexColor;
   // data.color = vec4(1, 0, 0, 1);
   data.pos = vertexPos;
 

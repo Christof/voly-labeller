@@ -29,7 +29,7 @@ void main()
 {
   mat4 model = Transforms[drawId];
 
-  vertexPos = modelViewProjectionMatrix * vec4(pos, 1.0f);
+  vertexPos = modelViewProjectionMatrix * model * vec4(pos, 1.0f);
   gl_Position = vertexPos;
   vertexNormal = mul(model, normal).xyz; //mul(modelMatrix, normal).xyz;
   vertexColor = color;

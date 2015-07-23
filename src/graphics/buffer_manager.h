@@ -47,6 +47,9 @@ class BufferManager
 {
  public:
   BufferManager(std::shared_ptr<TextureManager> textureManager);
+
+  static BufferManager* instance;
+
   virtual ~BufferManager();
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 

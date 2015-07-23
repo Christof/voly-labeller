@@ -8,6 +8,8 @@ namespace Graphics
 
 QLoggingCategory bmChan("Graphics.BufferManager");
 
+BufferManager *BufferManager::instance = nullptr;
+
 BufferManager::BufferManager(std::shared_ptr<TextureManager> textureManager)
   : textureManager(textureManager), positionBuffer(3, sizeof(float), GL_FLOAT),
     normalBuffer(3, sizeof(float), GL_FLOAT),
@@ -19,6 +21,7 @@ BufferManager::BufferManager(std::shared_ptr<TextureManager> textureManager)
     textureAddressBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 {
+  instance = this;
 }
 
 BufferManager::~BufferManager()

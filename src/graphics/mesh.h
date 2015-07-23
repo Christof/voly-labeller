@@ -54,6 +54,8 @@ class Mesh : public Renderable
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
   float shininess;
+
+  int id;
 };
 
 }  // namespace Graphics
