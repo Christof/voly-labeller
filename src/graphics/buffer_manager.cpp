@@ -49,19 +49,7 @@ void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   indexBuffer.initialize(gl, bufferSize, GL_ELEMENT_ARRAY_BUFFER);
 
-  // initialize DrawID buffer - ascending ids
-  drawIdBuffer.initialize(gl, maxObjectCount);
-  std::vector<uint> drawids;
-  uint idval = 0;
-  drawids.resize(maxObjectCount);
-
-  for_each(drawids.begin(), drawids.end(),
-           [&idval](std::vector<uint>::value_type &v)
-           {
-    v = idval++;
-  });
-
-  drawIdBuffer.setData(drawids);
+  initializeDrawIdBuffer(maxObjectCount);
 
   // bind per vertex attibutes to vertex array
   positionBuffer.bindAttrib(0);
@@ -76,6 +64,22 @@ void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   textureAddressBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS,
                                   MAP_FLAGS);
+}
+
+void BufferManager::initializeDrawIdBuffer(uint maxObjectCount)
+{
+  drawIdBuffer.initialize(gl, maxObjectCount);
+  std::vector<uint> drawids;
+  uint idval = 0;
+  drawids.resize(maxObjectCount);
+
+  for_each(drawids.begin(), drawids.end(),
+           [&idval](std::vector<uint>::value_type &v)
+           {
+    v = idval++;
+  });
+
+  drawIdBuffer.setData(drawids);
 }
 
 int BufferManager::addObject(const std::vector<float> &vertices,
@@ -154,9 +158,21 @@ bool BufferManager::setObjectTexture(int objectId, uint textureId)
   return true;
 }
 
-void BufferManager::render()
+void BufferManager::bind()
 {
   glAssert(gl->glBindVertexArray(vertexArrayId));
+  indexBuffer.bind();
+}
+
+void BufferManager::unbind()
+{
+  indexBuffer.unbind();
+  glAssert(gl->glBindVertexArray(0));
+}
+
+void BufferManager::render()
+{
+  bind();
 
   // prepare per object buffers
   uint objectCount = objects.size();
@@ -203,17 +219,15 @@ void BufferManager::render()
   qCDebug(bmChan, "head: %ld headoffset %p objectcount: %un",
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
-  indexBuffer.bind();
   glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
                                            commandsBuffer.headOffset(),
                                            objectCount, 0));
-  indexBuffer.unbind();
+
+  unbind();
 
   commandsBuffer.onUsageComplete(mapRange);
   transformBuffer.onUsageComplete(mapRange);
   textureAddressBuffer.onUsageComplete(mapRange);
-
-  glAssert(gl->glBindVertexArray(0));
 }
 
 }  // namespace Graphics
