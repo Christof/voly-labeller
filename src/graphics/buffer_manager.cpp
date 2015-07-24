@@ -88,6 +88,7 @@ int BufferManager::addObject(const std::vector<float> &vertices,
                              const std::vector<float> &texCoords,
                              const std::vector<uint> &indices)
 {
+  qCDebug(bmChan) << "add object";
   assert(vertices.size() /
              static_cast<float>(positionBuffer.getComponentCount()) ==
          normals.size() / static_cast<float>(normalBuffer.getComponentCount()));
@@ -118,7 +119,10 @@ int BufferManager::addObject(const std::vector<float> &vertices,
   }
 
   if (!reserve_success)
+  {
+    qCCritical(bmChan) << "Failed to reserve space in buffers";
     return -1;
+  }
 
   // fill buffers
   positionBuffer.setData(vertices, vertexBufferOffset);
