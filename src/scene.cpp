@@ -57,7 +57,7 @@ void Scene::initialize()
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   haBuffer->initialize(gl);
 
-  bufferManager->initialize(gl, 128, 1000);
+  bufferManager->initialize(gl, 128, 10000000);
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                                    1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
   std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
