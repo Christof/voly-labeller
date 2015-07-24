@@ -60,6 +60,7 @@ class BufferManager
   void render();
 
   bool setObjectTexture(int objectId, uint textureId);
+  bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
 
   void bind();
   void unbind();

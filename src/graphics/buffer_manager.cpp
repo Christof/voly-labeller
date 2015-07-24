@@ -162,6 +162,17 @@ bool BufferManager::setObjectTexture(int objectId, uint textureId)
   return true;
 }
 
+bool BufferManager::setObjectTransform(int objectId,
+                                       const Eigen::Matrix4f &transform)
+{
+  if (objects.count(objectId) == 0)
+    return false;
+
+  objects[objectId].transform = transform;
+
+  return true;
+}
+
 void BufferManager::bind()
 {
   glAssert(gl->glBindVertexArray(vertexArrayId));
