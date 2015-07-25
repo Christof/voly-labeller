@@ -163,7 +163,7 @@ void HABuffer::render()
   float renderTime = renderTimer.waitResult();
   qCDebug(channel) << "Clear time" << clearTime << "ms";
   qCDebug(channel) << "Build time" << buildTime << "ms";
-  qCDebug(channel) << "Debug time" << renderTime << "ms";
+  qCDebug(channel) << "Render time" << renderTime << "ms";
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
@@ -232,7 +232,7 @@ void HABuffer::displayStatistics(const char *label)
                        << "<avg:" << avgdepth / static_cast<float>(num)
                        << " max: " << lcounts[habufferCountsSize - 1] << "/"
                        << habufferNumRecords << "(" << rec_percentage << "% "
-                       << '>';
+                       << ">";
   }
 
   delete[] lcounts;
