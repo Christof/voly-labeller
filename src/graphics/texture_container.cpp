@@ -1,6 +1,7 @@
 #include "./texture_container.h"
-#include <cassert>
 #include <QLoggingCategory>
+#include <cassert>
+#include <algorithm>
 #include "./gl.h"
 #include "./texture2d.h"
 
@@ -24,8 +25,8 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
     int bestIndex = findBestIndex();
     // This would mean the implementation has no valid sizes for us, or that
-    // this format doesn't actually support sparse
-    // texture allocation. Need to implement the fallback. TODO: Implement that.
+    // this format doesn't actually support sparse texture allocation.
+    // TODO(all): Need to implement the fallback.
     assert(bestIndex != -1);
 
     glAssert(gl->glTexParameteri(GL_TEXTURE_2D_ARRAY,
@@ -44,15 +45,15 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
                               spaceDescription.width, spaceDescription.height,
                               slices));
 
-  const uint tsize =
+  const uint textureSize =
       spaceDescription.width * spaceDescription.height * slices * 3;
-  unsigned char *tdata = new unsigned char[tsize];
-  for (uint i = 0; i < tsize; i++)
-    tdata[i] = 0;
+  unsigned char *textureData = new unsigned char[textureSize];
+  for (uint i = 0; i < textureSize; i++)
+    textureData[i] = 0;
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,
                                spaceDescription.width, spaceDescription.height,
-                               slices, GL_RGB, GL_UNSIGNED_BYTE, tdata));
+                               slices, GL_RGB, GL_UNSIGNED_BYTE, textureData));
 
   for (int i = 0; i < slices; ++i)
   {
@@ -164,7 +165,7 @@ int TextureContainer::getHeight() const
 
 int TextureContainer::findBestIndex()
 {
-  // TODO: This could be done once per internal format. For now, just do it
+  // TODO(all): This could be done once per internal format. For now, just do it
   // every time.
 
   int bestIndex = -1;
