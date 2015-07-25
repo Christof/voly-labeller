@@ -77,6 +77,7 @@ set(SOURCES
   src/graphics/texture2d.cpp
   src/graphics/texture_manager.cpp
   src/graphics/texture_space_description.cpp
+  src/graphics/object_manager.cpp
   ${RESOURCES})
 
 set(SHADER

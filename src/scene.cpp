@@ -36,8 +36,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
   textureManager = std::make_shared<Graphics::TextureManager>();
-  bufferManager = std::unique_ptr<Graphics::BufferManager>(
-      new Graphics::BufferManager(textureManager));
+  objectManager = std::unique_ptr<Graphics::ObjectManager>(
+      new Graphics::ObjectManager(textureManager));
 }
 
 Scene::~Scene()
@@ -57,7 +57,7 @@ void Scene::initialize()
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   haBuffer->initialize(gl);
 
-  bufferManager->initialize(gl, 128, 10000000);
+  objectManager->initialize(gl, 128, 10000000);
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                                    1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
   std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
@@ -70,14 +70,14 @@ void Scene::initialize()
                                    1.0f, 1.0f, 0.0f, 1.0f };
   std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
   objectId =
-      bufferManager->addObject(positions, normals, colors, texCoords, indices);
+      objectManager->addObject(positions, normals, colors, texCoords, indices);
   shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
                                                      ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
   auto textureId = textureManager->addTexture(absolutePathOfProjectRelativePath(
       std::string("assets/tiger/tiger-atlas.jpg")));
 
-  bufferManager->setObjectTexture(objectId, textureId);
+  objectManager->setObjectTexture(objectId, textureId);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -134,7 +134,7 @@ void Scene::render()
   // shader->setUniform("modelMatrix", renderData.modelMatrix);
   haBuffer->begin(shader);
 
-  bufferManager->render();
+  objectManager->render();
   shader->release();
 
   haBuffer->render();

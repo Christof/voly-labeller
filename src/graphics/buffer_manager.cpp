@@ -9,20 +9,15 @@ namespace Graphics
 
 QLoggingCategory bmChan("Graphics.BufferManager");
 
-BufferManager *BufferManager::instance = nullptr;
-
-BufferManager::BufferManager(std::shared_ptr<TextureManager> textureManager)
-  : textureManager(textureManager), positionBuffer(3, sizeof(float), GL_FLOAT),
+BufferManager::BufferManager()
+  : positionBuffer(3, sizeof(float), GL_FLOAT),
     normalBuffer(3, sizeof(float), GL_FLOAT),
     colorBuffer(4, sizeof(float), GL_FLOAT),
     texCoordBuffer(2, sizeof(float), GL_FLOAT),
     drawIdBuffer(1, sizeof(uint), GL_UNSIGNED_INT),
     indexBuffer(1, sizeof(uint), GL_UNSIGNED_INT), vertexBufferManager(0),
-    indexBufferManager(0), transformBuffer(GL_SHADER_STORAGE_BUFFER),
-    textureAddressBuffer(GL_SHADER_STORAGE_BUFFER),
-    commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
+    indexBufferManager(0)
 {
-  instance = this;
 }
 
 BufferManager::~BufferManager()
@@ -36,9 +31,6 @@ BufferManager::~BufferManager()
 void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 {
   this->gl = gl;
-  // gl_assert(m_VertexArrayID == 0);
-
-  // m_TextureManager.Init(true, 8);
 
   vertexBufferManager = BufferHoleManager(bufferSize);
   indexBufferManager = BufferHoleManager(bufferSize);
@@ -63,11 +55,6 @@ void BufferManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
   drawIdBuffer.bindAttribDivisor(4, 1);
 
   glAssert(gl->glBindVertexArray(0));
-
-  commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  textureAddressBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS,
-                                  MAP_FLAGS);
 }
 
 void BufferManager::initializeDrawIdBuffer(uint maxObjectCount)
@@ -86,11 +73,11 @@ void BufferManager::initializeDrawIdBuffer(uint maxObjectCount)
   drawIdBuffer.setData(drawids);
 }
 
-int BufferManager::addObject(const std::vector<float> &vertices,
-                             const std::vector<float> &normals,
-                             const std::vector<float> &colors,
-                             const std::vector<float> &texCoords,
-                             const std::vector<uint> &indices)
+BufferInformation BufferManager::addObject(const std::vector<float> &vertices,
+                                           const std::vector<float> &normals,
+                                           const std::vector<float> &colors,
+                                           const std::vector<float> &texCoords,
+                                           const std::vector<uint> &indices)
 {
   qCDebug(bmChan) << "add object";
   assert(vertices.size() /
@@ -106,75 +93,31 @@ int BufferManager::addObject(const std::vector<float> &vertices,
 
   const uint vertexCount = vertices.size() / positionBuffer.getComponentCount();
 
-  // try to reserve buffer storage for objects
-  uint vertexBufferOffset;
-  uint indexBufferOffset;
-
-  bool reserve_success =
-      vertexBufferManager.reserve(vertexCount, vertexBufferOffset);
+  BufferInformation bufferInformation;
+  bool reserve_success = vertexBufferManager.reserve(
+      vertexCount, bufferInformation.vertexBufferOffset);
   if (reserve_success)
   {
-    reserve_success =
-        indexBufferManager.reserve(indices.size(), indexBufferOffset);
+    reserve_success = indexBufferManager.reserve(
+        indices.size(), bufferInformation.indexBufferOffset);
     if (!reserve_success)
     {
-      vertexBufferManager.release(vertexBufferOffset);
+      vertexBufferManager.release(bufferInformation.vertexBufferOffset);
     }
   }
 
   if (!reserve_success)
-  {
-    qCCritical(bmChan) << "Failed to reserve space in buffers";
-    return -1;
-  }
+    throw std::runtime_error("Failed to reserve space in buffers");
 
   // fill buffers
-  positionBuffer.setData(vertices, vertexBufferOffset);
-  normalBuffer.setData(normals, vertexBufferOffset);
-  colorBuffer.setData(colors, vertexBufferOffset);
-  texCoordBuffer.setData(texCoords, vertexBufferOffset);
+  positionBuffer.setData(vertices, bufferInformation.vertexBufferOffset);
+  normalBuffer.setData(normals, bufferInformation.vertexBufferOffset);
+  colorBuffer.setData(colors, bufferInformation.vertexBufferOffset);
+  texCoordBuffer.setData(texCoords, bufferInformation.vertexBufferOffset);
 
-  indexBuffer.setData(indices, indexBufferOffset);
+  indexBuffer.setData(indices, bufferInformation.indexBufferOffset);
 
-  ObjectData object;
-  object.vertexOffset = vertexBufferOffset;
-  object.vertexSize = vertexCount;
-  object.indexOffset = indexBufferOffset;
-  object.indexSize = indices.size();
-  object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
-  object.transform = Eigen::Matrix4f::Identity();
-
-  int objectId = objectCount++;
-
-  objects.insert(std::make_pair(objectId, object));
-
-  return objectId;
-}
-
-bool BufferManager::setObjectTexture(int objectId, uint textureId)
-{
-  if (!objects.count(objectId))
-    return false;
-
-  objects[objectId].textureAddress = textureManager->getAddressFor(textureId);
-  qCDebug(
-      bmChan,
-      "VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
-      objectId, objects[objectId].textureAddress.containerHandle,
-      objects[objectId].textureAddress.texPage);
-
-  return true;
-}
-
-bool BufferManager::setObjectTransform(int objectId,
-                                       const Eigen::Matrix4f &transform)
-{
-  if (objects.count(objectId) == 0)
-    return false;
-
-  objects[objectId].transform = transform;
-
-  return true;
+  return bufferInformation;
 }
 
 void BufferManager::bind()
@@ -187,66 +130,6 @@ void BufferManager::unbind()
 {
   indexBuffer.unbind();
   glAssert(gl->glBindVertexArray(0));
-}
-
-void BufferManager::render()
-{
-  bind();
-
-  // prepare per object buffers
-  uint objectCount = objects.size();
-  DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
-  auto *matrices = transformBuffer.reserve(objectCount);
-  TextureAddress *textures = textureAddressBuffer.reserve(objectCount);
-
-  int counter = 0;
-  for (auto objectIterator = objects.begin(); objectIterator != objects.end();
-       ++objectIterator, ++counter)
-  {
-    DrawElementsIndirectCommand *command = &commands[counter];
-    command->count = objectIterator->second.indexSize;
-    command->instanceCount = 1;
-    command->firstIndex = objectIterator->second.indexOffset;
-    command->baseVertex = objectIterator->second.vertexOffset;
-    command->baseInstance = counter;
-
-    auto *transform = &matrices[counter];
-    memcpy(transform, objectIterator->second.transform.data(),
-           sizeof(float[16]));
-
-    TextureAddress *texaddr = &textures[counter];
-    *texaddr = objectIterator->second.textureAddress;
-
-    qCDebug(bmChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",
-            counter, command->count, command->firstIndex, command->baseVertex);
-    qCDebug(bmChan, "counter: %d handle: %lu slice: %f", counter,
-            texaddr->containerHandle, texaddr->texPage);
-  }
-
-  qCDebug(bmChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
-
-  int mapRange = objectCount;
-
-  mapRange = std::min(128, ((mapRange / 4) + 1) * 4);
-  transformBuffer.bindBufferRange(0, mapRange);
-  textureAddressBuffer.bindBufferRange(1, mapRange);
-
-  // We didn't use MAP_COHERENT here - make sure data is on the gpu
-  glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
-
-  // draw
-  qCDebug(bmChan, "head: %ld headoffset %p objectcount: %un",
-          commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
-
-  glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
-                                           commandsBuffer.headOffset(),
-                                           objectCount, 0));
-
-  unbind();
-
-  commandsBuffer.onUsageComplete(mapRange);
-  transformBuffer.onUsageComplete(mapRange);
-  textureAddressBuffer.onUsageComplete(mapRange);
 }
 
 }  // namespace Graphics

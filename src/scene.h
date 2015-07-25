@@ -12,7 +12,7 @@
 #include "./graphics/quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
-#include "./graphics/buffer_manager.h"
+#include "./graphics/object_manager.h"
 
 #include "./graphics/shader_program.h"
 #include "./graphics/texture_manager.h"
@@ -61,7 +61,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
-  std::unique_ptr<Graphics::BufferManager> bufferManager;
+  std::unique_ptr<Graphics::ObjectManager> objectManager;
   FrustumOptimizer frustumOptimizer;
 
   int width;

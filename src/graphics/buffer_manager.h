@@ -8,34 +8,16 @@
 #include <memory>
 #include "./gl.h"
 #include "./buffer_hole_manager.h"
-#include "./circular_buffer.h"
 #include "./attribute_buffer.h"
-#include "./texture_address.h"
 
 namespace Graphics
 {
 
-class TextureManager;
-
-struct ObjectData
+struct BufferInformation
 {
-  int vertexOffset;
-  int indexOffset;
-  int vertexSize;
-  int indexSize;
-
-  TextureAddress textureAddress;
-
-  Eigen::Matrix4f transform;
-};
-
-struct DrawElementsIndirectCommand
-{
-  GLuint count;
-  GLuint instanceCount;
-  GLuint firstIndex;
-  GLuint baseVertex;
-  GLuint baseInstance;
+  uint vertexBufferOffset;
+  uint indexBufferOffset;
+  uint vertexCount;
 };
 
 /**
@@ -46,38 +28,24 @@ struct DrawElementsIndirectCommand
 class BufferManager
 {
  public:
-  explicit BufferManager(std::shared_ptr<TextureManager> textureManager);
-
-  static BufferManager* instance;
+  BufferManager();
 
   virtual ~BufferManager();
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
-  int addObject(const std::vector<float> &vertices,
-                const std::vector<float> &normals,
-                const std::vector<float> &colors,
-                const std::vector<float> &texCoords,
-                const std::vector<uint> &indices);
-  bool removeObject(int objID);
-
-  void render();
-
-  bool setObjectTexture(int objectId, uint textureId);
-  bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
+  BufferInformation addObject(const std::vector<float> &vertices,
+                              const std::vector<float> &normals,
+                              const std::vector<float> &colors,
+                              const std::vector<float> &texCoords,
+                              const std::vector<uint> &indices);
 
   void bind();
   void unbind();
 
-  void initializeDrawIdBuffer(uint maxObjectCount);
  private:
-  const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
-  const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
-
-  std::shared_ptr<TextureManager> textureManager;
   int objectCount = 0;
   GLuint vertexArrayId;
   Gl *gl;
-  std::map<int, ObjectData> objects;
 
   AttributeBuffer positionBuffer;
   AttributeBuffer normalBuffer;
@@ -89,9 +57,7 @@ class BufferManager
   BufferHoleManager vertexBufferManager;
   BufferHoleManager indexBufferManager;
 
-  CircularBuffer<float[16]> transformBuffer;
-  CircularBuffer<TextureAddress> textureAddressBuffer;
-  CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
+  void initializeDrawIdBuffer(uint maxObjectCount);
 };
 }  // namespace Graphics
 
