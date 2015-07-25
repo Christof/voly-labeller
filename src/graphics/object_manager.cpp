@@ -103,19 +103,21 @@ void ObjectManager::render()
   for (auto objectIterator = objects.begin(); objectIterator != objects.end();
        ++objectIterator, ++counter)
   {
+    auto objectData = objectIterator->second;
+
     DrawElementsIndirectCommand *command = &commands[counter];
-    command->count = objectIterator->second.indexSize;
+    command->count = objectData.indexSize;
     command->instanceCount = 1;
-    command->firstIndex = objectIterator->second.indexOffset;
-    command->baseVertex = objectIterator->second.vertexOffset;
+    command->firstIndex = objectData.indexOffset;
+    command->baseVertex = objectData.vertexOffset;
     command->baseInstance = counter;
 
     auto *transform = &matrices[counter];
-    memcpy(transform, objectIterator->second.transform.data(),
+    memcpy(transform, objectData.transform.data(),
            sizeof(float[16]));
 
     TextureAddress *texaddr = &textures[counter];
-    *texaddr = objectIterator->second.textureAddress;
+    *texaddr = objectData.textureAddress;
 
     qCDebug(omChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",
             counter, command->count, command->firstIndex, command->baseVertex);
