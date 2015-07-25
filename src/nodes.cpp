@@ -79,16 +79,16 @@ void Nodes::importFrom(QUrl url)
 }
 
 void Nodes::render(Graphics::Gl *gl,
-                   std::shared_ptr<Graphics::HABuffer> haBuffer,
+                   std::shared_ptr<Graphics::ObjectManager> objectManager,
                    RenderData renderData)
 {
   for (auto &node : nodes)
-    node->render(gl, haBuffer, renderData);
+    node->render(gl, objectManager, renderData);
 
   if (showBoundingVolumes)
   {
     for (auto &node : obbNodes)
-      node->render(gl, haBuffer, renderData);
+      node->render(gl, objectManager, renderData);
   }
 }
 

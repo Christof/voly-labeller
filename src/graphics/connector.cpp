@@ -21,7 +21,8 @@ Connector::~Connector()
 {
 }
 
-void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject)
+void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
+                              std::shared_ptr<ObjectManager> objectManager)
 {
   float *positions = new float[3 * points.size()];
   for (size_t i = 0; i < points.size(); ++i)

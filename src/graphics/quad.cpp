@@ -20,7 +20,8 @@ Quad::~Quad()
 {
 }
 
-void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject)
+void Quad::createBuffers(std::shared_ptr<RenderObject> render,
+                         std::shared_ptr<ObjectManager> objectManager)
 {
   float positions[12]{ 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                        1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
@@ -50,10 +51,11 @@ void Quad::draw(Gl *gl)
   glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 }
 
-void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
+void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData,
+                               std::shared_ptr<ObjectManager> objectManager)
 {
   if (!renderObject.get())
-    initialize(gl);
+    initialize(gl, objectManager);
 
   renderObject->bind();
 
@@ -63,4 +65,5 @@ void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
 
   renderObject->release();
 }
+
 }  // namespace Graphics

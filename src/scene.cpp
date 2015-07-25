@@ -36,8 +36,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
   textureManager = std::make_shared<Graphics::TextureManager>();
-  objectManager = std::unique_ptr<Graphics::ObjectManager>(
-      new Graphics::ObjectManager(textureManager));
+  objectManager = std::make_shared<Graphics::ObjectManager>(textureManager);
 }
 
 Scene::~Scene()
@@ -55,7 +54,7 @@ void Scene::initialize()
   fbo->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
-  haBuffer->initialize(gl);
+  haBuffer->initialize(gl, objectManager);
 
   objectManager->initialize(gl, 128, 10000000);
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
@@ -126,7 +125,7 @@ void Scene::render()
 
   haBuffer->clearAndPrepare();
 
-  nodes->render(gl, haBuffer, renderData);
+  nodes->render(gl, objectManager, renderData);
 
   shader->bind();
   Eigen::Matrix4f mvp = renderData.projectionMatrix * renderData.viewMatrix;
@@ -157,7 +156,7 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->renderToFrameBuffer(gl, renderData);
+  quad->renderToFrameBuffer(gl, renderData, objectManager);
 }
 
 void Scene::resize(int width, int height)

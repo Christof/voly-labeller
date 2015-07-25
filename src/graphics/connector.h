@@ -7,7 +7,6 @@
 #include "./render_data.h"
 #include "./renderable.h"
 
-
 namespace Graphics
 {
 
@@ -36,7 +35,8 @@ class Connector : public Renderable
   float zOffset = 0.0f;
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
+                             std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
   virtual void draw(Gl *gl);

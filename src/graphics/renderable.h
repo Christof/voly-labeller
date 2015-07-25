@@ -12,7 +12,7 @@ namespace Graphics
 class Gl;
 class RenderObject;
 class ShaderProgram;
-class HABuffer;
+class ObjectManager;
 
 /**
  * \brief Base class for easier access to a RenderObject
@@ -23,16 +23,17 @@ class Renderable
   Renderable(std::string vertexShaderPath, std::string fragmentShaderPath);
   virtual ~Renderable();
 
-  void initialize(Gl *gl);
+  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
 
-  void render(Gl *gl, std::shared_ptr<HABuffer> haBuffer,
+  virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
               const RenderData &renderData);
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
   std::shared_ptr<ShaderProgram> getShaderProgram();
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject) = 0;
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
+                             std::shared_ptr<ObjectManager> objectManager) = 0;
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData) = 0;
   virtual void draw(Gl *gl) = 0;

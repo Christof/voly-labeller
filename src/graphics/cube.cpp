@@ -13,7 +13,8 @@ Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
 {
 }
 
-void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject)
+void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
+                         std::shared_ptr<ObjectManager> objectManager)
 {
   Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
   Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);

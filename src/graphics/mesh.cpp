@@ -89,16 +89,17 @@ void Mesh::createObb()
   obb = std::make_shared<Math::Obb>(data);
 }
 
-void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject)
+void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
+    std::shared_ptr<ObjectManager> objectManager)
 {
-  std::cout << ObjectManager::instance << std::endl;
+  this->objectManager = objectManager;
   std::vector<float> pos(positionData, positionData + vertexCount * 3);
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
   std::vector<float> tex(textureCoordinateData,
                          textureCoordinateData + vertexCount * 2);
   std::vector<float> col(vertexCount * 4, 0.8f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
-  id = ObjectManager::instance->addObject(pos, nor, col, tex, idx);
+  id = objectManager->addObject(pos, nor, col, tex, idx);
 
   /*
   renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
@@ -147,7 +148,7 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
-  ObjectManager::instance->setObjectTransform(id, renderData.modelMatrix);
+  objectManager->setObjectTransform(id, renderData.modelMatrix);
   /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *

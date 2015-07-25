@@ -19,6 +19,6 @@ ObbNode::ObbNode(std::shared_ptr<Math::Obb> obb)
 
 void ObbNode::render(Graphics::Gl *gl, RenderData renderData)
 {
-  wireframe->render(gl, haBuffer, renderData);
+  wireframe->render(gl, objectManager, renderData);
 }
 

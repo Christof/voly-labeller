@@ -61,7 +61,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
-  std::unique_ptr<Graphics::ObjectManager> objectManager;
+  std::shared_ptr<Graphics::ObjectManager> objectManager;
   FrustumOptimizer frustumOptimizer;
 
   int width;

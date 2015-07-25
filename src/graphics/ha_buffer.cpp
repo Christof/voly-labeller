@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "./shader_program.h"
 #include "./quad.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -19,13 +20,14 @@ HABuffer::~HABuffer()
   delete[] offsets;
 }
 
-void HABuffer::initialize(Gl *gl)
+void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
 {
   this->gl = gl;
+  this->objectManager = objectManager;
 
   quad = std::make_shared<Quad>();
   quad->skipSettingUniforms = true;
-  quad->initialize(gl);
+  quad->initialize(gl, objectManager);
 
   initializeShadersHash();
   initializeBufferHash();
@@ -110,7 +112,7 @@ void HABuffer::clearAndPrepare()
   clearShader->setUniform("u_Counts", CountsBuffer);
 
   quad->setShaderProgram(clearShader);
-  quad->renderToFrameBuffer(gl, RenderData());
+  quad->renderToFrameBuffer(gl, RenderData(), objectManager);
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
@@ -153,7 +155,7 @@ void HABuffer::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
   quad->setShaderProgram(renderShader);
-  quad->renderToFrameBuffer(gl, RenderData());
+  quad->renderToFrameBuffer(gl, RenderData(), objectManager);
 
   glAssert(gl->glDepthMask(GL_TRUE));
 
@@ -203,7 +205,6 @@ void HABuffer::syncAndGetCounts()
 
   displayStatistics("after render");
 }
-
 
 void HABuffer::displayStatistics(const char *label)
 {
