@@ -46,7 +46,7 @@ struct DrawElementsIndirectCommand
 class BufferManager
 {
  public:
-  BufferManager(std::shared_ptr<TextureManager> textureManager);
+  explicit BufferManager(std::shared_ptr<TextureManager> textureManager);
 
   static BufferManager* instance;
 

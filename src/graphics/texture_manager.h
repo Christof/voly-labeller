@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <memory>
 #include "./texture_address.h"
 #include "./texture_space_description.h"

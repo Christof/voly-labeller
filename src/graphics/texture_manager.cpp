@@ -1,8 +1,10 @@
 #include "./texture_manager.h"
-#include <vector>
-#include <cassert>
 #include <QImage>
 #include <QLoggingCategory>
+#include <vector>
+#include <map>
+#include <string>
+#include <cassert>
 #include "./texture_container.h"
 #include "./texture2d.h"
 #include "./gl.h"

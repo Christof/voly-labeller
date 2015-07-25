@@ -1,6 +1,7 @@
 #include "./buffer_manager.h"
-#include <vector>
 #include <QLoggingCategory>
+#include <vector>
+#include <algorithm>
 #include "./texture_manager.h"
 
 namespace Graphics
