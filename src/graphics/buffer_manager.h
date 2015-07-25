@@ -6,12 +6,13 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include "./gl.h"
 #include "./buffer_hole_manager.h"
 #include "./attribute_buffer.h"
 
 namespace Graphics
 {
+
+class Gl;
 
 struct BufferInformation
 {
@@ -43,7 +44,6 @@ class BufferManager
   void unbind();
 
  private:
-  int objectCount = 0;
   GLuint vertexArrayId;
   Gl *gl;
 

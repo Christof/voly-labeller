@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <vector>
 #include <algorithm>
+#include "./gl.h"
 #include "./texture_manager.h"
 
 namespace Graphics
