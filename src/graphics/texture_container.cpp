@@ -22,47 +22,7 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
     glAssert(gl->glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_SPARSE_ARB,
                                  GL_TRUE));
 
-    // TODO: This could be done once per internal format. For now, just do it
-    // every time.
-    int indexCount = 0, xSize = 0, ySize = 0, zSize = 0;
-
-    int bestIndex = -1, bestXSize = 0, bestYSize = 0;
-
-    glAssert(gl->glGetInternalformativ(
-        GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
-        GL_NUM_VIRTUAL_PAGE_SIZES_ARB, 1, &indexCount));
-
-    qCDebug(tcChan) << "Container: indexCount:" << indexCount
-                    << "width:" << spaceDescription.width
-                    << "height:" << spaceDescription.height
-                    << "internal Format:" << spaceDescription.internalFormat;
-
-    for (int i = 0; i < indexCount; ++i)
-    {
-      glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_VIRTUAL_PAGE_SIZE_INDEX_ARB, i);
-      glAssert(gl->glGetInternalformativ(
-          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
-          GL_VIRTUAL_PAGE_SIZE_X_ARB, 1, &xSize));
-      glAssert(gl->glGetInternalformativ(
-          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
-          GL_VIRTUAL_PAGE_SIZE_Y_ARB, 1, &ySize));
-      glAssert(gl->glGetInternalformativ(
-          GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
-          GL_VIRTUAL_PAGE_SIZE_Z_ARB, 1, &zSize));
-
-      // For our purposes, the "best" format is the one that winds up with Z=1
-      // and the largest x and y sizes.
-      if (zSize == 1)
-      {
-        if (xSize >= bestXSize && ySize >= bestYSize)
-        {
-          bestIndex = i;
-          bestXSize = xSize;
-          bestYSize = ySize;
-        }
-      }
-    }
-
+    int bestIndex = findBestIndex();
     // This would mean the implementation has no valid sizes for us, or that
     // this format doesn't actually support sparse
     // texture allocation. Need to implement the fallback. TODO: Implement that.
@@ -179,7 +139,8 @@ void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
   qCDebug(tcChan) << "In texSubImage3d level:" << level << "xOffset:" << xOffset
                   << "yOffset:" << yOffset << "zOffset:" << zOffset
                   << "width:" << width << "height:" << height
-                  << "depth:" << depth << "format:" << format << "type:" << type;
+                  << "depth:" << depth << "format:" << format
+                  << "type:" << type;
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
                                zOffset, width, height, depth, format, type,
@@ -199,6 +160,57 @@ int TextureContainer::getWidth() const
 int TextureContainer::getHeight() const
 {
   return spaceDescription.height;
+}
+
+int TextureContainer::findBestIndex()
+{
+  // TODO: This could be done once per internal format. For now, just do it
+  // every time.
+
+  int bestIndex = -1;
+  int bestXSize = 0;
+  int bestYSize = 0;
+
+  int indexCount = 0;
+  glAssert(gl->glGetInternalformativ(
+      GL_TEXTURE_2D_ARRAY, spaceDescription.internalFormat,
+      GL_NUM_VIRTUAL_PAGE_SIZES_ARB, 1, &indexCount));
+
+  qCDebug(tcChan) << "Container: indexCount:" << indexCount
+                  << "width:" << spaceDescription.width
+                  << "height:" << spaceDescription.height
+                  << "internal Format:" << spaceDescription.internalFormat;
+
+  for (int i = 0; i < indexCount; ++i)
+  {
+    glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_VIRTUAL_PAGE_SIZE_INDEX_ARB, i);
+    int xSize = 0;
+    glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY,
+                                       spaceDescription.internalFormat,
+                                       GL_VIRTUAL_PAGE_SIZE_X_ARB, 1, &xSize));
+    int ySize = 0;
+    glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY,
+                                       spaceDescription.internalFormat,
+                                       GL_VIRTUAL_PAGE_SIZE_Y_ARB, 1, &ySize));
+    int zSize = 0;
+    glAssert(gl->glGetInternalformativ(GL_TEXTURE_2D_ARRAY,
+                                       spaceDescription.internalFormat,
+                                       GL_VIRTUAL_PAGE_SIZE_Z_ARB, 1, &zSize));
+
+    // For our purposes, the "best" format is the one that winds up with Z=1
+    // and the largest x and y sizes.
+    if (zSize == 1)
+    {
+      if (xSize >= bestXSize && ySize >= bestYSize)
+      {
+        bestIndex = i;
+        bestXSize = xSize;
+        bestYSize = ySize;
+      }
+    }
+  }
+
+  return bestIndex;
 }
 
 void TextureContainer::changeCommitment(int slice, bool commit)

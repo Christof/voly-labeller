@@ -44,6 +44,7 @@ class TextureContainer
   const TextureSpaceDescription spaceDescription;
   const int slices;
 
+  int findBestIndex();
   void changeCommitment(int slice, bool commit);
 };
 
