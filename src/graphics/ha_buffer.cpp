@@ -124,7 +124,8 @@ void HABuffer::clearAndPrepare()
 
 void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
 {
-  if (lastUsedProgram != shader->getId())
+  // TODO(sirk): re-enable optimization after change to ObjectManager
+  // if (lastUsedProgram != shader->getId())
     setUniforms(shader);
 
   lastUsedProgram = shader->getId();
