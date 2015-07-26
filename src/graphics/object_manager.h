@@ -60,6 +60,8 @@ class ObjectManager
 
   void render();
 
+  void renderImmediately(int objectId);
+
   bool setObjectTexture(int objectId, uint textureId);
   bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
 

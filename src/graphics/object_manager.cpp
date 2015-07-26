@@ -98,6 +98,13 @@ void ObjectManager::render()
   renderObjects(objs);
 }
 
+void ObjectManager::renderImmediately(int objectId)
+{
+  std::vector<ObjectData> objs = { objects[objectId] };
+
+  renderObjects(objs);
+}
+
 void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 {
   bufferManager->bind();
