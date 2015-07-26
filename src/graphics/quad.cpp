@@ -29,22 +29,15 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
 {
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                                    1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
-                             positions.data(), "position", 3, 12);
   std::vector<float> texcoords = { 1.0f, 0.0f, 0.0f, 0.0f,
                                    1.0f, 1.0f, 0.0f, 1.0f };
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
-                             texcoords.data(), "texcoord", 2, 12);
   std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
                                  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
   std::vector<float> colors = {
     1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
     0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
   };
-
   std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
-  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices.data(),
-                             "index", 1, indices.size());
 
   if (objectId < 0)
     objectId = objectManager->addObject(positions, normals, colors, texcoords,
@@ -76,13 +69,9 @@ void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData,
   if (!renderObject.get())
     initialize(gl, objectManager);
 
-  renderObject->bind();
-
   setUniforms(renderObject->shaderProgram, renderData);
 
-  draw(gl);
-
-  renderObject->release();
+  objectManager->renderImmediately(objectId);
 }
 
 }  // namespace Graphics
