@@ -148,7 +148,7 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
-  objectManager->setObjectTransform(id, renderData.modelMatrix);
+  objectManager->renderLater(id, renderData.modelMatrix);
   /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *

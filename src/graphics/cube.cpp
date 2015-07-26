@@ -17,6 +17,8 @@ Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
 void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
                          std::shared_ptr<ObjectManager> objectManager)
 {
+  this->objectManager = objectManager;
+
   Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
   Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
   Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
@@ -60,21 +62,25 @@ void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
                                 4, 5, 7, 4, 7, 6, 6, 7, 1, 6, 1, 0,
                                 0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
 
-  objectManager->addObject(positions, normals, colors, texCoords, indices);
+  objectId =
+      objectManager->addObject(positions, normals, colors, texCoords, indices);
 }
 
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                        const RenderData &renderData)
 {
-  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
-                                        renderData.viewMatrix *
-                                        renderData.modelMatrix;
+  objectManager->renderLater(objectId, renderData.modelMatrix);
+  /*
+  Eigen::Matrix4f modelViewProjection =
+      renderData.projectionMatrix * renderData.viewMatrix *
+      renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  */
 }
 
 void Cube::draw(Gl *gl)
 {
-  glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
 }  // namespace Graphics
