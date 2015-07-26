@@ -1,5 +1,6 @@
 #include "./quad.h"
 #include <string>
+#include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
@@ -20,16 +21,25 @@ Quad::~Quad()
 {
 }
 
-void Quad::createBuffers(std::shared_ptr<RenderObject> render,
+void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
                          std::shared_ptr<ObjectManager> objectManager)
 {
-  float positions[12]{ 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
-                       1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positions,
-                             "position", 3, 12);
-  float texcoords[8]{ 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, texcoords,
-                             "texcoord", 2, 12);
+  std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
+                                   1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
+  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
+                             positions.data(), "position", 3, 12);
+  std::vector<float> texcoords = { 1.0f, 0.0f, 0.0f, 0.0f,
+                                   1.0f, 1.0f, 0.0f, 1.0f };
+  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
+                             texcoords.data(), "texcoord", 2, 12);
+  std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+
+  std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
+  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices.data(),
+                             "index", 1, indices.size());
+
+  // objectManager->addObject(positions, normals, normals, texcoords, indices);
 }
 
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
