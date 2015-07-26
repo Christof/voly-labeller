@@ -4,9 +4,12 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
+
+int Quad::objectId = -1;
 
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
   : Renderable(vertexShaderFilename, fragmentShaderFilename)
@@ -34,12 +37,18 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
                              texcoords.data(), "texcoord", 2, 12);
   std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
                                  0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+  std::vector<float> colors = {
+    1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
+    0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
+  };
 
   std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
   renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices.data(),
                              "index", 1, indices.size());
 
-  // objectManager->addObject(positions, normals, normals, texcoords, indices);
+  if (objectId < 0)
+    objectId = objectManager->addObject(positions, normals, colors, texcoords,
+                                        indices);
 }
 
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,

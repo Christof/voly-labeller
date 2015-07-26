@@ -40,6 +40,7 @@ class Quad : public Graphics::Renderable
 
  private:
   static const int indexCount = 6;
+  static int objectId;
 };
 
 }  // namespace Graphics
