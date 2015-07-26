@@ -78,6 +78,9 @@ class ObjectManager
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;
+
+  DrawElementsIndirectCommand createDrawCommand(const ObjectData &objectData,
+                                                int counter);
 };
 
 }  // namespace Graphics

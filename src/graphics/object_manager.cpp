@@ -104,23 +104,14 @@ void ObjectManager::render()
        ++objectIterator, ++counter)
   {
     auto objectData = objectIterator->second;
-
-    DrawElementsIndirectCommand *command = &commands[counter];
-    command->count = objectData.indexSize;
-    command->instanceCount = 1;
-    command->firstIndex = objectData.indexOffset;
-    command->baseVertex = objectData.vertexOffset;
-    command->baseInstance = counter;
+    commands[counter] = createDrawCommand(objectData, counter);
 
     auto *transform = &matrices[counter];
-    memcpy(transform, objectData.transform.data(),
-           sizeof(float[16]));
+    memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
     TextureAddress *texaddr = &textures[counter];
     *texaddr = objectData.textureAddress;
 
-    qCDebug(omChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",
-            counter, command->count, command->firstIndex, command->baseVertex);
     qCDebug(omChan, "counter: %d handle: %lu slice: %f", counter,
             texaddr->containerHandle, texaddr->texPage);
   }
@@ -149,5 +140,22 @@ void ObjectManager::render()
   commandsBuffer.onUsageComplete(mapRange);
   transformBuffer.onUsageComplete(mapRange);
   textureAddressBuffer.onUsageComplete(mapRange);
+}
+
+DrawElementsIndirectCommand
+ObjectManager::createDrawCommand(const ObjectData &objectData, int counter)
+{
+  DrawElementsIndirectCommand command;
+
+  command.count = objectData.indexSize;
+  command.instanceCount = 1;
+  command.firstIndex = objectData.indexOffset;
+  command.baseVertex = objectData.vertexOffset;
+  command.baseInstance = counter;
+
+  qCDebug(omChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",
+          counter, command.count, command.firstIndex, command.baseVertex);
+
+  return command;
 }
 }  // namespace Graphics
