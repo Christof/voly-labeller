@@ -79,6 +79,7 @@ class ObjectManager
 
   Gl *gl;
 
+  void renderObjects(std::vector<ObjectData> objects);
   DrawElementsIndirectCommand createDrawCommand(const ObjectData &objectData,
                                                 int counter);
 };

@@ -91,6 +91,15 @@ bool ObjectManager::setObjectTransform(int objectId,
 
 void ObjectManager::render()
 {
+  std::vector<ObjectData> objs;
+  for (auto &pair : objects)
+    objs.push_back(pair.second);
+
+  renderObjects(objs);
+}
+
+void ObjectManager::renderObjects(std::vector<ObjectData> objects)
+{
   bufferManager->bind();
 
   // prepare per object buffers
@@ -100,10 +109,8 @@ void ObjectManager::render()
   TextureAddress *textures = textureAddressBuffer.reserve(objectCount);
 
   int counter = 0;
-  for (auto objectIterator = objects.begin(); objectIterator != objects.end();
-       ++objectIterator, ++counter)
+  for (auto &objectData : objects)
   {
-    auto objectData = objectIterator->second;
     commands[counter] = createDrawCommand(objectData, counter);
 
     auto *transform = &matrices[counter];
@@ -114,6 +121,8 @@ void ObjectManager::render()
 
     qCDebug(omChan, "counter: %d handle: %lu slice: %f", counter,
             texaddr->containerHandle, texaddr->texPage);
+
+    ++counter;
   }
 
   qCDebug(omChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
@@ -158,4 +167,5 @@ ObjectManager::createDrawCommand(const ObjectData &objectData, int counter)
 
   return command;
 }
+
 }  // namespace Graphics
