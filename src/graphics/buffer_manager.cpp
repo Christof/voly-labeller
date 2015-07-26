@@ -95,20 +95,22 @@ BufferInformation BufferManager::addObject(const std::vector<float> &vertices,
   const uint vertexCount = vertices.size() / positionBuffer.getComponentCount();
 
   BufferInformation bufferInformation;
-  bool reserve_success = vertexBufferManager.reserve(
+  bool verticesReserved = vertexBufferManager.reserve(
       vertexCount, bufferInformation.vertexBufferOffset);
-  if (reserve_success)
-  {
-    reserve_success = indexBufferManager.reserve(
-        indices.size(), bufferInformation.indexBufferOffset);
-    if (!reserve_success)
-    {
-      vertexBufferManager.release(bufferInformation.vertexBufferOffset);
-    }
-  }
+  if (!verticesReserved)
+    throw std::runtime_error(
+        "Failed to reserve vertices in buffers! vertex count: " +
+        std::to_string(vertexCount));
 
-  if (!reserve_success)
-    throw std::runtime_error("Failed to reserve space in buffers");
+  bool indicesReserved = indexBufferManager.reserve(
+      indices.size(), bufferInformation.indexBufferOffset);
+  if (!indicesReserved)
+  {
+    vertexBufferManager.release(bufferInformation.vertexBufferOffset);
+    throw std::runtime_error(
+        "Failed to reserve indices in buffers! index count: " +
+        std::to_string(indices.size()));
+  }
 
   // fill buffers
   positionBuffer.setData(vertices, bufferInformation.vertexBufferOffset);
