@@ -61,6 +61,8 @@ class ObjectManager
   void render();
 
   void renderImmediately(int objectId);
+  void renderLater(int objectId, Eigen::Matrix4f transform);
+  void renderLater(ObjectData object);
 
   bool setObjectTexture(int objectId, uint textureId);
   bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
@@ -80,6 +82,8 @@ class ObjectManager
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;
+
+  std::vector<ObjectData> objectsForFrame;
 
   void renderObjects(std::vector<ObjectData> objects);
   DrawElementsIndirectCommand createDrawCommand(const ObjectData &objectData,

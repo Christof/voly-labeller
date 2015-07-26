@@ -91,11 +91,9 @@ bool ObjectManager::setObjectTransform(int objectId,
 
 void ObjectManager::render()
 {
-  std::vector<ObjectData> objs;
-  for (auto &pair : objects)
-    objs.push_back(pair.second);
+  renderObjects(objectsForFrame);
 
-  renderObjects(objs);
+  objectsForFrame.clear();
 }
 
 void ObjectManager::renderImmediately(int objectId)
@@ -103,6 +101,19 @@ void ObjectManager::renderImmediately(int objectId)
   std::vector<ObjectData> objs = { objects[objectId] };
 
   renderObjects(objs);
+}
+
+void ObjectManager::renderLater(int objectId, Eigen::Matrix4f transform)
+{
+  auto object = objects[objectId];
+  object.transform = transform;
+
+  renderLater(object);
+}
+
+void ObjectManager::renderLater(ObjectData object)
+{
+  objectsForFrame.push_back(object);
 }
 
 void ObjectManager::renderObjects(std::vector<ObjectData> objects)
