@@ -28,13 +28,10 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
   {
     assert(count <= this->size());
 
-    GLsizeiptr lockStart = head;
+    if (head + count > this->size())
+      head = 0;
 
-    if (lockStart + count > this->size())
-    {
-      // wrap
-      lockStart = 0;
-    }
+    GLsizeiptr lockStart = head;
 
     this->waitForLockedRange(lockStart, count);
     return &this->contents()[lockStart];
@@ -43,7 +40,7 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
   void onUsageComplete(GLsizeiptr count)
   {
     this->lockRange(head, count);
-    head = (head + count) % this->size();
+    head += count;
   }
 
   void bindBufferRange(GLuint index, GLsizeiptr count)
