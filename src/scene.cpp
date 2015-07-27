@@ -36,7 +36,9 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
   textureManager = std::make_shared<Graphics::TextureManager>();
-  objectManager = std::make_shared<Graphics::ObjectManager>(textureManager);
+  shaderManager = std::make_shared<Graphics::ShaderManager>();
+  objectManager =
+      std::make_shared<Graphics::ObjectManager>(textureManager, shaderManager);
 }
 
 Scene::~Scene()

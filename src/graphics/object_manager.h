@@ -14,6 +14,7 @@ namespace Graphics
 
 class BufferManager;
 class TextureManager;
+class ShaderManager;
 class Gl;
 
 struct ObjectData
@@ -45,7 +46,8 @@ struct DrawElementsIndirectCommand
 class ObjectManager
 {
  public:
-  explicit ObjectManager(std::shared_ptr<TextureManager> textureManager);
+  explicit ObjectManager(std::shared_ptr<TextureManager> textureManager,
+      std::shared_ptr<ShaderManager> shaderManager);
   virtual ~ObjectManager();
 
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
@@ -75,6 +77,7 @@ class ObjectManager
 
   std::shared_ptr<BufferManager> bufferManager;
   std::shared_ptr<TextureManager> textureManager;
+  std::shared_ptr<ShaderManager> shaderManager;
 
   CircularBuffer<float[16]> transformBuffer;
   CircularBuffer<TextureAddress> textureAddressBuffer;

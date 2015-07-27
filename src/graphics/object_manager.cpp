@@ -12,9 +12,11 @@ namespace Graphics
 
 QLoggingCategory omChan("Graphics.ObjectManager");
 
-ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager)
+ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
+                             std::shared_ptr<ShaderManager> shaderManager)
   : bufferManager(std::make_shared<BufferManager>()),
-    textureManager(textureManager), transformBuffer(GL_SHADER_STORAGE_BUFFER),
+    textureManager(textureManager), shaderManager(shaderManager),
+    transformBuffer(GL_SHADER_STORAGE_BUFFER),
     textureAddressBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 
