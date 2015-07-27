@@ -12,9 +12,6 @@ namespace Graphics
 
 QLoggingCategory omChan("Graphics.ObjectManager");
 
-// TODO(SIR): remove
-ObjectManager *ObjectManager::instance = nullptr;
-
 ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager)
   : bufferManager(std::make_shared<BufferManager>()),
     textureManager(textureManager), transformBuffer(GL_SHADER_STORAGE_BUFFER),
@@ -22,8 +19,6 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager)
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 
 {
-  // TODO(SIR): remove
-  instance = this;
 }
 
 ObjectManager::~ObjectManager()

@@ -48,8 +48,6 @@ class ObjectManager
   explicit ObjectManager(std::shared_ptr<TextureManager> textureManager);
   virtual ~ObjectManager();
 
-  static ObjectManager *instance;
-
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
   int addObject(const std::vector<float> &vertices,
