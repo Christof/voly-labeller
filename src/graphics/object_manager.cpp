@@ -1,5 +1,8 @@
 #include "./object_manager.h"
 #include <QLoggingCategory>
+#include <vector>
+#include <map>
+#include <algorithm>
 #include "./gl.h"
 #include "./buffer_manager.h"
 #include "./texture_manager.h"

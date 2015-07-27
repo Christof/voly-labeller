@@ -25,8 +25,8 @@ class Node
   {
   }
 
-
-  void render(Graphics::Gl *gl, std::shared_ptr<Graphics::ObjectManager> objectManager,
+  void render(Graphics::Gl *gl,
+              std::shared_ptr<Graphics::ObjectManager> objectManager,
               RenderData renderData)
   {
     this->objectManager = objectManager;

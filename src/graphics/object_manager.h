@@ -2,9 +2,10 @@
 
 #define SRC_GRAPHICS_OBJECT_MANAGER_H_
 
+#include <Eigen/Core>
 #include <memory>
 #include <vector>
-#include <Eigen/Core>
+#include <map>
 #include "./circular_buffer.h"
 #include "./texture_address.h"
 

@@ -29,7 +29,8 @@ class Nodes : public QObject
   Q_OBJECT
  public:
   Nodes();
-  void render(Graphics::Gl *gl, std::shared_ptr<Graphics::ObjectManager> objectManager,
+  void render(Graphics::Gl *gl,
+              std::shared_ptr<Graphics::ObjectManager> objectManager,
               RenderData renderData);
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
