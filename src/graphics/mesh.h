@@ -57,7 +57,6 @@ class Mesh : public Renderable
   float shininess;
 
   int id;
-  std::shared_ptr<ObjectManager> objectManager;
 };
 
 }  // namespace Graphics

@@ -92,7 +92,6 @@ void Mesh::createObb()
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
     std::shared_ptr<ObjectManager> objectManager)
 {
-  this->objectManager = objectManager;
   std::vector<float> pos(positionData, positionData + vertexCount * 3);
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
   std::vector<float> tex(textureCoordinateData,
