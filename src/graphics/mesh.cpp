@@ -100,23 +100,6 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
   std::vector<float> col(vertexCount * 4, 0.8f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
   id = objectManager->addObject(pos, nor, col, tex, idx);
-
-  /*
-  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
-                             "index", 1, indexCount);
-  delete[] indexData;
-
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
-                             "vertexPosition", 3, vertexCount);
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
-                             "vertexNormal", 3, vertexCount);
-  delete[] normalData;
-
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
-                             textureCoordinateData, "vertexTextureCoordinate",
-                             2, vertexCount);
-  delete[] textureCoordinateData;
-  */
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
