@@ -43,6 +43,7 @@ class Connector : public Renderable
 
  private:
   std::vector<Eigen::Vector3f> points;
+  int objectId;
 };
 
 }  // namespace Graphics
