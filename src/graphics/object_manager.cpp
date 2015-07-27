@@ -93,7 +93,16 @@ bool ObjectManager::setObjectTransform(int objectId,
 
 void ObjectManager::render()
 {
-  renderObjects(objectsForFrame);
+  std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
+  for (auto &object : objectsForFrame)
+  {
+    objectsByPrimitiveType[object.primitiveType].push_back(object);
+  }
+
+  for (auto pair : objectsByPrimitiveType)
+  {
+    renderObjects(objectsByPrimitiveType[pair.first]);
+  }
 
   objectsForFrame.clear();
 }
