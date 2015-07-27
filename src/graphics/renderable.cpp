@@ -18,6 +18,7 @@ Renderable::~Renderable()
 
 void Renderable::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
 {
+  this->objectManager = objectManager;
   renderObject =
       std::make_shared<RenderObject>(gl, vertexShaderPath, fragmentShaderPath);
 

@@ -39,6 +39,7 @@ class Renderable
   virtual void draw(Gl *gl) = 0;
 
   std::shared_ptr<RenderObject> renderObject;
+  std::shared_ptr<ObjectManager> objectManager;
 
  private:
   std::string vertexShaderPath;
