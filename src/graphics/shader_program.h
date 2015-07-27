@@ -27,6 +27,9 @@ class ShaderProgram
                 std::string fragmentShaderPath);
   virtual ~ShaderProgram();
 
+  const std::string vertexShaderPath;
+  const std::string fragmentShaderPath;
+
   void bind();
   void release();
   void enableAndSetAttributes(std::string usage, int perVertexElements);
@@ -50,7 +53,6 @@ class ShaderProgram
   Gl *gl;
   QOpenGLShaderProgram shaderProgram;
   std::map<std::string, int> locationCache;
-  std::string shaderName;
 
   inline int getLocation(const char *name);
 };
