@@ -60,11 +60,10 @@ void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
 
 void Quad::draw(Gl *gl)
 {
-  glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
+  // glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
 }
 
-void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData,
-                               std::shared_ptr<ObjectManager> objectManager)
+void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
 {
   if (!renderObject.get())
     initialize(gl, objectManager);

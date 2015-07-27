@@ -26,8 +26,7 @@ class Quad : public Graphics::Renderable
   /**
    * Renders the quad to the currently bound frame buffer and not to an HABuffer
    */
-  void renderToFrameBuffer(Gl *gl, const RenderData &renderData,
-      std::shared_ptr<ObjectManager> objectManager);
+  void renderToFrameBuffer(Gl *gl, const RenderData &renderData);
 
   bool skipSettingUniforms = false;
 

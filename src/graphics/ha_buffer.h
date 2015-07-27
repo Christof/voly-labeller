@@ -81,7 +81,6 @@ class HABuffer
   Eigen::Vector2i size;
   Gl *gl;
   std::shared_ptr<Quad> quad;
-  std::shared_ptr<ObjectManager> objectManager;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
 

@@ -59,6 +59,7 @@ void Scene::initialize()
 
   objectManager->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, objectManager);
+  quad->initialize(gl, objectManager);
 
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                                    1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
@@ -159,7 +160,7 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->renderToFrameBuffer(gl, renderData, objectManager);
+  quad->renderToFrameBuffer(gl, renderData);
 }
 
 void Scene::resize(int width, int height)
