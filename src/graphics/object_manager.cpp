@@ -43,7 +43,8 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
                              const std::vector<float> &normals,
                              const std::vector<float> &colors,
                              const std::vector<float> &texCoords,
-                             const std::vector<uint> &indices)
+                             const std::vector<uint> &indices,
+                             int primitiveType)
 {
   auto bufferInformation =
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
@@ -55,6 +56,7 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
   object.indexSize = indices.size();
   object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
   object.transform = Eigen::Matrix4f::Identity();
+  object.primitiveType = primitiveType;
 
   int objectId = objectCount++;
 
@@ -158,9 +160,9 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   qCDebug(omChan, "head: %ld headoffset %p objectcount: %un",
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
-  glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
-                                           commandsBuffer.headOffset(),
-                                           objectCount, 0));
+  glAssert(gl->glMultiDrawElementsIndirect(
+      objects[0].primitiveType, GL_UNSIGNED_INT, commandsBuffer.headOffset(),
+      objectCount, 0));
 
   bufferManager->unbind();
 

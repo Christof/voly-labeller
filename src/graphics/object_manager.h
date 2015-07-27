@@ -19,6 +19,7 @@ class Gl;
 
 struct ObjectData
 {
+  int primitiveType;
   int vertexOffset;
   int indexOffset;
   int vertexSize;
@@ -56,7 +57,8 @@ class ObjectManager
                 const std::vector<float> &normals,
                 const std::vector<float> &colors,
                 const std::vector<float> &texCoords,
-                const std::vector<uint> &indices);
+                const std::vector<uint> &indices,
+                int primitiveType = GL_TRIANGLES);
   bool removeObject(int objID);
 
   void render();
