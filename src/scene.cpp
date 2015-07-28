@@ -56,6 +56,7 @@ void Scene::initialize()
   fbo->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
+  shaderManager->initialize(gl, haBuffer);
 
   objectManager->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, objectManager);

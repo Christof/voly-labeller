@@ -2,13 +2,15 @@
 #include <vector>
 #include "./shader_program.h"
 #include "./gl.h"
+#include "./ha_buffer.h"
 
 namespace Graphics
 {
 
-void ShaderManager::initialize(Gl *gl)
+void ShaderManager::initialize(Gl *gl, std::shared_ptr<HABuffer> haBuffer)
 {
   this->gl = gl;
+  this->haBuffer = haBuffer;
 }
 
 int ShaderManager::addShader(std::string vertexShaderPath,
