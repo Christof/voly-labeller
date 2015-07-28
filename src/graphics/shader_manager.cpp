@@ -34,9 +34,11 @@ int ShaderManager::addShader(std::string vertexShaderPath,
   return index;
 }
 
-std::shared_ptr<ShaderProgram> ShaderManager::get(int id)
+void ShaderManager::bind(int id)
 {
-  return shaderPrograms[id];
+  auto shader = shaderPrograms[id];
+  shader->bind();
+  haBuffer->begin(shader);
 }
 
 }  // namespace Graphics
