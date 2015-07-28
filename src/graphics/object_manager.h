@@ -48,7 +48,7 @@ class ObjectManager
 {
  public:
   explicit ObjectManager(std::shared_ptr<TextureManager> textureManager,
-      std::shared_ptr<ShaderManager> shaderManager);
+                         std::shared_ptr<ShaderManager> shaderManager);
   virtual ~ObjectManager();
 
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
@@ -59,6 +59,7 @@ class ObjectManager
                 const std::vector<float> &texCoords,
                 const std::vector<uint> &indices,
                 int primitiveType = GL_TRIANGLES);
+  int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   bool removeObject(int objID);
 
   void render();

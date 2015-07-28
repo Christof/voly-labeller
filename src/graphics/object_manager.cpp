@@ -6,6 +6,7 @@
 #include "./gl.h"
 #include "./buffer_manager.h"
 #include "./texture_manager.h"
+#include "./shader_manager.h"
 
 namespace Graphics
 {
@@ -63,6 +64,17 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
   objects.insert(std::make_pair(objectId, object));
 
   return objectId;
+}
+
+int ObjectManager::addShader(std::string vertexShaderPath,
+                             std::string fragmentShaderPath)
+{
+  auto id = shaderManager->addShader(vertexShaderPath, fragmentShaderPath);
+
+  qCDebug(omChan) << "Added" << vertexShaderPath.c_str() << "|"
+                  << fragmentShaderPath.c_str() << "which got id" << id;
+
+  return id;
 }
 
 bool ObjectManager::setObjectTexture(int objectId, uint textureId)
