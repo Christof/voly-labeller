@@ -23,9 +23,6 @@ void Renderable::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager
       std::make_shared<RenderObject>(gl, vertexShaderPath, fragmentShaderPath);
 
   createBuffers(renderObject, objectManager);
-
-  renderObject->release();
-  renderObject->releaseBuffers();
 }
 
 void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
