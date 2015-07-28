@@ -45,7 +45,7 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
                              const std::vector<float> &colors,
                              const std::vector<float> &texCoords,
                              const std::vector<uint> &indices,
-                             int primitiveType)
+                             int shaderProgramId, int primitiveType)
 {
   auto bufferInformation =
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
@@ -57,6 +57,7 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
   object.indexSize = indices.size();
   object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
   object.transform = Eigen::Matrix4f::Identity();
+  object.shaderProgramId = shaderProgramId;
   object.primitiveType = primitiveType;
 
   int objectId = objectCount++;
@@ -105,15 +106,29 @@ bool ObjectManager::setObjectTransform(int objectId,
 
 void ObjectManager::render()
 {
-  std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
+  std::map<int, std::vector<ObjectData>> objectsByShader;
   for (auto &object : objectsForFrame)
   {
-    objectsByPrimitiveType[object.primitiveType].push_back(object);
+    objectsByShader[object.shaderProgramId].push_back(object);
   }
 
-  for (auto pair : objectsByPrimitiveType)
+  for (auto &shaderObjectPair : objectsByShader)
   {
-    renderObjects(objectsByPrimitiveType[pair.first]);
+    qCDebug(omChan) << "Render objects with shader" << shaderObjectPair.first
+                    << "with" << shaderObjectPair.second.size() << "objects";
+
+    shaderManager->bind(shaderObjectPair.first);
+
+    std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
+    for (auto &object : shaderObjectPair.second)
+    {
+      objectsByPrimitiveType[object.primitiveType].push_back(object);
+    }
+
+    for (auto pair : objectsByPrimitiveType)
+    {
+      renderObjects(objectsByPrimitiveType[pair.first]);
+    }
   }
 
   objectsForFrame.clear();

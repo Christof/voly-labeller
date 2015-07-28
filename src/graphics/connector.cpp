@@ -44,8 +44,10 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
     indices.push_back(i);
   }
 
-  objectId = objectManager->addObject(positions, normals, colors, texCoords, indices,
-      GL_LINES);
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+  objectId = objectManager->addObject(positions, normals, colors, texCoords,
+                                      indices, shaderProgramId, GL_LINES);
 }
 
 void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
@@ -64,7 +66,7 @@ void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
 void Connector::draw(Gl *gl)
 {
   // gl->glLineWidth(lineWidth);
-  //glAssert(gl->glDrawArrays(GL_LINES, 0, points.size()));
+  // glAssert(gl->glDrawArrays(GL_LINES, 0, points.size()));
 }
 
 }  // namespace Graphics

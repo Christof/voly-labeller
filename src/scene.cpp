@@ -73,8 +73,11 @@ void Scene::initialize()
   std::vector<float> texCoords = { 1.0f, 0.0f, 0.0f, 0.0f,
                                    1.0f, 1.0f, 0.0f, 1.0f };
   std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
-  objectId =
-      objectManager->addObject(positions, normals, colors, texCoords, indices);
+
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+  objectId = objectManager->addObject(positions, normals, colors, texCoords,
+                                      indices, shaderProgramId);
   shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
                                                      ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
@@ -137,9 +140,10 @@ void Scene::render()
   shader->setUniform("modelViewProjectionMatrix", mvp);
   // shader->setUniform("modelMatrix", renderData.modelMatrix);
   haBuffer->begin(shader);
+  objectManager->renderImmediately(objectId);
+  shader->release();
 
   objectManager->render();
-  shader->release();
 
   haBuffer->render();
 

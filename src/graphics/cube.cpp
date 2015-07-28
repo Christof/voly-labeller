@@ -62,8 +62,10 @@ void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
                                 4, 5, 7, 4, 7, 6, 6, 7, 1, 6, 1, 0,
                                 0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
 
-  objectId =
-      objectManager->addObject(positions, normals, colors, texCoords, indices);
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+  objectId = objectManager->addObject(positions, normals, colors, texCoords,
+                                      indices, shaderProgramId);
 }
 
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,

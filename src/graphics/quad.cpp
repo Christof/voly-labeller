@@ -39,9 +39,12 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
   };
   std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
 
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+
   if (objectId < 0)
     objectId = objectManager->addObject(positions, normals, colors, texcoords,
-                                        indices);
+                                        indices, shaderProgramId);
 }
 
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,

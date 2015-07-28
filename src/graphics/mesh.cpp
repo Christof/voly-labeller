@@ -90,7 +90,7 @@ void Mesh::createObb()
 }
 
 void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
-    std::shared_ptr<ObjectManager> objectManager)
+                         std::shared_ptr<ObjectManager> objectManager)
 {
   std::vector<float> pos(positionData, positionData + vertexCount * 3);
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
@@ -98,7 +98,10 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
                          textureCoordinateData + vertexCount * 2);
   std::vector<float> col(vertexCount * 4, 0.8f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
-  id = objectManager->addObject(pos, nor, col, tex, idx);
+
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+  id = objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
