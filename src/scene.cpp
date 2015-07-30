@@ -62,29 +62,7 @@ void Scene::initialize()
   haBuffer->initialize(gl, objectManager);
   quad->initialize(gl, objectManager);
 
-  std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
-                                   1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
-  std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
-  std::vector<float> colors = {
-    1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
-    0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
-  };
-  std::vector<float> texCoords = { 1.0f, 0.0f, 0.0f, 0.0f,
-                                   1.0f, 1.0f, 0.0f, 1.0f };
-  std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
-
-  int shaderProgramId =
-      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
-  objectId = objectManager->addObject(positions, normals, colors, texCoords,
-                                      indices, shaderProgramId);
-  shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
-                                                     ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
-  auto textureId = textureManager->addTexture(absolutePathOfProjectRelativePath(
-      std::string("assets/tiger/tiger-atlas.jpg")));
-
-  objectManager->setObjectTexture(objectId, textureId);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -134,14 +112,6 @@ void Scene::render()
   haBuffer->clearAndPrepare();
 
   nodes->render(gl, objectManager, renderData);
-
-  shader->bind();
-  Eigen::Matrix4f mvp = renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("modelViewProjectionMatrix", mvp);
-  // shader->setUniform("modelMatrix", renderData.modelMatrix);
-  haBuffer->begin(shader);
-  objectManager->renderImmediately(objectId);
-  shader->release();
 
   objectManager->render(renderData);
 
