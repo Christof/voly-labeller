@@ -104,7 +104,7 @@ bool ObjectManager::setObjectTransform(int objectId,
   return true;
 }
 
-void ObjectManager::render()
+void ObjectManager::render(const RenderData &renderData)
 {
   std::map<int, std::vector<ObjectData>> objectsByShader;
   for (auto &object : objectsForFrame)
@@ -117,7 +117,7 @@ void ObjectManager::render()
     qCDebug(omChan) << "Render objects with shader" << shaderObjectPair.first
                     << "with" << shaderObjectPair.second.size() << "objects";
 
-    shaderManager->bind(shaderObjectPair.first);
+    shaderManager->bind(shaderObjectPair.first, renderData);
 
     std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
     for (auto &object : shaderObjectPair.second)

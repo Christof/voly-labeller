@@ -34,11 +34,15 @@ int ShaderManager::addShader(std::string vertexShaderPath,
   return index;
 }
 
-void ShaderManager::bind(int id)
+void ShaderManager::bind(int id, const RenderData &renderData)
 {
   auto shader = shaderPrograms[id];
   shader->bind();
   haBuffer->begin(shader);
+
+  Eigen::Matrix4f viewProjectionMatrix =
+      renderData.projectionMatrix * renderData.viewMatrix;
+  shader->setUniform("modelViewProjectionMatrix", viewProjectionMatrix);
 }
 
 }  // namespace Graphics

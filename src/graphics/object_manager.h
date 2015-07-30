@@ -8,6 +8,7 @@
 #include <map>
 #include "./circular_buffer.h"
 #include "./texture_address.h"
+#include "./render_data.h"
 
 namespace Graphics
 {
@@ -64,7 +65,7 @@ class ObjectManager
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   bool removeObject(int objID);
 
-  void render();
+  void render(const RenderData &renderData);
 
   void renderImmediately(int objectId);
   void renderLater(int objectId, Eigen::Matrix4f transform);

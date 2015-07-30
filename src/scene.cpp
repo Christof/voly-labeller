@@ -143,7 +143,7 @@ void Scene::render()
   objectManager->renderImmediately(objectId);
   shader->release();
 
-  objectManager->render();
+  objectManager->render(renderData);
 
   haBuffer->render();
 
