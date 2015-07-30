@@ -12,6 +12,7 @@ out vec4 outColor;
 out vec3 outNormal;
 out vec4 outPosition;
 out vec2 outTextureCoordinate;
+out int outDrawId;
 
 layout(std140, binding = 0) buffer CB0
 {
@@ -32,4 +33,5 @@ void main()
   gl_Position = outPosition;
   outNormal = mul(modelMatrix, normal).xyz;
   outTextureCoordinate = texCoord;
+  outDrawId = drawId;
 }
