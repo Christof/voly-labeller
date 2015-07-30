@@ -1,9 +1,10 @@
-#version 330
+#version 440
 
-in vec3 vertexPosition;
-in vec4 vertexColor;
-in vec3 vertexNormal;
-in vec2 vertexTextureCoordinate;
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec4 color;
+layout(location = 3) in vec2 texCoord;
+layout(location = 4) in int drawId;
 
 uniform mat4 modelViewProjectionMatrix;
 
@@ -26,9 +27,9 @@ void main()
 {
   mat4 modelMatrix = Transforms[drawId];
 
-  outColor = vertexColor;
-  outPosition = modelViewProjectionMatrix * modelMatrix * vec4(vertexPosition, 1.0f);
+  outColor = color;
+  outPosition = modelViewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
-  outNormal = mul(modelMatrix, vertexNormal).xyz;
-  outTextureCoordinate = vertexTextureCoordinate;
+  outNormal = mul(modelMatrix, normal).xyz;
+  outTextureCoordinate = texCoord;
 }

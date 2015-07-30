@@ -100,7 +100,7 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId =
-      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      objectManager->addShader(":/shader/phong.vert", ":/shader/phong.frag");
   id = objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 }
 
