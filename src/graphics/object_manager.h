@@ -71,7 +71,6 @@ class ObjectManager
   void renderLater(ObjectData object);
 
   bool setObjectTexture(int objectId, uint textureId);
-  bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
 
  private:
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;

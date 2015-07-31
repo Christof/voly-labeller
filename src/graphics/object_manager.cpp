@@ -91,19 +91,6 @@ bool ObjectManager::setObjectTexture(int objectId, uint textureId)
   return true;
 }
 
-bool ObjectManager::setObjectTransform(int objectId,
-                                       const Eigen::Matrix4f &transform)
-{
-  /*
-  if (objects.count(objectId) == 0)
-    return false;
-
-  objects[objectId].transform = transform;
-  */
-
-  return true;
-}
-
 void ObjectManager::render(const RenderData &renderData)
 {
   std::map<int, std::vector<ObjectData>> objectsByShader;
