@@ -4,12 +4,11 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
-#include "./object_manager.h"
 
 namespace Graphics
 {
 
-int Quad::objectId = -1;
+ObjectData Quad::objectData;
 
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
   : Renderable(vertexShaderFilename, fragmentShaderFilename)
@@ -42,9 +41,9 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
 
-  if (objectId < 0)
-    objectId = objectManager->addObject(positions, normals, colors, texcoords,
-                                        indices, shaderProgramId);
+  if (objectData.vertexSize <= 0)
+    objectData = objectManager->addObject(positions, normals, colors, texcoords,
+                                          indices, shaderProgramId);
 }
 
 void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
@@ -73,7 +72,7 @@ void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
 
   setUniforms(renderObject->shaderProgram, renderData);
 
-  objectManager->renderImmediately(objectId);
+  objectManager->renderImmediately(objectData);
 }
 
 }  // namespace Graphics

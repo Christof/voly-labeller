@@ -6,6 +6,7 @@
 #include <string>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -39,7 +40,7 @@ class Quad : public Graphics::Renderable
 
  private:
   static const int indexCount = 6;
-  static int objectId;
+  static ObjectData objectData;
 };
 
 }  // namespace Graphics

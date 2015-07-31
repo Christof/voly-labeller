@@ -6,6 +6,7 @@
 #include <vector>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -43,7 +44,7 @@ class Connector : public Renderable
 
  private:
   std::vector<Eigen::Vector3f> points;
-  int objectId;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

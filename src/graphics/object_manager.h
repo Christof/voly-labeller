@@ -56,7 +56,7 @@ class ObjectManager
 
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
-  int addObject(const std::vector<float> &vertices,
+  ObjectData addObject(const std::vector<float> &vertices,
                 const std::vector<float> &normals,
                 const std::vector<float> &colors,
                 const std::vector<float> &texCoords,
@@ -67,8 +67,7 @@ class ObjectManager
 
   void render(const RenderData &renderData);
 
-  void renderImmediately(int objectId);
-  void renderLater(int objectId, Eigen::Matrix4f transform);
+  void renderImmediately(ObjectData objectData);
   void renderLater(ObjectData object);
 
   bool setObjectTexture(int objectId, uint textureId);
@@ -79,7 +78,6 @@ class ObjectManager
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 
   int objectCount = 0;
-  std::map<int, ObjectData> objects;
 
   std::shared_ptr<BufferManager> bufferManager;
   std::shared_ptr<TextureManager> textureManager;

@@ -7,6 +7,7 @@
 #include <string>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -30,8 +31,7 @@ class Cube : public Renderable
  private:
   std::vector<Eigen::Vector3f> points;
   static const int indexCount = 36;
-  int objectId = -1;
-  std::shared_ptr<ObjectManager> objectManager;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

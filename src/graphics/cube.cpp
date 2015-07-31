@@ -4,7 +4,6 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
-#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -17,8 +16,6 @@ Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
 void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
                          std::shared_ptr<ObjectManager> objectManager)
 {
-  this->objectManager = objectManager;
-
   Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
   Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
   Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
@@ -64,14 +61,15 @@ void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
 
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
-  objectId = objectManager->addObject(positions, normals, colors, texCoords,
-                                      indices, shaderProgramId);
+  objectData = objectManager->addObject(positions, normals, colors, texCoords,
+                                        indices, shaderProgramId);
 }
 
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                        const RenderData &renderData)
 {
-  objectManager->renderLater(objectId, renderData.modelMatrix);
+  objectData.transform = renderData.modelMatrix;
+  objectManager->renderLater(objectData);
   /*
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix *

@@ -4,7 +4,6 @@
 #include "./gl.h"
 #include "./render_object.h"
 #include "./shader_program.h"
-#include "./object_manager.h"
 #include <iostream>
 
 namespace Graphics
@@ -101,7 +100,7 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
 
   int shaderProgramId =
       objectManager->addShader(":/shader/phong.vert", ":/shader/phong.frag");
-  id = objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
+  objectData = objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -133,7 +132,8 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
 void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
                        const RenderData &renderData)
 {
-  objectManager->renderLater(id, renderData.modelMatrix);
+  objectData.transform = renderData.modelMatrix;
+  objectManager->renderLater(objectData);
   /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *

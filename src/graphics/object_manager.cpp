@@ -40,12 +40,12 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
                                   MAP_FLAGS);
 }
 
-int ObjectManager::addObject(const std::vector<float> &vertices,
-                             const std::vector<float> &normals,
-                             const std::vector<float> &colors,
-                             const std::vector<float> &texCoords,
-                             const std::vector<uint> &indices,
-                             int shaderProgramId, int primitiveType)
+ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
+                                    const std::vector<float> &normals,
+                                    const std::vector<float> &colors,
+                                    const std::vector<float> &texCoords,
+                                    const std::vector<uint> &indices,
+                                    int shaderProgramId, int primitiveType)
 {
   auto bufferInformation =
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
@@ -60,11 +60,7 @@ int ObjectManager::addObject(const std::vector<float> &vertices,
   object.shaderProgramId = shaderProgramId;
   object.primitiveType = primitiveType;
 
-  int objectId = objectCount++;
-
-  objects.insert(std::make_pair(objectId, object));
-
-  return objectId;
+  return object;
 }
 
 int ObjectManager::addShader(std::string vertexShaderPath,
@@ -80,6 +76,7 @@ int ObjectManager::addShader(std::string vertexShaderPath,
 
 bool ObjectManager::setObjectTexture(int objectId, uint textureId)
 {
+  /*
   if (!objects.count(objectId))
     return false;
 
@@ -89,6 +86,7 @@ bool ObjectManager::setObjectTexture(int objectId, uint textureId)
       "VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
       objectId, objects[objectId].textureAddress.containerHandle,
       objects[objectId].textureAddress.texPage);
+      */
 
   return true;
 }
@@ -96,10 +94,12 @@ bool ObjectManager::setObjectTexture(int objectId, uint textureId)
 bool ObjectManager::setObjectTransform(int objectId,
                                        const Eigen::Matrix4f &transform)
 {
+  /*
   if (objects.count(objectId) == 0)
     return false;
 
   objects[objectId].transform = transform;
+  */
 
   return true;
 }
@@ -134,19 +134,11 @@ void ObjectManager::render(const RenderData &renderData)
   objectsForFrame.clear();
 }
 
-void ObjectManager::renderImmediately(int objectId)
+void ObjectManager::renderImmediately(ObjectData objectData)
 {
-  std::vector<ObjectData> objs = { objects[objectId] };
+  std::vector<ObjectData> objs = { objectData };
 
   renderObjects(objs);
-}
-
-void ObjectManager::renderLater(int objectId, Eigen::Matrix4f transform)
-{
-  auto object = objects[objectId];
-  object.transform = transform;
-
-  renderLater(object);
 }
 
 void ObjectManager::renderLater(ObjectData object)

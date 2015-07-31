@@ -13,6 +13,7 @@
 #include "./render_data.h"
 #include "../math/obb.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -56,7 +57,7 @@ class Mesh : public Renderable
   Eigen::Vector4f specularColor;
   float shininess;
 
-  int id;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

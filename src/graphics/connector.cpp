@@ -3,7 +3,6 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
-#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -46,7 +45,7 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
 
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
-  objectId = objectManager->addObject(positions, normals, colors, texCoords,
+  objectData = objectManager->addObject(positions, normals, colors, texCoords,
                                       indices, shaderProgramId, GL_LINES);
 }
 
@@ -60,7 +59,9 @@ void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
   shaderProgram->setUniform("color", color);
   shaderProgram->setUniform("zOffset", zOffset);
 
-  objectManager->renderLater(objectId, renderData.modelMatrix);
+  objectData.transform = renderData.modelMatrix;
+
+  objectManager->renderLater(objectData);
 }
 
 void Connector::draw(Gl *gl)
