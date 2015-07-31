@@ -28,7 +28,7 @@ struct ObjectData
 
   int shaderProgramId;
 
-  TextureAddress textureAddress;
+  int textureId;
 
   Eigen::Matrix4f transform;
 };
@@ -63,14 +63,13 @@ class ObjectManager
                 const std::vector<uint> &indices, int shaderProgramId,
                 int primitiveType = GL_TRIANGLES);
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
+  int addTexture(std::string path);
   bool removeObject(int objID);
 
   void render(const RenderData &renderData);
 
   void renderImmediately(ObjectData objectData);
   void renderLater(ObjectData object);
-
-  bool setObjectTexture(int objectId, uint textureId);
 
  private:
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;

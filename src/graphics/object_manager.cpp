@@ -55,7 +55,7 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
   object.vertexSize = bufferInformation.vertexCount;
   object.indexOffset = bufferInformation.indexBufferOffset;
   object.indexSize = indices.size();
-  object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
+  object.textureId = -1;
   object.transform = Eigen::Matrix4f::Identity();
   object.shaderProgramId = shaderProgramId;
   object.primitiveType = primitiveType;
@@ -74,21 +74,9 @@ int ObjectManager::addShader(std::string vertexShaderPath,
   return id;
 }
 
-bool ObjectManager::setObjectTexture(int objectId, uint textureId)
+int ObjectManager::addTexture(std::string path)
 {
-  /*
-  if (!objects.count(objectId))
-    return false;
-
-  objects[objectId].textureAddress = textureManager->getAddressFor(textureId);
-  qCDebug(
-      omChan,
-      "VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
-      objectId, objects[objectId].textureAddress.containerHandle,
-      objects[objectId].textureAddress.texPage);
-      */
-
-  return true;
+  return textureManager->addTexture(path);
 }
 
 void ObjectManager::render(const RenderData &renderData)
@@ -152,7 +140,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
     TextureAddress *texaddr = &textures[counter];
-    *texaddr = objectData.textureAddress;
+    if (objectData.textureId > -1)
+      *texaddr = textureManager->getAddressFor(objectData.textureId);
 
     qCDebug(omChan, "counter: %d handle: %lu slice: %f", counter,
             texaddr->containerHandle, texaddr->texPage);
