@@ -34,19 +34,13 @@ FragmentData computeData()
 {
   FragmentData data;
   //data.color = Texture(texAddress[vertexDrawId], vertexTexCoord.xy);
+  //data.color = vec4(0, vertexTexCoord.x, vertexTexCoord.y, 0.5);
   data.color = vertexColor;
   // data.color = vec4(1, 0, 0, 1);
   data.pos = vertexPos;
 
   return data;
 }
-
-/*
-void main()
-{
-  color = vec4(1, 0, 0, 1);
-}
-*/
 
 #include "buildHABuffer.hglsl"
 

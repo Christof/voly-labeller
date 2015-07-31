@@ -4,6 +4,7 @@
 #include "./gl.h"
 #include "./render_object.h"
 #include "./shader_program.h"
+#include "../utils/path_helper.h"
 #include <iostream>
 
 namespace Graphics
@@ -53,7 +54,8 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
   textureCoordinateData = new float[mesh->mNumVertices * 2];
 
-  if (mesh->GetNumUVChannels() > 0)
+  hasTexture = mesh->GetNumUVChannels() > 0;
+  if (hasTexture)
   {
     for (int i = 0; i < vertexCount; ++i)
     {
@@ -99,8 +101,16 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId =
-      objectManager->addShader(":/shader/phong.vert", ":/shader/phong.frag");
-  objectData = objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
+      hasTexture
+          ? objectManager->addShader(":/shader/pass.vert", ":/shader/texture.frag")
+          : objectManager->addShader(":/shader/phong.vert",
+                                     ":/shader/phong.frag");
+  objectData =
+      objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
+
+  objectData.textureId =
+      objectManager->addTexture(absolutePathOfProjectRelativePath(
+          std::string("assets/tiger/tiger-atlas.jpg")));
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,

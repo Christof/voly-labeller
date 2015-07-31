@@ -58,6 +58,8 @@ class Mesh : public Renderable
   float shininess;
 
   ObjectData objectData;
+  int textureId;
+  bool hasTexture;
 };
 
 }  // namespace Graphics
