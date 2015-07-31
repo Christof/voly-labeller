@@ -100,17 +100,25 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
   std::vector<float> col(vertexCount * 4, 0.8f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
-  int shaderProgramId =
-      hasTexture
-          ? objectManager->addShader(":/shader/pass.vert", ":/shader/texture.frag")
-          : objectManager->addShader(":/shader/phong.vert",
-                                     ":/shader/phong.frag");
+  int shaderProgramId = hasTexture
+                            ? objectManager->addShader(":/shader/pass.vert",
+                                                       ":/shader/texture.frag")
+                            : objectManager->addShader(":/shader/phong.vert",
+                                                       ":/shader/phong.frag");
   objectData =
       objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 
-  objectData.textureId =
-      objectManager->addTexture(absolutePathOfProjectRelativePath(
-          std::string("assets/tiger/tiger-atlas.jpg")));
+  objectData.customBufferSize = sizeof(TextureAddress);
+  if (hasTexture)
+  {
+    int textureId = objectManager->addTexture(absolutePathOfProjectRelativePath(
+        std::string("assets/tiger/tiger-atlas.jpg")));
+    objectData.setBuffer = [objectManager, textureId](void *insertionPoint)
+    {
+      auto textureAddress = objectManager->getAddressFor(textureId);
+      std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
+    };
+  }
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,

@@ -6,6 +6,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <functional>
 #include "./circular_buffer.h"
 #include "./texture_address.h"
 #include "./render_data.h"
@@ -28,7 +29,8 @@ struct ObjectData
 
   int shaderProgramId;
 
-  int textureId;
+  int customBufferSize;
+  std::function<void(void*)> setBuffer;
 
   Eigen::Matrix4f transform;
 };
@@ -64,6 +66,7 @@ class ObjectManager
                 int primitiveType = GL_TRIANGLES);
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   int addTexture(std::string path);
+  TextureAddress getAddressFor(int textureId);
   bool removeObject(int objID);
 
   void render(const RenderData &renderData);
@@ -82,7 +85,7 @@ class ObjectManager
   std::shared_ptr<ShaderManager> shaderManager;
 
   CircularBuffer<float[16]> transformBuffer;
-  CircularBuffer<TextureAddress> textureAddressBuffer;
+  CircularBuffer<int> customBuffer;
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;

@@ -43,6 +43,7 @@ void ShaderManager::bind(int id, const RenderData &renderData)
   Eigen::Matrix4f viewProjectionMatrix =
       renderData.projectionMatrix * renderData.viewMatrix;
   shader->setUniform("modelViewProjectionMatrix", viewProjectionMatrix);
+  shader->setUniform("viewMatrix", renderData.viewMatrix);
 }
 
 }  // namespace Graphics

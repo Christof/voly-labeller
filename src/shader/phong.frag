@@ -7,9 +7,9 @@ in vec3 outNormal;
 in vec4 outPosition;
 in vec2 outTextureCoordinate;
 in flat int outDrawId;
+in vec3 cameraDirection;
 
 uniform vec3 lightPosition = vec3(2.0f, 10.0f, 0.0f);
-uniform vec3 cameraDirection;
 
 struct PhongMaterial
 {
