@@ -21,6 +21,14 @@ namespace Graphics
 class Gl;
 class ObjectManager;
 
+struct PhongMaterial
+{
+  Eigen::Vector4f ambientColor;
+  Eigen::Vector4f diffuseColor;
+  Eigen::Vector4f specularColor;
+  float shininess;
+};
+
 /**
  * \brief Encapsulates a single mesh including its material.
  *
@@ -52,10 +60,7 @@ class Mesh : public Renderable
   float *positionData;
   float *normalData;
   float *textureCoordinateData;
-  Eigen::Vector4f ambientColor;
-  Eigen::Vector4f diffuseColor;
-  Eigen::Vector4f specularColor;
-  float shininess;
+  PhongMaterial phongMaterial;
 
   ObjectData objectData;
   int textureId;

@@ -22,10 +22,13 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   }
   */
 
-  ambientColor = loadVector4FromMaterial("$clr.ambient", material);
-  diffuseColor = loadVector4FromMaterial("$clr.diffuse", material);
-  specularColor = loadVector4FromMaterial("$clr.specular", material);
-  shininess = loadFloatFromMaterial("$mat.shininess", material);
+  phongMaterial.ambientColor =
+      loadVector4FromMaterial("$clr.ambient", material);
+  phongMaterial.diffuseColor =
+      loadVector4FromMaterial("$clr.diffuse", material);
+  phongMaterial.specularColor =
+      loadVector4FromMaterial("$clr.specular", material);
+  phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
 
   /*
   std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
