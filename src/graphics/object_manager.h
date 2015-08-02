@@ -8,6 +8,7 @@
 #include <map>
 #include <functional>
 #include "./circular_buffer.h"
+#include "./shader_buffer.h"
 #include "./texture_address.h"
 #include "./render_data.h"
 
@@ -85,7 +86,7 @@ class ObjectManager
   std::shared_ptr<ShaderManager> shaderManager;
 
   CircularBuffer<float[16]> transformBuffer;
-  CircularBuffer<int> customBuffer;
+  ShaderBuffer customBuffer;
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;

@@ -36,7 +36,7 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  customBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  customBuffer.initialize(gl, 12 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
@@ -134,12 +134,14 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = objects.size();
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  int customBufferSize =
-      objects[0].customBufferSize * objectCount / sizeof(int);
+  int customBufferSize = objects[0].customBufferSize * objectCount;
 
-  int *custom = nullptr;
+  void *custom = nullptr;
   if (customBufferSize)
     custom = customBuffer.reserve(customBufferSize);
+
+  qCDebug(omChan) << "customBufferSize" << customBufferSize << "custom"
+                  << custom << "matrices" << matrices;
 
   int counter = 0;
   for (auto &objectData : objects)
@@ -150,7 +152,10 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
     if (objectData.setBuffer && customBufferSize)
-      objectData.setBuffer(&custom[counter]);
+    {
+      objectData.setBuffer(static_cast<char *>(custom) +
+                           counter * objectData.customBufferSize);
+    }
 
     ++counter;
   }
@@ -180,7 +185,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   commandsBuffer.onUsageComplete(mapRange);
   transformBuffer.onUsageComplete(mapRange);
   if (customBufferSize)
-    customBuffer.onUsageComplete(mapRange);
+    customBuffer.onUsageComplete(customBufferSize);
 }
 
 DrawElementsIndirectCommand
