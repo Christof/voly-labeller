@@ -164,10 +164,11 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   int mapRange = objectCount;
 
-  mapRange = std::min(128, ((mapRange / 4) + 1) * 4);
+  mapRange = std::max(128, ((mapRange / 4) + 1) * 4);
   transformBuffer.bindBufferRange(0, mapRange);
+  int customMapRange = ((customBufferSize / 16) + 1) * 16;
   if (customBufferSize)
-    customBuffer.bindBufferRange(1, customBufferSize);
+    customBuffer.bindBufferRange(1, customMapRange);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -185,7 +186,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   commandsBuffer.onUsageComplete(mapRange);
   transformBuffer.onUsageComplete(mapRange);
   if (customBufferSize)
-    customBuffer.onUsageComplete(customBufferSize);
+    customBuffer.onUsageComplete(customMapRange);
 }
 
 DrawElementsIndirectCommand
