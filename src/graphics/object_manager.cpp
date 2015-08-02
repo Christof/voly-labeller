@@ -134,8 +134,12 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = objects.size();
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  auto *custom = customBuffer.reserve(objects[0].customBufferSize *
-                                      objectCount / sizeof(int));
+  int customBufferSize =
+      objects[0].customBufferSize * objectCount / sizeof(int);
+
+  int *custom = nullptr;
+  if (customBufferSize)
+    custom = customBuffer.reserve(customBufferSize);
 
   int counter = 0;
   for (auto &objectData : objects)
@@ -145,7 +149,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     auto *transform = &matrices[counter];
     memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
-    if (objectData.setBuffer)
+    if (objectData.setBuffer && customBufferSize)
       objectData.setBuffer(&custom[counter]);
 
     ++counter;
@@ -157,7 +161,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   mapRange = std::min(128, ((mapRange / 4) + 1) * 4);
   transformBuffer.bindBufferRange(0, mapRange);
-  customBuffer.bindBufferRange(1, mapRange);
+  if (customBufferSize)
+    customBuffer.bindBufferRange(1, customBufferSize);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -174,7 +179,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   commandsBuffer.onUsageComplete(mapRange);
   transformBuffer.onUsageComplete(mapRange);
-  customBuffer.onUsageComplete(mapRange);
+  if (customBufferSize)
+    customBuffer.onUsageComplete(mapRange);
 }
 
 DrawElementsIndirectCommand
