@@ -108,18 +108,27 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
                                                        ":/shader/texture.frag")
                             : objectManager->addShader(":/shader/phong.vert",
                                                        ":/shader/phong.frag");
+
   objectData =
       objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 
-  objectData.customBufferSize = sizeof(TextureAddress);
   if (hasTexture)
   {
+    objectData.customBufferSize = sizeof(TextureAddress);
     int textureId = objectManager->addTexture(absolutePathOfProjectRelativePath(
         std::string("assets/tiger/tiger-atlas.jpg")));
     objectData.setBuffer = [objectManager, textureId](void *insertionPoint)
     {
       auto textureAddress = objectManager->getAddressFor(textureId);
       std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
+    };
+  }
+  else
+  {
+    objectData.customBufferSize = sizeof(PhongMaterial);
+    objectData.setBuffer = [objectManager, this](void *insertionPoint)
+    {
+      std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
     };
   }
 }
