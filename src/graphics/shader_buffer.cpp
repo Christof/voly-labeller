@@ -56,7 +56,8 @@ void ShaderBuffer::terminate()
 
 void *ShaderBuffer::reserve(GLsizeiptr count)
 {
-  qWarning() << "Reserve" << count << "bytes" << "head" << head;
+  qDebug() << "Reserve" << count << "bytes"
+           << "head" << head;
   assert(count <= this->size());
 
   if (head + count > this->size())
