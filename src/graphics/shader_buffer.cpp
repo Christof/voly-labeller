@@ -17,6 +17,9 @@ bool ShaderBuffer::initialize(Gl *gl, GLuint count, GLbitfield createFlags,
   this->lockManager.initialize(gl);
   this->head = 0;
 
+  gl->glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &offsetAlignment);
+  qDebug() << "Offset alignment" << offsetAlignment;
+
   if (bufferContent)
     terminate();
 
@@ -62,13 +65,16 @@ void *ShaderBuffer::reserve(GLsizeiptr count)
   GLsizeiptr lockStart = head;
 
   this->waitForLockedRange(lockStart, count);
-  return static_cast<char*>(bufferContent) + head;
+  return static_cast<char *>(bufferContent) + head;
 }
 
 void ShaderBuffer::onUsageComplete(GLsizeiptr count)
 {
-  this->lockRange(head, count);
-  head += count;
+  int alignedCount =
+      std::ceil(count / static_cast<float>(offsetAlignment)) * offsetAlignment;
+
+  this->lockRange(head, alignedCount);
+  head += alignedCount;
 }
 
 void ShaderBuffer::bindBufferRange(GLuint index, GLsizeiptr count)

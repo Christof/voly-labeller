@@ -48,6 +48,7 @@ class ShaderBuffer
   GLuint id = 0;
   GLenum target;
   GLsizeiptr head;
+  int offsetAlignment;
 };
 
 }  // namespace Graphics
