@@ -16,7 +16,7 @@ struct Tex2DAddress
   vec2 texScale;
 };
 
-layout(std430, binding = 1) buffer CB1
+layout(std140, binding = 1) buffer CB1
 {
   Tex2DAddress texAddress[];
 };
