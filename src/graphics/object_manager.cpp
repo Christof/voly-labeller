@@ -162,9 +162,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   qCDebug(omChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
 
-  int mapRange = objectCount;
-
-  mapRange = std::max(128, ((mapRange / 4) + 1) * 4);
+  int mapRange = ((objectCount / 4) + 1) * 4;
   transformBuffer.bindBufferRange(0, mapRange);
   int customMapRange = ((customBufferSize / 16) + 1) * 16;
   if (customBufferSize)
