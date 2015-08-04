@@ -19,7 +19,7 @@ struct PhongMaterial
   float shininess;
 };
 
-layout(std430, binding = 1) buffer CB1
+layout(std140, binding = 1) buffer CB1
 {
   PhongMaterial phongMaterial[];
 };
