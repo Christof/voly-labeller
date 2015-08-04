@@ -79,8 +79,6 @@ class ObjectManager
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 
-  int objectCount = 0;
-
   std::shared_ptr<BufferManager> bufferManager;
   std::shared_ptr<TextureManager> textureManager;
   std::shared_ptr<ShaderManager> shaderManager;
