@@ -13,7 +13,8 @@ Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
 }
 
 Connector::Connector(std::vector<Eigen::Vector3f> points)
-  : Renderable(":shader/line.vert", ":shader/line.frag"), points(points)
+  : Renderable(":shader/line.vert", ":shader/line.frag"), color(1, 0, 0, 1),
+    points(points)
 {
 }
 
@@ -35,10 +36,10 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
     positions.push_back(points[i].y());
     positions.push_back(points[i].z());
 
-    colors.push_back(1);
-    colors.push_back(0);
-    colors.push_back(0);
-    colors.push_back(1);
+    colors.push_back(color.x());
+    colors.push_back(color.y());
+    colors.push_back(color.z());
+    colors.push_back(color.w());
 
     indices.push_back(i);
   }
@@ -46,18 +47,20 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
   objectData = objectManager->addObject(positions, normals, colors, texCoords,
-                                      indices, shaderProgramId, GL_LINES);
+                                        indices, shaderProgramId, GL_LINES);
 }
 
 void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                             const RenderData &renderData)
 {
+  /*
   Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
                                         renderData.viewMatrix *
                                         renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   shaderProgram->setUniform("color", color);
   shaderProgram->setUniform("zOffset", zOffset);
+  */
 
   objectData.transform = renderData.modelMatrix;
 
