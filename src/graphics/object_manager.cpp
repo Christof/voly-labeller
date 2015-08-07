@@ -169,7 +169,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     customBuffer.bindBufferRange(1, customMapRange);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
-  glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
+  // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
+  glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
 
   // draw
   qCDebug(omChan, "head: %ld headoffset %p objectcount: %un",
