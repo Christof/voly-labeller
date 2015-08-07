@@ -159,7 +159,6 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     ++counter;
   }
 
-  qCDebug(omChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
   transformBuffer.bindBufferRange(0, objectCount);
   if (customBufferSize)
     customBuffer.bindBufferRange(1, customBufferSize);
@@ -169,7 +168,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
 
   // draw
-  qCDebug(omChan, "head: %ld headoffset %p objectcount: %un",
+  qCDebug(omChan, "head: %ld headoffset %p objectcount: %u",
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
   glAssert(gl->glMultiDrawElementsIndirect(
