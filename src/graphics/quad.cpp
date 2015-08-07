@@ -41,7 +41,7 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
 
-  if (objectData.vertexSize <= 0)
+  if (!objectData.isInitialized())
     objectData = objectManager->addObject(positions, normals, colors, texcoords,
                                           indices, shaderProgramId);
 }
