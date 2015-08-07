@@ -50,7 +50,6 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
 
   ObjectData object;
   object.vertexOffset = bufferInformation.vertexBufferOffset;
-  object.vertexSize = bufferInformation.vertexCount;
   object.indexOffset = bufferInformation.indexBufferOffset;
   object.indexSize = indices.size();
   object.customBufferSize = 0;

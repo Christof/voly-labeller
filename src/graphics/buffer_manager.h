@@ -18,7 +18,6 @@ struct BufferInformation
 {
   uint vertexBufferOffset;
   uint indexBufferOffset;
-  uint vertexCount;
 };
 
 /**

@@ -32,7 +32,6 @@ struct ObjectData
   int primitiveType;
   int vertexOffset;
   int indexOffset;
-  int vertexSize;
   int indexSize;
 
   int shaderProgramId;
