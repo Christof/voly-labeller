@@ -9,7 +9,7 @@
 #include "./graphics/render_data.h"
 #include "./math/obb.h"
 #include "./graphics/gl.h"
-#include "./graphics/ha_buffer.h"
+#include "./graphics/object_manager.h"
 
 /**
  * \brief Base class for nodes which are managed by the
@@ -25,11 +25,11 @@ class Node
   {
   }
 
-
-  void render(Graphics::Gl *gl, std::shared_ptr<Graphics::HABuffer> haBuffer,
+  void render(Graphics::Gl *gl,
+              std::shared_ptr<Graphics::ObjectManager> objectManager,
               RenderData renderData)
   {
-    this->haBuffer = haBuffer;
+    this->objectManager = objectManager;
     render(gl, renderData);
   }
 
@@ -51,7 +51,7 @@ class Node
   virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
 
   bool persistable = true;
-  std::shared_ptr<Graphics::HABuffer> haBuffer;
+  std::shared_ptr<Graphics::ObjectManager> objectManager;
 
  private:
   friend class boost::serialization::access;

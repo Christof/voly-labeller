@@ -26,19 +26,21 @@ class Quad : public Graphics::Renderable
   /**
    * Renders the quad to the currently bound frame buffer and not to an HABuffer
    */
-  void renderToFrameBuffer(Gl *gl, const RenderData &renderData);
+  void renderToFrameBuffer(Gl *gl, const RenderData &renderData,
+      std::shared_ptr<ObjectManager> objectManager);
 
   bool skipSettingUniforms = false;
+
  protected:
-  virtual void
-  createBuffers(std::shared_ptr<Graphics::RenderObject> renderObject);
-  virtual void
-  setUniforms(std::shared_ptr<Graphics::ShaderProgram> shaderProgram,
-              const RenderData &renderData);
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
+                             std::shared_ptr<ObjectManager> objectManager);
+  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
+                           const RenderData &renderData);
   virtual void draw(Gl *gl);
 
  private:
   static const int indexCount = 6;
+  static int objectId;
 };
 
 }  // namespace Graphics

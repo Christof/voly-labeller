@@ -21,7 +21,8 @@ class Cube : public Renderable
   Cube(std::string vertexShaderPath, std::string fragmentShaderPath);
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
+                             std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
   virtual void draw(Gl *gl);
@@ -29,6 +30,8 @@ class Cube : public Renderable
  private:
   std::vector<Eigen::Vector3f> points;
   static const int indexCount = 36;
+  int objectId = -1;
+  std::shared_ptr<ObjectManager> objectManager;
 };
 
 }  // namespace Graphics

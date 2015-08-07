@@ -22,7 +22,7 @@ std::shared_ptr<Math::Obb> MeshNode::getObb()
 void MeshNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   renderData.modelMatrix = transformation;
-  mesh->render(gl, haBuffer, renderData);
+  mesh->render(gl, objectManager, renderData);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()

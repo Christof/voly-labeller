@@ -2,7 +2,7 @@
 
 #define SRC_GRAPHICS_GL_H_
 
-#include <QOpenGLFunctions_4_3_Core>
+#include <QOpenGLFunctions_4_5_Core>
 #include <QtOpenGLExtensions>
 #include <QSize>
 
@@ -48,13 +48,17 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glCheckError()
 #endif
 
+typedef void(QOPENGLF_APIENTRYP TexturePageCommitmentEXT)(
+    uint texture, int level, int xoffset, int yoffset, int zoffset,
+    GLsizei width, GLsizei height, GLsizei depth, bool commit);
+
 /**
  * \brief Provides access to OpenGL functions
  *
  * This is used instead of directly using the Qt type to make
  * changing the OpenGl version easy
  */
-class Gl : public QOpenGLFunctions_4_3_Core
+class Gl : public QOpenGLFunctions_4_5_Core
 {
  public:
   Gl();
@@ -68,11 +72,14 @@ class Gl : public QOpenGLFunctions_4_3_Core
   QSize size;
 
   QOpenGLExtension_NV_shader_buffer_load *getShaderBufferLoad() const;
-  QOpenGLExtension_EXT_direct_state_access *getDirectStateAccess() const;
+  QOpenGLExtension_NV_bindless_texture *getBindlessTexture() const;
+
+  TexturePageCommitmentEXT glTexturePageCommitmentEXT;
 
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
-  QOpenGLExtension_EXT_direct_state_access *directStateAccess;
+  QOpenGLExtension_NV_bindless_texture *bindlessTexture;
+  QFunctionPointer glTexturePageCommitmentEXTFunction;
 };
 
 }  // namespace Graphics

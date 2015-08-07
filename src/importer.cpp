@@ -16,6 +16,8 @@ Importer::~Importer()
 
 const aiScene *Importer::readScene(std::string filename)
 {
+  qDebug() << "readScene:" << filename.c_str();
+
   if (scenes.count(filename))
     return scenes[filename];
 

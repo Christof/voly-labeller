@@ -4,6 +4,7 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./render_object.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -13,8 +14,11 @@ Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
 {
 }
 
-void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject)
+void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
+                         std::shared_ptr<ObjectManager> objectManager)
 {
+  this->objectManager = objectManager;
+
   Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
   Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
   Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
@@ -30,39 +34,53 @@ void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject)
                                          backBottomRight,  backTopRight,
                                          backBottomLeft,   backTopLeft };
 
-  float *positions = new float[points.size() * 3];
+  std::vector<float> positions;
+  std::vector<float> normals;
+  std::vector<float> colors;
+  std::vector<float> texCoords;
   for (size_t i = 0; i < points.size(); ++i)
   {
-    positions[i * 3] = points[i].x();
-    positions[i * 3 + 1] = points[i].y();
-    positions[i * 3 + 2] = points[i].z();
+    positions.push_back(points[i].x());
+    positions.push_back(points[i].y());
+    positions.push_back(points[i].z());
+
+    Eigen::Vector3f normal = points[i].normalized();
+    normals.push_back(normal.x());
+    normals.push_back(normal.y());
+    normals.push_back(normal.z());
+
+    colors.push_back(0);
+    colors.push_back(0);
+    colors.push_back(0);
+    colors.push_back(1);
+
+    texCoords.push_back(0);
+    texCoords.push_back(0);
   }
 
-  int *indices = new int[indexCount]{ 0, 1, 3, 0, 3, 2, 2, 3, 5, 2, 5, 4,
-                                      4, 5, 7, 4, 7, 6, 6, 7, 1, 6, 1, 0,
-                                      0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
+  std::vector<uint> indices = { 0, 1, 3, 0, 3, 2, 2, 3, 5, 2, 5, 4,
+                                4, 5, 7, 4, 7, 6, 6, 7, 1, 6, 1, 0,
+                                0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
 
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positions,
-                             "position", 3, points.size());
-  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indices, "index",
-                             1, indexCount);
-
-  delete[] indices;
-  delete[] positions;
+  objectId =
+      objectManager->addObject(positions, normals, colors, texCoords, indices);
 }
 
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                        const RenderData &renderData)
 {
-  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
-                                        renderData.viewMatrix *
-                                        renderData.modelMatrix;
+  objectManager->renderLater(objectId, renderData.modelMatrix);
+  /*
+  Eigen::Matrix4f modelViewProjection =
+      renderData.projectionMatrix * renderData.viewMatrix *
+      renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  */
 }
 
 void Cube::draw(Gl *gl)
 {
-  glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
 }  // namespace Graphics

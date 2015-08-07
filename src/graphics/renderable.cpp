@@ -1,7 +1,7 @@
 #include "./renderable.h"
 #include <string>
 #include "./render_object.h"
-#include "./ha_buffer.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -16,31 +16,30 @@ Renderable::~Renderable()
 {
 }
 
-void Renderable::initialize(Gl *gl)
+void Renderable::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
 {
   renderObject =
       std::make_shared<RenderObject>(gl, vertexShaderPath, fragmentShaderPath);
 
-  createBuffers(renderObject);
+  createBuffers(renderObject, objectManager);
 
   renderObject->release();
   renderObject->releaseBuffers();
 }
 
-void Renderable::render(Gl *gl, std::shared_ptr<HABuffer> haBuffer,
+void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                         const RenderData &renderData)
 {
   if (!renderObject.get())
-    initialize(gl);
+    initialize(gl, objectManager);
 
-  renderObject->bind();
+  // renderObject->bind();
 
-  haBuffer->begin(renderObject->shaderProgram);
   setUniforms(renderObject->shaderProgram, renderData);
 
-  draw(gl);
+  // draw(gl);
 
-  renderObject->release();
+  // renderObject->release();
 }
 
 void Renderable::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)

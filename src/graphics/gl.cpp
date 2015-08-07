@@ -31,12 +31,17 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
 
-  bool hasDirectStateAccess =
-      context->hasExtension("GL_EXT_direct_state_access");
-  qWarning() << "Has GL_EXT_direct_state_access:" << hasDirectStateAccess;
-  directStateAccess = new QOpenGLExtension_EXT_direct_state_access();
-  directStateAccess->initializeOpenGLFunctions();
+  bool hasBindlessTexture = context->hasExtension("GL_NV_bindless_texture");
+  qWarning() << "Has GL_NV_bindless_texture:" << hasBindlessTexture;
+  bindlessTexture = new QOpenGLExtension_NV_bindless_texture();
+  bindlessTexture->initializeOpenGLFunctions();
   glCheckError();
+
+  qWarning() << "Has GL_ARB_sparse_texture:"
+             << context->hasExtension("GL_ARB_sparse_texture");
+
+  glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
+      context->getProcAddress("glTexturePageCommitmentEXT"));
 
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
@@ -54,9 +59,9 @@ QOpenGLExtension_NV_shader_buffer_load *Gl::getShaderBufferLoad() const
   return shaderBufferLoad;
 }
 
-QOpenGLExtension_EXT_direct_state_access *Gl::getDirectStateAccess() const
+QOpenGLExtension_NV_bindless_texture *Gl::getBindlessTexture() const
 {
-  return directStateAccess;
+  return bindlessTexture;
 }
 
 }  // namespace Graphics

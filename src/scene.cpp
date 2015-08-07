@@ -15,6 +15,7 @@
 #include "./forces/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
+#include "./utils/path_helper.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -34,6 +35,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
+  textureManager = std::make_shared<Graphics::TextureManager>();
+  objectManager = std::make_shared<Graphics::ObjectManager>(textureManager);
 }
 
 Scene::~Scene()
@@ -51,7 +54,30 @@ void Scene::initialize()
   fbo->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
-  haBuffer->initialize(gl);
+
+  objectManager->initialize(gl, 128, 10000000);
+  haBuffer->initialize(gl, objectManager);
+
+  std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
+                                   1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
+  std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+  std::vector<float> colors = {
+    1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
+    0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
+  };
+  std::vector<float> texCoords = { 1.0f, 0.0f, 0.0f, 0.0f,
+                                   1.0f, 1.0f, 0.0f, 1.0f };
+  std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
+  objectId =
+      objectManager->addObject(positions, normals, colors, texCoords, indices);
+  shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
+                                                     ":/shader/test.frag");
+  textureManager->initialize(gl, true, 8);
+  auto textureId = textureManager->addTexture(absolutePathOfProjectRelativePath(
+      std::string("assets/tiger/tiger-atlas.jpg")));
+
+  objectManager->setObjectTexture(objectId, textureId);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -100,7 +126,16 @@ void Scene::render()
 
   haBuffer->clearAndPrepare();
 
-  nodes->render(gl, haBuffer, renderData);
+  nodes->render(gl, objectManager, renderData);
+
+  shader->bind();
+  Eigen::Matrix4f mvp = renderData.projectionMatrix * renderData.viewMatrix;
+  shader->setUniform("modelViewProjectionMatrix", mvp);
+  // shader->setUniform("modelMatrix", renderData.modelMatrix);
+  haBuffer->begin(shader);
+
+  objectManager->render();
+  shader->release();
 
   haBuffer->render();
 
@@ -122,7 +157,7 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->renderToFrameBuffer(gl, renderData);
+  quad->renderToFrameBuffer(gl, renderData, objectManager);
 }
 
 void Scene::resize(int width, int height)

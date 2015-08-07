@@ -41,6 +41,6 @@ void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
   renderData.projectionMatrix = Eigen::Matrix4f::Identity();
   renderData.viewMatrix = Eigen::Matrix4f::Identity();
 
-  connector->render(gl, haBuffer, renderData);
+  connector->render(gl, objectManager, renderData);
 }
 

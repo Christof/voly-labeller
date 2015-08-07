@@ -18,6 +18,7 @@ namespace Graphics
 {
 
 class Gl;
+class ObjectManager;
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -33,7 +34,7 @@ class Mesh : public Renderable
   std::shared_ptr<Math::Obb> obb;
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject);
+  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject, std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
   virtual void draw(Gl *gl);
@@ -49,10 +50,14 @@ class Mesh : public Renderable
   unsigned int *indexData;
   float *positionData;
   float *normalData;
+  float *textureCoordinateData;
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
   float shininess;
+
+  int id;
+  std::shared_ptr<ObjectManager> objectManager;
 };
 
 }  // namespace Graphics

@@ -13,6 +13,7 @@ namespace Graphics
 {
 
 class ShaderProgram;
+class ObjectManager;
 class Quad;
 
 /**
@@ -60,7 +61,7 @@ class HABuffer
   explicit HABuffer(Eigen::Vector2i size);
   ~HABuffer();
 
-  void initialize(Gl *gl);
+  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
   void updateNearAndFarPlanes(float near, float far);
 
   void clearAndPrepare();
@@ -80,6 +81,7 @@ class HABuffer
   Eigen::Vector2i size;
   Gl *gl;
   std::shared_ptr<Quad> quad;
+  std::shared_ptr<ObjectManager> objectManager;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
 
@@ -87,7 +89,6 @@ class HABuffer
   unsigned int habufferTableSize = 0;
   uint habufferNumRecords = 0;
   uint habufferCountsSize = 0;
-  uint habufferLoopCount = 0;
 
   Buffer RecordsBuffer;
   Buffer CountsBuffer;
@@ -95,8 +96,6 @@ class HABuffer
 
   float zNear = 0.1f;
   float zFar = 5.0f;
-  float habufferOpacity = 0.5f;
-  float habufferLightPos[3] = { 0.0f, 0.0f, 0.0f };
   uint *offsets;
 
   int lastUsedProgram = 0;

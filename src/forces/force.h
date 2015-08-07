@@ -2,10 +2,10 @@
 
 #define SRC_FORCES_FORCE_H_
 
+#include <QLoggingCategory>
 #include <Eigen/Core>
 #include <vector>
 #include <string>
-#include <QLoggingCategory>
 #include "./labeller_frame_data.h"
 
 namespace Forces

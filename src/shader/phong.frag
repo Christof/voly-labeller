@@ -5,6 +5,7 @@
 in vec4 outColor;
 in vec3 outNormal;
 in vec4 outPosition;
+in vec2 outTextureCoordinate;
 
 uniform vec3 lightPosition = vec3(2.0f, 10.0f, 0.0f);
 uniform vec4 ambientColor = vec4(0.1, 0.4, 0.1f, 1.0f);
@@ -24,6 +25,7 @@ FragmentData computeData()
   vec3 specular = pow(max(dot(reflectionDir, -cameraDirection), 0.0), 0.3 * shininess) *
     specularColor.rgb;
   color.rgb += specular;
+  // color.rg = outTextureCoordinate;
   color.a = 0.5;
 
   FragmentData data;
