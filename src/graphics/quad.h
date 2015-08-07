@@ -36,7 +36,6 @@ class Quad : public Graphics::Renderable
                              std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
-  virtual void draw(Gl *gl);
 
  private:
   static const int indexCount = 6;

@@ -31,13 +31,7 @@ void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
   if (!renderObject.get())
     initialize(gl, objectManager);
 
-  // renderObject->bind();
-
   setUniforms(renderObject->shaderProgram, renderData);
-
-  // draw(gl);
-
-  // renderObject->release();
 }
 
 void Renderable::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)

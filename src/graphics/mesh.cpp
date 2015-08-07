@@ -181,10 +181,5 @@ void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
   */
 }
 
-void Mesh::draw(Gl *gl)
-{
-  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
-}
-
 }  // namespace Graphics
 

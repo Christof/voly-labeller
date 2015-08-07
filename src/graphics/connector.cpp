@@ -67,11 +67,5 @@ void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
   objectManager->renderLater(objectData);
 }
 
-void Connector::draw(Gl *gl)
-{
-  // gl->glLineWidth(lineWidth);
-  // glAssert(gl->glDrawArrays(GL_LINES, 0, points.size()));
-}
-
 }  // namespace Graphics
 

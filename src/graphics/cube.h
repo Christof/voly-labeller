@@ -26,7 +26,6 @@ class Cube : public Renderable
                              std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
-  virtual void draw(Gl *gl);
 
  private:
   std::vector<Eigen::Vector3f> points;

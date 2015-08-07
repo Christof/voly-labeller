@@ -36,7 +36,6 @@ class Renderable
                              std::shared_ptr<ObjectManager> objectManager) = 0;
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData) = 0;
-  virtual void draw(Gl *gl) = 0;
 
   std::shared_ptr<RenderObject> renderObject;
   std::shared_ptr<ObjectManager> objectManager;

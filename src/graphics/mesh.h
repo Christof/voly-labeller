@@ -46,7 +46,6 @@ class Mesh : public Renderable
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject, std::shared_ptr<ObjectManager> objectManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
-  virtual void draw(Gl *gl);
 
  private:
   void createObb();

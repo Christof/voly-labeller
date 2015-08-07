@@ -78,9 +78,4 @@ void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
   */
 }
 
-void Cube::draw(Gl *gl)
-{
-  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
-}
-
 }  // namespace Graphics

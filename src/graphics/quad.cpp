@@ -60,11 +60,6 @@ void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
   shader->setUniform("textureSampler", 0);
 }
 
-void Quad::draw(Gl *gl)
-{
-  // glAssert(gl->glDrawArrays(GL_TRIANGLE_STRIP, 0, 4));
-}
-
 void Quad::renderToFrameBuffer(Gl *gl, const RenderData &renderData)
 {
   if (!renderObject.get())
