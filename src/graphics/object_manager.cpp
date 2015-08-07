@@ -20,7 +20,6 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
     transformBuffer(GL_SHADER_STORAGE_BUFFER),
     customBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
-
 {
 }
 
@@ -161,12 +160,9 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   }
 
   qCDebug(omChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
-
-  int mapRange = ((objectCount / 4) + 1) * 4;
-  transformBuffer.bindBufferRange(0, mapRange);
-  int customMapRange = ((customBufferSize / 16) + 1) * 16;
+  transformBuffer.bindBufferRange(0, objectCount);
   if (customBufferSize)
-    customBuffer.bindBufferRange(1, customMapRange);
+    customBuffer.bindBufferRange(1, customBufferSize);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -182,10 +178,10 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   bufferManager->unbind();
 
-  commandsBuffer.onUsageComplete(mapRange);
-  transformBuffer.onUsageComplete(mapRange);
+  commandsBuffer.onUsageComplete(objectCount);
+  transformBuffer.onUsageComplete(objectCount);
   if (customBufferSize)
-    customBuffer.onUsageComplete(customMapRange);
+    customBuffer.onUsageComplete(customBufferSize);
 }
 
 DrawElementsIndirectCommand
