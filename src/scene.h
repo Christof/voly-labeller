@@ -9,7 +9,7 @@
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./labelling/labels.h"
-#include "./graphics/quad.h"
+#include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
 #include "./graphics/object_manager.h"
@@ -58,7 +58,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> labeller;
-  std::shared_ptr<Graphics::Quad> quad;
+  std::shared_ptr<Graphics::ScreenQuad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::ObjectManager> objectManager;

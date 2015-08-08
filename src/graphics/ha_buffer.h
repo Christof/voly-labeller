@@ -14,7 +14,7 @@ namespace Graphics
 
 class ShaderProgram;
 class ObjectManager;
-class Quad;
+class ScreenQuad;
 
 /**
  * \brief Coherent hashing A-Buffer to render transparent objects without
@@ -80,9 +80,10 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::shared_ptr<Quad> quad;
+  std::shared_ptr<ScreenQuad> quad;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
+  std::shared_ptr<ObjectManager> objectManager;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;

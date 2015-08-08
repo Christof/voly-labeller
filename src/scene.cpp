@@ -7,6 +7,7 @@
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"
+#include "./graphics/shader_program.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
 #include "./camera_zoom_controller.h"
@@ -50,8 +51,9 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Graphics::Quad>(":shader/pass.vert",
-                                          ":shader/textureForRenderBuffer.frag");
+  quad = std::make_shared<Graphics::ScreenQuad>();
+  quad->setShaderProgram(std::make_shared<Graphics::ShaderProgram>(
+      gl, ":shader/pass.vert", ":shader/textureForRenderBuffer.frag"));
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -136,7 +138,7 @@ void Scene::renderScreenQuad()
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
   quad->getShaderProgram()->bind();
-  quad->renderToFrameBuffer(gl, renderData);
+  quad->render(gl, objectManager, renderData);
 }
 
 void Scene::resize(int width, int height)

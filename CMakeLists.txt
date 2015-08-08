@@ -59,6 +59,7 @@ set(SOURCES
   src/graphics/render_object.cpp
   src/graphics/renderable.cpp
   src/graphics/quad.cpp
+  src/graphics/screen_quad.cpp
   src/graphics/connector.cpp
   src/graphics/cube.cpp
   src/graphics/mesh.cpp
