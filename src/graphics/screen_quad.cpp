@@ -11,9 +11,6 @@ ScreenQuad::ScreenQuad()
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                              const RenderData &renderData)
 {
-  if (skipSettingUniforms)
-    return;
-
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
   shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
@@ -25,10 +22,11 @@ void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
 void ScreenQuad::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                         const RenderData &renderData)
 {
-  if (!renderObject.get())
+  if (!objectData.isInitialized())
     initialize(gl, objectManager);
 
-  setUniforms(shaderProgram, renderData);
+  if (!skipSettingUniforms)
+    setUniforms(shaderProgram, renderData);
 
   objectManager->renderImmediately(objectData);
 }

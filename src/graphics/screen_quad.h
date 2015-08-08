@@ -24,8 +24,6 @@ class ScreenQuad : public Quad
   virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                       const RenderData &renderData);
 
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
   std::shared_ptr<ShaderProgram> getShaderProgram();
@@ -33,6 +31,8 @@ class ScreenQuad : public Quad
   bool skipSettingUniforms = false;
 
  private:
+  void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
+                           const RenderData &renderData);
   std::shared_ptr<ShaderProgram> shaderProgram;
 };
 
