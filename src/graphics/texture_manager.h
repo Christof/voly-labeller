@@ -29,6 +29,7 @@ class TextureManager
   ~TextureManager();
 
   int addTexture(std::string path);
+  int addTexture(QImage *image);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);

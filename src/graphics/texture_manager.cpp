@@ -32,6 +32,15 @@ int TextureManager::addTexture(std::string path)
   return id;
 }
 
+int TextureManager::addTexture(QImage *image)
+{
+  int id = textures.size();
+
+  textures.push_back(newTexture2d(image));
+
+  return id;
+}
+
 Texture2d *
 TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
