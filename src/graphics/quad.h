@@ -32,6 +32,9 @@ class Quad : public Graphics::Renderable
 
   static const int indexCount = 6;
   static ObjectData objectData;
+ private:
+  std::string vertexShaderFilename;
+  std::string fragmentShaderFilename;
 };
 
 }  // namespace Graphics

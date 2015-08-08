@@ -6,9 +6,7 @@
 namespace Graphics
 {
 
-Renderable::Renderable(std::string vertexShaderPath,
-                       std::string fragmentShaderPath)
-  : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath)
+Renderable::Renderable()
 {
 }
 
@@ -19,19 +17,19 @@ Renderable::~Renderable()
 void Renderable::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
 {
   this->objectManager = objectManager;
-  renderObject =
-      std::make_shared<RenderObject>(gl, vertexShaderPath, fragmentShaderPath);
 
   createBuffers(renderObject, objectManager);
+
+  isInitialized = true;
 }
 
 void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                         const RenderData &renderData)
 {
-  if (!renderObject.get())
+  if (!isInitialized)
     initialize(gl, objectManager);
 
-  setUniforms(renderObject->shaderProgram, renderData);
+  setUniforms(std::shared_ptr<ShaderProgram>(), renderData);
 }
 
 }  // namespace Graphics

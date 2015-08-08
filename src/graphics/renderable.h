@@ -20,7 +20,7 @@ class ObjectManager;
 class Renderable
 {
  public:
-  Renderable(std::string vertexShaderPath, std::string fragmentShaderPath);
+  Renderable();
   virtual ~Renderable();
 
   void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
@@ -38,8 +38,7 @@ class Renderable
   std::shared_ptr<ObjectManager> objectManager;
 
  private:
-  std::string vertexShaderPath;
-  std::string fragmentShaderPath;
+  bool isInitialized = false;
 };
 
 }  // namespace Graphics

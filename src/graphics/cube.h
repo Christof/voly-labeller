@@ -19,7 +19,7 @@ namespace Graphics
 class Cube : public Renderable
 {
  public:
-  Cube(std::string vertexShaderPath, std::string fragmentShaderPath);
+  Cube();
 
  protected:
   virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,

@@ -8,8 +8,7 @@ VolumeNode::VolumeNode(std::string filename) : filename(filename)
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
   quad = std::unique_ptr<Graphics::Quad>(
       new Graphics::Quad(":shader/label.vert", ":shader/slice.frag"));
-  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube(
-      ":/shader/texture3d.vert", ":/shader/texture3dAsColor.frag"));
+  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();

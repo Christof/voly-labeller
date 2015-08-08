@@ -8,8 +8,7 @@
 namespace Graphics
 {
 
-Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
-  : Renderable(vertexShaderPath, fragmentShaderPath)
+Cube::Cube()
 {
 }
 

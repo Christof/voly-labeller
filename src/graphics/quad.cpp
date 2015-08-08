@@ -11,11 +11,12 @@ namespace Graphics
 ObjectData Quad::objectData;
 
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
-  : Renderable(vertexShaderFilename, fragmentShaderFilename)
+  : vertexShaderFilename(vertexShaderFilename),
+    fragmentShaderFilename(fragmentShaderFilename)
 {
 }
 
-Quad::Quad() : Renderable(":shader/label.vert", ":shader/label.frag")
+Quad::Quad() : Quad(":/shader/pass.vert", ":/shader/test.frag")
 {
 }
 
@@ -39,7 +40,7 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
   std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
 
   int shaderProgramId =
-      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      objectManager->addShader(vertexShaderFilename, fragmentShaderFilename);
 
   if (!objectData.isInitialized())
     objectData = objectManager->addObject(positions, normals, colors, texcoords,

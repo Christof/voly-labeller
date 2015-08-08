@@ -13,8 +13,7 @@ Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
 }
 
 Connector::Connector(std::vector<Eigen::Vector3f> points)
-  : Renderable(":shader/line.vert", ":shader/line.frag"), color(1, 0, 0, 1),
-    points(points)
+  : color(1, 0, 0, 1), points(points)
 {
 }
 
