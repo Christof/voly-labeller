@@ -23,6 +23,8 @@ void Renderable::initialize(Gl *gl,
 }
 
 void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                        std::shared_ptr<TextureManager> textureManager,
+                        std::shared_ptr<ShaderManager> shaderManager,
                         const RenderData &renderData)
 {
   if (!objectData.isInitialized())

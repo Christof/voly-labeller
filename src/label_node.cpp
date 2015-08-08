@@ -46,7 +46,7 @@ void LabelNode::renderConnector(Graphics::Gl *gl, RenderData renderData)
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
-  connector->render(gl, objectManager, renderData);
+  connector->render(gl, objectManager, textureManager, shaderManager, renderData);
 }
 
 void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
@@ -55,7 +55,7 @@ void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
                                  Eigen::Scaling(0.005f));
   renderData.modelMatrix = modelTransform.matrix();
 
-  anchorMesh->render(gl, objectManager, renderData);
+  anchorMesh->render(gl, objectManager, textureManager, shaderManager, renderData);
 }
 
 void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
@@ -67,7 +67,7 @@ void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
   renderData.modelMatrix = labelTransform.matrix();
 
   texture->bind(gl, GL_TEXTURE0);
-  quad->render(gl, objectManager, renderData);
+  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()

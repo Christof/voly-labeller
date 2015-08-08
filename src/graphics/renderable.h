@@ -29,6 +29,8 @@ class Renderable
   void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
 
   virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                      std::shared_ptr<TextureManager> textureManager,
+                      std::shared_ptr<ShaderManager> shaderManager,
                       const RenderData &renderData);
 
  protected:

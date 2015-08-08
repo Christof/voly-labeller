@@ -28,14 +28,14 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  quad->render(gl, objectManager, renderData);
+  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   auto transformation = volumeReader->getTransformationMatrix();
   auto size = volumeReader->getPhysicalSize();
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
   renderData.modelMatrix = transformation * scale;
-  cube->render(gl, objectManager, renderData);
+  cube->render(gl, objectManager, textureManager, shaderManager, renderData);
 }
 
 std::shared_ptr<Math::Obb> VolumeNode::getObb()
