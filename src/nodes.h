@@ -10,6 +10,8 @@
 #include "./node.h"
 #include "./graphics/render_data.h"
 #include "./graphics/object_manager.h"
+#include "./graphics/texture_manager.h"
+#include "./graphics/shader_manager.h"
 #include "./graphics/gl.h"
 
 class LabelNode;
@@ -31,6 +33,8 @@ class Nodes : public QObject
   Nodes();
   void render(Graphics::Gl *gl,
               std::shared_ptr<Graphics::ObjectManager> objectManager,
+              std::shared_ptr<Graphics::TextureManager> textureManager,
+              std::shared_ptr<Graphics::ShaderManager> shaderManager,
               RenderData renderData);
 
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
@@ -51,7 +55,7 @@ class Nodes : public QObject
   void toggleBoundingVolumes();
 
   void addNode(std::shared_ptr<Node> node);
- signals:
+signals:
   void nodesChanged();
 
  private:

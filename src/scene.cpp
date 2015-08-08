@@ -113,7 +113,7 @@ void Scene::render()
 
   haBuffer->clearAndPrepare();
 
-  nodes->render(gl, objectManager, renderData);
+  nodes->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   objectManager->render(renderData);
 

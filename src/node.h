@@ -10,6 +10,8 @@
 #include "./math/obb.h"
 #include "./graphics/gl.h"
 #include "./graphics/object_manager.h"
+#include "./graphics/texture_manager.h"
+#include "./graphics/shader_manager.h"
 
 /**
  * \brief Base class for nodes which are managed by the
@@ -27,6 +29,8 @@ class Node
 
   void render(Graphics::Gl *gl,
               std::shared_ptr<Graphics::ObjectManager> objectManager,
+              std::shared_ptr<Graphics::TextureManager> textureManager,
+              std::shared_ptr<Graphics::ShaderManager> shaderManager,
               RenderData renderData)
   {
     this->objectManager = objectManager;
@@ -52,6 +56,8 @@ class Node
 
   bool persistable = true;
   std::shared_ptr<Graphics::ObjectManager> objectManager;
+  std::shared_ptr<Graphics::TextureManager> textureManager;
+  std::shared_ptr<Graphics::ShaderManager> shaderManager;
 
  private:
   friend class boost::serialization::access;
