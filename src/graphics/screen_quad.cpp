@@ -23,7 +23,8 @@ void ScreenQuad::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                         const RenderData &renderData)
 {
   if (!objectData.isInitialized())
-    initialize(gl, objectManager);
+    initialize(gl, objectManager, std::shared_ptr<TextureManager>(),
+               std::shared_ptr<ShaderManager>());
 
   if (!skipSettingUniforms)
     setUniforms(shaderProgram, renderData);

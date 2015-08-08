@@ -20,14 +20,16 @@ HABuffer::~HABuffer()
   delete[] offsets;
 }
 
-void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
+void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                          std::shared_ptr<TextureManager> textureManager,
+                          std::shared_ptr<ShaderManager> shaderManager)
 {
   this->gl = gl;
   this->objectManager = objectManager;
 
   quad = std::make_shared<ScreenQuad>();
   quad->skipSettingUniforms = true;
-  quad->initialize(gl, objectManager);
+  quad->initialize(gl, objectManager, textureManager, shaderManager);
 
   initializeShadersHash();
   initializeBufferHash();
@@ -128,7 +130,7 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
 {
   // TODO(sirk): re-enable optimization after change to ObjectManager
   // if (lastUsedProgram != shader->getId())
-    setUniforms(shader);
+  setUniforms(shader);
 
   lastUsedProgram = shader->getId();
 }

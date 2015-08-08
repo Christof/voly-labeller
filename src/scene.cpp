@@ -61,8 +61,8 @@ void Scene::initialize()
   shaderManager->initialize(gl, haBuffer);
 
   objectManager->initialize(gl, 128, 10000000);
-  haBuffer->initialize(gl, objectManager);
-  quad->initialize(gl, objectManager);
+  haBuffer->initialize(gl, objectManager, textureManager, shaderManager);
+  quad->initialize(gl, objectManager, textureManager, shaderManager);
 
   textureManager->initialize(gl, true, 8);
 }
