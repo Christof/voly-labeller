@@ -34,6 +34,8 @@ class Node
               RenderData renderData)
   {
     this->objectManager = objectManager;
+    this->textureManager = textureManager;
+    this->shaderManager = shaderManager;
     render(gl, renderData);
   }
 
