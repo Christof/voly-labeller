@@ -2,7 +2,6 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
-#include "./render_object.h"
 #include "./shader_program.h"
 #include "../utils/path_helper.h"
 #include <iostream>

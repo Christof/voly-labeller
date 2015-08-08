@@ -1,6 +1,5 @@
 #include "./renderable.h"
 #include <string>
-#include "./render_object.h"
 #include "./object_manager.h"
 
 namespace Graphics

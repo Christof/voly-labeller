@@ -3,12 +3,11 @@
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
-#include "./render_object.h"
 
 namespace Graphics
 {
 
-ObjectData Quad::objectData;
+ObjectData Quad::staticObjectData;
 
 Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
   : vertexShaderFilename(vertexShaderFilename),
@@ -43,11 +42,11 @@ ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   int shaderProgramId =
       objectManager->addShader(vertexShaderFilename, fragmentShaderFilename);
 
-  if (!objectData.isInitialized())
-    objectData = objectManager->addObject(positions, normals, colors, texcoords,
-                                          indices, shaderProgramId);
+  if (!staticObjectData.isInitialized())
+    staticObjectData = objectManager->addObject(
+        positions, normals, colors, texcoords, indices, shaderProgramId);
 
-  return objectData;
+  return staticObjectData;
 }
 
 }  // namespace Graphics

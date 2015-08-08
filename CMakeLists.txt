@@ -56,7 +56,6 @@ set(SOURCES
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
   src/graphics/render_data.h
-  src/graphics/render_object.cpp
   src/graphics/renderable.cpp
   src/graphics/quad.cpp
   src/graphics/screen_quad.cpp

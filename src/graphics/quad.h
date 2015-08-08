@@ -30,7 +30,7 @@ class Quad : public Graphics::Renderable
                              std::shared_ptr<ShaderManager> shaderManager);
 
   static const int indexCount = 6;
-  static ObjectData objectData;
+  static ObjectData staticObjectData;
 
  private:
   std::string vertexShaderFilename;

@@ -2,7 +2,6 @@
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
-#include "./render_object.h"
 
 namespace Graphics
 {
