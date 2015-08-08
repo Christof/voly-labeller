@@ -2,15 +2,14 @@
 
 #define SRC_GRAPHICS_OBJECT_MANAGER_H_
 
-#include <Eigen/Core>
 #include <memory>
 #include <vector>
 #include <map>
-#include <functional>
 #include "./circular_buffer.h"
 #include "./shader_buffer.h"
 #include "./texture_address.h"
 #include "./render_data.h"
+#include "./object_data.h"
 
 namespace Graphics
 {
@@ -19,33 +18,6 @@ class BufferManager;
 class TextureManager;
 class ShaderManager;
 class Gl;
-
-struct ObjectData
-{
-  ObjectData()
-    : primitiveType(-1), vertexOffset(-1), indexOffset(-1), indexSize(-1),
-      shaderProgramId(-1), customBufferSize(0), setBuffer(nullptr),
-      transform(Eigen::Matrix4f::Identity())
-  {
-  }
-
-  int primitiveType;
-  int vertexOffset;
-  int indexOffset;
-  int indexSize;
-
-  int shaderProgramId;
-
-  int customBufferSize;
-  std::function<void(void *)> setBuffer;
-
-  Eigen::Matrix4f transform;
-
-  bool isInitialized()
-  {
-    return primitiveType != -1;
-  }
-};
 
 struct DrawElementsIndirectCommand
 {
