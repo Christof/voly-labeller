@@ -25,13 +25,13 @@ class Quad : public Graphics::Renderable
   virtual ~Quad();
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
+  virtual ObjectData createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                             std::shared_ptr<TextureManager> textureManager,
+                             std::shared_ptr<ShaderManager> shaderManager);
 
   static const int indexCount = 6;
   static ObjectData objectData;
+
  private:
   std::string vertexShaderFilename;
   std::string fragmentShaderFilename;

@@ -21,8 +21,9 @@ Connector::~Connector()
 {
 }
 
-void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
-                              std::shared_ptr<ObjectManager> objectManager)
+ObjectData Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager)
 {
   std::vector<float> positions;
   std::vector<float> normals(points.size() * 3, 0.0f);
@@ -45,25 +46,8 @@ void Connector::createBuffers(std::shared_ptr<RenderObject> renderObject,
 
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
-  objectData = objectManager->addObject(positions, normals, colors, texCoords,
+  return objectManager->addObject(positions, normals, colors, texCoords,
                                         indices, shaderProgramId, GL_LINES);
-}
-
-void Connector::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                            const RenderData &renderData)
-{
-  /*
-  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
-                                        renderData.viewMatrix *
-                                        renderData.modelMatrix;
-  shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  shaderProgram->setUniform("color", color);
-  shaderProgram->setUniform("zOffset", zOffset);
-  */
-
-  objectData.transform = renderData.modelMatrix;
-
-  objectManager->renderLater(objectData);
 }
 
 }  // namespace Graphics

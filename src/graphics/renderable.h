@@ -5,14 +5,17 @@
 #include <memory>
 #include <string>
 #include "./render_data.h"
+#include "./object_data.h"
 
 namespace Graphics
 {
 
 class Gl;
 class RenderObject;
-class ShaderProgram;
+class ShaderManager;
+class TextureManager;
 class ObjectManager;
+class ShaderProgram;
 
 /**
  * \brief Base class for easier access to a RenderObject
@@ -26,19 +29,18 @@ class Renderable
   void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
 
   virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-              const RenderData &renderData);
+                      const RenderData &renderData);
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager) = 0;
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData) = 0;
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager) = 0;
 
   std::shared_ptr<RenderObject> renderObject;
   std::shared_ptr<ObjectManager> objectManager;
 
- private:
-  bool isInitialized = false;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

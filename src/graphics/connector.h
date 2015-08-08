@@ -36,14 +36,13 @@ class Connector : public Renderable
   float zOffset = 0.0f;
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager);
 
  private:
   std::vector<Eigen::Vector3f> points;
-  ObjectData objectData;
 };
 
 }  // namespace Graphics

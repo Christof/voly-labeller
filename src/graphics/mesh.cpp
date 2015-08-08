@@ -92,8 +92,9 @@ void Mesh::createObb()
   obb = std::make_shared<Math::Obb>(data);
 }
 
-void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
-                         std::shared_ptr<ObjectManager> objectManager)
+ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                               std::shared_ptr<TextureManager> textureManager,
+                               std::shared_ptr<ShaderManager> shaderManager)
 {
   std::vector<float> pos(positionData, positionData + vertexCount * 3);
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
@@ -108,7 +109,7 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
                             : objectManager->addShader(":/shader/phong.vert",
                                                        ":/shader/phong.frag");
 
-  objectData =
+  ObjectData objectData =
       objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 
   if (hasTexture)
@@ -130,6 +131,8 @@ void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
       std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
     };
   }
+
+  return objectData;
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -156,28 +159,6 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
   }
 
   return result;
-}
-
-void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
-                       const RenderData &renderData)
-{
-  objectData.transform = renderData.modelMatrix;
-  objectManager->renderLater(objectData);
-  /*
-  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
-                                        renderData.viewMatrix *
-                                        renderData.modelMatrix;
-  shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  shader->setUniform("modelMatrix", renderData.modelMatrix);
-  shader->setUniform("ambientColor", ambientColor);
-  shader->setUniform("diffuseColor", diffuseColor);
-  shader->setUniform("specularColor", specularColor);
-  auto view = renderData.viewMatrix;
-  shader->setUniform("cameraDirection",
-                     Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  shader->setUniform("lightPosition", renderData.cameraPosition);
-  shader->setUniform("shininess", shininess);
-  */
 }
 
 }  // namespace Graphics

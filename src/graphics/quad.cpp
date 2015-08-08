@@ -24,8 +24,9 @@ Quad::~Quad()
 {
 }
 
-void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
-                         std::shared_ptr<ObjectManager> objectManager)
+ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                               std::shared_ptr<TextureManager> textureManager,
+                               std::shared_ptr<ShaderManager> shaderManager)
 {
   std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
                                    1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
@@ -45,13 +46,8 @@ void Quad::createBuffers(std::shared_ptr<RenderObject> renderObject,
   if (!objectData.isInitialized())
     objectData = objectManager->addObject(positions, normals, colors, texcoords,
                                           indices, shaderProgramId);
-}
 
-void Quad::setUniforms(std::shared_ptr<ShaderProgram> shader,
-                       const RenderData &renderData)
-{
-  objectData.transform = renderData.modelMatrix;
-  objectManager->renderLater(objectData);
+  return objectData;
 }
 
 }  // namespace Graphics
