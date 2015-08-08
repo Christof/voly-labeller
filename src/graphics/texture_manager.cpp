@@ -1,5 +1,4 @@
 #include "./texture_manager.h"
-#include <QImage>
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
@@ -44,10 +43,18 @@ TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 
 Texture2d *TextureManager::newTexture2d(std::string path)
 {
+  auto image = new QImage(path.c_str());
+  auto texture = newTexture2d(image);
+
+  delete image;
+
+  return texture;
+}
+
+Texture2d *TextureManager::newTexture2d(QImage *image)
+{
   try
   {
-    auto image = new QImage(path.c_str());
-
     auto internalformat = GL_RGBA8;
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
@@ -63,8 +70,7 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   }
   catch (std::exception &error)
   {
-    qCCritical(tmChan) << "Error loading texture '" << path.c_str()
-                       << "': " << error.what();
+    qCCritical(tmChan) << "Error loading texture: " << error.what();
     throw;
   }
 }
