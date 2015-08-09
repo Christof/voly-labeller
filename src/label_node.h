@@ -12,7 +12,7 @@
 #include "./graphics/connector.h"
 #include "./graphics/mesh.h"
 #include "./graphics/gl.h"
-#include "./graphics/texture.h"
+#include "./graphics/object_data.h"
 
 /**
  * \brief Node for a label
@@ -53,8 +53,9 @@ class LabelNode : public Node
 
   std::shared_ptr<Graphics::Mesh> anchorMesh;
   std::shared_ptr<Graphics::Quad> quad;
-  std::shared_ptr<Graphics::Texture> texture;
   std::shared_ptr<Graphics::Connector> connector;
+  int textureId = -1;
+  Graphics::ObjectData labelQuad;
 };
 
 namespace boost
