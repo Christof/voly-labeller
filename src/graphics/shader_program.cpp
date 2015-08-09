@@ -13,7 +13,8 @@ namespace Graphics
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
-  : gl(gl)
+  : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath),
+    gl(gl)
 {
   if (!shaderProgram.addShaderFromSourceCode(
           QOpenGLShader::Vertex,
@@ -35,8 +36,6 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
     throw std::runtime_error("error during linking of" + vertexShaderPath +
                              "/" + fragmentShaderPath);
   }
-
-  shaderName = vertexShaderPath + " " + fragmentShaderPath;
 
   glCheckError();
 }
@@ -176,7 +175,8 @@ int ShaderProgram::getLocation(const char *name)
 
   int location = shaderProgram.uniformLocation(name);
   if (location < 0)
-    qWarning() << "Uniform" << name << "not found in" << shaderName.c_str();
+    qWarning() << "Uniform" << name << "not found in"
+               << vertexShaderPath.c_str() << "|" << fragmentShaderPath.c_str();
 
   locationCache[name] = location;
 

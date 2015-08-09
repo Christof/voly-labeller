@@ -1,11 +1,11 @@
 set(LIBRARIES)
 
 find_package(Qt5Core 5.5 REQUIRED)
-find_package(Qt5Gui REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5OpenGL REQUIRED)
-find_package(Qt5OpenGLExtensions REQUIRED)
-find_package(Qt5Quick REQUIRED)
+find_package(Qt5Gui 5.5 REQUIRED)
+find_package(Qt5Widgets 5.5 REQUIRED)
+find_package(Qt5OpenGL 5.5 REQUIRED)
+find_package(Qt5OpenGLExtensions 5.5 REQUIRED)
+find_package(Qt5Quick 5.5 REQUIRED)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})

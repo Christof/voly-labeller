@@ -6,6 +6,7 @@
 #include <vector>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -35,11 +36,10 @@ class Connector : public Renderable
   float zOffset = 0.0f;
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
-  virtual void draw(Gl *gl);
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager);
 
  private:
   std::vector<Eigen::Vector3f> points;

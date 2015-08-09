@@ -13,12 +13,21 @@
 #include "./render_data.h"
 #include "../math/obb.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
 
 class Gl;
 class ObjectManager;
+
+struct PhongMaterial
+{
+  Eigen::Vector4f ambientColor;
+  Eigen::Vector4f diffuseColor;
+  Eigen::Vector4f specularColor;
+  float shininess;
+};
 
 /**
  * \brief Encapsulates a single mesh including its material.
@@ -34,10 +43,10 @@ class Mesh : public Renderable
   std::shared_ptr<Math::Obb> obb;
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject, std::shared_ptr<ObjectManager> objectManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
-  virtual void draw(Gl *gl);
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager);
 
  private:
   void createObb();
@@ -51,13 +60,10 @@ class Mesh : public Renderable
   float *positionData;
   float *normalData;
   float *textureCoordinateData;
-  Eigen::Vector4f ambientColor;
-  Eigen::Vector4f diffuseColor;
-  Eigen::Vector4f specularColor;
-  float shininess;
+  PhongMaterial phongMaterial;
 
-  int id;
-  std::shared_ptr<ObjectManager> objectManager;
+  int textureId;
+  bool hasTexture;
 };
 
 }  // namespace Graphics

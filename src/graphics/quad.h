@@ -6,6 +6,7 @@
 #include <string>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -23,24 +24,20 @@ class Quad : public Graphics::Renderable
   Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename);
   virtual ~Quad();
 
-  /**
-   * Renders the quad to the currently bound frame buffer and not to an HABuffer
-   */
-  void renderToFrameBuffer(Gl *gl, const RenderData &renderData,
-      std::shared_ptr<ObjectManager> objectManager);
-
-  bool skipSettingUniforms = false;
+  ObjectData getObjectData();
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
-  virtual void draw(Gl *gl);
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager);
+
+  static const int indexCount = 6;
+  static ObjectData staticObjectData;
 
  private:
-  static const int indexCount = 6;
-  static int objectId;
+  std::string vertexShaderFilename;
+  std::string fragmentShaderFilename;
 };
 
 }  // namespace Graphics

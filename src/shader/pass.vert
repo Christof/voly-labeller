@@ -7,7 +7,6 @@ layout(location = 3) in vec2 texCoord;
 layout(location = 4) in int drawId;
 
 uniform mat4 modelViewProjectionMatrix;
-// uniform mat4 modelMatrix;
 
 out vec4 vertexPos;
 out vec3 vertexNormal;
@@ -31,7 +30,7 @@ void main()
 
   vertexPos = modelViewProjectionMatrix * model * vec4(pos, 1.0f);
   gl_Position = vertexPos;
-  vertexNormal = mul(model, normal).xyz; //mul(modelMatrix, normal).xyz;
+  vertexNormal = mul(model, normal).xyz;
   vertexColor = color;
   vertexTexCoord = texCoord;
   vertexDrawId = drawId;

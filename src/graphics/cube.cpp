@@ -3,22 +3,18 @@
 #include <string>
 #include "./gl.h"
 #include "./shader_program.h"
-#include "./render_object.h"
-#include "./object_manager.h"
 
 namespace Graphics
 {
 
-Cube::Cube(std::string vertexShaderPath, std::string fragmentShaderPath)
-  : Renderable(vertexShaderPath, fragmentShaderPath)
+Cube::Cube()
 {
 }
 
-void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
-                         std::shared_ptr<ObjectManager> objectManager)
+ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                               std::shared_ptr<TextureManager> textureManager,
+                               std::shared_ptr<ShaderManager> shaderManager)
 {
-  this->objectManager = objectManager;
-
   Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
   Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
   Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
@@ -62,25 +58,23 @@ void Cube::createBuffers(std::shared_ptr<RenderObject> renderObject,
                                 4, 5, 7, 4, 7, 6, 6, 7, 1, 6, 1, 0,
                                 0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
 
-  objectId =
-      objectManager->addObject(positions, normals, colors, texCoords, indices);
+  int shaderProgramId =
+      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+  return objectManager->addObject(positions, normals, colors, texCoords,
+                                  indices, shaderProgramId);
 }
 
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                        const RenderData &renderData)
 {
-  objectManager->renderLater(objectId, renderData.modelMatrix);
+  objectData.transform = renderData.modelMatrix;
+  objectManager->renderLater(objectData);
   /*
   Eigen::Matrix4f modelViewProjection =
       renderData.projectionMatrix * renderData.viewMatrix *
       renderData.modelMatrix;
   shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
   */
-}
-
-void Cube::draw(Gl *gl)
-{
-  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
 }  // namespace Graphics

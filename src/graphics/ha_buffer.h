@@ -14,7 +14,9 @@ namespace Graphics
 
 class ShaderProgram;
 class ObjectManager;
-class Quad;
+class TextureManager;
+class ShaderManager;
+class ScreenQuad;
 
 /**
  * \brief Coherent hashing A-Buffer to render transparent objects without
@@ -31,7 +33,8 @@ class Quad;
  * buffer itself can be resolved and rendered by calling HABuffer::render.
  *
  * Fragment shader for object which are rendered into the HABuffer have to
- * implement a certain interface. The following skeleton describes the requirements:
+ * implement a certain interface. The following skeleton describes the
+ *requirements:
  *
  * \code{glsl}
  *#version 440
@@ -61,7 +64,9 @@ class HABuffer
   explicit HABuffer(Eigen::Vector2i size);
   ~HABuffer();
 
-  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
+  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                  std::shared_ptr<TextureManager> textureManager,
+                  std::shared_ptr<ShaderManager> shaderManager);
   void updateNearAndFarPlanes(float near, float far);
 
   void clearAndPrepare();
@@ -80,10 +85,10 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::shared_ptr<Quad> quad;
-  std::shared_ptr<ObjectManager> objectManager;
+  std::shared_ptr<ScreenQuad> quad;
   std::shared_ptr<ShaderProgram> renderShader;
   std::shared_ptr<ShaderProgram> clearShader;
+  std::shared_ptr<ObjectManager> objectManager;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;

@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <QImage>
 #include <map>
 #include <memory>
 #include "./texture_address.h"
@@ -28,9 +29,11 @@ class TextureManager
   ~TextureManager();
 
   int addTexture(std::string path);
+  int addTexture(QImage *image);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);
+  Texture2d *newTexture2d(QImage *image);
 
   void free(Texture2d *texture);
 

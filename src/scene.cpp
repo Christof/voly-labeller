@@ -7,6 +7,7 @@
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"
+#include "./graphics/shader_program.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
 #include "./camera_zoom_controller.h"
@@ -36,7 +37,9 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
   textureManager = std::make_shared<Graphics::TextureManager>();
-  objectManager = std::make_shared<Graphics::ObjectManager>(textureManager);
+  shaderManager = std::make_shared<Graphics::ShaderManager>();
+  objectManager =
+      std::make_shared<Graphics::ObjectManager>(textureManager, shaderManager);
 }
 
 Scene::~Scene()
@@ -48,36 +51,20 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Graphics::Quad>(":shader/label.vert",
-                                          ":shader/texture.frag");
+  quad = std::make_shared<Graphics::ScreenQuad>();
+  quad->setShaderProgram(std::make_shared<Graphics::ShaderProgram>(
+      gl, ":shader/pass.vert", ":shader/textureForRenderBuffer.frag"));
 
   fbo->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
+  shaderManager->initialize(gl, haBuffer);
 
   objectManager->initialize(gl, 128, 10000000);
-  haBuffer->initialize(gl, objectManager);
+  haBuffer->initialize(gl, objectManager, textureManager, shaderManager);
+  quad->initialize(gl, objectManager, textureManager, shaderManager);
 
-  std::vector<float> positions = { 1.0f, 1.0f,  0.0f, -1.0f, 1.0f,  0.0f,
-                                   1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f };
-  std::vector<float> normals = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-                                 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
-  std::vector<float> colors = {
-    1.0f, 0.0f, 1.0f, 0.5f, 0.0f, 1.0f, 1.0f, 0.5f,
-    0.0f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f, 0.5f
-  };
-  std::vector<float> texCoords = { 1.0f, 0.0f, 0.0f, 0.0f,
-                                   1.0f, 1.0f, 0.0f, 1.0f };
-  std::vector<uint> indices = { 0, 1, 2, 1, 3, 2 };
-  objectId =
-      objectManager->addObject(positions, normals, colors, texCoords, indices);
-  shader = std::make_shared<Graphics::ShaderProgram>(gl, ":/shader/pass.vert",
-                                                     ":/shader/test.frag");
   textureManager->initialize(gl, true, 8);
-  auto textureId = textureManager->addTexture(absolutePathOfProjectRelativePath(
-      std::string("assets/tiger/tiger-atlas.jpg")));
-
-  objectManager->setObjectTexture(objectId, textureId);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -126,16 +113,9 @@ void Scene::render()
 
   haBuffer->clearAndPrepare();
 
-  nodes->render(gl, objectManager, renderData);
+  nodes->render(gl, objectManager, textureManager, shaderManager, renderData);
 
-  shader->bind();
-  Eigen::Matrix4f mvp = renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("modelViewProjectionMatrix", mvp);
-  // shader->setUniform("modelMatrix", renderData.modelMatrix);
-  haBuffer->begin(shader);
-
-  objectManager->render();
-  shader->release();
+  objectManager->render(renderData);
 
   haBuffer->render();
 
@@ -157,7 +137,8 @@ void Scene::renderScreenQuad()
   fbo->bindColorTexture(GL_TEXTURE0);
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
-  quad->renderToFrameBuffer(gl, renderData, objectManager);
+  quad->getShaderProgram()->bind();
+  quad->render(gl, objectManager, renderData);
 }
 
 void Scene::resize(int width, int height)

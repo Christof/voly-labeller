@@ -1,5 +1,4 @@
 #include "./texture_manager.h"
-#include <QImage>
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
@@ -33,6 +32,15 @@ int TextureManager::addTexture(std::string path)
   return id;
 }
 
+int TextureManager::addTexture(QImage *image)
+{
+  int id = textures.size();
+
+  textures.push_back(newTexture2d(image));
+
+  return id;
+}
+
 Texture2d *
 TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
@@ -44,10 +52,18 @@ TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 
 Texture2d *TextureManager::newTexture2d(std::string path)
 {
+  auto image = new QImage(path.c_str());
+  auto texture = newTexture2d(image);
+
+  delete image;
+
+  return texture;
+}
+
+Texture2d *TextureManager::newTexture2d(QImage *image)
+{
   try
   {
-    auto image = new QImage(path.c_str());
-
     auto internalformat = GL_RGBA8;
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
@@ -63,8 +79,7 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   }
   catch (std::exception &error)
   {
-    qCCritical(tmChan) << "Error loading texture '" << path.c_str()
-                       << "': " << error.what();
+    qCCritical(tmChan) << "Error loading texture: " << error.what();
     throw;
   }
 }
@@ -78,15 +93,9 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
   if (maxTextureArrayLevels > 0)
     return true;
 
-  if (sparse)
-  {
-    glGetIntegerv(GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB,
-                  &maxTextureArrayLevels);
-  }
-  else
-  {
-    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArrayLevels);
-  }
+  auto layersKey = sparse ? GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB
+                          : GL_MAX_ARRAY_TEXTURE_LAYERS;
+  glGetIntegerv(layersKey, &maxTextureArrayLevels);
 
   return true;
 }

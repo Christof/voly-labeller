@@ -2,22 +2,25 @@
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
+#include <cassert>
 #include <algorithm>
 #include "./gl.h"
 #include "./buffer_manager.h"
 #include "./texture_manager.h"
+#include "./shader_manager.h"
 
 namespace Graphics
 {
 
 QLoggingCategory omChan("Graphics.ObjectManager");
 
-ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager)
+ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
+                             std::shared_ptr<ShaderManager> shaderManager)
   : bufferManager(std::make_shared<BufferManager>()),
-    textureManager(textureManager), transformBuffer(GL_SHADER_STORAGE_BUFFER),
-    textureAddressBuffer(GL_SHADER_STORAGE_BUFFER),
+    textureManager(textureManager), shaderManager(shaderManager),
+    transformBuffer(GL_SHADER_STORAGE_BUFFER),
+    customBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
-
 {
 }
 
@@ -33,80 +36,88 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  textureAddressBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS,
-                                  MAP_FLAGS);
+  customBuffer.initialize(gl, 12 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
-int ObjectManager::addObject(const std::vector<float> &vertices,
-                             const std::vector<float> &normals,
-                             const std::vector<float> &colors,
-                             const std::vector<float> &texCoords,
-                             const std::vector<uint> &indices)
+ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
+                                    const std::vector<float> &normals,
+                                    const std::vector<float> &colors,
+                                    const std::vector<float> &texCoords,
+                                    const std::vector<uint> &indices,
+                                    int shaderProgramId, int primitiveType)
 {
   auto bufferInformation =
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
 
   ObjectData object;
   object.vertexOffset = bufferInformation.vertexBufferOffset;
-  object.vertexSize = bufferInformation.vertexCount;
   object.indexOffset = bufferInformation.indexBufferOffset;
   object.indexSize = indices.size();
-  object.textureAddress = { 0, 0.0f, 0, { 1.0f, 1.0f } };
+  object.customBufferSize = 0;
+  object.setBuffer = nullptr;
   object.transform = Eigen::Matrix4f::Identity();
+  object.shaderProgramId = shaderProgramId;
+  object.primitiveType = primitiveType;
 
-  int objectId = objectCount++;
-
-  objects.insert(std::make_pair(objectId, object));
-
-  return objectId;
+  return object;
 }
 
-bool ObjectManager::setObjectTexture(int objectId, uint textureId)
+int ObjectManager::addShader(std::string vertexShaderPath,
+                             std::string fragmentShaderPath)
 {
-  if (!objects.count(objectId))
-    return false;
+  auto id = shaderManager->addShader(vertexShaderPath, fragmentShaderPath);
 
-  objects[objectId].textureAddress = textureManager->getAddressFor(textureId);
-  qCDebug(
-      omChan,
-      "VolySceneManager::setObjectTexture: objID:%d handle: %lu slice: %f\n",
-      objectId, objects[objectId].textureAddress.containerHandle,
-      objects[objectId].textureAddress.texPage);
+  qCDebug(omChan) << "Added" << vertexShaderPath.c_str() << "|"
+                  << fragmentShaderPath.c_str() << "which got id" << id;
 
-  return true;
+  return id;
 }
 
-bool ObjectManager::setObjectTransform(int objectId,
-                                       const Eigen::Matrix4f &transform)
+int ObjectManager::addTexture(std::string path)
 {
-  if (objects.count(objectId) == 0)
-    return false;
-
-  objects[objectId].transform = transform;
-
-  return true;
+  return textureManager->addTexture(path);
 }
 
-void ObjectManager::render()
+TextureAddress ObjectManager::getAddressFor(int textureId)
 {
-  renderObjects(objectsForFrame);
+  return textureManager->getAddressFor(textureId);
+}
+
+void ObjectManager::render(const RenderData &renderData)
+{
+  std::map<int, std::vector<ObjectData>> objectsByShader;
+  for (auto &object : objectsForFrame)
+  {
+    objectsByShader[object.shaderProgramId].push_back(object);
+  }
+
+  for (auto &shaderObjectPair : objectsByShader)
+  {
+    qCDebug(omChan) << "Render objects with shader" << shaderObjectPair.first
+                    << "with" << shaderObjectPair.second.size() << "objects";
+
+    shaderManager->bind(shaderObjectPair.first, renderData);
+
+    std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
+    for (auto &object : shaderObjectPair.second)
+    {
+      objectsByPrimitiveType[object.primitiveType].push_back(object);
+    }
+
+    for (auto pair : objectsByPrimitiveType)
+    {
+      renderObjects(objectsByPrimitiveType[pair.first]);
+    }
+  }
 
   objectsForFrame.clear();
 }
 
-void ObjectManager::renderImmediately(int objectId)
+void ObjectManager::renderImmediately(ObjectData objectData)
 {
-  std::vector<ObjectData> objs = { objects[objectId] };
+  std::vector<ObjectData> objs = { objectData };
 
   renderObjects(objs);
-}
-
-void ObjectManager::renderLater(int objectId, Eigen::Matrix4f transform)
-{
-  auto object = objects[objectId];
-  object.transform = transform;
-
-  renderLater(object);
 }
 
 void ObjectManager::renderLater(ObjectData object)
@@ -122,7 +133,14 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = objects.size();
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  TextureAddress *textures = textureAddressBuffer.reserve(objectCount);
+  int customBufferSize = objects[0].customBufferSize * objectCount;
+
+  void *custom = nullptr;
+  if (customBufferSize)
+    custom = customBuffer.reserve(customBufferSize);
+
+  qCDebug(omChan) << "customBufferSize" << customBufferSize << "custom"
+                  << custom << "matrices" << matrices;
 
   int counter = 0;
   for (auto &objectData : objects)
@@ -132,39 +150,38 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     auto *transform = &matrices[counter];
     memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
-    TextureAddress *texaddr = &textures[counter];
-    *texaddr = objectData.textureAddress;
-
-    qCDebug(omChan, "counter: %d handle: %lu slice: %f", counter,
-            texaddr->containerHandle, texaddr->texPage);
+    if (objectData.setBuffer && customBufferSize)
+    {
+      assert(objectData.customBufferSize != 0);
+      objectData.setBuffer(static_cast<char *>(custom) +
+                           counter * objectData.customBufferSize);
+    }
 
     ++counter;
   }
 
-  qCDebug(omChan, "objectcount: %u/%ld", objectCount, commandsBuffer.size());
-
-  int mapRange = objectCount;
-
-  mapRange = std::min(128, ((mapRange / 4) + 1) * 4);
-  transformBuffer.bindBufferRange(0, mapRange);
-  textureAddressBuffer.bindBufferRange(1, mapRange);
+  transformBuffer.bindBufferRange(0, objectCount);
+  if (customBufferSize)
+    customBuffer.bindBufferRange(1, customBufferSize);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
-  glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
+  // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
+  glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
 
   // draw
-  qCDebug(omChan, "head: %ld headoffset %p objectcount: %un",
+  qCDebug(omChan, "head: %ld headoffset %p objectcount: %u",
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
-  glAssert(gl->glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT,
-                                           commandsBuffer.headOffset(),
-                                           objectCount, 0));
+  glAssert(gl->glMultiDrawElementsIndirect(
+      objects[0].primitiveType, GL_UNSIGNED_INT, commandsBuffer.headOffset(),
+      objectCount, 0));
 
   bufferManager->unbind();
 
-  commandsBuffer.onUsageComplete(mapRange);
-  transformBuffer.onUsageComplete(mapRange);
-  textureAddressBuffer.onUsageComplete(mapRange);
+  commandsBuffer.onUsageComplete(objectCount);
+  transformBuffer.onUsageComplete(objectCount);
+  if (customBufferSize)
+    customBuffer.onUsageComplete(customBufferSize);
 }
 
 DrawElementsIndirectCommand

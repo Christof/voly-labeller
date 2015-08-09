@@ -2,16 +2,14 @@
 #include <QDebug>
 #include <string>
 #include "./gl.h"
-#include "./render_object.h"
 #include "./shader_program.h"
-#include "./object_manager.h"
+#include "../utils/path_helper.h"
 #include <iostream>
 
 namespace Graphics
 {
 
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
-  : Renderable(":/shader/pass.vert", ":/shader/test.frag")
 {
   /*
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
@@ -22,10 +20,13 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   }
   */
 
-  ambientColor = loadVector4FromMaterial("$clr.ambient", material);
-  diffuseColor = loadVector4FromMaterial("$clr.diffuse", material);
-  specularColor = loadVector4FromMaterial("$clr.specular", material);
-  shininess = loadFloatFromMaterial("$mat.shininess", material);
+  phongMaterial.ambientColor =
+      loadVector4FromMaterial("$clr.ambient", material);
+  phongMaterial.diffuseColor =
+      loadVector4FromMaterial("$clr.diffuse", material);
+  phongMaterial.specularColor =
+      loadVector4FromMaterial("$clr.specular", material);
+  phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
 
   /*
   std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
@@ -54,7 +55,8 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
   textureCoordinateData = new float[mesh->mNumVertices * 2];
 
-  if (mesh->GetNumUVChannels() > 0)
+  hasTexture = mesh->GetNumUVChannels() > 0;
+  if (hasTexture)
   {
     for (int i = 0; i < vertexCount; ++i)
     {
@@ -89,34 +91,47 @@ void Mesh::createObb()
   obb = std::make_shared<Math::Obb>(data);
 }
 
-void Mesh::createBuffers(std::shared_ptr<RenderObject> renderObject,
-    std::shared_ptr<ObjectManager> objectManager)
+ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                               std::shared_ptr<TextureManager> textureManager,
+                               std::shared_ptr<ShaderManager> shaderManager)
 {
-  this->objectManager = objectManager;
   std::vector<float> pos(positionData, positionData + vertexCount * 3);
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
   std::vector<float> tex(textureCoordinateData,
                          textureCoordinateData + vertexCount * 2);
   std::vector<float> col(vertexCount * 4, 0.8f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
-  id = objectManager->addObject(pos, nor, col, tex, idx);
 
-  /*
-  renderObject->createBuffer(QOpenGLBuffer::Type::IndexBuffer, indexData,
-                             "index", 1, indexCount);
-  delete[] indexData;
+  int shaderProgramId = hasTexture
+                            ? objectManager->addShader(":/shader/pass.vert",
+                                                       ":/shader/texture.frag")
+                            : objectManager->addShader(":/shader/phong.vert",
+                                                       ":/shader/phong.frag");
 
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, positionData,
-                             "vertexPosition", 3, vertexCount);
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer, normalData,
-                             "vertexNormal", 3, vertexCount);
-  delete[] normalData;
+  ObjectData objectData =
+      objectManager->addObject(pos, nor, col, tex, idx, shaderProgramId);
 
-  renderObject->createBuffer(QOpenGLBuffer::Type::VertexBuffer,
-                             textureCoordinateData, "vertexTextureCoordinate",
-                             2, vertexCount);
-  delete[] textureCoordinateData;
-  */
+  if (hasTexture)
+  {
+    objectData.customBufferSize = sizeof(TextureAddress);
+    int textureId = objectManager->addTexture(absolutePathOfProjectRelativePath(
+        std::string("assets/tiger/tiger-atlas.jpg")));
+    objectData.setBuffer = [objectManager, textureId](void *insertionPoint)
+    {
+      auto textureAddress = objectManager->getAddressFor(textureId);
+      std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
+    };
+  }
+  else
+  {
+    objectData.customBufferSize = sizeof(PhongMaterial);
+    objectData.setBuffer = [objectManager, this](void *insertionPoint)
+    {
+      std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
+    };
+  }
+
+  return objectData;
 }
 
 Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
@@ -143,32 +158,6 @@ float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
   }
 
   return result;
-}
-
-void Mesh::setUniforms(std::shared_ptr<ShaderProgram> shader,
-                       const RenderData &renderData)
-{
-  objectManager->renderLater(id, renderData.modelMatrix);
-  /*
-  Eigen::Matrix4f modelViewProjection = renderData.projectionMatrix *
-                                        renderData.viewMatrix *
-                                        renderData.modelMatrix;
-  shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  shader->setUniform("modelMatrix", renderData.modelMatrix);
-  shader->setUniform("ambientColor", ambientColor);
-  shader->setUniform("diffuseColor", diffuseColor);
-  shader->setUniform("specularColor", specularColor);
-  auto view = renderData.viewMatrix;
-  shader->setUniform("cameraDirection",
-                     Eigen::Vector3f(view(2, 0), view(2, 1), view(2, 2)));
-  shader->setUniform("lightPosition", renderData.cameraPosition);
-  shader->setUniform("shininess", shininess);
-  */
-}
-
-void Mesh::draw(Gl *gl)
-{
-  // glAssert(gl->glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 }
 
 }  // namespace Graphics

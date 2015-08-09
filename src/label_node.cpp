@@ -4,6 +4,7 @@
 #include <QPoint>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include "./graphics/texture_address.h"
 #include "./importer.h"
 
 LabelNode::LabelNode(Label label) : label(label)
@@ -14,7 +15,7 @@ LabelNode::LabelNode(Label label) : label(label)
   quad = std::make_shared<Graphics::Quad>();
 
   connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
-                                          Eigen::Vector3f(1, 0, 0));
+                                                    Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
@@ -24,10 +25,27 @@ LabelNode::~LabelNode()
 
 void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
 {
-  if (!texture.get() || textureText != label.text)
+  quad->initialize(gl, objectManager, textureManager, shaderManager);
+
+  if (textureId == -1 || textureText != label.text)
   {
-    texture = std::make_shared<Graphics::Texture>(renderLabelTextToQImage());
-    texture->initialize(gl);
+    auto image = renderLabelTextToQImage();
+    textureId = textureManager->addTexture(image);
+    delete image;
+
+    if (!labelQuad.isInitialized())
+    {
+      labelQuad = quad->getObjectData();
+      labelQuad.shaderProgramId = shaderManager->addShader(
+          ":/shader/label.vert", ":/shader/texture.frag");
+      labelQuad.customBufferSize = sizeof(Graphics::TextureAddress);
+      labelQuad.setBuffer = [this](void *insertionPoint)
+      {
+        auto textureAddress = objectManager->getAddressFor(textureId);
+        std::memcpy(insertionPoint, &textureAddress,
+                    sizeof(Graphics::TextureAddress));
+      };
+    }
   }
 
   renderConnector(gl, renderData);
@@ -46,7 +64,8 @@ void LabelNode::renderConnector(Graphics::Gl *gl, RenderData renderData)
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
-  connector->render(gl, objectManager, renderData);
+  connector->render(gl, objectManager, textureManager, shaderManager,
+                    renderData);
 }
 
 void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
@@ -55,7 +74,8 @@ void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
                                  Eigen::Scaling(0.005f));
   renderData.modelMatrix = modelTransform.matrix();
 
-  anchorMesh->render(gl, objectManager, renderData);
+  anchorMesh->render(gl, objectManager, textureManager, shaderManager,
+                     renderData);
 }
 
 void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
@@ -64,10 +84,8 @@ void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
       Eigen::Translation3f(labelPosition) *
       Eigen::Scaling(label.size.x(), label.size.y(), 1.0f));
 
-  renderData.modelMatrix = labelTransform.matrix();
-
-  texture->bind(gl, GL_TEXTURE0);
-  quad->render(gl, objectManager, renderData);
+  labelQuad.transform = labelTransform.matrix();
+  objectManager->renderLater(labelQuad);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()

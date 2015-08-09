@@ -7,6 +7,7 @@
 #include <string>
 #include "./render_data.h"
 #include "./renderable.h"
+#include "./object_manager.h"
 
 namespace Graphics
 {
@@ -18,20 +19,20 @@ namespace Graphics
 class Cube : public Renderable
 {
  public:
-  Cube(std::string vertexShaderPath, std::string fragmentShaderPath);
+  Cube();
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager);
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager);
   virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
-  virtual void draw(Gl *gl);
 
  private:
   std::vector<Eigen::Vector3f> points;
   static const int indexCount = 36;
-  int objectId = -1;
-  std::shared_ptr<ObjectManager> objectManager;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

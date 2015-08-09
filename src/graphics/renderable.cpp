@@ -1,14 +1,11 @@
 #include "./renderable.h"
 #include <string>
-#include "./render_object.h"
 #include "./object_manager.h"
 
 namespace Graphics
 {
 
-Renderable::Renderable(std::string vertexShaderPath,
-                       std::string fragmentShaderPath)
-  : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath)
+Renderable::Renderable()
 {
 }
 
@@ -16,40 +13,26 @@ Renderable::~Renderable()
 {
 }
 
-void Renderable::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
+void Renderable::initialize(Gl *gl,
+                            std::shared_ptr<ObjectManager> objectManager,
+                            std::shared_ptr<TextureManager> textureManager,
+                            std::shared_ptr<ShaderManager> shaderManager)
 {
-  renderObject =
-      std::make_shared<RenderObject>(gl, vertexShaderPath, fragmentShaderPath);
+  this->objectManager = objectManager;
 
-  createBuffers(renderObject, objectManager);
-
-  renderObject->release();
-  renderObject->releaseBuffers();
+  objectData = createBuffers(objectManager, textureManager, shaderManager);
 }
 
 void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                        std::shared_ptr<TextureManager> textureManager,
+                        std::shared_ptr<ShaderManager> shaderManager,
                         const RenderData &renderData)
 {
-  if (!renderObject.get())
-    initialize(gl, objectManager);
+  if (!objectData.isInitialized())
+    initialize(gl, objectManager, textureManager, shaderManager);
 
-  // renderObject->bind();
-
-  setUniforms(renderObject->shaderProgram, renderData);
-
-  // draw(gl);
-
-  // renderObject->release();
-}
-
-void Renderable::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
-{
-  renderObject->shaderProgram = shaderProgram;
-}
-
-std::shared_ptr<ShaderProgram> Renderable::getShaderProgram()
-{
-  return renderObject->shaderProgram;
+  objectData.transform = renderData.modelMatrix;
+  objectManager->renderLater(objectData);
 }
 
 }  // namespace Graphics

@@ -5,14 +5,17 @@
 #include <memory>
 #include <string>
 #include "./render_data.h"
+#include "./object_data.h"
 
 namespace Graphics
 {
 
 class Gl;
 class RenderObject;
-class ShaderProgram;
+class ShaderManager;
+class TextureManager;
 class ObjectManager;
+class ShaderProgram;
 
 /**
  * \brief Base class for easier access to a RenderObject
@@ -20,29 +23,27 @@ class ObjectManager;
 class Renderable
 {
  public:
-  Renderable(std::string vertexShaderPath, std::string fragmentShaderPath);
+  Renderable();
   virtual ~Renderable();
 
-  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager);
+  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                  std::shared_ptr<TextureManager> textureManager,
+                  std::shared_ptr<ShaderManager> shaderManager);
 
   virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-              const RenderData &renderData);
-
-  void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
-  std::shared_ptr<ShaderProgram> getShaderProgram();
+                      std::shared_ptr<TextureManager> textureManager,
+                      std::shared_ptr<ShaderManager> shaderManager,
+                      const RenderData &renderData);
 
  protected:
-  virtual void createBuffers(std::shared_ptr<RenderObject> renderObject,
-                             std::shared_ptr<ObjectManager> objectManager) = 0;
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData) = 0;
-  virtual void draw(Gl *gl) = 0;
+  virtual ObjectData
+  createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                std::shared_ptr<TextureManager> textureManager,
+                std::shared_ptr<ShaderManager> shaderManager) = 0;
 
-  std::shared_ptr<RenderObject> renderObject;
+  std::shared_ptr<ObjectManager> objectManager;
 
- private:
-  std::string vertexShaderPath;
-  std::string fragmentShaderPath;
+  ObjectData objectData;
 };
 
 }  // namespace Graphics

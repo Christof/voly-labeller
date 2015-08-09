@@ -2,31 +2,22 @@
 
 #define SRC_GRAPHICS_OBJECT_MANAGER_H_
 
-#include <Eigen/Core>
 #include <memory>
 #include <vector>
 #include <map>
 #include "./circular_buffer.h"
+#include "./shader_buffer.h"
 #include "./texture_address.h"
+#include "./render_data.h"
+#include "./object_data.h"
 
 namespace Graphics
 {
 
 class BufferManager;
 class TextureManager;
+class ShaderManager;
 class Gl;
-
-struct ObjectData
-{
-  int vertexOffset;
-  int indexOffset;
-  int vertexSize;
-  int indexSize;
-
-  TextureAddress textureAddress;
-
-  Eigen::Matrix4f transform;
-};
 
 struct DrawElementsIndirectCommand
 {
@@ -45,39 +36,38 @@ struct DrawElementsIndirectCommand
 class ObjectManager
 {
  public:
-  explicit ObjectManager(std::shared_ptr<TextureManager> textureManager);
+  explicit ObjectManager(std::shared_ptr<TextureManager> textureManager,
+                         std::shared_ptr<ShaderManager> shaderManager);
   virtual ~ObjectManager();
 
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
-  int addObject(const std::vector<float> &vertices,
+  ObjectData addObject(const std::vector<float> &vertices,
                 const std::vector<float> &normals,
                 const std::vector<float> &colors,
                 const std::vector<float> &texCoords,
-                const std::vector<uint> &indices);
+                const std::vector<uint> &indices, int shaderProgramId,
+                int primitiveType = GL_TRIANGLES);
+  int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
+  int addTexture(std::string path);
+  TextureAddress getAddressFor(int textureId);
   bool removeObject(int objID);
 
-  void render();
+  void render(const RenderData &renderData);
 
-  void renderImmediately(int objectId);
-  void renderLater(int objectId, Eigen::Matrix4f transform);
+  void renderImmediately(ObjectData objectData);
   void renderLater(ObjectData object);
-
-  bool setObjectTexture(int objectId, uint textureId);
-  bool setObjectTransform(int objectId, const Eigen::Matrix4f &transform);
 
  private:
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 
-  int objectCount = 0;
-  std::map<int, ObjectData> objects;
-
   std::shared_ptr<BufferManager> bufferManager;
   std::shared_ptr<TextureManager> textureManager;
+  std::shared_ptr<ShaderManager> shaderManager;
 
   CircularBuffer<float[16]> transformBuffer;
-  CircularBuffer<TextureAddress> textureAddressBuffer;
+  ShaderBuffer customBuffer;
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;

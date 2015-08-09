@@ -9,13 +9,14 @@
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./labelling/labels.h"
-#include "./graphics/quad.h"
+#include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
 #include "./graphics/object_manager.h"
 
 #include "./graphics/shader_program.h"
 #include "./graphics/texture_manager.h"
+#include "./graphics/shader_manager.h"
 
 class Nodes;
 class InvokeManager;
@@ -35,8 +36,7 @@ class Scene : public AbstractScene
 {
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
-        std::shared_ptr<Nodes> nodes,
-        std::shared_ptr<Labels> labels,
+        std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
         std::shared_ptr<Forces::Labeller> labeller);
   ~Scene();
 
@@ -58,7 +58,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> labeller;
-  std::shared_ptr<Graphics::Quad> quad;
+  std::shared_ptr<Graphics::ScreenQuad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::ObjectManager> objectManager;
@@ -75,9 +75,8 @@ class Scene : public AbstractScene
   int pickingLabelId;
   void doPick();
 
-  int objectId;
-  std::shared_ptr<Graphics::ShaderProgram> shader;
   std::shared_ptr<Graphics::TextureManager> textureManager;
+  std::shared_ptr<Graphics::ShaderManager> shaderManager;
 };
 
 #endif  // SRC_SCENE_H_

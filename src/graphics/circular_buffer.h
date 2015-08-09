@@ -21,6 +21,8 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
   {
     this->gl = gl;
     head = 0;
+    gl->glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &offsetAlignment);
+
     return MappedBuffer<T>::initialize(gl, count, createFlags, mapFlags);
   }
 
@@ -39,8 +41,10 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
 
   void onUsageComplete(GLsizeiptr count)
   {
-    this->lockRange(head, count);
-    head += count;
+    int alignedCount = std::ceil(count / static_cast<float>(offsetAlignment)) *
+                       offsetAlignment;
+    this->lockRange(head, alignedCount);
+    head += alignedCount;
   }
 
   void bindBufferRange(GLuint index, GLsizeiptr count)
@@ -65,6 +69,7 @@ template <typename T> class CircularBuffer : public MappedBuffer<T>
  private:
   Gl *gl;
   GLsizeiptr head;
+  int offsetAlignment;
 };
 
 }  // namespace Graphics

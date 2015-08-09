@@ -2,7 +2,7 @@
 #include <QLoggingCategory>
 #include <algorithm>
 #include "./shader_program.h"
-#include "./quad.h"
+#include "./screen_quad.h"
 #include "./object_manager.h"
 
 namespace Graphics
@@ -20,14 +20,16 @@ HABuffer::~HABuffer()
   delete[] offsets;
 }
 
-void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager)
+void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                          std::shared_ptr<TextureManager> textureManager,
+                          std::shared_ptr<ShaderManager> shaderManager)
 {
   this->gl = gl;
   this->objectManager = objectManager;
 
-  quad = std::make_shared<Quad>();
+  quad = std::make_shared<ScreenQuad>();
   quad->skipSettingUniforms = true;
-  quad->initialize(gl, objectManager);
+  quad->initialize(gl, objectManager, textureManager, shaderManager);
 
   initializeShadersHash();
   initializeBufferHash();
@@ -112,7 +114,7 @@ void HABuffer::clearAndPrepare()
   clearShader->setUniform("u_Counts", CountsBuffer);
 
   quad->setShaderProgram(clearShader);
-  quad->renderToFrameBuffer(gl, RenderData(), objectManager);
+  quad->render(gl, objectManager, RenderData());
 
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
@@ -128,7 +130,7 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
 {
   // TODO(sirk): re-enable optimization after change to ObjectManager
   // if (lastUsedProgram != shader->getId())
-    setUniforms(shader);
+  setUniforms(shader);
 
   lastUsedProgram = shader->getId();
 }
@@ -155,7 +157,7 @@ void HABuffer::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
   quad->setShaderProgram(renderShader);
-  quad->renderToFrameBuffer(gl, RenderData(), objectManager);
+  quad->render(gl, objectManager, RenderData());
 
   glAssert(gl->glDepthMask(GL_TRUE));
 

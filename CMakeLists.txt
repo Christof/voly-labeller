@@ -56,9 +56,9 @@ set(SOURCES
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
   src/graphics/render_data.h
-  src/graphics/render_object.cpp
   src/graphics/renderable.cpp
   src/graphics/quad.cpp
+  src/graphics/screen_quad.cpp
   src/graphics/connector.cpp
   src/graphics/cube.cpp
   src/graphics/mesh.cpp
@@ -69,6 +69,7 @@ set(SOURCES
   src/graphics/buffer_hole_manager.cpp
   src/graphics/attribute_buffer.cpp
   src/graphics/buffer_lock_manager.cpp
+  src/graphics/shader_buffer.cpp
   src/graphics/mapped_buffer.h
   src/graphics/circular_buffer.h
   src/graphics/buffer_manager.cpp
@@ -78,6 +79,7 @@ set(SOURCES
   src/graphics/texture_manager.cpp
   src/graphics/texture_space_description.cpp
   src/graphics/object_manager.cpp
+  src/graphics/shader_manager.cpp
   ${RESOURCES})
 
 set(SHADER
@@ -94,6 +96,7 @@ set(SHADER
   src/shader/renderHABuffer.frag
   src/shader/buildHABuffer.hglsl
   src/shader/texture.frag
+  src/shader/textureForRenderBuffer.frag
   src/shader/texture3dAsColor.frag
   src/shader/texture3d.vert)
 

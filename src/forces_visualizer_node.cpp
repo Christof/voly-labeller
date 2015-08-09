@@ -37,10 +37,13 @@ void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
   Eigen::Affine3f connectorTransform(Eigen::Translation3f(translation) *
                                      rotation * Eigen::Scaling(length));
 
-  renderData.modelMatrix = connectorTransform.matrix();
-  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
-  renderData.viewMatrix = Eigen::Matrix4f::Identity();
+  // Use inverse view and projection matrices to get everything directly into
+  // view space.
+  renderData.modelMatrix = renderData.viewMatrix.inverse() *
+                           renderData.projectionMatrix.inverse() *
+                           connectorTransform.matrix();
 
-  connector->render(gl, objectManager, renderData);
+  connector->render(gl, objectManager, textureManager, shaderManager,
+                    renderData);
 }
 
