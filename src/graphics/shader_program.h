@@ -55,6 +55,7 @@ class ShaderProgram
   std::map<std::string, int> locationCache;
 
   inline int getLocation(const char *name);
+  void addShaderFromSource(QOpenGLShader::ShaderType type, std::string path);
 };
 
 }  // namespace Graphics

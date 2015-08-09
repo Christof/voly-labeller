@@ -16,20 +16,8 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
   : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath),
     gl(gl)
 {
-  if (!shaderProgram.addShaderFromSourceCode(
-          QOpenGLShader::Vertex,
-          readFileAndHandleIncludes(vertexShaderPath.c_str())))
-  {
-    throw std::runtime_error("error during compilation of" + vertexShaderPath);
-  }
-
-  if (!shaderProgram.addShaderFromSourceCode(
-          QOpenGLShader::Fragment,
-          readFileAndHandleIncludes(fragmentShaderPath.c_str())))
-  {
-    throw std::runtime_error("error during compiliation of" +
-                             fragmentShaderPath);
-  }
+  addShaderFromSource(QOpenGLShader::Vertex, vertexShaderPath);
+  addShaderFromSource(QOpenGLShader::Fragment, fragmentShaderPath);
 
   if (!shaderProgram.link())
   {
@@ -181,6 +169,16 @@ int ShaderProgram::getLocation(const char *name)
   locationCache[name] = location;
 
   return location;
+}
+
+void ShaderProgram::addShaderFromSource(QOpenGLShader::ShaderType type,
+                                        std::string path)
+{
+  if (!shaderProgram.addShaderFromSourceCode(
+          type, readFileAndHandleIncludes(path.c_str())))
+  {
+    throw std::runtime_error("error during compilation of" + path);
+  }
 }
 
 }  // namespace Graphics
