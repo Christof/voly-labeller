@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
+#include <cassert>
 #include <algorithm>
 #include "./gl.h"
 #include "./buffer_manager.h"
@@ -151,6 +152,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     if (objectData.setBuffer && customBufferSize)
     {
+      assert(objectData.customBufferSize != 0);
       objectData.setBuffer(static_cast<char *>(custom) +
                            counter * objectData.customBufferSize);
     }
