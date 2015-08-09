@@ -93,15 +93,9 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
   if (maxTextureArrayLevels > 0)
     return true;
 
-  if (sparse)
-  {
-    glGetIntegerv(GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB,
-                  &maxTextureArrayLevels);
-  }
-  else
-  {
-    glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArrayLevels);
-  }
+  auto layersKey = sparse ? GL_MAX_SPARSE_ARRAY_TEXTURE_LAYERS_ARB
+                          : GL_MAX_ARRAY_TEXTURE_LAYERS;
+  glGetIntegerv(layersKey, &maxTextureArrayLevels);
 
   return true;
 }
