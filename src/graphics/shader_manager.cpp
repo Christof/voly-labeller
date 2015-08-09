@@ -35,6 +35,29 @@ int ShaderManager::addShader(std::string vertexShaderPath,
   return index;
 }
 
+int ShaderManager::addShader(std::string vertexShaderPath,
+                             std::string geometryShaderPath,
+                             std::string fragmentShaderPath)
+{
+  int index = 0;
+  for (auto shaderProgram : shaderPrograms)
+  {
+    if (shaderProgram->vertexShaderPath == vertexShaderPath &&
+        shaderProgram->geometryShaderPath == geometryShaderPath &&
+        shaderProgram->fragmentShaderPath == fragmentShaderPath)
+    {
+      return index;
+    }
+
+    ++index;
+  }
+
+  shaderPrograms.push_back(std::make_shared<ShaderProgram>(
+      gl, vertexShaderPath, geometryShaderPath, fragmentShaderPath));
+
+  return index;
+}
+
 void ShaderManager::bind(int id, const RenderData &renderData)
 {
   auto shader = shaderPrograms[id];
