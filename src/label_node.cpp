@@ -37,7 +37,7 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
     {
       labelQuad = quad->getObjectData();
       labelQuad.shaderProgramId = shaderManager->addShader(
-          ":/shader/pass.vert", ":/shader/texture.frag");
+          ":/shader/label.vert", ":/shader/texture.frag");
       labelQuad.customBufferSize = sizeof(Graphics::TextureAddress);
       labelQuad.setBuffer = [this](void *insertionPoint)
       {
