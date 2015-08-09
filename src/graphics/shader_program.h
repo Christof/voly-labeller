@@ -25,9 +25,12 @@ class ShaderProgram
  public:
   ShaderProgram(Gl *gl, std::string vertexShaderPath,
                 std::string fragmentShaderPath);
+  ShaderProgram(Gl *gl, std::string vertexShaderPath,
+                std::string geometryShaderPath, std::string fragmentShaderPath);
   virtual ~ShaderProgram();
 
   const std::string vertexShaderPath;
+  const std::string geometryShaderPath;
   const std::string fragmentShaderPath;
 
   void bind();

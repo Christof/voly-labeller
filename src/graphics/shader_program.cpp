@@ -28,6 +28,26 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
   glCheckError();
 }
 
+ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
+                             std::string geometryShaderPath,
+                             std::string fragmentShaderPath)
+  : vertexShaderPath(vertexShaderPath), geometryShaderPath(geometryShaderPath),
+    fragmentShaderPath(fragmentShaderPath), gl(gl)
+{
+  addShaderFromSource(QOpenGLShader::Vertex, vertexShaderPath);
+  addShaderFromSource(QOpenGLShader::Geometry, geometryShaderPath);
+  addShaderFromSource(QOpenGLShader::Fragment, fragmentShaderPath);
+
+  if (!shaderProgram.link())
+  {
+    throw std::runtime_error("error during linking of" + vertexShaderPath +
+                             "/" + geometryShaderPath + "/" +
+                             fragmentShaderPath);
+  }
+
+  glCheckError();
+}
+
 ShaderProgram::~ShaderProgram()
 {
 }
