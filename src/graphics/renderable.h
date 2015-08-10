@@ -35,6 +35,8 @@ class Renderable
                       std::shared_ptr<ShaderManager> shaderManager,
                       const RenderData &renderData);
 
+  ObjectData getObjectData();
+
  protected:
   virtual ObjectData
   createBuffers(std::shared_ptr<ObjectManager> objectManager,
