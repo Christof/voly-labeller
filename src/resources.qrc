@@ -19,6 +19,8 @@
         <file>shader/pass.vert</file>
         <file>shader/test.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
+        <file>shader/cube.geom</file>
+        <file>shader/simple.vert</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

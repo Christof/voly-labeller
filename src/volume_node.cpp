@@ -5,6 +5,8 @@
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
 
+#include <iostream>
+
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
@@ -37,8 +39,9 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
   renderData.modelMatrix = transformation * scale;
-  cube->render(gl, objectManager, textureManager, shaderManager, renderData);
+  // cube->render(gl, objectManager, textureManager, shaderManager, renderData);
 
+  cubeData.transform = transformation * scale;
   objectManager->renderLater(cubeData);
 }
 
@@ -49,14 +52,20 @@ std::shared_ptr<Math::Obb> VolumeNode::getObb()
 
 void VolumeNode::initializeTexture(Graphics::Gl *gl)
 {
-  int shaderProgramId =
-      shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
-  auto zeroVec3 = std::vector<float>{ 1, 1, 1 };
+  cube->initialize(gl, objectManager, textureManager, shaderManager);
+  int shaderProgramId = shaderManager->addShader(
+      ":/shader/simple.vert", ":/shader/cube.geom", ":/shader/test.frag");
+  cubeData = cube->getObjectData();
+  cubeData.shaderProgramId = shaderProgramId;
+  /*
+  auto zeroVec3 = std::vector<float>{ 0.2f, 0.2f, 0.2f };
   auto colors = std::vector<float>{ 0, 1, 1, 1 };
-  cubeData = objectManager->addObject(zeroVec3, zeroVec3, colors,
-                                      std::vector<float>{ 0, 0 },
-                                      std::vector<uint>{ 0 }, shaderProgramId, GL_POINTS);
+  cubeData = objectManager->addObject(
+      zeroVec3, zeroVec3, colors, std::vector<float>{ 0, 0 },
+      std::vector<uint>{ 0 }, shaderProgramId, GL_POINTS);
+  cubeData.transform = Eigen::Matrix4f::Identity();
   glAssert(gl->glPointSize(40));
+  */
 
   texture = textureManager->add3dTexture(volumeReader->getSize(),
                                          volumeReader->getDataPointer());

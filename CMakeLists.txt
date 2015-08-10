@@ -98,6 +98,8 @@ set(SHADER
   src/shader/texture.frag
   src/shader/textureForRenderBuffer.frag
   src/shader/texture3dAsColor.frag
+  src/shader/cube.geom
+  src/shader/simple.vert
   src/shader/texture3d.vert)
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
