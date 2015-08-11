@@ -11,7 +11,7 @@ namespace Graphics
 class ShaderBuffer
 {
  public:
-  ShaderBuffer(GLenum target, bool runUpdatesOnCPU = true);
+  explicit ShaderBuffer(GLenum target, bool runUpdatesOnCPU = true);
 
   virtual bool initialize(Gl *gl, GLuint count, GLbitfield createFlags,
                           GLbitfield mapFlags);

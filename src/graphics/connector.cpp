@@ -20,9 +20,10 @@ Connector::~Connector()
 {
 }
 
-ObjectData Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
-                std::shared_ptr<TextureManager> textureManager,
-                std::shared_ptr<ShaderManager> shaderManager)
+ObjectData
+Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
+                         std::shared_ptr<TextureManager> textureManager,
+                         std::shared_ptr<ShaderManager> shaderManager)
 {
   std::vector<float> positions;
   std::vector<float> normals(points.size() * 3, 0.0f);
@@ -46,7 +47,7 @@ ObjectData Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager
   int shaderProgramId =
       objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
   return objectManager->addObject(positions, normals, colors, texCoords,
-                                        indices, shaderProgramId, GL_LINES);
+                                  indices, shaderProgramId, GL_LINES);
 }
 
 }  // namespace Graphics

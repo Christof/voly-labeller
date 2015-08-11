@@ -2,12 +2,12 @@
 
 #define SRC_GRAPHICS_TEXTURE_MANAGER_H_
 
+#include <QImage>
+#include <Eigen/Core>
 #include <string>
 #include <vector>
-#include <QImage>
 #include <map>
 #include <memory>
-#include <Eigen/Core>
 #include "./texture_address.h"
 #include "./texture_space_description.h"
 

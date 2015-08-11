@@ -90,7 +90,8 @@ void Nodes::render(Graphics::Gl *gl,
   if (showBoundingVolumes)
   {
     for (auto &node : obbNodes)
-      node->render(gl, objectManager, textureManager, shaderManager, renderData);
+      node->render(gl, objectManager, textureManager, shaderManager,
+                   renderData);
   }
 }
 

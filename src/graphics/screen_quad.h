@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_SCREEN_QUAD_H_
 
 #include <memory>
+#include <string>
 #include "./quad.h"
 
 namespace Graphics

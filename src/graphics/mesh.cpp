@@ -1,10 +1,10 @@
 #include "./mesh.h"
 #include <QDebug>
 #include <string>
+#include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "../utils/path_helper.h"
-#include <iostream>
 
 namespace Graphics
 {
