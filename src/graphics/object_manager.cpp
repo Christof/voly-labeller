@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
+#include <string>
 #include <cassert>
 #include <algorithm>
 #include "./gl.h"

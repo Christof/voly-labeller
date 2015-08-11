@@ -45,20 +45,7 @@ std::shared_ptr<Math::Obb> VolumeNode::getObb()
 
 void VolumeNode::initializeTexture(Graphics::Gl *gl)
 {
-  auto size = volumeReader->getSize();
-  auto textureTarget = GL_TEXTURE_3D;
-
-  glAssert(gl->glGenTextures(1, &texture));
-  glAssert(gl->glBindTexture(textureTarget, texture));
-  glAssert(gl->glTexImage3D(textureTarget, 0, GL_R32F, size.x(), size.y(),
-                            size.z(), 0, GL_RED, GL_FLOAT,
-                            volumeReader->getDataPointer()));
-
-  glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-  glAssert(gl->glBindTexture(textureTarget, 0));
+  texture = textureManager->add3dTexture(volumeReader->getSize(),
+                                         volumeReader->getDataPointer());
 }
 

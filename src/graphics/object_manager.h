@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <string>
 #include "./circular_buffer.h"
 #include "./shader_buffer.h"
 #include "./texture_address.h"

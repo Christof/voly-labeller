@@ -2,9 +2,10 @@
 
 #define SRC_GRAPHICS_TEXTURE_MANAGER_H_
 
+#include <QImage>
+#include <Eigen/Core>
 #include <string>
 #include <vector>
-#include <QImage>
 #include <map>
 #include <memory>
 #include "./texture_address.h"
@@ -30,6 +31,7 @@ class TextureManager
 
   int addTexture(std::string path);
   int addTexture(QImage *image);
+  unsigned int add3dTexture(Eigen::Vector3i size, float *data);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);

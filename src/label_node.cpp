@@ -12,7 +12,8 @@ LabelNode::LabelNode(Label label) : label(label)
   Importer importer;
 
   anchorMesh = importer.import("assets/anchor.dae", 0);
-  quad = std::make_shared<Graphics::Quad>();
+  quad = std::make_shared<Graphics::Quad>(":/shader/label.vert",
+                                          ":/shader/texture.frag");
 
   connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
                                                     Eigen::Vector3f(1, 0, 0));
@@ -36,8 +37,6 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
     if (!labelQuad.isInitialized())
     {
       labelQuad = quad->getObjectData();
-      labelQuad.shaderProgramId = shaderManager->addShader(
-          ":/shader/label.vert", ":/shader/texture.frag");
       labelQuad.customBufferSize = sizeof(Graphics::TextureAddress);
       labelQuad.setBuffer = [this](void *insertionPoint)
       {

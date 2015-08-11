@@ -1,5 +1,6 @@
 #include "./shader_manager.h"
 #include <vector>
+#include <string>
 #include "./shader_program.h"
 #include "./gl.h"
 #include "./ha_buffer.h"

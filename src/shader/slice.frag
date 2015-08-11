@@ -2,8 +2,8 @@
 
 #include "HABufferImplementation.hglsl"
 
+in vec4 vertexPos;
 in vec2 vertexTexCoord;
-in vec4 vertexPosition;
 
 uniform sampler3D textureSampler;
 
@@ -14,7 +14,7 @@ FragmentData computeData()
 
   FragmentData data;
   data.color = vec4(value, value, value, 1.0f);
-  data.pos = vertexPosition;
+  data.pos = vertexPos;
 
   return data;
 }

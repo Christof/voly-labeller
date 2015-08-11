@@ -2,8 +2,8 @@
 
 #define SRC_GRAPHICS_OBJECT_DATA_H_
 
-#include <functional>
 #include <Eigen/Core>
+#include <functional>
 
 namespace Graphics
 {
