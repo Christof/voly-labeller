@@ -12,18 +12,21 @@ out vec4 vertexColor;
 void main()
 {
   vec4 inPos = gl_in[0].gl_Position;
-  gl_Position = inPos;
-  vertexPos = gl_Position;
-  vertexColor = vColor[0];
-  EmitVertex();
-  gl_Position = inPos + vec4(-0.4, -0.4, 0.0, 0.0);
-  vertexPos = gl_Position;
-  vertexColor = vColor[0];
-  EmitVertex();
-  gl_Position = inPos + vec4(0.4, -0.4, 0.0, 0.0);
-  vertexPos = gl_Position;
-  vertexColor = vColor[0];
-  EmitVertex();
+  if (inPos.z >= 0)
+  {
+    gl_Position = inPos;
+    vertexPos = gl_Position;
+    vertexColor = vColor[0];
+    EmitVertex();
+    gl_Position = gl_in[1].gl_Position;
+    vertexPos = gl_Position;
+    vertexColor = vColor[1];
+    EmitVertex();
+    gl_Position = gl_in[2].gl_Position;
+    vertexPos = gl_Position;
+    vertexColor = vColor[2];
+    EmitVertex();
 
-  EndPrimitive();
+    EndPrimitive();
+  }
 }

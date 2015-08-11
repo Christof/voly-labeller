@@ -63,9 +63,9 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   cubeData = objectManager->addObject(
       zeroVec3, zeroVec3, colors, std::vector<float>{ 0, 0 },
       std::vector<uint>{ 0 }, shaderProgramId, GL_POINTS);
+      */
   cubeData.transform = Eigen::Matrix4f::Identity();
   glAssert(gl->glPointSize(40));
-  */
 
   texture = textureManager->add3dTexture(volumeReader->getSize(),
                                          volumeReader->getDataPointer());
