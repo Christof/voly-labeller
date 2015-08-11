@@ -7,6 +7,7 @@
 #include <QImage>
 #include <map>
 #include <memory>
+#include <Eigen/Core>
 #include "./texture_address.h"
 #include "./texture_space_description.h"
 
@@ -30,6 +31,7 @@ class TextureManager
 
   int addTexture(std::string path);
   int addTexture(QImage *image);
+  unsigned int add3dTexture(Eigen::Vector3i size, float *data);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);
