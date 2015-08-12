@@ -32,7 +32,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
+  // quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   auto transformation = volumeReader->getTransformationMatrix();
   auto size = volumeReader->getPhysicalSize();
@@ -41,7 +41,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   renderData.modelMatrix = transformation * scale;
   // cube->render(gl, objectManager, textureManager, shaderManager, renderData);
 
-  cubeData.transform = transformation * scale;
+  // cubeData.transform = transformation * scale;
   objectManager->renderLater(cubeData);
 }
 
@@ -58,12 +58,13 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   cubeData = cube->getObjectData();
   cubeData.shaderProgramId = shaderProgramId;
   /*
-  auto zeroVec3 = std::vector<float>{ 0.2f, 0.2f, 0.2f };
-  auto colors = std::vector<float>{ 0, 1, 1, 1 };
+  auto colors =
+      std::vector<float>{ 1, 0, 0, 0.5f, 0, 1, 0, 0.5f, 0, 0, 1, 0.5f };
+  auto pos = std::vector<float>{ 0, 0, 0.5f, -0.5f, 0, -0.5f, 0, 0, -0.5f };
   cubeData = objectManager->addObject(
-      zeroVec3, zeroVec3, colors, std::vector<float>{ 0, 0 },
-      std::vector<uint>{ 0 }, shaderProgramId, GL_POINTS);
-      */
+      pos, pos, colors, std::vector<float>{ 0, 0, 0, 0, 0, 0 }, std::vector<uint>{ 0, 1, 2 },
+      shaderProgramId, GL_TRIANGLES);
+  */
   cubeData.transform = Eigen::Matrix4f::Identity();
   glAssert(gl->glPointSize(40));
 
