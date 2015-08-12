@@ -47,8 +47,8 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
 
     colors.push_back(0);
     colors.push_back(0);
-    colors.push_back(0);
-    colors.push_back(1);
+    colors.push_back(1.0f);
+    colors.push_back(0.5f);
 
     texCoords.push_back(0);
     texCoords.push_back(0);
