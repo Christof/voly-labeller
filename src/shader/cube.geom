@@ -55,7 +55,8 @@ void main()
       emit(inPos, vColor[i]);
     }
     vec4 nextPos = gl_in[(i + 1) % 3].gl_Position;
-    if (nextPos.z < cutOffZ || inPos.z < cutOffZ)
+    if ((nextPos.z < cutOffZ && inPos.z >= cutOffZ) ||
+        (nextPos.z >= cutOffZ && inPos.z < cutOffZ))
     {
       hasTwoTriangles = true;
       vec4 edge = inPos - nextPos;
