@@ -7,9 +7,17 @@ in vec4 vPos[];
 in vec4 vColor[];
 in mat4 matrix[];
 in vec3 vTexCoord[];
+in int vDrawId[];
 
 out vec4 vertexPos;
 out vec4 vertexColor;
+
+uniform mat4 modelViewProjectionMatrix;
+
+layout (std140, binding = 0) buffer CB0
+{
+    mat4 Transforms[];
+};
 
 int triangleCount = 0;
 bool hasTwoTriangles = false;
@@ -24,8 +32,8 @@ void emit(vec4 pos, vec4 color)
     isFirst = false;
   }
 
-  gl_Position = pos;
   vertexPos = pos;
+  gl_Position = vertexPos;
   vertexColor = color;
   EmitVertex();
   ++triangleCount;
@@ -35,8 +43,8 @@ void emit(vec4 pos, vec4 color)
     EndPrimitive();
     if (hasTwoTriangles)
     {
-      gl_Position = pos;
       vertexPos = pos;
+      gl_Position = vertexPos;
       vertexColor = color;
       EmitVertex();
       ++triangleCount;
@@ -46,15 +54,18 @@ void emit(vec4 pos, vec4 color)
 
 void main()
 {
+  mat4 model = Transforms[vDrawId[0]];
+  mat4 matrix = modelViewProjectionMatrix * model;
+
   const float cutOffZ = 0.2;
   for (int i = 0; i < 3; ++i)
   {
-    vec4 inPos = gl_in[i].gl_Position;
+    vec4 inPos = matrix * gl_in[i].gl_Position;
     if (inPos.z >= cutOffZ)
     {
       emit(inPos, vColor[i]);
     }
-    vec4 nextPos = gl_in[(i + 1) % 3].gl_Position;
+    vec4 nextPos = matrix * gl_in[(i + 1) % 3].gl_Position;
     if ((nextPos.z < cutOffZ && inPos.z >= cutOffZ) ||
         (nextPos.z >= cutOffZ && inPos.z < cutOffZ))
     {
