@@ -1,7 +1,7 @@
 #version 440
 
-layout(triangles) in;
-layout(triangle_strip, max_vertices = 6) out;
+layout(points) in;
+layout(triangle_strip, max_vertices = 42) out;
 
 in vec4 vPos[];
 in vec4 vColor[];
@@ -40,7 +40,7 @@ void emit(vec4 pos, vec4 color)
 
   if (triangleCount == 3)
   {
-    EndPrimitive();
+    // EndPrimitive();
     if (hasTwoTriangles)
     {
       vertexPos = pos;
@@ -56,7 +56,17 @@ void main()
 {
   mat4 model = Transforms[vDrawId[0]];
   mat4 matrix = modelViewProjectionMatrix * model;
+  const vec4 xAxis = vec4(0.5, 0, 0, 0);
+  const vec4 yAxis = vec4(0, 0.5, 0, 0);
+  const vec4 zAxis = vec4(0, 0, 0.5, 0);
 
+  vec4 center = gl_in[0].gl_Position;
+  emit(matrix * (center + yAxis - xAxis - zAxis), vColor[0]);
+  emit(matrix * (center + yAxis - xAxis + zAxis), vColor[0]);
+  emit(matrix * (center + yAxis + xAxis - zAxis), vColor[0]);
+  emit(matrix * (center + yAxis + xAxis + zAxis), vColor[0]);
+  EndPrimitive();
+  /*
   const float cutOffZ = 0.2;
   for (int i = 0; i < 3; ++i)
   {
@@ -82,5 +92,6 @@ void main()
     emit(firstPosition, vec4(0, 1, 1, 1));
 
   EndPrimitive();
+  */
 }
 

@@ -55,9 +55,10 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   cube->initialize(gl, objectManager, textureManager, shaderManager);
   int shaderProgramId = shaderManager->addShader(
       ":/shader/simple.vert", ":/shader/cube.geom", ":/shader/test.frag");
-  cubeData = cube->getObjectData();
-  cubeData.shaderProgramId = shaderProgramId;
+  // cubeData = cube->getObjectData();
+  // cubeData.shaderProgramId = shaderProgramId;
   /*
+  // triangle
   auto colors =
       std::vector<float>{ 1, 0, 0, 0.5f, 0, 1, 0, 0.5f, 0, 0, 1, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0.5f, -0.5f, 0, -0.5f, 0, 0, -0.5f };
@@ -65,6 +66,12 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
       pos, pos, colors, std::vector<float>{ 0, 0, 0, 0, 0, 0 }, std::vector<uint>{ 0, 1, 2 },
       shaderProgramId, GL_TRIANGLES);
   */
+  auto colors =
+      std::vector<float>{ 1, 0, 0, 0.5f };
+  auto pos = std::vector<float>{ 0, 0, 0 };
+  cubeData = objectManager->addObject(
+      pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
+      shaderProgramId, GL_POINTS);
   cubeData.transform = Eigen::Matrix4f::Identity();
   glAssert(gl->glPointSize(40));
 
