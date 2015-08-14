@@ -134,6 +134,42 @@ void main()
     matrix * (center + zAxis + xAxis + yAxis));
   processTriangle(triangle);
 
+  triangle = vec4[3](
+    matrix * (center - yAxis - xAxis - zAxis),
+    matrix * (center - yAxis - xAxis + zAxis),
+    matrix * (center - yAxis + xAxis - zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center - yAxis + xAxis - zAxis),
+    matrix * (center - yAxis - xAxis + zAxis),
+    matrix * (center - yAxis + xAxis + zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center - xAxis - yAxis - zAxis),
+    matrix * (center - xAxis - yAxis + zAxis),
+    matrix * (center - xAxis + yAxis - zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center - xAxis + yAxis - zAxis),
+    matrix * (center - xAxis - yAxis + zAxis),
+    matrix * (center - xAxis + yAxis + zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center - zAxis - xAxis - yAxis),
+    matrix * (center - zAxis - xAxis + yAxis),
+    matrix * (center - zAxis + xAxis - yAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center - zAxis + xAxis - yAxis),
+    matrix * (center - zAxis - xAxis + yAxis),
+    matrix * (center - zAxis + xAxis + yAxis));
+  processTriangle(triangle);
+
   for (int i = 0; i < cutPositionCount; ++i)
   {
     justEmit(cutPositions[i], vColor[0]);
