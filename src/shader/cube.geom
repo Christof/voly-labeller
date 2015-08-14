@@ -40,7 +40,7 @@ void emit(vec4 pos, vec4 color)
 
   if (triangleCount == 3)
   {
-    // EndPrimitive();
+    EndPrimitive();
     if (hasTwoTriangles)
     {
       vertexPos = pos;
@@ -52,30 +52,20 @@ void emit(vec4 pos, vec4 color)
   }
 }
 
-void main()
+void processTriangle(vec4 triangle[3])
 {
-  mat4 model = Transforms[vDrawId[0]];
-  mat4 matrix = modelViewProjectionMatrix * model;
-  const vec4 xAxis = vec4(0.5, 0, 0, 0);
-  const vec4 yAxis = vec4(0, 0.5, 0, 0);
-  const vec4 zAxis = vec4(0, 0, 0.5, 0);
-
-  vec4 center = gl_in[0].gl_Position;
-  emit(matrix * (center + yAxis - xAxis - zAxis), vColor[0]);
-  emit(matrix * (center + yAxis - xAxis + zAxis), vColor[0]);
-  emit(matrix * (center + yAxis + xAxis - zAxis), vColor[0]);
-  emit(matrix * (center + yAxis + xAxis + zAxis), vColor[0]);
-  EndPrimitive();
-  /*
   const float cutOffZ = 0.2;
+  triangleCount = 0;
+  isFirst = true;
+
   for (int i = 0; i < 3; ++i)
   {
-    vec4 inPos = matrix * gl_in[i].gl_Position;
+    vec4 inPos = triangle[i];
     if (inPos.z >= cutOffZ)
     {
-      emit(inPos, vColor[i]);
+      emit(inPos, vColor[0]);
     }
-    vec4 nextPos = matrix * gl_in[(i + 1) % 3].gl_Position;
+    vec4 nextPos = triangle[(i + 1) % 3];
     if ((nextPos.z < cutOffZ && inPos.z >= cutOffZ) ||
         (nextPos.z >= cutOffZ && inPos.z < cutOffZ))
     {
@@ -92,6 +82,29 @@ void main()
     emit(firstPosition, vec4(0, 1, 1, 1));
 
   EndPrimitive();
-  */
+}
+
+void main()
+{
+  mat4 model = Transforms[vDrawId[0]];
+  mat4 matrix = modelViewProjectionMatrix * model;
+  const vec4 xAxis = vec4(0.5, 0, 0, 0);
+  const vec4 yAxis = vec4(0, 0.5, 0, 0);
+  const vec4 zAxis = vec4(0, 0, 0.5, 0);
+
+  vec4 center = gl_in[0].gl_Position;
+  vec4 triangle[3] = vec4[3](
+    matrix * (center + yAxis - xAxis - zAxis),
+    matrix * (center + yAxis - xAxis + zAxis),
+    matrix * (center + yAxis + xAxis - zAxis));
+
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center + yAxis + xAxis - zAxis),
+    matrix * (center + yAxis - xAxis + zAxis),
+    matrix * (center + yAxis + xAxis + zAxis));
+
+  processTriangle(triangle);
 }
 
