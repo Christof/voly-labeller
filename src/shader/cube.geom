@@ -23,6 +23,16 @@ int triangleCount = 0;
 bool hasTwoTriangles = false;
 bool isFirst = true;
 vec4 firstPosition;
+vec4 cutPositions[18];
+int cutPositionCount = 0;
+
+void justEmit(vec4 pos, vec4 color)
+{
+  vertexPos = pos;
+  gl_Position = vertexPos;
+  vertexColor = color;
+  EmitVertex();
+}
 
 void emit(vec4 pos, vec4 color)
 {
@@ -32,10 +42,7 @@ void emit(vec4 pos, vec4 color)
     isFirst = false;
   }
 
-  vertexPos = pos;
-  gl_Position = vertexPos;
-  vertexColor = color;
-  EmitVertex();
+  justEmit(pos, color);
   ++triangleCount;
 
   if (triangleCount == 3)
@@ -43,10 +50,7 @@ void emit(vec4 pos, vec4 color)
     EndPrimitive();
     if (hasTwoTriangles)
     {
-      vertexPos = pos;
-      gl_Position = vertexPos;
-      vertexColor = color;
-      EmitVertex();
+      justEmit(pos, color);
       ++triangleCount;
     }
   }
@@ -74,6 +78,7 @@ void processTriangle(vec4 triangle[3])
       float lambda = (cutOffZ - inPos.z) / edge.z;
 
       vec4 newPos = inPos + lambda * edge;
+      cutPositions[cutPositionCount++] = newPos;
       emit(newPos, vec4(1, 1, 0, 1));
     }
   }
@@ -128,5 +133,11 @@ void main()
     matrix * (center + zAxis - xAxis + yAxis),
     matrix * (center + zAxis + xAxis + yAxis));
   processTriangle(triangle);
+
+  for (int i = 0; i < cutPositionCount; ++i)
+  {
+    justEmit(cutPositions[i], vColor[0]);
+  }
+  EndPrimitive();
 }
 
