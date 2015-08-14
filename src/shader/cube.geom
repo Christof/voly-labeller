@@ -89,6 +89,21 @@ void processTriangle(vec4 triangle[3])
   EndPrimitive();
 }
 
+void processSide(mat4 matrix, vec4 center, vec4 side, vec4 varying1, vec4 varying2)
+{
+  vec4 triangle[3] = vec4[3](
+    matrix * (center + side - varying1 - varying2),
+    matrix * (center + side - varying1 + varying2),
+    matrix * (center + side + varying1 - varying2));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center + side + varying1 - varying2),
+    matrix * (center + side - varying1 + varying2),
+    matrix * (center + side + varying1 + varying2));
+  processTriangle(triangle);
+}
+
 void main()
 {
   mat4 model = Transforms[vDrawId[0]];
@@ -98,77 +113,13 @@ void main()
   const vec4 zAxis = vec4(0, 0, 0.5, 0);
 
   vec4 center = gl_in[0].gl_Position;
-  vec4 triangle[3] = vec4[3](
-    matrix * (center + yAxis - xAxis - zAxis),
-    matrix * (center + yAxis - xAxis + zAxis),
-    matrix * (center + yAxis + xAxis - zAxis));
-  processTriangle(triangle);
 
-  triangle = vec4[3](
-    matrix * (center + yAxis + xAxis - zAxis),
-    matrix * (center + yAxis - xAxis + zAxis),
-    matrix * (center + yAxis + xAxis + zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center + xAxis - yAxis - zAxis),
-    matrix * (center + xAxis - yAxis + zAxis),
-    matrix * (center + xAxis + yAxis - zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center + xAxis + yAxis - zAxis),
-    matrix * (center + xAxis - yAxis + zAxis),
-    matrix * (center + xAxis + yAxis + zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center + zAxis - xAxis - yAxis),
-    matrix * (center + zAxis - xAxis + yAxis),
-    matrix * (center + zAxis + xAxis - yAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center + zAxis + xAxis - yAxis),
-    matrix * (center + zAxis - xAxis + yAxis),
-    matrix * (center + zAxis + xAxis + yAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - yAxis - xAxis - zAxis),
-    matrix * (center - yAxis - xAxis + zAxis),
-    matrix * (center - yAxis + xAxis - zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - yAxis + xAxis - zAxis),
-    matrix * (center - yAxis - xAxis + zAxis),
-    matrix * (center - yAxis + xAxis + zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - xAxis - yAxis - zAxis),
-    matrix * (center - xAxis - yAxis + zAxis),
-    matrix * (center - xAxis + yAxis - zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - xAxis + yAxis - zAxis),
-    matrix * (center - xAxis - yAxis + zAxis),
-    matrix * (center - xAxis + yAxis + zAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - zAxis - xAxis - yAxis),
-    matrix * (center - zAxis - xAxis + yAxis),
-    matrix * (center - zAxis + xAxis - yAxis));
-  processTriangle(triangle);
-
-  triangle = vec4[3](
-    matrix * (center - zAxis + xAxis - yAxis),
-    matrix * (center - zAxis - xAxis + yAxis),
-    matrix * (center - zAxis + xAxis + yAxis));
-  processTriangle(triangle);
+  processSide(matrix, center, yAxis, xAxis, zAxis);
+  processSide(matrix, center, xAxis, yAxis, zAxis);
+  processSide(matrix, center, zAxis, xAxis, yAxis);
+  processSide(matrix, center, -yAxis, xAxis, zAxis);
+  processSide(matrix, center, -xAxis, yAxis, zAxis);
+  processSide(matrix, center, -zAxis, xAxis, yAxis);
 
   for (int i = 0; i < cutPositionCount; ++i)
   {
