@@ -97,14 +97,36 @@ void main()
     matrix * (center + yAxis - xAxis - zAxis),
     matrix * (center + yAxis - xAxis + zAxis),
     matrix * (center + yAxis + xAxis - zAxis));
-
   processTriangle(triangle);
 
   triangle = vec4[3](
     matrix * (center + yAxis + xAxis - zAxis),
     matrix * (center + yAxis - xAxis + zAxis),
     matrix * (center + yAxis + xAxis + zAxis));
+  processTriangle(triangle);
 
+  triangle = vec4[3](
+    matrix * (center + xAxis - yAxis - zAxis),
+    matrix * (center + xAxis - yAxis + zAxis),
+    matrix * (center + xAxis + yAxis - zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center + xAxis + yAxis - zAxis),
+    matrix * (center + xAxis - yAxis + zAxis),
+    matrix * (center + xAxis + yAxis + zAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center + zAxis - xAxis - yAxis),
+    matrix * (center + zAxis - xAxis + yAxis),
+    matrix * (center + zAxis + xAxis - yAxis));
+  processTriangle(triangle);
+
+  triangle = vec4[3](
+    matrix * (center + zAxis + xAxis - yAxis),
+    matrix * (center + zAxis - xAxis + yAxis),
+    matrix * (center + zAxis + xAxis + yAxis));
   processTriangle(triangle);
 }
 
