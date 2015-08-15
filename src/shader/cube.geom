@@ -1,7 +1,7 @@
 #version 440
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 42) out;
+layout(triangle_strip, max_vertices = 85) out;
 
 in vec4 vPos[];
 in vec4 vColor[];
