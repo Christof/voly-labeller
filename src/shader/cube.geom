@@ -14,12 +14,11 @@ out vec4 vertexColor;
 
 uniform mat4 modelViewProjectionMatrix;
 
-layout (std140, binding = 0) buffer CB0
+layout(std140, binding = 0) buffer CB0
 {
-    mat4 Transforms[];
+  mat4 Transforms[];
 };
 
-int triangleCount = 0;
 bool hasTwoTriangles = false;
 bool isFirst = true;
 vec4 firstPosition;
@@ -34,7 +33,7 @@ void justEmit(vec4 pos, vec4 color)
   EmitVertex();
 }
 
-void emit(vec4 pos, vec4 color)
+int emit(vec4 pos, vec4 color, int emittedVertexCount)
 {
   if (isFirst)
   {
@@ -43,24 +42,27 @@ void emit(vec4 pos, vec4 color)
   }
 
   justEmit(pos, color);
-  ++triangleCount;
+  ++emittedVertexCount;
 
-  if (triangleCount == 3)
+  if (emittedVertexCount == 3)
   {
     EndPrimitive();
     if (hasTwoTriangles)
     {
       justEmit(pos, color);
-      ++triangleCount;
+      ++emittedVertexCount;
     }
   }
+
+  return emittedVertexCount;
 }
 
 void processTriangle(mat4 matrix, vec4 triangle[3])
 {
-  const float cutOffZ = 0.2;
-  triangleCount = 0;
+  const float cutOffZ = 0.5;
+  int emittedVertexCount = 0;
   isFirst = true;
+  hasTwoTriangles = false;
   vec4 plane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
                     matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
 
@@ -74,9 +76,9 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
     if (isPosInFOV)
     {
       vec4 c = inPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
-      c.a = 1.0f;
+      c.a = 0.5f;
       c.rgb = plane.xyz / magnitude * 0.5 + vec3(0.5, 0.5, 0.5);
-      emit(matrix * inPos, c);  // vColor[0]);
+      emittedVertexCount = emit(matrix * inPos, c, emittedVertexCount);  // vColor[0]);
     }
     vec4 nextPos = triangle[(i + 1) % 3];
     bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
@@ -91,12 +93,12 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
       cutPositions[cutPositionCount++] = newPos;
       vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       c.a = 0.5f;
-      emit(matrix * newPos, c);  // vec4(1, 1, 0, 1));
+      emittedVertexCount = emit(matrix * newPos, c, emittedVertexCount);  // vec4(1, 1, 0, 1));
     }
   }
 
-  if (triangleCount == 5)
-    emit(firstPosition, vec4(0, 1, 1, 1));
+  if (emittedVertexCount == 5)
+    emit(firstPosition, vec4(0, 1, 1, 1), emittedVertexCount);
 
   EndPrimitive();
 }
@@ -125,17 +127,25 @@ void main()
 
   vec4 center = gl_in[0].gl_Position;
 
+  // top
   processSide(matrix, center, yAxis, xAxis, zAxis);
+  // right
   processSide(matrix, center, xAxis, yAxis, zAxis);
+  // front
   processSide(matrix, center, zAxis, xAxis, yAxis);
+  // bottom
   processSide(matrix, center, -yAxis, xAxis, zAxis);
+  // left
   processSide(matrix, center, -xAxis, yAxis, zAxis);
+  // back
   processSide(matrix, center, -zAxis, xAxis, yAxis);
 
+  /*
   for (int i = 0; i < cutPositionCount; ++i)
   {
     justEmit(cutPositions[i], vColor[0]);
   }
   EndPrimitive();
+  */
 }
 
