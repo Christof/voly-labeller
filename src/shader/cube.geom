@@ -58,34 +58,40 @@ void emit(vec4 pos, vec4 color)
 
 void processTriangle(mat4 matrix, vec4 triangle[3])
 {
-  const float cutOffZ = 0.4;
+  const float cutOffZ = 0.2;
   triangleCount = 0;
   isFirst = true;
+  vec4 plane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
+                    matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
 
-  mat4 colorMat = inverse(matrix);
+  float magnitude = sqrt(dot(plane.xyz, plane.xyz));
+  plane = plane / magnitude;
 
   for (int i = 0; i < 3; ++i)
   {
     vec4 inPos = triangle[i];
-    if (inPos.z >= cutOffZ)
+    bool isPosInFOV = dot(inPos, plane) > cutOffZ;
+    if (isPosInFOV)
     {
-      vec4 c = (colorMat * inPos) * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
-      c.a = 0.5f;
-      emit(inPos, c);  // vColor[0]);
+      vec4 c = inPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
+      c.a = 1.0f;
+      c.rgb = plane.xyz / magnitude * 0.5 + vec3(0.5, 0.5, 0.5);
+      emit(matrix * inPos, c);  // vColor[0]);
     }
     vec4 nextPos = triangle[(i + 1) % 3];
-    if ((nextPos.z < cutOffZ && inPos.z >= cutOffZ) ||
-        (nextPos.z >= cutOffZ && inPos.z < cutOffZ))
+    bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
+    if ((isPosInFOV && !isNextPosInFOV) ||
+        (!isPosInFOV && isNextPosInFOV))
     {
       hasTwoTriangles = true;
       vec4 edge = inPos - nextPos;
-      float lambda = (cutOffZ - inPos.z) / edge.z;
+      float lambda = (cutOffZ - dot(plane, inPos)) / dot(plane, edge);
 
       vec4 newPos = inPos + lambda * edge;
       cutPositions[cutPositionCount++] = newPos;
-      vec4 c = (colorMat * newPos) * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
+      vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       c.a = 0.5f;
-      emit(newPos, c);  // vec4(1, 1, 0, 1));
+      emit(matrix * newPos, c);  // vec4(1, 1, 0, 1));
     }
   }
 
@@ -98,14 +104,14 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
 void processSide(mat4 matrix, vec4 center, vec4 side, vec4 varying1,
                  vec4 varying2)
 {
-  vec4 triangle[3] = vec4[3](matrix * (center + side - varying1 - varying2),
-                             matrix * (center + side - varying1 + varying2),
-                             matrix * (center + side + varying1 - varying2));
+  vec4 triangle[3] = vec4[3](center + side - varying1 - varying2,
+                             center + side - varying1 + varying2,
+                             center + side + varying1 - varying2);
   processTriangle(matrix, triangle);
 
-  triangle = vec4[3](matrix * (center + side + varying1 - varying2),
-                     matrix * (center + side - varying1 + varying2),
-                     matrix * (center + side + varying1 + varying2));
+  triangle = vec4[3](center + side + varying1 - varying2,
+                     center + side - varying1 + varying2,
+                     center + side + varying1 + varying2);
   processTriangle(matrix, triangle);
 }
 
