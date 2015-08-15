@@ -77,7 +77,7 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
     {
       vec4 c = inPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       c.a = 0.5f;
-      c.rgb = plane.xyz / magnitude * 0.5 + vec3(0.5, 0.5, 0.5);
+      c.rgb = plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5);
       emittedVertexCount = emit(matrix * inPos, c, emittedVertexCount);  // vColor[0]);
     }
     vec4 nextPos = triangle[(i + 1) % 3];
@@ -91,14 +91,18 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
 
       vec4 newPos = inPos + lambda * edge;
       cutPositions[cutPositionCount++] = newPos;
-      vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
-      c.a = 0.5f;
+      vec4 c = vec4(plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5), 0.5f);
+      //vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
+      // c.a = 0.5f;
       emittedVertexCount = emit(matrix * newPos, c, emittedVertexCount);  // vec4(1, 1, 0, 1));
     }
   }
 
   if (emittedVertexCount == 5)
-    emit(firstPosition, vec4(0, 1, 1, 1), emittedVertexCount);
+  {
+    vec4 c = vec4(plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5), 0.5f);
+    emit(firstPosition, c, emittedVertexCount);
+  }
 
   EndPrimitive();
 }
