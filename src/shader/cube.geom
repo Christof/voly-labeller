@@ -3,10 +3,6 @@
 layout(points) in;
 layout(triangle_strip, max_vertices = 85) out;
 
-in vec4 vPos[];
-in vec4 vColor[];
-in mat4 matrix[];
-in vec3 vTexCoord[];
 in int vDrawId[];
 
 out vec4 vertexPos;
