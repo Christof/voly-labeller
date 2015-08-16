@@ -18,7 +18,7 @@ layout(std140, binding = 0) buffer CB0
 vec4 cutPositions[18];
 int cutPositionCount = 0;
 
-void justEmit(const mat4 matrix, const vec4 pos)
+void emit(const mat4 matrix, const vec4 pos)
 {
   vertexPos = matrix * pos;
   gl_Position = vertexPos;
@@ -26,10 +26,11 @@ void justEmit(const mat4 matrix, const vec4 pos)
   EmitVertex();
 }
 
-int emit(const mat4 matrix, const vec4 pos,
-         const bool triangleSplittingNecessary, int emittedVertexCount)
+int emitWithPrimitiveHandling(const mat4 matrix, const vec4 pos,
+                              const bool triangleSplittingNecessary,
+                              int emittedVertexCount)
 {
-  justEmit(matrix, pos);
+  emit(matrix, pos);
   ++emittedVertexCount;
 
   if (emittedVertexCount == 3)
@@ -37,7 +38,7 @@ int emit(const mat4 matrix, const vec4 pos,
     EndPrimitive();
     if (triangleSplittingNecessary)
     {
-      justEmit(matrix, pos);
+      emit(matrix, pos);
       ++emittedVertexCount;
     }
   }
@@ -76,8 +77,8 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
     bool isPosInFOV = dot(inPos, plane) > cutOffZ;
     if (isPosInFOV)
     {
-      emittedVertexCount =
-          emit(matrix, inPos, triangleSplittingNecessary, emittedVertexCount);
+      emittedVertexCount = emitWithPrimitiveHandling(
+          matrix, inPos, triangleSplittingNecessary, emittedVertexCount);
 
       if (emittedVertexCount == 1)
         firstPosition = inPos;
@@ -93,8 +94,8 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 
       vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
-      emittedVertexCount =
-          emit(matrix, newPos, triangleSplittingNecessary, emittedVertexCount);
+      emittedVertexCount = emitWithPrimitiveHandling(
+          matrix, newPos, triangleSplittingNecessary, emittedVertexCount);
 
       if (emittedVertexCount == 1)
         firstPosition = newPos;
@@ -103,7 +104,8 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 
   if (emittedVertexCount == 5)
   {
-    emit(matrix, firstPosition, triangleSplittingNecessary, emittedVertexCount);
+    emitWithPrimitiveHandling(matrix, firstPosition, triangleSplittingNecessary,
+                              emittedVertexCount);
   }
 
   EndPrimitive();
@@ -135,9 +137,9 @@ void fillHole(const mat4 matrix)
 {
   if (cutPositionCount == 3)
   {
-    justEmit(matrix, cutPositions[0]);
-    justEmit(matrix, cutPositions[1]);
-    justEmit(matrix, cutPositions[2]);
+    emit(matrix, cutPositions[0]);
+    emit(matrix, cutPositions[1]);
+    emit(matrix, cutPositions[2]);
     return;
   }
 
@@ -164,9 +166,9 @@ void fillHole(const mat4 matrix)
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
   {
-    justEmit(matrix, center);
-    justEmit(matrix, cutPositions[i]);
-    justEmit(matrix, cutPositions[i + 1]);
+    emit(matrix, center);
+    emit(matrix, cutPositions[i]);
+    emit(matrix, cutPositions[i + 1]);
     EndPrimitive();
   }
 }
