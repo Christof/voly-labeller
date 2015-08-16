@@ -69,15 +69,15 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
   float magnitude = sqrt(dot(plane.xyz, plane.xyz));
   plane = plane / magnitude;
 
+  vec4 c = triangle[0] + triangle[1] + triangle[2];
+  c = c * 0.25 + vec4(0.8, 0.8, 0.8, 0);
+  c.a = 1;
   for (int i = 0; i < 3; ++i)
   {
     vec4 inPos = triangle[i];
     bool isPosInFOV = dot(inPos, plane) > cutOffZ;
     if (isPosInFOV)
     {
-      vec4 c = inPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
-      c.a = 0.5f;
-      c.rgb = plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5);
       emittedVertexCount = emit(matrix * inPos, c, emittedVertexCount);  // vColor[0]);
     }
     vec4 nextPos = triangle[(i + 1) % 3];
@@ -91,7 +91,6 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
 
       vec4 newPos = inPos + lambda * edge;
       cutPositions[cutPositionCount++] = newPos;
-      vec4 c = vec4(plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5), 0.5f);
       //vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       // c.a = 0.5f;
       emittedVertexCount = emit(matrix * newPos, c, emittedVertexCount);  // vec4(1, 1, 0, 1));
@@ -100,7 +99,6 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
 
   if (emittedVertexCount == 5)
   {
-    vec4 c = vec4(plane.xyz * 0.5 + vec3(0.5, 0.5, 0.5), 0.5f);
     emit(firstPosition, c, emittedVertexCount);
   }
 
