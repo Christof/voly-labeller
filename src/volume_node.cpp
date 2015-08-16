@@ -1,11 +1,10 @@
 #include "./volume_node.h"
 #include <string>
+#include <vector>
 #include "./graphics/render_data.h"
 #include "./volume_reader.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
-
-#include <iostream>
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
@@ -63,11 +62,11 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
       std::vector<float>{ 1, 0, 0, 0.5f, 0, 1, 0, 0.5f, 0, 0, 1, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0.5f, -0.5f, 0, -0.5f, 0, 0, -0.5f };
   cubeData = objectManager->addObject(
-      pos, pos, colors, std::vector<float>{ 0, 0, 0, 0, 0, 0 }, std::vector<uint>{ 0, 1, 2 },
+      pos, pos, colors, std::vector<float>{ 0, 0, 0, 0, 0, 0 },
+  std::vector<uint>{ 0, 1, 2 },
       shaderProgramId, GL_TRIANGLES);
   */
-  auto colors =
-      std::vector<float>{ 1, 0, 0, 0.5f };
+  auto colors = std::vector<float>{ 1, 0, 0, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0 };
   cubeData = objectManager->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
