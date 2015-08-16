@@ -57,7 +57,7 @@ int emit(const mat4 matrix, const vec4 pos, int emittedVertexCount)
   return emittedVertexCount;
 }
 
-void addCutPositionIfNew(vec4 newPos)
+void addCutPositionIfNew(const vec4 newPos)
 {
   for (int i = 0; i < cutPositionCount; ++i)
   {
@@ -69,7 +69,7 @@ void addCutPositionIfNew(vec4 newPos)
   cutPositions[cutPositionCount++] = newPos;
 }
 
-void processTriangle(mat4 matrix, vec4 triangle[3])
+void processTriangle(const mat4 matrix, const vec4 triangle[3])
 {
   const float cutOffZ = 0.5;
   int emittedVertexCount = 0;
@@ -81,9 +81,6 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
   float magnitude = sqrt(dot(plane.xyz, plane.xyz));
   plane = plane / magnitude;
 
-  vec4 c = triangle[0] + triangle[1] + triangle[2];
-  c = c * 0.25 + vec4(0.8, 0.8, 0.8, 0);
-  c.a = 1;
   for (int i = 0; i < 3; ++i)
   {
     vec4 inPos = triangle[i];
@@ -92,10 +89,10 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
     {
       emittedVertexCount = emit(matrix, inPos, emittedVertexCount);
     }
+
     vec4 nextPos = triangle[(i + 1) % 3];
     bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
-    if ((isPosInFOV && !isNextPosInFOV) ||
-        (!isPosInFOV && isNextPosInFOV))
+    if ((isPosInFOV && !isNextPosInFOV) || (!isPosInFOV && isNextPosInFOV))
     {
       hasTwoTriangles = true;
       vec4 edge = inPos - nextPos;
@@ -103,8 +100,6 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
 
       vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
-      //vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
-      // c.a = 0.5f;
       emittedVertexCount = emit(matrix, newPos, emittedVertexCount);
     }
   }
@@ -117,8 +112,8 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
   EndPrimitive();
 }
 
-void processSide(mat4 matrix, vec4 center, vec4 side, vec4 varying1,
-                 vec4 varying2)
+void processSide(const mat4 matrix, const vec4 center, const vec4 side,
+                 const vec4 varying1, const vec4 varying2)
 {
   vec4 triangle[3] = vec4[3](center + side - varying1 - varying2,
                              center + side - varying1 + varying2,
@@ -131,7 +126,7 @@ void processSide(mat4 matrix, vec4 center, vec4 side, vec4 varying1,
   processTriangle(matrix, triangle);
 }
 
-bool hasSmallerAngle(vec4 center, vec4 pos1, vec4 pos2)
+bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
 {
   float angle1 = atan(pos1.y - center.y, pos1.x - center.x);
   float angle2 = atan(pos2.y - center.y, pos2.x - center.x);
@@ -139,7 +134,7 @@ bool hasSmallerAngle(vec4 center, vec4 pos1, vec4 pos2)
   return angle1 < angle2;
 }
 
-void fillHole(mat4 matrix)
+void fillHole(const mat4 matrix)
 {
   if (cutPositionCount == 3)
   {
@@ -159,9 +154,11 @@ void fillHole(mat4 matrix)
   {
     vec4 temp = cutPositions[i];
     int j = i - 1;
-    while(hasSmallerAngle(matrix * center, matrix * temp, matrix * cutPositions[j]) && j >= 0)
+    while (hasSmallerAngle(matrix * center, matrix * temp,
+                           matrix * cutPositions[j]) &&
+           j >= 0)
     {
-      cutPositions[j+1] = cutPositions[j];
+      cutPositions[j + 1] = cutPositions[j];
       j = j - 1;
     }
     cutPositions[j + 1] = temp;
