@@ -57,6 +57,18 @@ int emit(vec4 pos, vec4 color, int emittedVertexCount)
   return emittedVertexCount;
 }
 
+void addCutPositionIfNew(vec4 newPos)
+{
+  for (int i = 0; i < cutPositionCount; ++i)
+  {
+    vec4 diff = cutPositions[i] - newPos;
+    if (dot(diff, diff) < 0.0001)
+      return;
+  }
+
+  cutPositions[cutPositionCount++] = newPos;
+}
+
 void processTriangle(mat4 matrix, vec4 triangle[3])
 {
   const float cutOffZ = 0.5;
@@ -90,7 +102,7 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
       float lambda = (cutOffZ - dot(plane, inPos)) / dot(plane, edge);
 
       vec4 newPos = inPos + lambda * edge;
-      cutPositions[cutPositionCount++] = newPos;
+      addCutPositionIfNew(newPos);
       //vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       // c.a = 0.5f;
       emittedVertexCount = emit(matrix * newPos, c, emittedVertexCount);  // vec4(1, 1, 0, 1));
