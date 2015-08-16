@@ -94,7 +94,8 @@ void addCutPositionIfNew(const vec4 newPos)
 void processTriangle(const mat4 matrix, const vec4 nearPlane,
                      const vec4 triangle[3])
 {
-  const float cutOffZ = 0.5;
+  // use positive value to see the cutting in front of the near plane
+  const float cutOffZ = 0;
   int emittedVertexCount = 0;
 
   vec4 firstPosition;
