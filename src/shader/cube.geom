@@ -15,9 +15,7 @@ layout(std140, binding = 0) buffer CB0
   mat4 Transforms[];
 };
 
-bool hasTwoTriangles = false;
-bool isFirst = true;
-vec4 firstPosition;
+bool triangleSplittingNecessary = false;
 vec4 cutPositions[18];
 int cutPositionCount = 0;
 
@@ -31,19 +29,13 @@ void justEmit(const mat4 matrix, const vec4 pos)
 
 int emit(const mat4 matrix, const vec4 pos, int emittedVertexCount)
 {
-  if (isFirst)
-  {
-    firstPosition = pos;
-    isFirst = false;
-  }
-
   justEmit(matrix, pos);
   ++emittedVertexCount;
 
   if (emittedVertexCount == 3)
   {
     EndPrimitive();
-    if (hasTwoTriangles)
+    if (triangleSplittingNecessary)
     {
       justEmit(matrix, pos);
       ++emittedVertexCount;
@@ -69,13 +61,14 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 {
   const float cutOffZ = 0.5;
   int emittedVertexCount = 0;
-  isFirst = true;
-  hasTwoTriangles = false;
+  triangleSplittingNecessary = false;
   vec4 plane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
                     matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
 
   float magnitude = sqrt(dot(plane.xyz, plane.xyz));
   plane = plane / magnitude;
+
+  vec4 firstPosition;
 
   for (int i = 0; i < 3; ++i)
   {
@@ -84,19 +77,25 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
     if (isPosInFOV)
     {
       emittedVertexCount = emit(matrix, inPos, emittedVertexCount);
+
+      if (emittedVertexCount == 1)
+        firstPosition = inPos;
     }
 
     vec4 nextPos = triangle[(i + 1) % 3];
     bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
     if ((isPosInFOV && !isNextPosInFOV) || (!isPosInFOV && isNextPosInFOV))
     {
-      hasTwoTriangles = true;
+      triangleSplittingNecessary = true;
       vec4 edge = inPos - nextPos;
       float lambda = (cutOffZ - dot(plane, inPos)) / dot(plane, edge);
 
       vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
       emittedVertexCount = emit(matrix, newPos, emittedVertexCount);
+
+      if (emittedVertexCount == 1)
+        firstPosition = newPos;
     }
   }
 
