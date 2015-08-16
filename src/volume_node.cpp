@@ -50,7 +50,7 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
 {
   cube->initialize(gl, objectManager, textureManager, shaderManager);
   int shaderProgramId = shaderManager->addShader(
-      ":/shader/simple.vert", ":/shader/cube.geom", ":/shader/test.frag");
+      ":/shader/cube.vert", ":/shader/cube.geom", ":/shader/test.frag");
 
   auto colors = std::vector<float>{ 1, 0, 0, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0 };

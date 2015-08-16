@@ -20,7 +20,7 @@
         <file>shader/test.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/cube.geom</file>
-        <file>shader/simple.vert</file>
+        <file>shader/cube.vert</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
