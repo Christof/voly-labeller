@@ -31,7 +31,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  // quad->render(gl, objectManager, textureManager, shaderManager, renderData);
+  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   auto transformation = volumeReader->getTransformationMatrix();
   auto size = volumeReader->getPhysicalSize();

@@ -21,7 +21,7 @@ DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
-  // addMeshNodesTo(sceneNodes);
+  addMeshNodesTo(sceneNodes);
   addLabelNodesTo(sceneNodes);
   sceneNodes.push_back(
       std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
