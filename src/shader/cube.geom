@@ -131,6 +131,63 @@ void processSide(mat4 matrix, vec4 center, vec4 side, vec4 varying1,
   processTriangle(matrix, triangle);
 }
 
+bool hasSmallerAngle(vec4 center, vec4 pos1, vec4 pos2)
+{
+  float angle1 = atan(pos1.y - center.y, pos1.x - center.x);
+  float angle2 = atan(pos2.y - center.y, pos2.x - center.x);
+
+  return angle1 < angle2;
+}
+
+void fillHole(mat4 matrix)
+{
+  if (cutPositionCount == 3)
+  {
+    justEmit(matrix * cutPositions[0], vec4(1, 0, 0, 0.8));
+    justEmit(matrix * cutPositions[1], vec4(1, 0, 0, 0.8));
+    justEmit(matrix * cutPositions[2], vec4(1, 0, 0, 0.8));
+    return;
+  }
+
+  // sort positions
+  vec4 center = vec4(0, 0, 0, 0);
+  for (int i = 0; i < cutPositionCount; ++i)
+    center += cutPositions[i];
+  center = center / cutPositionCount;
+
+  for (int i = 0; i < cutPositionCount; ++i)
+  {
+    vec4 temp = cutPositions[i];
+    int j = i - 1;
+    while(hasSmallerAngle(matrix * center, matrix * temp, matrix * cutPositions[j]) && j >= 0)
+    {
+      cutPositions[j+1] = cutPositions[j];
+      j = j - 1;
+    }
+    cutPositions[j + 1] = temp;
+  }
+
+  cutPositions[cutPositionCount++] = cutPositions[0];
+  int i = 0;
+  while (i + 2 < cutPositionCount)
+  {
+    justEmit(matrix * cutPositions[i], vec4(1, 0, 0, 0.8));
+    justEmit(matrix * cutPositions[i + 1], vec4(0, 1, 0, 0.8));
+    justEmit(matrix * cutPositions[i + 2], vec4(0, 0, 1, 0.8));
+    EndPrimitive();
+    i += 2;
+  }
+  i = 0;
+  while (i + 4 < cutPositionCount)
+  {
+    justEmit(matrix * cutPositions[i], vec4(1, 0, 0, 0.8));
+    justEmit(matrix * cutPositions[i + 2], vec4(0, 1, 0, 0.8));
+    justEmit(matrix * cutPositions[i + 4], vec4(0, 0, 1, 0.8));
+    EndPrimitive();
+    i += 4;
+  }
+}
+
 void main()
 {
   mat4 model = Transforms[vDrawId[0]];
@@ -154,12 +211,6 @@ void main()
   // back
   processSide(matrix, center, -zAxis, xAxis, yAxis);
 
-  /*
-  for (int i = 0; i < cutPositionCount; ++i)
-  {
-    justEmit(cutPositions[i], vColor[0]);
-  }
-  EndPrimitive();
-  */
+  fillHole(matrix);
 }
 
