@@ -15,7 +15,6 @@ layout(std140, binding = 0) buffer CB0
   mat4 Transforms[];
 };
 
-bool triangleSplittingNecessary = false;
 vec4 cutPositions[18];
 int cutPositionCount = 0;
 
@@ -27,7 +26,8 @@ void justEmit(const mat4 matrix, const vec4 pos)
   EmitVertex();
 }
 
-int emit(const mat4 matrix, const vec4 pos, int emittedVertexCount)
+int emit(const mat4 matrix, const vec4 pos,
+         const bool triangleSplittingNecessary, int emittedVertexCount)
 {
   justEmit(matrix, pos);
   ++emittedVertexCount;
@@ -61,7 +61,6 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 {
   const float cutOffZ = 0.5;
   int emittedVertexCount = 0;
-  triangleSplittingNecessary = false;
   vec4 plane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
                     matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
 
@@ -69,6 +68,7 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
   plane = plane / magnitude;
 
   vec4 firstPosition;
+  bool triangleSplittingNecessary = false;
 
   for (int i = 0; i < 3; ++i)
   {
@@ -76,7 +76,8 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
     bool isPosInFOV = dot(inPos, plane) > cutOffZ;
     if (isPosInFOV)
     {
-      emittedVertexCount = emit(matrix, inPos, emittedVertexCount);
+      emittedVertexCount =
+          emit(matrix, inPos, triangleSplittingNecessary, emittedVertexCount);
 
       if (emittedVertexCount == 1)
         firstPosition = inPos;
@@ -92,7 +93,8 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 
       vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
-      emittedVertexCount = emit(matrix, newPos, emittedVertexCount);
+      emittedVertexCount =
+          emit(matrix, newPos, triangleSplittingNecessary, emittedVertexCount);
 
       if (emittedVertexCount == 1)
         firstPosition = newPos;
@@ -101,7 +103,7 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
 
   if (emittedVertexCount == 5)
   {
-    emit(matrix, firstPosition, emittedVertexCount);
+    emit(matrix, firstPosition, triangleSplittingNecessary, emittedVertexCount);
   }
 
   EndPrimitive();
