@@ -168,23 +168,12 @@ void fillHole(mat4 matrix)
   }
 
   cutPositions[cutPositionCount++] = cutPositions[0];
-  int i = 0;
-  while (i + 2 < cutPositionCount)
+  for (int i = 0; i < cutPositionCount - 1; ++i)
   {
+    justEmit(matrix * center, vec4(0, 0, 1, 0.8));
     justEmit(matrix * cutPositions[i], vec4(1, 0, 0, 0.8));
     justEmit(matrix * cutPositions[i + 1], vec4(0, 1, 0, 0.8));
-    justEmit(matrix * cutPositions[i + 2], vec4(0, 0, 1, 0.8));
     EndPrimitive();
-    i += 2;
-  }
-  i = 0;
-  while (i + 4 < cutPositionCount)
-  {
-    justEmit(matrix * cutPositions[i], vec4(1, 0, 0, 0.8));
-    justEmit(matrix * cutPositions[i + 2], vec4(0, 1, 0, 0.8));
-    justEmit(matrix * cutPositions[i + 4], vec4(0, 0, 1, 0.8));
-    EndPrimitive();
-    i += 4;
   }
 }
 
