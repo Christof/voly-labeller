@@ -73,6 +73,8 @@ class HABuffer
   void begin(std::shared_ptr<ShaderProgram> shader);
   void render();
 
+  bool wireframe = false;
+
  private:
   void initializeShadersHash();
   void initializeBufferHash();

@@ -116,6 +116,9 @@ void HABuffer::clearAndPrepare()
   quad->setShaderProgram(clearShader);
   quad->render(gl, objectManager, RenderData());
 
+  if (wireframe)
+    gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
   // Ensure that all global memory write are done before starting to render
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
 
@@ -137,6 +140,9 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
 
 void HABuffer::render()
 {
+  if (wireframe)
+    gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
   syncAndGetCounts();
 
   renderTimer.start();
