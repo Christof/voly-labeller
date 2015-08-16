@@ -25,15 +25,15 @@ vec4 firstPosition;
 vec4 cutPositions[18];
 int cutPositionCount = 0;
 
-void justEmit(vec4 pos, vec4 color)
+void justEmit(const mat4 matrix, const vec4 pos)
 {
-  vertexPos = pos;
+  vertexPos = matrix * pos;
   gl_Position = vertexPos;
-  vertexColor = color;
+  vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
   EmitVertex();
 }
 
-int emit(vec4 pos, vec4 color, int emittedVertexCount)
+int emit(const mat4 matrix, const vec4 pos, int emittedVertexCount)
 {
   if (isFirst)
   {
@@ -41,7 +41,7 @@ int emit(vec4 pos, vec4 color, int emittedVertexCount)
     isFirst = false;
   }
 
-  justEmit(pos, color);
+  justEmit(matrix, pos);
   ++emittedVertexCount;
 
   if (emittedVertexCount == 3)
@@ -49,7 +49,7 @@ int emit(vec4 pos, vec4 color, int emittedVertexCount)
     EndPrimitive();
     if (hasTwoTriangles)
     {
-      justEmit(pos, color);
+      justEmit(matrix, pos);
       ++emittedVertexCount;
     }
   }
@@ -90,7 +90,7 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
     bool isPosInFOV = dot(inPos, plane) > cutOffZ;
     if (isPosInFOV)
     {
-      emittedVertexCount = emit(matrix * inPos, c, emittedVertexCount);  // vColor[0]);
+      emittedVertexCount = emit(matrix, inPos, emittedVertexCount);
     }
     vec4 nextPos = triangle[(i + 1) % 3];
     bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
@@ -105,13 +105,13 @@ void processTriangle(mat4 matrix, vec4 triangle[3])
       addCutPositionIfNew(newPos);
       //vec4 c = newPos * 0.5f + vec4(0.5, 0.5f, 0.5f, 0);
       // c.a = 0.5f;
-      emittedVertexCount = emit(matrix * newPos, c, emittedVertexCount);  // vec4(1, 1, 0, 1));
+      emittedVertexCount = emit(matrix, newPos, emittedVertexCount);
     }
   }
 
   if (emittedVertexCount == 5)
   {
-    emit(firstPosition, c, emittedVertexCount);
+    emit(matrix, firstPosition, emittedVertexCount);
   }
 
   EndPrimitive();
@@ -143,9 +143,9 @@ void fillHole(mat4 matrix)
 {
   if (cutPositionCount == 3)
   {
-    justEmit(matrix * cutPositions[0], vec4(1, 0, 0, 0.8));
-    justEmit(matrix * cutPositions[1], vec4(1, 0, 0, 0.8));
-    justEmit(matrix * cutPositions[2], vec4(1, 0, 0, 0.8));
+    justEmit(matrix, cutPositions[0]);
+    justEmit(matrix, cutPositions[1]);
+    justEmit(matrix, cutPositions[2]);
     return;
   }
 
@@ -170,9 +170,9 @@ void fillHole(mat4 matrix)
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
   {
-    justEmit(matrix * center, vec4(0, 0, 1, 0.8));
-    justEmit(matrix * cutPositions[i], vec4(1, 0, 0, 0.8));
-    justEmit(matrix * cutPositions[i + 1], vec4(0, 1, 0, 0.8));
+    justEmit(matrix, center);
+    justEmit(matrix, cutPositions[i]);
+    justEmit(matrix, cutPositions[i + 1]);
     EndPrimitive();
   }
 }
