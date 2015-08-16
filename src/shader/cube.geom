@@ -58,15 +58,11 @@ void addCutPositionIfNew(const vec4 newPos)
   cutPositions[cutPositionCount++] = newPos;
 }
 
-void processTriangle(const mat4 matrix, const vec4 triangle[3])
+void processTriangle(const mat4 matrix, const vec4 nearPlane,
+                     const vec4 triangle[3])
 {
   const float cutOffZ = 0.5;
   int emittedVertexCount = 0;
-  vec4 plane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
-                    matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
-
-  float magnitude = sqrt(dot(plane.xyz, plane.xyz));
-  plane = plane / magnitude;
 
   vec4 firstPosition;
   bool triangleSplittingNecessary = false;
@@ -74,7 +70,7 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
   for (int i = 0; i < 3; ++i)
   {
     vec4 inPos = triangle[i];
-    bool isPosInFOV = dot(inPos, plane) > cutOffZ;
+    bool isPosInFOV = dot(inPos, nearPlane) > cutOffZ;
     if (isPosInFOV)
     {
       emittedVertexCount = emitWithPrimitiveHandling(
@@ -85,12 +81,12 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
     }
 
     vec4 nextPos = triangle[(i + 1) % 3];
-    bool isNextPosInFOV = dot(nextPos, plane) > cutOffZ;
+    bool isNextPosInFOV = dot(nextPos, nearPlane) > cutOffZ;
     if ((isPosInFOV && !isNextPosInFOV) || (!isPosInFOV && isNextPosInFOV))
     {
       triangleSplittingNecessary = true;
       vec4 edge = inPos - nextPos;
-      float lambda = (cutOffZ - dot(plane, inPos)) / dot(plane, edge);
+      float lambda = (cutOffZ - dot(nearPlane, inPos)) / dot(nearPlane, edge);
 
       vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
@@ -111,18 +107,18 @@ void processTriangle(const mat4 matrix, const vec4 triangle[3])
   EndPrimitive();
 }
 
-void processSide(const mat4 matrix, const vec4 center, const vec4 side,
-                 const vec4 varying1, const vec4 varying2)
+void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
+                 const vec4 side, const vec4 varying1, const vec4 varying2)
 {
   vec4 triangle[3] = vec4[3](center + side - varying1 - varying2,
                              center + side - varying1 + varying2,
                              center + side + varying1 - varying2);
-  processTriangle(matrix, triangle);
+  processTriangle(matrix, nearPlane, triangle);
 
   triangle = vec4[3](center + side + varying1 - varying2,
                      center + side - varying1 + varying2,
                      center + side + varying1 + varying2);
-  processTriangle(matrix, triangle);
+  processTriangle(matrix, nearPlane, triangle);
 }
 
 bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
@@ -181,20 +177,25 @@ void main()
   const vec4 yAxis = vec4(0, 0.5, 0, 0);
   const vec4 zAxis = vec4(0, 0, 0.5, 0);
 
+  vec4 nearPlane = vec4(matrix[0][3] + matrix[0][2], matrix[1][3] + matrix[1][2],
+                    matrix[2][3] + matrix[2][2], matrix[3][3] + matrix[3][2]);
+
+  float magnitude = sqrt(dot(nearPlane.xyz, nearPlane.xyz));
+  nearPlane = nearPlane / magnitude;
   vec4 center = gl_in[0].gl_Position;
 
   // top
-  processSide(matrix, center, yAxis, xAxis, zAxis);
+  processSide(matrix, nearPlane, center, yAxis, xAxis, zAxis);
   // right
-  processSide(matrix, center, xAxis, yAxis, zAxis);
+  processSide(matrix, nearPlane, center, xAxis, yAxis, zAxis);
   // front
-  processSide(matrix, center, zAxis, xAxis, yAxis);
+  processSide(matrix, nearPlane, center, zAxis, xAxis, yAxis);
   // bottom
-  processSide(matrix, center, -yAxis, xAxis, zAxis);
+  processSide(matrix, nearPlane, center, -yAxis, xAxis, zAxis);
   // left
-  processSide(matrix, center, -xAxis, yAxis, zAxis);
+  processSide(matrix, nearPlane, center, -xAxis, yAxis, zAxis);
   // back
-  processSide(matrix, center, -zAxis, xAxis, yAxis);
+  processSide(matrix, nearPlane, center, -zAxis, xAxis, yAxis);
 
   fillHole(matrix);
 }
