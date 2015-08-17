@@ -148,6 +148,10 @@ def filter(filename):
 			parseShader(filename, txt, "Fragment-Shader")
 		elif (ext.lower() == ".vert"):
 			parseShader(filename, txt, "Vertex-Shader")
+		elif (ext.lower() == ".geom"):
+			parseShader(filename, txt, "Geometry-Shader")
+		elif (ext.lower() == ".hglsl"):
+			parseShader(filename, txt, "Header-Shader")
 		else:
 			showLines(txt)
 	except IOError,e:
