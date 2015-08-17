@@ -1,3 +1,12 @@
+/**
+ * \brief Geometry shader which constructs a cube from each given point
+ *
+ * The constructed cube has a size of 1 x 1 x 1 and the center
+ * is the input point. The cube is intersected with the near
+ * plane, so that nothing is behind the near plane. Additional
+ * geometry is generated to fill the created hole.
+ */
+
 #version 440
 
 layout(points) in;
@@ -18,6 +27,13 @@ layout(std140, binding = 0) buffer CB0
 vec4 cutPositions[18];
 int cutPositionCount = 0;
 
+/**
+ * \brief Emits the vertex position defined by matrix * pos
+ *
+ * This consists of setting the vertexPos and vertexColor
+ * as well as the gl_Position. The color is calculated
+ * from the position so that it can be used as texture coordinate.
+ */
 void emit(const mat4 matrix, const vec4 pos)
 {
   vertexPos = matrix * pos;
@@ -26,6 +42,10 @@ void emit(const mat4 matrix, const vec4 pos)
   EmitVertex();
 }
 
+/**
+ * \brief Emits the given point, ends the primitive and starts a new one
+ * with the given point if necessary
+ */
 int emitWithPrimitiveHandling(const mat4 matrix, const vec4 pos,
                               const bool triangleSplittingNecessary,
                               int emittedVertexCount)
@@ -46,6 +66,10 @@ int emitWithPrimitiveHandling(const mat4 matrix, const vec4 pos,
   return emittedVertexCount;
 }
 
+/**
+ * \brief Add given position to cutPositions if its not already present
+ * in the collection
+ */
 void addCutPositionIfNew(const vec4 newPos)
 {
   for (int i = 0; i < cutPositionCount; ++i)
@@ -58,6 +82,15 @@ void addCutPositionIfNew(const vec4 newPos)
   cutPositions[cutPositionCount++] = newPos;
 }
 
+/**
+ * \brief Processes a triangle by performing intersection
+ * with the given nearPlane
+ *
+ * After a call to this function one or two triangles have
+ * been emitted (depending on whether the triangle intersects
+ * the near plane). Also any calculated intersection positions
+ * have been added to the cutPositions global.
+ */
 void processTriangle(const mat4 matrix, const vec4 nearPlane,
                      const vec4 triangle[3])
 {
@@ -107,6 +140,13 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
   EndPrimitive();
 }
 
+/**
+ * \brief Generates two triangles from the given data and processes them
+ *
+ * The side of the cube is calculated by generating a quad in the plane
+ * which is determined by the side vector. The plane is has side as
+ * normal and is 0.5 units away from the center point.
+ */
 void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
                  const vec4 side, const vec4 varying1, const vec4 varying2)
 {
@@ -121,6 +161,10 @@ void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
   processTriangle(matrix, nearPlane, triangle);
 }
 
+/**
+ * \brief Compare the two given positions by their angle in respect to the
+ * given center point
+ */
 bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
 {
   float angle1 = atan(pos1.y - center.y, pos1.x - center.x);
@@ -129,6 +173,10 @@ bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
   return angle1 < angle2;
 }
 
+/**
+ * \brief Generate triangles to fill the hole generated if the cube intersects
+ * the near plane.
+ */
 void fillHole(const mat4 matrix)
 {
   if (cutPositionCount == 3)
