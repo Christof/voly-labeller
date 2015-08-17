@@ -174,23 +174,11 @@ bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
 }
 
 /**
- * \brief Generate triangles to fill the hole generated if the cube intersects
- * the near plane.
+ * \brief Sort all positions generated from intersections by
+ * their angle in respect to their center
  */
-void fillHole(const mat4 matrix)
+vec4 sortCutPositions(const mat4 matrix)
 {
-  if (cutPositionCount < 3)
-    return;
-
-  if (cutPositionCount == 3)
-  {
-    emit(matrix, cutPositions[0]);
-    emit(matrix, cutPositions[1]);
-    emit(matrix, cutPositions[2]);
-    return;
-  }
-
-  // sort positions
   vec4 center = vec4(0, 0, 0, 0);
   for (int i = 0; i < cutPositionCount; ++i)
     center += cutPositions[i];
@@ -210,6 +198,27 @@ void fillHole(const mat4 matrix)
     cutPositions[j + 1] = temp;
   }
 
+  return center;
+}
+
+/**
+ * \brief Generate triangles to fill the hole generated if the cube intersects
+ * the near plane.
+ */
+void fillHole(const mat4 matrix)
+{
+  if (cutPositionCount < 3)
+    return;
+
+  if (cutPositionCount == 3)
+  {
+    emit(matrix, cutPositions[0]);
+    emit(matrix, cutPositions[1]);
+    emit(matrix, cutPositions[2]);
+    return;
+  }
+
+  vec4 center = sortCutPositions(matrix);
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
   {
