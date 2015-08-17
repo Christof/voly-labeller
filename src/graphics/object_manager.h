@@ -30,9 +30,23 @@ struct DrawElementsIndirectCommand
 };
 
 /**
- * \brief
+ * \brief Provides means to create and render objects
  *
+ * Objects are created either with the ObjectManager::addObject method
+ * or by cloning another ObjectData instance with ObjectManager::clone.
+ * In both cases an ObjectData instance is returned, which internally stores
+ * offsets into buffers, the used shader and other data about the object.
  *
+ * To get an object rendered, the ObjectManager::renderLater method must be
+ * called, which keeps the given object in a list.
+ *
+ * All objects added with ObjectManager::renderLater are render when the
+ * ObjectManager::render method is called by the HABuffer.
+ *
+ * The HABuffer itself as well as post-processing steps use the
+ * ObjectManager::renderImediately method to render a provided object
+ * directly without storing it in the list and waiting for the
+ * ObjectManager::render call.
  */
 class ObjectManager
 {
