@@ -179,6 +179,9 @@ bool hasSmallerAngle(const vec4 center, const vec4 pos1, const vec4 pos2)
  */
 void fillHole(const mat4 matrix)
 {
+  if (cutPositionCount < 3)
+    return;
+
   if (cutPositionCount == 3)
   {
     emit(matrix, cutPositions[0]);
