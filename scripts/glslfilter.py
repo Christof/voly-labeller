@@ -78,7 +78,7 @@ def getRegSearch(txt, regex):
 def generateName(filename):
 	root, ext = os.path.splitext(filename)
 	head, tail = os.path.split(root)
-	return tail
+	return tail + "_" + ext[1:]
 	
 def writeLine(txt):
 	sys.stdout.write(txt)
