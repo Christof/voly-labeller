@@ -8,6 +8,15 @@
 namespace Graphics
 {
 
+/**
+ * \brief Stores informations to render an object
+ *
+ * It stores the vertex and index information, the primitive type as well es the
+ * used shader program id. The transform matrix is exposed to position the
+ * object in world space.
+ *
+ * Additionally provide a way to set the custom buffer via a callback.
+ */
 struct ObjectData
 {
   ObjectData(int id, int vertexOffset, int indexOffset, int indexSize,
@@ -33,6 +42,7 @@ struct ObjectData
   void setCustomBuffer(int size, std::function<void(void *)> setFunction);
 
   void fillBufferElement(void *bufferStart, int index);
+
  private:
   int id;
   int primitiveType;
