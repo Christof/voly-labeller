@@ -1901,7 +1901,7 @@ _THREADING_LIST = (
     ('getpwuid(', 'getpwuid_r(', _UNSAFE_FUNC_PREFIX + r'getpwuid\([^)]+\)'),
     ('gmtime(', 'gmtime_r(', _UNSAFE_FUNC_PREFIX + r'gmtime\([^)]+\)'),
     ('localtime(', 'localtime_r(', _UNSAFE_FUNC_PREFIX + r'localtime\([^)]+\)'),
-    ('rand(', 'rand_r(', _UNSAFE_FUNC_PREFIX + r'rand\(\)'),
+    # ('rand(', 'rand_r(', _UNSAFE_FUNC_PREFIX + r'rand\(\)'),
     ('strtok(', 'strtok_r(',
      _UNSAFE_FUNC_PREFIX + r'strtok\([^)]+\)'),
     ('ttyname(', 'ttyname_r(', _UNSAFE_FUNC_PREFIX + r'ttyname\([^)]+\)'),
