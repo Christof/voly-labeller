@@ -79,6 +79,7 @@ set(SOURCES
   src/graphics/texture_manager.cpp
   src/graphics/texture_space_description.cpp
   src/graphics/object_manager.cpp
+  src/graphics/object_data.cpp
   src/graphics/shader_manager.cpp
   ${RESOURCES})
 

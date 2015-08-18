@@ -46,10 +46,8 @@ ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
     staticObjectData = objectManager->addObject(
         positions, normals, colors, texcoords, indices, shaderProgramId);
 
-  auto objectData = staticObjectData;
-  objectData.shaderProgramId = shaderProgramId;
-
-  return objectData;
+  return objectManager->cloneForDifferentShader(staticObjectData,
+                                                shaderProgramId);
 }
 
 }  // namespace Graphics

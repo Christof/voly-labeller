@@ -3,7 +3,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <cassert>
 #include <algorithm>
 #include "./gl.h"
 #include "./buffer_manager.h"
@@ -55,6 +54,13 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
                     shaderProgramId, primitiveType);
 }
 
+ObjectData ObjectManager::cloneForDifferentShader(const ObjectData &object,
+                                   int shaderProgramId)
+{
+  return ObjectData(nextFreeId++, object.getVertexOffset(), object.getIndexOffset(),
+      object.getIndexSize(), shaderProgramId, object.getPrimitiveType());
+}
+
 int ObjectManager::addShader(std::string vertexShaderPath,
                              std::string fragmentShaderPath)
 {
@@ -81,7 +87,7 @@ void ObjectManager::render(const RenderData &renderData)
   std::map<int, std::vector<ObjectData>> objectsByShader;
   for (auto &object : objectsForFrame)
   {
-    objectsByShader[object.shaderProgramId].push_back(object);
+    objectsByShader[object.getShaderProgramId()].push_back(object);
   }
 
   for (auto &shaderObjectPair : objectsByShader)
@@ -94,7 +100,7 @@ void ObjectManager::render(const RenderData &renderData)
     std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
     for (auto &object : shaderObjectPair.second)
     {
-      objectsByPrimitiveType[object.primitiveType].push_back(object);
+      objectsByPrimitiveType[object.getPrimitiveType()].push_back(object);
     }
 
     for (auto pair : objectsByPrimitiveType)
@@ -126,7 +132,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = objects.size();
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  int customBufferSize = objects[0].customBufferSize * objectCount;
+  int customBufferSize = objects[0].getCustomBufferSize() * objectCount;
 
   void *custom = nullptr;
   if (customBufferSize)
@@ -143,11 +149,9 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     auto *transform = &matrices[counter];
     memcpy(transform, objectData.transform.data(), sizeof(float[16]));
 
-    if (objectData.setBuffer && customBufferSize)
+    if (objectData.hasCustomBuffer())
     {
-      assert(objectData.customBufferSize != 0);
-      objectData.setBuffer(static_cast<char *>(custom) +
-                           counter * objectData.customBufferSize);
+      objectData.fillBufferElement(custom, counter);
     }
 
     ++counter;
@@ -166,7 +170,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
   glAssert(gl->glMultiDrawElementsIndirect(
-      objects[0].primitiveType, GL_UNSIGNED_INT, commandsBuffer.headOffset(),
+      objects[0].getPrimitiveType(), GL_UNSIGNED_INT, commandsBuffer.headOffset(),
       objectCount, 0));
 
   bufferManager->unbind();
@@ -182,10 +186,10 @@ ObjectManager::createDrawCommand(const ObjectData &objectData, int counter)
 {
   DrawElementsIndirectCommand command;
 
-  command.count = objectData.indexSize;
+  command.count = objectData.getIndexSize();
   command.instanceCount = 1;
-  command.firstIndex = objectData.indexOffset;
-  command.baseVertex = objectData.vertexOffset;
+  command.firstIndex = objectData.getIndexOffset();
+  command.baseVertex = objectData.getVertexOffset();
   command.baseInstance = counter;
 
   qCDebug(omChan, "counter: %d count: %u firstIndex: %u baseVertex: %u",

@@ -54,6 +54,8 @@ class ObjectManager
                        const std::vector<float> &texCoords,
                        const std::vector<uint> &indices, int shaderProgramId,
                        int primitiveType = GL_TRIANGLES);
+  ObjectData cloneForDifferentShader(const ObjectData &object,
+                                     int shaderProgramId);
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   int addTexture(std::string path);
   TextureAddress getAddressFor(int textureId);
