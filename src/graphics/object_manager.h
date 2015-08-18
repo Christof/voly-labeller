@@ -20,15 +20,6 @@ class TextureManager;
 class ShaderManager;
 class Gl;
 
-struct DrawElementsIndirectCommand
-{
-  GLuint count;
-  GLuint instanceCount;
-  GLuint firstIndex;
-  GLuint baseVertex;
-  GLuint baseInstance;
-};
-
 /**
  * \brief Provides means to create and render objects
  *
@@ -58,11 +49,11 @@ class ObjectManager
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
   ObjectData addObject(const std::vector<float> &vertices,
-                const std::vector<float> &normals,
-                const std::vector<float> &colors,
-                const std::vector<float> &texCoords,
-                const std::vector<uint> &indices, int shaderProgramId,
-                int primitiveType = GL_TRIANGLES);
+                       const std::vector<float> &normals,
+                       const std::vector<float> &colors,
+                       const std::vector<float> &texCoords,
+                       const std::vector<uint> &indices, int shaderProgramId,
+                       int primitiveType = GL_TRIANGLES);
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   int addTexture(std::string path);
   TextureAddress getAddressFor(int textureId);
@@ -74,6 +65,15 @@ class ObjectManager
   void renderLater(ObjectData object);
 
  private:
+  struct DrawElementsIndirectCommand
+  {
+    GLuint count;
+    GLuint instanceCount;
+    GLuint firstIndex;
+    GLuint baseVertex;
+    GLuint baseInstance;
+  };
+
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 

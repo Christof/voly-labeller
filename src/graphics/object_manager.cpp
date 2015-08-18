@@ -185,7 +185,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     customBuffer.onUsageComplete(customBufferSize);
 }
 
-DrawElementsIndirectCommand
+ObjectManager::DrawElementsIndirectCommand
 ObjectManager::createDrawCommand(const ObjectData &objectData, int counter)
 {
   DrawElementsIndirectCommand command;
