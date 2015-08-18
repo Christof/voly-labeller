@@ -155,7 +155,10 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     commands[counter] = createDrawCommand(objectData, counter);
 
     auto *transform = &matrices[counter];
-    memcpy(transform, objectData.transform.data(), sizeof(float[16]));
+    auto modelMatrix = objectData.transform;
+    int objectId = objectData.getId();
+    modelMatrix(3, 0) = *reinterpret_cast<float *>(&objectId);
+    memcpy(transform, modelMatrix.data(), sizeof(float[16]));
 
     if (objectData.hasCustomBuffer())
     {
