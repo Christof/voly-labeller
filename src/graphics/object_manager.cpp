@@ -55,16 +55,18 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
 }
 
 ObjectData ObjectManager::cloneForDifferentShader(const ObjectData &object,
-                                   int shaderProgramId)
+                                                  int shaderProgramId)
 {
-  return ObjectData(nextFreeId++, object.getVertexOffset(), object.getIndexOffset(),
-      object.getIndexSize(), shaderProgramId, object.getPrimitiveType());
+  return ObjectData(nextFreeId++, object.getVertexOffset(),
+                    object.getIndexOffset(), object.getIndexSize(),
+                    shaderProgramId, object.getPrimitiveType());
 }
 
 ObjectData ObjectManager::clone(const ObjectData &object)
 {
-  return ObjectData(nextFreeId++, object.getVertexOffset(), object.getIndexOffset(),
-      object.getIndexSize(), object.getShaderProgramId(), object.getPrimitiveType());
+  return ObjectData(nextFreeId++, object.getVertexOffset(),
+                    object.getIndexOffset(), object.getIndexSize(),
+                    object.getShaderProgramId(), object.getPrimitiveType());
 }
 
 int ObjectManager::addShader(std::string vertexShaderPath,
@@ -176,8 +178,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
           commandsBuffer.getHead(), commandsBuffer.headOffset(), objectCount);
 
   glAssert(gl->glMultiDrawElementsIndirect(
-      objects[0].getPrimitiveType(), GL_UNSIGNED_INT, commandsBuffer.headOffset(),
-      objectCount, 0));
+      objects[0].getPrimitiveType(), GL_UNSIGNED_INT,
+      commandsBuffer.headOffset(), objectCount, 0));
 
   bufferManager->unbind();
 
