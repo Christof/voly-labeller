@@ -83,7 +83,7 @@ void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
       Eigen::Translation3f(labelPosition) *
       Eigen::Scaling(label.size.x(), label.size.y(), 1.0f));
 
-  labelQuad.transform = labelTransform.matrix();
+  labelQuad.modelMatrix = labelTransform.matrix();
   objectManager->renderLater(labelQuad);
 }
 

@@ -67,7 +67,7 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
 void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                        const RenderData &renderData)
 {
-  objectData.transform = renderData.modelMatrix;
+  objectData.modelMatrix = renderData.modelMatrix;
   objectManager->renderLater(objectData);
   /*
   Eigen::Matrix4f modelViewProjection =

@@ -6,7 +6,7 @@ namespace Graphics
 
 ObjectData::ObjectData(int id, int vertexOffset, int indexOffset, int indexSize,
                        int shaderProgramId, int primitiveType)
-  : transform(Eigen::Matrix4f::Identity()), id(id),
+  : modelMatrix(Eigen::Matrix4f::Identity()), id(id),
     primitiveType(primitiveType), vertexOffset(vertexOffset),
     indexOffset(indexOffset), indexSize(indexSize),
     shaderProgramId(shaderProgramId), customBufferSize(0), setBuffer(nullptr)

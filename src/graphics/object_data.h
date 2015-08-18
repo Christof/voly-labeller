@@ -35,7 +35,7 @@ struct ObjectData
 
   bool hasCustomBuffer() const;
 
-  Eigen::Matrix4f transform;
+  Eigen::Matrix4f modelMatrix;
 
   bool isInitialized();
 

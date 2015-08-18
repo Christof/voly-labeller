@@ -37,7 +37,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   auto size = volumeReader->getPhysicalSize();
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
-  cubeData.transform = transformation * scale;
+  cubeData.modelMatrix = transformation * scale;
   objectManager->renderLater(cubeData);
 }
 
@@ -57,7 +57,7 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   cubeData = objectManager->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
       shaderProgramId, GL_POINTS);
-  cubeData.transform = Eigen::Matrix4f::Identity();
+  cubeData.modelMatrix = Eigen::Matrix4f::Identity();
   glAssert(gl->glPointSize(40));
 
   texture = textureManager->add3dTexture(volumeReader->getSize(),
