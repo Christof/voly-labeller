@@ -18,11 +18,12 @@ out int vertexDrawId;
 
 void main()
 {
-  mat4 model = getModelMatrix();
+  mat4 model = getModelMatrix(drawId);
 
   vertexPos = modelViewProjectionMatrix * model * vec4(pos, 1.0f);
   gl_Position = vertexPos;
   vertexNormal = mul(model, normal).xyz;
+  int id = getObjectId(drawId);
   vertexColor = color;
   vertexTexCoord = texCoord;
   vertexDrawId = drawId;

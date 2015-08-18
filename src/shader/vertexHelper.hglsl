@@ -9,9 +9,15 @@ vec4 mul(mat4 matrix, vec3 vector)
   return matrix * vec4(vector, 1.0f);
 }
 
-mat4 getModelMatrix()
+mat4 getModelMatrix(int drawId)
 {
   mat4 matrix = Transforms[drawId];
+  matrix[0][3] = 0;
 
   return matrix;
+}
+
+int getObjectId(int drawId)
+{
+  return floatBitsToInt(Transforms[drawId][0][3]);
 }
