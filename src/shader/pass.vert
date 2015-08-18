@@ -14,19 +14,11 @@ out vec4 vertexColor;
 out vec2 vertexTexCoord;
 out int vertexDrawId;
 
-vec4 mul(mat4 matrix, vec3 vector)
-{
-  return matrix * vec4(vector, 1.0f);
-}
-
-layout (std140, binding = 0) buffer CB0
-{
-    mat4 Transforms[];
-};
+#include "vertexHelper.hglsl"
 
 void main()
 {
-  mat4 model = Transforms[drawId];
+  mat4 model = getModelMatrix();
 
   vertexPos = modelViewProjectionMatrix * model * vec4(pos, 1.0f);
   gl_Position = vertexPos;
