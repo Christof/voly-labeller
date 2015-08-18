@@ -61,6 +61,12 @@ ObjectData ObjectManager::cloneForDifferentShader(const ObjectData &object,
       object.getIndexSize(), shaderProgramId, object.getPrimitiveType());
 }
 
+ObjectData ObjectManager::clone(const ObjectData &object)
+{
+  return ObjectData(nextFreeId++, object.getVertexOffset(), object.getIndexOffset(),
+      object.getIndexSize(), object.getShaderProgramId(), object.getPrimitiveType());
+}
+
 int ObjectManager::addShader(std::string vertexShaderPath,
                              std::string fragmentShaderPath)
 {
