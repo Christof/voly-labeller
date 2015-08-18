@@ -50,17 +50,9 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
   auto bufferInformation =
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
 
-  ObjectData object;
-  object.vertexOffset = bufferInformation.vertexBufferOffset;
-  object.indexOffset = bufferInformation.indexBufferOffset;
-  object.indexSize = indices.size();
-  object.customBufferSize = 0;
-  object.setBuffer = nullptr;
-  object.transform = Eigen::Matrix4f::Identity();
-  object.shaderProgramId = shaderProgramId;
-  object.primitiveType = primitiveType;
-
-  return object;
+  return ObjectData(nextFreeId++, bufferInformation.vertexBufferOffset,
+                    bufferInformation.indexBufferOffset, indices.size(),
+                    shaderProgramId, primitiveType);
 }
 
 int ObjectManager::addShader(std::string vertexShaderPath,

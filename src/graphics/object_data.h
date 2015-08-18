@@ -10,13 +10,23 @@ namespace Graphics
 
 struct ObjectData
 {
+  ObjectData(int id, int vertexOffset, int indexOffset, int indexSize,
+             int shaderProgramId, int primitiveType)
+    : id(id), primitiveType(primitiveType), vertexOffset(vertexOffset),
+      indexOffset(indexOffset), indexSize(indexSize),
+      shaderProgramId(shaderProgramId), customBufferSize(0), setBuffer(nullptr),
+      transform(Eigen::Matrix4f::Identity())
+  {
+  }
+
   ObjectData()
-    : primitiveType(-1), vertexOffset(-1), indexOffset(-1), indexSize(-1),
+    : id(-1), primitiveType(-1), vertexOffset(-1), indexOffset(-1), indexSize(-1),
       shaderProgramId(-1), customBufferSize(0), setBuffer(nullptr),
       transform(Eigen::Matrix4f::Identity())
   {
   }
 
+  int id;
   int primitiveType;
   int vertexOffset;
   int indexOffset;
@@ -31,7 +41,7 @@ struct ObjectData
 
   bool isInitialized()
   {
-    return primitiveType != -1;
+    return id != -1;
   }
 };
 

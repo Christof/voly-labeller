@@ -74,6 +74,8 @@ class ObjectManager
     GLuint baseInstance;
   };
 
+  int nextFreeId = 0;
+
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 
