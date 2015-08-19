@@ -9,9 +9,11 @@
 namespace Graphics
 {
 /**
- * \brief
+ * \brief %Buffer to store vertex attributes like positions, normals or colors
  *
- *
+ * The buffer must be initialized once using the AttributeBuffer::initialize method.
+ * Before it is used AttributeBuffer::bindAttrib or bindAttribDivisor must be
+ * called. To copy data into the buffer AttributeBuffer::setData is used.
  */
 class AttributeBuffer
 {
