@@ -251,7 +251,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 # that for custom extensions you also need to set FILE_PATTERNS otherwise the 
 # files are not read by doxygen.
 
-EXTENSION_MAPPING      = 
+EXTENSION_MAPPING      = frag=C++ vert=C++ geom=C++ hglsl=C++ glsl=C++
 
 # If MARKDOWN_SUPPORT is enabled (the default) then doxygen pre-processes all 
 # comments according to the Markdown format, which allows for more readable 
@@ -729,7 +729,12 @@ FILE_PATTERNS          = *.c \
                          *.f \
                          *.for \
                          *.vhd \
-                         *.vhdl
+                         *.vhdl \
+                         *.glsl \
+                         *.hglsl \
+                         *.vert \
+                         *.frag \
+                         *.geom
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -810,7 +815,9 @@ INPUT_FILTER           =
 # info on how filters are used. If FILTER_PATTERNS is empty or if 
 # non of the patterns match the file name, INPUT_FILTER is applied.
 
-FILTER_PATTERNS        = 
+FILTER_PATTERNS        = "*.frag=./scripts/glslfilter.py" "*.vert=./scripts/glslfilter.py" "*.geom=./scripts/glslfilter.py" "*.glsl=./scripts/glslfilter.py" "*.hglsl=./scripts/glslfilter.py"
+
+
 
 # If the FILTER_SOURCE_FILES tag is set to YES, the input filter (if set using 
 # INPUT_FILTER) will be used to filter the input files when producing source 

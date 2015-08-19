@@ -23,11 +23,6 @@ Quad::~Quad()
 {
 }
 
-ObjectData Quad::getObjectData()
-{
-  return objectData;
-}
-
 ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                                std::shared_ptr<TextureManager> textureManager,
                                std::shared_ptr<ShaderManager> shaderManager)

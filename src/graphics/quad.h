@@ -24,8 +24,6 @@ class Quad : public Graphics::Renderable
   Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename);
   virtual ~Quad();
 
-  ObjectData getObjectData();
-
  protected:
   virtual ObjectData
   createBuffers(std::shared_ptr<ObjectManager> objectManager,

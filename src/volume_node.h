@@ -9,6 +9,7 @@
 #include "./math/obb.h"
 #include "./graphics/quad.h"
 #include "./graphics/cube.h"
+#include "./graphics/object_data.h"
 
 struct RenderData;
 class VolumeReader;
@@ -39,6 +40,7 @@ class VolumeNode : public Node
   std::unique_ptr<Graphics::Cube> cube;
   std::shared_ptr<Math::Obb> obb;
   GLuint texture = 0;
+  Graphics::ObjectData cubeData;
 
   void initializeTexture(Graphics::Gl *gl);
 

@@ -35,4 +35,9 @@ void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
   objectManager->renderLater(objectData);
 }
 
+ObjectData Renderable::getObjectData()
+{
+  return objectData;
+}
+
 }  // namespace Graphics
