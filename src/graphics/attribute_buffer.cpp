@@ -72,6 +72,7 @@ void AttributeBuffer::bindAttrib(int attribnum)
                                      GL_FALSE, 0, NULL));
   glAssert(gl->glEnableVertexAttribArray(attribnum));
 }
+
 void AttributeBuffer::bindAttribDivisor(int attribnum, int divisor)
 {
   assert(id > 0);

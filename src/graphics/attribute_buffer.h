@@ -29,20 +29,6 @@ class AttributeBuffer
   GLuint getId() const;
   int getComponentCount() const;
 
-  /*
-  GLuint type() const
-  {
-    return bufferType;
-  }
-  uint primitiveSize() const
-  {
-    return Size;
-  };
-  uint size() const
-  {
-    return count;
-  }
-  */
   uint sizeBytes() const;
 
   void initialize(Gl *gl, uint size, GLuint type = DEFAULT_BUFFER_TYPE);
