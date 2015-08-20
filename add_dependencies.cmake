@@ -6,6 +6,7 @@ find_package(Qt5Widgets 5.5 REQUIRED)
 find_package(Qt5OpenGL 5.5 REQUIRED)
 find_package(Qt5OpenGLExtensions 5.5 REQUIRED)
 find_package(Qt5Quick 5.5 REQUIRED)
+find_package(Qt5Xml 5.5 REQUIRED)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
@@ -28,6 +29,7 @@ include_directories(${Qt5OpenGL_INCLUDE_DIRS})
 include_directories(${Qt5OpenGLExtensions_INCLUDE_DIRS})
 include_directories(${Qt5Gui_INCLUDE_DIRS})
 include_directories(${Qt5Quick_INCLUDE_DIRS})
+include_directories(${Qt5Xml_INCLUDE_DIRS})
 list(APPEND LIBRARIES
   Qt5::Core
   Qt5::Widgets
@@ -35,6 +37,7 @@ list(APPEND LIBRARIES
   Qt5::OpenGLExtensions
   Qt5::Gui
   Qt5::Quick
+  Qt5::Xml
 )
 
 find_package(Boost 1.57.0 COMPONENTS date_time filesystem system serialization REQUIRED)
