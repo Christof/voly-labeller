@@ -1,5 +1,6 @@
 #include "./gradient_utils.h"
 #include <QDomDocument>
+#include <QPainter>
 #include <QFile>
 #include <stdexcept>
 
@@ -132,5 +133,26 @@ QGradient GradientUtils::loadGradient(QString path)
   file.close();
 
   return loadGradientFromDom(doc.firstChildElement());
+}
+
+QImage GradientUtils::gradientToImage(const QGradient &gradient, QSize size)
+{
+  QImage image(size, QImage::Format_ARGB32);
+  QPainter p(&image);
+  p.setCompositionMode(QPainter::CompositionMode_Source);
+
+  const qreal scaleFactor = 0.999999;
+  p.scale(scaleFactor, scaleFactor);
+  QGradient grad = gradient;
+  grad.setCoordinateMode(QGradient::StretchToDeviceMode);
+  p.fillRect(QRect(0, 0, size.width(), size.height()), grad);
+  p.drawRect(QRect(0, 0, size.width() - 1, size.height() - 1));
+
+  return image;
+}
+
+QImage GradientUtils::loadGradientAsImage(QString path, QSize size)
+{
+  return gradientToImage(loadGradient(path), size);
 }
 
