@@ -156,6 +156,14 @@ void Window::updateAverageFrameTime(double frameTime)
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)
 {
+  // Ignore buffer detailed info which cannot be fixed
+  if (message.id() == 131185)
+    return;
+
+  // Ignore buffer performance warning
+  if (message.id() == 131186)
+    return;
+
   switch (message.severity())
   {
   case QOpenGLDebugMessage::Severity::NotificationSeverity:
