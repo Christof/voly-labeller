@@ -3,9 +3,12 @@
 #define SRC_GRAPHICS_TRANSFER_FUNCTION_H_
 
 #include <string>
+#include <memory>
 
 namespace Graphics
 {
+
+class TextureManager;
 
 /**
  * \brief
@@ -15,11 +18,13 @@ namespace Graphics
 class TransferFunction
 {
  public:
-  TransferFunction(std::string path);
+  TransferFunction(std::shared_ptr<TextureManager> textureManager,
+                   std::string path);
   virtual ~TransferFunction();
 
  private:
-  /* data */
+  std::shared_ptr<TextureManager> textureManager;
+  int texture;
 };
 
 }  // namespace Graphics

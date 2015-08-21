@@ -1,35 +1,25 @@
 #include "./transfer_function.h"
-#include <QGradient>
-#include <QString>
-#include <QDomDocument>
-#include <QFile>
 #include <QLoggingCategory>
-#include <qtgradienteditor/qtgradientutils.h>
 #include <stdexcept>
+#include "./texture_manager.h"
+#include "../utils/gradient_utils.h"
 
 namespace Graphics
 {
 
 // QLoggingCategory tfChan("Graphics.TransferFunction");
 
-TransferFunction::TransferFunction(std::string path)
+TransferFunction::TransferFunction(
+    std::shared_ptr<TextureManager> textureManager, std::string path)
+  : textureManager(textureManager)
 {
-  QDomDocument doc;
-  QFile file(path.c_str());
-  if (!file.open(QIODevice::ReadOnly))
-  {
-    throw std::runtime_error("Could not open file" + path);
-  }
-  if (!doc.setContent(&file))
-  {
-    file.close();
-    throw std::runtime_error("Could not read content from file" + path);
-  }
-  file.close();
-  QGradient gradient = QtGradientUtils::loadGradient(doc.firstChildElement());
+
+  auto image =
+      GradientUtils::loadGradientAsImage(QString(path.c_str()), QSize(512, 1));
+  texture = textureManager->addTexture(&image);
 }
 
-TransferFunction::~TransferFunction
+TransferFunction::~TransferFunction()
 {
 }
 
