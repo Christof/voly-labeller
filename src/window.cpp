@@ -7,9 +7,12 @@
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
+#include <QLoggingCategory>
 #include <iostream>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
+
+QLoggingCategory openGlChan("OpenGl");
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene)
@@ -153,6 +156,23 @@ void Window::updateAverageFrameTime(double frameTime)
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)
 {
-  qWarning() << message;
+  switch (message.severity())
+  {
+  case QOpenGLDebugMessage::Severity::NotificationSeverity:
+    qCInfo(openGlChan) << message;
+    break;
+
+  case QOpenGLDebugMessage::Severity::LowSeverity:
+    qCDebug(openGlChan) << message;
+    break;
+  case QOpenGLDebugMessage::Severity::MediumSeverity:
+    qCWarning(openGlChan) << message;
+    break;
+  case QOpenGLDebugMessage::Severity::HighSeverity:
+    qCCritical(openGlChan) << message;
+    break;
+  default:
+    return;
+  }
 }
 
