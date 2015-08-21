@@ -79,28 +79,11 @@ set(SOURCES
   src/graphics/texture_manager.cpp
   src/graphics/texture_space_description.cpp
   src/graphics/object_manager.cpp
+  src/graphics/object_data.cpp
   src/graphics/shader_manager.cpp
   ${RESOURCES})
 
-set(SHADER
-  src/shader/label.frag
-  src/shader/label.vert
-  src/shader/line.frag
-  src/shader/line.vert
-  src/shader/phong.frag
-  src/shader/phong.vert
-  src/shader/slice.frag
-  src/shader/clearHABuffer.vert
-  src/shader/clearHABuffer.frag
-  src/shader/renderHABuffer.vert
-  src/shader/renderHABuffer.frag
-  src/shader/buildHABuffer.hglsl
-  src/shader/texture.frag
-  src/shader/textureForRenderBuffer.frag
-  src/shader/texture3dAsColor.frag
-  src/shader/cube.geom
-  src/shader/cube.vert
-  src/shader/texture3d.vert)
+file(GLOB SHADER src/shader/*)
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
 

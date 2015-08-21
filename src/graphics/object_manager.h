@@ -20,19 +20,24 @@ class TextureManager;
 class ShaderManager;
 class Gl;
 
-struct DrawElementsIndirectCommand
-{
-  GLuint count;
-  GLuint instanceCount;
-  GLuint firstIndex;
-  GLuint baseVertex;
-  GLuint baseInstance;
-};
-
 /**
- * \brief
+ * \brief Provides means to create and render objects
  *
+ * Objects are created either with the ObjectManager::addObject method
+ * or by cloning another ObjectData instance with ObjectManager::clone.
+ * In both cases an ObjectData instance is returned, which internally stores
+ * offsets into buffers, the used shader and other data about the object.
  *
+ * To get an object rendered, the ObjectManager::renderLater method must be
+ * called, which keeps the given object in a list.
+ *
+ * All objects added with ObjectManager::renderLater are render when the
+ * ObjectManager::render method is called by the HABuffer.
+ *
+ * The HABuffer itself as well as post-processing steps use the
+ * ObjectManager::renderImediately method to render a provided object
+ * directly without storing it in the list and waiting for the
+ * ObjectManager::render call.
  */
 class ObjectManager
 {
@@ -44,11 +49,14 @@ class ObjectManager
   void initialize(Gl *gl, uint maxObjectCount, uint bufferSize);
 
   ObjectData addObject(const std::vector<float> &vertices,
-                const std::vector<float> &normals,
-                const std::vector<float> &colors,
-                const std::vector<float> &texCoords,
-                const std::vector<uint> &indices, int shaderProgramId,
-                int primitiveType = GL_TRIANGLES);
+                       const std::vector<float> &normals,
+                       const std::vector<float> &colors,
+                       const std::vector<float> &texCoords,
+                       const std::vector<uint> &indices, int shaderProgramId,
+                       int primitiveType = GL_TRIANGLES);
+  ObjectData cloneForDifferentShader(const ObjectData &object,
+                                     int shaderProgramId);
+  ObjectData clone(const ObjectData &object);
   int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
   int addTexture(std::string path);
   TextureAddress getAddressFor(int textureId);
@@ -60,6 +68,17 @@ class ObjectManager
   void renderLater(ObjectData object);
 
  private:
+  struct DrawElementsIndirectCommand
+  {
+    GLuint count;
+    GLuint instanceCount;
+    GLuint firstIndex;
+    GLuint baseVertex;
+    GLuint baseInstance;
+  };
+
+  int nextFreeId = 0;
+
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
   const GLbitfield CREATE_FLAGS = MAP_FLAGS | GL_DYNAMIC_STORAGE_BIT;
 

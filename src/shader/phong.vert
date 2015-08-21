@@ -16,19 +16,11 @@ out vec2 outTextureCoordinate;
 out int outDrawId;
 out vec3 cameraDirection;
 
-layout(std140, binding = 0) buffer CB0
-{
-  mat4 Transforms[];
-};
-
-vec4 mul(mat4 matrix, vec3 vector)
-{
-  return matrix * vec4(vector, 1.0f);
-}
+#include "vertexHelper.hglsl"
 
 void main()
 {
-  mat4 modelMatrix = Transforms[drawId];
+  mat4 modelMatrix = getModelMatrix(drawId);
 
   outColor = color;
   outPosition = modelViewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);

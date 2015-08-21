@@ -37,13 +37,13 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
     if (!labelQuad.isInitialized())
     {
       labelQuad = quad->getObjectData();
-      labelQuad.customBufferSize = sizeof(Graphics::TextureAddress);
-      labelQuad.setBuffer = [this](void *insertionPoint)
-      {
+      labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
+                                [this](void *insertionPoint)
+                                {
         auto textureAddress = objectManager->getAddressFor(textureId);
         std::memcpy(insertionPoint, &textureAddress,
                     sizeof(Graphics::TextureAddress));
-      };
+      });
     }
   }
 

@@ -15,14 +15,11 @@ out vec4 vertexColor;
 out vec2 vertexTexCoord;
 out int vertexDrawId;
 
-layout (std140, binding = 0) buffer CB0
-{
-    mat4 Transforms[];
-};
+#include "vertexHelper.hglsl"
 
 void main()
 {
-  mat4 modelMatrix = Transforms[drawId];
+  mat4 modelMatrix = getModelMatrix(drawId);
 
   vec3 cameraRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
   vec3 cameraUp = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);

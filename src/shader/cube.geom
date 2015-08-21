@@ -19,10 +19,7 @@ out vec4 vertexColor;
 
 uniform mat4 modelViewProjectionMatrix;
 
-layout(std140, binding = 0) buffer CB0
-{
-  mat4 Transforms[];
-};
+#include "vertexHelper.hglsl"
 
 vec4 cutPositions[18];
 int cutPositionCount = 0;
@@ -232,7 +229,7 @@ void fillHole(const mat4 matrix)
 
 void main()
 {
-  mat4 model = Transforms[vDrawId[0]];
+  mat4 model = getModelMatrix(vDrawId[0]);
   mat4 matrix = modelViewProjectionMatrix * model;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);
   const vec4 yAxis = vec4(0, 0.5, 0, 0);
