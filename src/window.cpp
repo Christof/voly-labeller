@@ -1,5 +1,6 @@
 #include "./window.h"
 #include <QOpenGLContext>
+#include <QOpenGLDebugLogger>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -33,6 +34,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 Window::~Window()
 {
   delete gl;
+  if (logger)
+    delete logger;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -42,6 +45,7 @@ QSurfaceFormat Window::createSurfaceFormat()
   format.setMajorVersion(4);
   format.setMinorVersion(5);
   format.setSamples(4);
+  format.setOption(QSurfaceFormat::DebugContext);
 
   return format;
 }
@@ -51,6 +55,17 @@ void Window::initializeOpenGL()
   context = openglContext();
   gl = new Graphics::Gl();
   gl->initialize(context, size());
+
+  logger = new QOpenGLDebugLogger();
+
+  connect(logger, &QOpenGLDebugLogger::messageLogged, this,
+          &Window::onMessageLogged, Qt::DirectConnection);
+
+  if (logger->initialize())
+  {
+    logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    logger->enableMessages();
+  }
 
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
@@ -134,5 +149,10 @@ void Window::updateAverageFrameTime(double frameTime)
     framesInSecond = 0;
     runningTime = 0;
   }
+}
+
+void Window::onMessageLogged(QOpenGLDebugMessage message)
+{
+  qWarning() << message;
 }
 
