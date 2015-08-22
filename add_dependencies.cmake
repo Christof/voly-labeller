@@ -9,7 +9,7 @@ find_package(Qt5Quick 5.5 REQUIRED)
 find_package(Qt5Xml 5.5 REQUIRED)
 
 find_package(CUDA 7.0 REQUIRED)
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 -std=c++11 -gencode arch=compute_30,code=sm_50)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 -std=c++11 -gencode arch=compute_30,code=sm_30)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
