@@ -178,6 +178,7 @@ void Window::onMessageLogged(QOpenGLDebugMessage message)
     break;
   case QOpenGLDebugMessage::Severity::HighSeverity:
     qCCritical(openGlChan) << message;
+    throw std::runtime_error(message.message().toStdString());
     break;
   default:
     return;
