@@ -11,6 +11,7 @@
 
 class AbstractScene;
 class QStateMachine;
+class QOpenGLDebugLogger;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -28,7 +29,7 @@ class Window : public QQuickView
 
   std::shared_ptr<QStateMachine> stateMachine;
 
- signals:
+signals:
   void averageFrameTimeUpdated();
 
  protected slots:
@@ -44,6 +45,8 @@ class Window : public QQuickView
 
  private:
   QSurfaceFormat createSurfaceFormat();
+  QOpenGLDebugLogger *logger;
+  void onMessageLogged(QOpenGLDebugMessage message);
   void handleLazyInitialization();
   void initializeOpenGL();
   void updateAverageFrameTime(double frameTime);

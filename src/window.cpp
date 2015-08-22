@@ -1,14 +1,18 @@
 #include "./window.h"
 #include <QOpenGLContext>
+#include <QOpenGLDebugLogger>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QKeyEvent>
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
+#include <QLoggingCategory>
 #include <iostream>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
+
+QLoggingCategory openGlChan("OpenGl");
 
 Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
   : QQuickView(parent), scene(scene)
@@ -33,6 +37,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 Window::~Window()
 {
   delete gl;
+  if (logger)
+    delete logger;
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -42,6 +48,7 @@ QSurfaceFormat Window::createSurfaceFormat()
   format.setMajorVersion(4);
   format.setMinorVersion(5);
   format.setSamples(4);
+  format.setOption(QSurfaceFormat::DebugContext);
 
   return format;
 }
@@ -51,6 +58,17 @@ void Window::initializeOpenGL()
   context = openglContext();
   gl = new Graphics::Gl();
   gl->initialize(context, size());
+
+  logger = new QOpenGLDebugLogger();
+
+  connect(logger, &QOpenGLDebugLogger::messageLogged, this,
+          &Window::onMessageLogged, Qt::DirectConnection);
+
+  if (logger->initialize())
+  {
+    logger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    logger->enableMessages();
+  }
 
   glAssert(gl->glDisable(GL_CULL_FACE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
@@ -133,6 +151,37 @@ void Window::updateAverageFrameTime(double frameTime)
 
     framesInSecond = 0;
     runningTime = 0;
+  }
+}
+
+void Window::onMessageLogged(QOpenGLDebugMessage message)
+{
+  // Ignore buffer detailed info which cannot be fixed
+  if (message.id() == 131185)
+    return;
+
+  // Ignore buffer performance warning
+  if (message.id() == 131186)
+    return;
+
+  switch (message.severity())
+  {
+  case QOpenGLDebugMessage::Severity::NotificationSeverity:
+    qCInfo(openGlChan) << message;
+    break;
+
+  case QOpenGLDebugMessage::Severity::LowSeverity:
+    qCDebug(openGlChan) << message;
+    break;
+  case QOpenGLDebugMessage::Severity::MediumSeverity:
+    qCWarning(openGlChan) << message;
+    break;
+  case QOpenGLDebugMessage::Severity::HighSeverity:
+    qCCritical(openGlChan) << message;
+    throw std::runtime_error(message.message().toStdString());
+    break;
+  default:
+    return;
   }
 }
 
