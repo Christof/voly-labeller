@@ -203,7 +203,7 @@ __global__ void algSAT_stage2(const int c_n_size, const int c_m_size,
  *  @see [Nehab:2011] cited in alg5() and figure in algSAT()
  *  @param[in] g_ysum All \f$s(P_{m,n}(Y))\f$
  *  @param[in,out] g_vhat All \f$P^T_{m,n}(\hat{V})\f$ fixed to
- *\f$P^T_{m,n}(V)\f$
+ *  \f$P^T_{m,n}(V)\f$
  */
 __global__ void algSAT_stage3(const int c_m_size, const int c_height,
                               const float *g_ysum, float *g_vhat)
@@ -622,3 +622,32 @@ void algSAT( float *h_inout,
 
 }
 */
+
+
+__global__ void sumCudaInLib(const int *values, int size, int *result)
+{
+  *result = 0;
+  for (int i = 0; i < size; ++i)
+    *result += values[i];
+}
+
+int sumUsingCudaInLib()
+{
+  thrust::host_vector<int> values;
+  values.push_back(1);
+  values.push_back(2);
+  values.push_back(3);
+
+  thrust::device_vector<int> deviceValues = values;
+
+  thrust::device_vector<int> deviceResult(1);
+
+  int *valuesPtr = thrust::raw_pointer_cast(&deviceValues[0]);
+  int *resultPtr = thrust::raw_pointer_cast(deviceResult.data());
+  sumCudaInLib<<<1, 1>>>(valuesPtr, deviceValues.size(), resultPtr);
+
+  thrust::host_vector<int> result = deviceResult;
+
+  return result[0];
+}
+
