@@ -10,6 +10,28 @@
  * Code adapted from https://github.com/andmax/gpufilter
  */
 
+#include <thrust/device_vector.h>
+
+texture<float, 2, cudaReadModeElementType> textureReadDepth;
+
+inline unsigned int divUp(unsigned int a, unsigned int b) {
+  return (a % b != 0) ? (a / b + 1) : (a / b);
+}
+
+#define WS 32 // Warp size (defines b x b block size where b = WS)
+#define HWS 16 // Half Warp Size
+#define DW 8 // Default number of warps (computational block height)
+#define CHW 7 // Carry-heavy number of warps (computational block height for some kernels)
+#define OW 6 // Optimized number of warps (computational block height for some kernels)
+#define DNB 6 // Default number of blocks per SM (minimum blocks per SM launch bounds)
+#define ONB 5 // Optimized number of blocks per SM (minimum blocks per SM for some kernels)
+#define MTS 192 // Maximum number of threads per block with 8 blocks per SM
+#define MBO 8 // Maximum number of blocks per SM using optimize or maximum warps
+#define CHB 7 // Carry-heavy number of blocks per SM using default number of warps
+#define MW 6 // Maximum number of warps per block with 8 blocks per SM (with all warps computing)
+#define SOW 5 // Dual-scheduler optimized number of warps per block (with 8 blocks per SM and to use the dual scheduler with 1 computing warp)
+#define MBH 3 // Maximum number of blocks per SM using half-warp size
+
 /**
  *  @ingroup gpu
  *  @brief Algorithm SAT stage 1
@@ -27,7 +49,7 @@
  *  @param[out] g_ybar All \f$P_{m,n}(\bar{Y})\f$
  *  @param[out] g_vhat All \f$P^T_{m,n}(\hat{V})\f$
  */
-__global__ void algSAT_stage1( const float *g_in, float *g_ybar,
+__global__ void algSAT_stage1(const int c_width, const int c_height, const float *g_in, float *g_ybar,
     float *g_vhat )
 {
 
@@ -104,7 +126,7 @@ __global__ void algSAT_stage1( const float *g_in, float *g_ybar,
  *  @param[out] g_ysum All \f$s(P_{m,n}(Y))\f$
  */
 __global__
-void algSAT_stage2( float *g_ybar,
+void algSAT_stage2(const int c_n_size, const int c_m_size, const int c_width, float *g_ybar,
     float *g_ysum )
 {
   const int tx = threadIdx.x, ty = threadIdx.y,
@@ -126,7 +148,7 @@ void algSAT_stage2( float *g_ybar,
 
   for (int n = 1; n < c_n_size; ++n) {
 
-        // calculate ysum -----------------------
+    // calculate ysum -----------------------
 
     s_block[ty][ln] = y;
 
@@ -141,7 +163,7 @@ void algSAT_stage2( float *g_ybar,
       g_ysum += c_m_size;
     }
 
-        // fix ybar -> y -------------------------
+    // fix ybar -> y -------------------------
 
     g_ybar += c_width;
     y = *g_ybar += y;
@@ -167,8 +189,8 @@ void algSAT_stage2( float *g_ybar,
  *  @param[in] g_ysum All \f$s(P_{m,n}(Y))\f$
  *  @param[in,out] g_vhat All \f$P^T_{m,n}(\hat{V})\f$ fixed to \f$P^T_{m,n}(V)\f$
  */
-__global__
-void algSAT_stage3( const float *g_ysum,
+  __global__
+void algSAT_stage3(const int c_m_size, const int c_height, const float *g_ysum,
     float *g_vhat )
 {
   const int tx = threadIdx.x, ty = threadIdx.y,
@@ -184,7 +206,7 @@ void algSAT_stage3( const float *g_ysum,
 
   for (int m = 0; m < c_m_size; ++m) {
 
-        // fix vhat -> v -------------------------
+    // fix vhat -> v -------------------------
 
     if( row0 > 0 ) {
       y = *g_ysum;
@@ -215,8 +237,8 @@ void algSAT_stage3( const float *g_ysum,
  *  @param[in] g_y All \f$P_{m,n}(Y)\f$
  *  @param[in] g_v All \f$P^T_{m,n}(V)\f$
  */
-__global__
-void algSAT_stage4( float *g_inout,
+  __global__
+void algSAT_stage4(const int c_width, const int c_height, float *g_inout,
     const float *g_y,
     const float *g_v )
 {
@@ -225,67 +247,67 @@ void algSAT_stage4( float *g_inout,
 
   __shared__ float s_block[ WS ][ WS+1 ];
 
-    float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[ty][tx];
+  float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[ty][tx];
 
   g_inout += (row0+ty)*c_width+col;
   if( by > 0 ) g_y += (by-1)*c_width+col;
   if( bx > 0 ) g_v += (bx-1)*c_height+row0+tx;
 
 #pragma unroll
-    for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
-        **bdata = *g_inout;
-        bdata += SOW;
-        g_inout += SOW * c_width;
-    }
-    if( ty < WS%SOW ) {
-        **bdata = *g_inout;
-    }
+  for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
+    **bdata = *g_inout;
+    bdata += SOW;
+    g_inout += SOW * c_width;
+  }
+  if( ty < WS%SOW ) {
+    **bdata = *g_inout;
+  }
 
   __syncthreads();
 
   if( ty == 0 ) {
 
-        {   // calculate y -----------------------
-            float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[0][tx];
+    {   // calculate y -----------------------
+      float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[0][tx];
 
-            float prev;
-            if( by > 0 ) prev = *g_y;
-            else prev = 0.f;
-
-#pragma unroll
-            for (int i = 0; i < WS; ++i, ++bdata)
-                **bdata = prev = **bdata + prev;
-        }
-
-        {   // calculate x -----------------------
-            float *bdata = s_block[tx];
-
-            float prev;
-            if( bx > 0 ) prev = *g_v;
-            else prev = 0.f;
+      float prev;
+      if( by > 0 ) prev = *g_y;
+      else prev = 0.f;
 
 #pragma unroll
-            for (int i = 0; i < WS; ++i, ++bdata)
-                *bdata = prev = *bdata + prev;
-        }
+      for (int i = 0; i < WS; ++i, ++bdata)
+        **bdata = prev = **bdata + prev;
+    }
+
+    {   // calculate x -----------------------
+      float *bdata = s_block[tx];
+
+      float prev;
+      if( bx > 0 ) prev = *g_v;
+      else prev = 0.f;
+
+#pragma unroll
+      for (int i = 0; i < WS; ++i, ++bdata)
+        *bdata = prev = *bdata + prev;
+    }
 
   }
 
   __syncthreads();
 
-    bdata = (float (*)[WS+1]) &s_block[ty][tx];
+  bdata = (float (*)[WS+1]) &s_block[ty][tx];
 
   g_inout -= (WS-(WS%SOW))*c_width;
 
 #pragma unroll
-    for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
-        *g_inout = **bdata;
-        bdata += SOW;
-        g_inout += SOW * c_width;
-    }
-    if( ty < WS%SOW ) {
-        *g_inout = **bdata;
-    }
+  for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
+    *g_inout = **bdata;
+    bdata += SOW;
+    g_inout += SOW * c_width;
+  }
+  if( ty < WS%SOW ) {
+    *g_inout = **bdata;
+  }
 }
 
 /**
@@ -302,8 +324,8 @@ void algSAT_stage4( float *g_inout,
  *  @param[in] g_y All \f$P_{m,n}(Y)\f$
  *  @param[in] g_v All \f$P^T_{m,n}(V)\f$
  */
-__global__
-void algSAT_stage4( float *g_out,
+  __global__
+void algSAT_stage4(const int c_width, const int c_height, float *g_out,
     const float *g_in,
     const float *g_y,
     const float *g_v )
@@ -312,153 +334,242 @@ void algSAT_stage4( float *g_out,
 
   __shared__ float s_block[ WS ][ WS+1 ];
 
-    float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[ty][tx];
+  float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[ty][tx];
 
   g_in += (row0+ty)*c_width+col;
   if( by > 0 ) g_y += (by-1)*c_width+col;
   if( bx > 0 ) g_v += (bx-1)*c_height+row0+tx;
 
 #pragma unroll
-    for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
-        **bdata = *g_in;
-        bdata += SOW;
-        g_in += SOW * c_width;
-    }
-    if( ty < WS%SOW ) {
-        **bdata = *g_in;
-    }
+  for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
+    **bdata = *g_in;
+    bdata += SOW;
+    g_in += SOW * c_width;
+  }
+  if( ty < WS%SOW ) {
+    **bdata = *g_in;
+  }
 
   __syncthreads();
 
   if( ty == 0 ) {
 
-        {   // calculate y -----------------------
-            float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[0][tx];
+    {   // calculate y -----------------------
+      float (*bdata)[WS+1] = (float (*)[WS+1]) &s_block[0][tx];
 
-            float prev;
-            if( by > 0 ) prev = *g_y;
-            else prev = 0.f;
-
-#pragma unroll
-            for (int i = 0; i < WS; ++i, ++bdata)
-                **bdata = prev = **bdata + prev;
-        }
-
-        {   // calculate x -----------------------
-            float *bdata = s_block[tx];
-
-            float prev;
-            if( bx > 0 ) prev = *g_v;
-            else prev = 0.f;
+      float prev;
+      if( by > 0 ) prev = *g_y;
+      else prev = 0.f;
 
 #pragma unroll
-            for (int i = 0; i < WS; ++i, ++bdata)
-                *bdata = prev = *bdata + prev;
-        }
+      for (int i = 0; i < WS; ++i, ++bdata)
+        **bdata = prev = **bdata + prev;
+    }
+
+    {   // calculate x -----------------------
+      float *bdata = s_block[tx];
+
+      float prev;
+      if( bx > 0 ) prev = *g_v;
+      else prev = 0.f;
+
+#pragma unroll
+      for (int i = 0; i < WS; ++i, ++bdata)
+        *bdata = prev = *bdata + prev;
+    }
 
   }
 
   __syncthreads();
 
-    bdata = (float (*)[WS+1]) &s_block[ty][tx];
+  bdata = (float (*)[WS+1]) &s_block[ty][tx];
 
   g_out += (row0+ty)*c_width+col;
 
 #pragma unroll
-    for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
-        *g_out = **bdata;
-        bdata += SOW;
-        g_out += SOW * c_width;
-    }
-    if( ty < WS%SOW ) {
-        *g_out = **bdata;
-    }
+  for (int i = 0; i < WS-(WS%SOW); i+=SOW) {
+    *g_out = **bdata;
+    bdata += SOW;
+    g_out += SOW * c_width;
+  }
+  if( ty < WS%SOW ) {
+    *g_out = **bdata;
+  }
 }
 
+/*
 __host__
-void prepare_algSAT( alg_setup& algs,
-                     dvector<float>& d_inout,
-                     dvector<float>& d_ybar,
-                     dvector<float>& d_vhat,
-                     dvector<float>& d_ysum,
-                     const float *h_in,
-                     const int& w,
-                     const int& h ) {
+void prepare_algSAT(const int width
+    dvector<float>& d_inout,
+    dvector<float>& d_ybar,
+    dvector<float>& d_vhat,
+    dvector<float>& d_ysum,
+    const float *h_in,
+    const int& w,
+    const int& h ) {
 
-    algs.width = w;
-    algs.height = h;
+  algs.width = w;
+  algs.height = h;
 
-    if( w % 32 > 0 ) algs.width += (32 - (w % 32));
-    if( h % 32 > 0 ) algs.height += (32 - (h % 32));
+  if( w % 32 > 0 ) algs.width += (32 - (w % 32));
+  if( h % 32 > 0 ) algs.height += (32 - (h % 32));
 
-    calc_alg_setup( algs, algs.width, algs.height );
-    up_alg_setup( algs );
+  calc_alg_setup( algs, algs.width, algs.height );
+  up_alg_setup( algs );
 
-    d_inout.copy_from( h_in, w, h, algs.width, algs.height );
+  d_inout.copy_from( h_in, w, h, algs.width, algs.height );
 
-    d_ybar.resize( algs.n_size * algs.width );
-    d_vhat.resize( algs.m_size * algs.height );
-    d_ysum.resize( algs.m_size * algs.n_size );
+  d_ybar.resize( algs.n_size * algs.width );
+  d_vhat.resize( algs.m_size * algs.height );
+  d_ysum.resize( algs.m_size * algs.n_size );
 
 }
+*/
 
+__global__ void  sat_init_kernel(int image_size, float xscale, float yscale, float zths, float* thrustptr)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int index = y*image_size + x;
+
+  float texval = tex2D(textureReadDepth, x*xscale + 0.5f, y*yscale + 0.5f);
+
+  thrustptr[index] = texval;
+}
+
+void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size, int screen_size_x, int screen_size_y,
+    float z_threshold,
+    thrust::device_vector<float> &inout, thrust::device_vector<float> &ybar, thrust::device_vector<float> &vhat, thrust::device_vector<float> &ysum)
+{
+  int compute_width = image_size;
+  int compute_height = image_size;
+  if( compute_width % 32 > 0 ) compute_width += (32 - (compute_width % 32));
+  if( compute_height % 32 > 0 ) compute_height += (32 - (compute_height % 32));
+  int compute_m_size = (compute_width+WS-1)/WS;
+  int compute_n_size = (compute_height+WS-1)/WS;
+
+  // set data structure sizes
+
+  if (inout.size() != static_cast<unsigned long>(compute_width * compute_height))
+  {
+    inout.resize(compute_width * compute_height);
+  }
+  if (ybar.size() != static_cast<unsigned long>(compute_n_size*compute_width))
+  {
+    ybar.resize(compute_n_size*compute_width);
+  }
+  if (vhat.size() != static_cast<unsigned long>(compute_m_size * compute_height))
+  {
+    vhat.resize(compute_m_size * compute_height);
+  }
+  if (ysum.size() != static_cast<unsigned long>(compute_m_size*compute_n_size))
+  {
+    ysum.resize(compute_m_size*compute_n_size);
+  }
+
+  float * d_inout = thrust::raw_pointer_cast(inout.data());
+  float * d_ybar = thrust::raw_pointer_cast(ybar.data());
+  float * d_vhat = thrust::raw_pointer_cast(vhat.data());
+  float * d_ysum = thrust::raw_pointer_cast(ysum.data());
+
+  //QElapsedTimer tm;
+  //tm.start();
+
+
+  // initialize occupancy function from inputImage
+  textureReadDepth.normalized = 0;
+  textureReadDepth.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
+  textureReadDepth.addressMode[0] = cudaAddressModeWrap;
+  textureReadDepth.addressMode[1] = cudaAddressModeWrap;
+
+  cudaGraphicsMapResources(1, &inputImage);
+  cudaArray_t input_array;
+  cudaGraphicsSubResourceGetMappedArray(&input_array, inputImage, 0, 0);
+  cudaChannelFormatDesc channeldesc;
+  cudaGetChannelDesc(&channeldesc, input_array);
+
+  cudaBindTextureToArray(&textureReadDepth, input_array, &channeldesc);
+
+  dim3 dimBlock(64, 1, 1);
+  dim3 dimGrid(divUp(image_size,dimBlock.x), divUp(image_size,dimBlock.y), 1);
+
+  sat_init_kernel<<<dimGrid,dimBlock>>>(image_size, float(screen_size_x)/float(image_size), float(screen_size_y)/float(image_size),
+      z_threshold, d_inout);
+  cudaThreadSynchronize();
+  cudaUnbindTexture(&textureReadDepth);
+  cudaGraphicsUnmapResources(1, &inputImage);
+
+  // prepare SAT kernel launches
+  const int nWm = (compute_width+MTS-1)/MTS, nHm = (compute_height+MTS-1)/MTS;
+  const dim3 cg_img( compute_m_size, compute_n_size );
+  const dim3 cg_ybar( nWm, 1 );
+  const dim3 cg_vhat( 1, nHm );
+
+  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( compute_width, compute_height, d_inout, d_ybar, d_vhat );
+  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( compute_m_size, compute_n_size, compute_width, d_ybar, d_ysum );
+  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( compute_m_size, compute_height, d_ysum, d_vhat );
+  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( compute_width, compute_height, d_inout, d_ybar, d_vhat );
+}
+
+/*
 __host__
 void algSAT( dvector<float>& d_out,
-             dvector<float>& d_ybar,
-             dvector<float>& d_vhat,
-             dvector<float>& d_ysum,
-             const dvector<float>& d_in,
-             const alg_setup& algs ) {
+    dvector<float>& d_ybar,
+    dvector<float>& d_vhat,
+    dvector<float>& d_ysum,
+    const dvector<float>& d_in,
+    const alg_setup& algs ) {
 
   const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-    const dim3 cg_img( algs.m_size, algs.n_size );
-    const dim3 cg_ybar( nWm, 1 );
-    const dim3 cg_vhat( 1, nHm );
+  const dim3 cg_img( algs.m_size, algs.n_size );
+  const dim3 cg_ybar( nWm, 1 );
+  const dim3 cg_vhat( 1, nHm );
 
-    algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_in, d_ybar, d_vhat );
+  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_in, d_ybar, d_vhat );
 
-    algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
+  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
 
-    algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
+  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
 
-    algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_out, d_in, d_ybar, d_vhat );
+  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_out, d_in, d_ybar, d_vhat );
 
 }
 
 __host__
 void algSAT( dvector<float>& d_inout,
-             dvector<float>& d_ybar,
-             dvector<float>& d_vhat,
-             dvector<float>& d_ysum,
-             const alg_setup& algs ) {
+    dvector<float>& d_ybar,
+    dvector<float>& d_vhat,
+    dvector<float>& d_ysum,
+    const alg_setup& algs ) {
 
   const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-    const dim3 cg_img( algs.m_size, algs.n_size );
-    const dim3 cg_ybar( nWm, 1 );
-    const dim3 cg_vhat( 1, nHm );
+  const dim3 cg_img( algs.m_size, algs.n_size );
+  const dim3 cg_ybar( nWm, 1 );
+  const dim3 cg_vhat( 1, nHm );
 
-    algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
+  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
 
-    algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
+  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
 
-    algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
+  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
 
-    algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
+  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
 
 }
 
 __host__
 void algSAT( float *h_inout,
-             const int& w,
-             const int& h ) {
+    const int& w,
+    const int& h ) {
 
-    alg_setup algs;
-    dvector<float> d_out, d_ybar, d_vhat, d_ysum;
+  alg_setup algs;
+  dvector<float> d_out, d_ybar, d_vhat, d_ysum;
 
-    prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
+  prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
 
-    algSAT( d_out, d_ybar, d_vhat, d_ysum, algs );
+  algSAT( d_out, d_ybar, d_vhat, d_ysum, algs );
 
-    d_out.copy_to( h_inout, algs.width, algs.height, w, h );
+  d_out.copy_to( h_inout, algs.width, algs.height, w, h );
 
 }
+*/
