@@ -26,6 +26,7 @@ target_link_libraries(tests
   ${GTEST_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${LIBRARIES}
+  placement-lib
   -lpthread
   )
 
