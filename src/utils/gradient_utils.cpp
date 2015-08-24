@@ -1,4 +1,5 @@
 #include "./gradient_utils.h"
+#include <Eigen/Core>
 #include <QDomDocument>
 #include <QPainter>
 #include <QFile>
@@ -156,25 +157,37 @@ QImage GradientUtils::loadGradientAsImage(QString path, QSize size)
   return gradientToImage(loadGradient(path), size);
 }
 
-void addColorTo(std::vector<float> &vector, QColor color)
+Eigen::Vector4f toEigen(QColor color)
 {
-  vector.push_back(color.redF());
-  vector.push_back(color.greenF());
-  vector.push_back(color.blueF());
-  vector.push_back(color.alphaF());
+  return Eigen::Vector4f(color.redF(), color.greenF(), color.blueF(),
+                         color.alphaF());
+}
+
+void addColorTo(std::vector<float> &vector, Eigen::Vector4f color)
+{
+  vector.push_back(color.x());
+  vector.push_back(color.y());
+  vector.push_back(color.z());
+  vector.push_back(color.w());
+}
+
+Eigen::Vector4f interpolateColors(Eigen::Vector4f first, Eigen::Vector4f second,
+                                  float alpha)
+{
+  return (1.0f - alpha) * first + alpha * second;
 }
 
 std::vector<float>
 GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
 {
   std::vector<float> result;
-  auto beforeStop = gradient.stops().front();
-  auto afterStop = gradient.stops().at(1);
+  Eigen::Vector4f beforeColor = toEigen(gradient.stops().first().second);
+  Eigen::Vector4f afterColor = toEigen(gradient.stops().at(1).second);
+
   for (int i = 0; i < length; ++i)
   {
-    if (i > 0)
-      beforeStop = afterStop;
-    addColorTo(result, beforeStop.second);
+    float alpha = static_cast<float>(i) / (length - 1);
+    addColorTo(result, interpolateColors(beforeColor, afterColor, alpha));
   }
 
   return result;
