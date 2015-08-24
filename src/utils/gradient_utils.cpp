@@ -169,8 +169,11 @@ GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
 {
   std::vector<float> result;
   auto beforeStop = gradient.stops().front();
+  auto afterStop = gradient.stops().at(1);
   for (int i = 0; i < length; ++i)
   {
+    if (i > 0)
+      beforeStop = afterStop;
     addColorTo(result, beforeStop.second);
   }
 

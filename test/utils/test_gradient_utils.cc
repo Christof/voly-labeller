@@ -28,8 +28,15 @@ TEST(Test_GradientUtils, LoadGradientAsFloats)
   auto vector = GradientUtils::loadGradientAsFloats(gradient, 2);
 
   EXPECT_EQ(8, vector.size());
-  EXPECT_EQ(1.0f, vector[0]);
-  EXPECT_NEAR(0.498f, vector[1], 1e-4f);
-  EXPECT_EQ(0.0f, vector[2]);
-  EXPECT_NEAR(0.0392f, vector[3], 1e-4f);
+
+  const float delta = 1e-4f;
+  EXPECT_NEAR(1.0f, vector[0], delta);
+  EXPECT_NEAR(0.498f, vector[1], delta);
+  EXPECT_NEAR(0.0f, vector[2], delta);
+  EXPECT_NEAR(0.0392f, vector[3], delta);
+
+  EXPECT_NEAR(0.0f, vector[4], delta);
+  EXPECT_NEAR(0.0f, vector[5], delta);
+  EXPECT_NEAR(1.0f, vector[6], delta);
+  EXPECT_NEAR(0.0392f, vector[7], delta);
 }
