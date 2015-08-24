@@ -181,12 +181,28 @@ std::vector<float>
 GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
 {
   std::vector<float> result;
-  Eigen::Vector4f beforeColor = toEigen(gradient.stops().first().second);
-  Eigen::Vector4f afterColor = toEigen(gradient.stops().at(1).second);
+  auto stops = gradient.stops();
+  Eigen::Vector4f beforeColor = toEigen(stops.first().second);
+  float beforePoint = stops.first().first;
+  int afterIndex = 1;
+  Eigen::Vector4f afterColor = toEigen(stops.at(afterIndex).second);
+  float afterPoint = stops.at(afterIndex).first;
+  float divisor = length - 1;
 
   for (int i = 0; i < length; ++i)
   {
-    float alpha = static_cast<float>(i) / (length - 1);
+    float progress = i / divisor;
+    if (progress > afterPoint)
+    {
+      beforeColor = afterColor;
+      beforePoint = afterPoint;
+
+      auto newAfterStop = stops.at(++afterIndex);
+      afterColor = toEigen(newAfterStop.second);
+      afterPoint = newAfterStop.first;
+    }
+
+    float alpha = (progress - beforePoint) / (afterPoint - beforePoint);
     addColorTo(result, interpolateColors(beforeColor, afterColor, alpha));
   }
 

@@ -20,7 +20,7 @@ TEST(Test_GradientUtils, LoadFromFileAsImage)
   EXPECT_FALSE(image.isNull());
 }
 
-TEST(Test_GradientUtils, LoadGradientAsFloats_ForTwoStopsAnd2Pixels)
+TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd2Pixels)
 {
   QGradient gradient;
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
@@ -41,7 +41,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_ForTwoStopsAnd2Pixels)
   EXPECT_NEAR(0.0392f, vector[7], delta);
 }
 
-TEST(Test_GradientUtils, LoadGradientAsFloats_TwoStopsAnd5Pixels)
+TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd5Pixels)
 {
   QGradient gradient;
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
@@ -76,3 +76,41 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_TwoStopsAnd5Pixels)
   EXPECT_NEAR(1.0f, vector[18], delta);
   EXPECT_NEAR(0.0392f, vector[19], delta);
 }
+
+TEST(Test_GradientUtils, LoadGradientAsFloats_For3StopsAnd5Pixels)
+{
+  QGradient gradient;
+  gradient.setColorAt(0, QColor(255, 127, 0, 10));
+  gradient.setColorAt(0.5, QColor(0, 0, 0, 10));
+  gradient.setColorAt(1, QColor(127, 127, 255, 10));
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 5);
+
+  EXPECT_EQ(20, vector.size());
+
+  const float delta = 1e-4f;
+  EXPECT_NEAR(1.0f, vector[0], delta);
+  EXPECT_NEAR(0.498f, vector[1], delta);
+  EXPECT_NEAR(0.0f, vector[2], delta);
+  EXPECT_NEAR(0.0392f, vector[3], delta);
+
+  EXPECT_NEAR(0.5f, vector[4], delta);
+  EXPECT_NEAR(0.24901f, vector[5], delta);
+  EXPECT_NEAR(0.0, vector[6], delta);
+  EXPECT_NEAR(0.0392f, vector[7], delta);
+
+  EXPECT_NEAR(0.0f, vector[8], delta);
+  EXPECT_NEAR(0.0f, vector[9], delta);
+  EXPECT_NEAR(0.0f, vector[10], delta);
+  EXPECT_NEAR(0.0392f, vector[11], delta);
+
+  EXPECT_NEAR(0.24901f, vector[12], delta);
+  EXPECT_NEAR(0.24901f, vector[13], delta);
+  EXPECT_NEAR(0.5f, vector[14], delta);
+  EXPECT_NEAR(0.0392f, vector[15], delta);
+
+  EXPECT_NEAR(0.498f, vector[16], delta);
+  EXPECT_NEAR(0.498f, vector[17], delta);
+  EXPECT_NEAR(1.0f, vector[18], delta);
+  EXPECT_NEAR(0.0392f, vector[19], delta);
+}
+
