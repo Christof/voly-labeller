@@ -27,7 +27,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd2Pixels)
   gradient.setColorAt(1, QColor(0, 0, 255, 10));
   auto vector = GradientUtils::loadGradientAsFloats(gradient, 2);
 
-  EXPECT_EQ(8, vector.size());
+  ASSERT_EQ(8, vector.size());
 
   const float delta = 1e-4f;
   EXPECT_NEAR(1.0f, vector[0], delta);
@@ -48,7 +48,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd5Pixels)
   gradient.setColorAt(1, QColor(0, 0, 255, 10));
   auto vector = GradientUtils::loadGradientAsFloats(gradient, 5);
 
-  EXPECT_EQ(20, vector.size());
+  ASSERT_EQ(20, vector.size());
 
   const float delta = 1e-4f;
   EXPECT_NEAR(1.0f, vector[0], delta);
@@ -85,7 +85,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For3StopsAnd5Pixels)
   gradient.setColorAt(1, QColor(127, 127, 255, 10));
   auto vector = GradientUtils::loadGradientAsFloats(gradient, 5);
 
-  EXPECT_EQ(20, vector.size());
+  ASSERT_EQ(20, vector.size());
 
   const float delta = 1e-4f;
   EXPECT_NEAR(1.0f, vector[0], delta);
@@ -112,5 +112,31 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For3StopsAnd5Pixels)
   EXPECT_NEAR(0.498f, vector[17], delta);
   EXPECT_NEAR(1.0f, vector[18], delta);
   EXPECT_NEAR(0.0392f, vector[19], delta);
+}
+
+TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd3PixelsButFirstStopsStartsAfter0)
+{
+  QGradient gradient;
+  gradient.setColorAt(0.5f, QColor(255, 127, 0, 10));
+  gradient.setColorAt(1, QColor(0, 0, 255, 10));
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3);
+
+  ASSERT_EQ(12, vector.size());
+
+  const float delta = 1e-4f;
+  EXPECT_NEAR(1.0f, vector[0], delta);
+  EXPECT_NEAR(0.498f, vector[1], delta);
+  EXPECT_NEAR(0.0f, vector[2], delta);
+  EXPECT_NEAR(0.0392f, vector[3], delta);
+
+  EXPECT_NEAR(1.0f, vector[4], delta);
+  EXPECT_NEAR(0.498f, vector[5], delta);
+  EXPECT_NEAR(0.0f, vector[6], delta);
+  EXPECT_NEAR(0.0392f, vector[7], delta);
+
+  EXPECT_NEAR(0.0f, vector[8], delta);
+  EXPECT_NEAR(0.0f, vector[9], delta);
+  EXPECT_NEAR(1.0f, vector[10], delta);
+  EXPECT_NEAR(0.0392f, vector[11], delta);
 }
 

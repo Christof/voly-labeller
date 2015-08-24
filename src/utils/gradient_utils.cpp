@@ -185,6 +185,12 @@ GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
   Eigen::Vector4f beforeColor = toEigen(stops.first().second);
   float beforePoint = stops.first().first;
   int afterIndex = 1;
+
+  if (beforePoint != 0.0f)
+  {
+    beforePoint = 0.0f;
+    afterIndex = 0;
+  }
   Eigen::Vector4f afterColor = toEigen(stops.at(afterIndex).second);
   float afterPoint = stops.at(afterIndex).first;
   float divisor = length - 1;
