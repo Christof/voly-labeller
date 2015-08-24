@@ -140,3 +140,29 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd3PixelsButFirstStopsSt
   EXPECT_NEAR(0.0392f, vector[11], delta);
 }
 
+TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd3PixelsButLastStopIsNotAt1)
+{
+  QGradient gradient;
+  gradient.setColorAt(0, QColor(255, 127, 0, 10));
+  gradient.setColorAt(0.5f, QColor(0, 0, 255, 10));
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3);
+
+  ASSERT_EQ(12, vector.size());
+
+  const float delta = 1e-4f;
+  EXPECT_NEAR(1.0f, vector[0], delta);
+  EXPECT_NEAR(0.498f, vector[1], delta);
+  EXPECT_NEAR(0.0f, vector[2], delta);
+  EXPECT_NEAR(0.0392f, vector[3], delta);
+
+  EXPECT_NEAR(0.0f, vector[4], delta);
+  EXPECT_NEAR(0.0f, vector[5], delta);
+  EXPECT_NEAR(1.0f, vector[6], delta);
+  EXPECT_NEAR(0.0392f, vector[7], delta);
+
+  EXPECT_NEAR(0.0f, vector[8], delta);
+  EXPECT_NEAR(0.0f, vector[9], delta);
+  EXPECT_NEAR(1.0f, vector[10], delta);
+  EXPECT_NEAR(0.0392f, vector[11], delta);
+}
+

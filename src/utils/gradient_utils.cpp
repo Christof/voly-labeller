@@ -203,9 +203,17 @@ GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
       beforeColor = afterColor;
       beforePoint = afterPoint;
 
-      auto newAfterStop = stops.at(++afterIndex);
-      afterColor = toEigen(newAfterStop.second);
-      afterPoint = newAfterStop.first;
+      ++afterIndex;
+      if (afterIndex < stops.size())
+      {
+        auto newAfterStop = stops.at(afterIndex);
+        afterColor = toEigen(newAfterStop.second);
+        afterPoint = newAfterStop.first;
+      }
+      else
+      {
+        afterPoint = 1.0f;
+      }
     }
 
     float alpha = (progress - beforePoint) / (afterPoint - beforePoint);
