@@ -156,15 +156,19 @@ QImage GradientUtils::loadGradientAsImage(QString path, QSize size)
   return gradientToImage(loadGradient(path), size);
 }
 
-std::vector<float> GradientUtils::loadGradientAsFloats(QString path, int length)
+std::vector<float>
+GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
 {
-  QGradient gradient = loadGradient(path);
-
   std::vector<float> result(length * 4);
   for (int i = 0; i < length; i++)
   {
   }
 
   return result;
+}
+
+std::vector<float> GradientUtils::loadGradientAsFloats(QString path, int length)
+{
+  return loadGradientAsFloats(loadGradient(path), length);
 }
 

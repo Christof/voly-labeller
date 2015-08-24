@@ -17,6 +17,8 @@ class GradientUtils
   static QGradient loadGradient(QString path);
   static QImage gradientToImage(const QGradient &gradient, QSize size);
   static QImage loadGradientAsImage(QString path, QSize size);
+  static std::vector<float> loadGradientAsFloats(const QGradient &gradient,
+                                                 int length);
   static std::vector<float> loadGradientAsFloats(QString path, int length);
 };
 

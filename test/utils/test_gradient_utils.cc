@@ -1,5 +1,6 @@
 #include "../test.h"
 #include "../../src/utils/gradient_utils.h"
+#include <QGradient>
 
 TEST(Test_GradientUtils, LoadFromFile)
 {
@@ -21,8 +22,10 @@ TEST(Test_GradientUtils, LoadFromFileAsImage)
 
 TEST(Test_GradientUtils, LoadGradientAsFloats)
 {
-  auto vector = GradientUtils::loadGradientAsFloats(
-      "../assets/transferfunctions/lung_vessels.gra", 2);
+  QGradient gradient;
+  gradient.setColorAt(0, QColor(255, 127, 0, 10));
+  gradient.setColorAt(1, QColor(0, 0, 255, 10));
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 2);
 
   EXPECT_EQ(8, vector.size());
 }
