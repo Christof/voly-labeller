@@ -156,12 +156,22 @@ QImage GradientUtils::loadGradientAsImage(QString path, QSize size)
   return gradientToImage(loadGradient(path), size);
 }
 
+void addColorTo(std::vector<float> &vector, QColor color)
+{
+  vector.push_back(color.redF());
+  vector.push_back(color.greenF());
+  vector.push_back(color.blueF());
+  vector.push_back(color.alphaF());
+}
+
 std::vector<float>
 GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
 {
-  std::vector<float> result(length * 4);
-  for (int i = 0; i < length; i++)
+  std::vector<float> result;
+  auto beforeStop = gradient.stops().front();
+  for (int i = 0; i < length; ++i)
   {
+    addColorTo(result, beforeStop.second);
   }
 
   return result;
