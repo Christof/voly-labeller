@@ -13,8 +13,16 @@ TEST(Test_GradientUtils, LoadFromFile)
 TEST(Test_GradientUtils, LoadFromFileAsImage)
 {
   QImage image = GradientUtils::loadGradientAsImage(
-      "../assets/transferfunctions/scapula1.gra", QSize(512, 10));
+      "../assets/transferfunctions/MANIX_.gra", QSize(512, 10));
 
-  image.save("test.png");
+  // image.save("test.png");
   EXPECT_FALSE(image.isNull());
+}
+
+TEST(Test_GradientUtils, LoadGradientAsFloats)
+{
+  auto vector = GradientUtils::loadGradientAsFloats(
+      "../assets/transferfunctions/lung_vessels.gra", 2);
+
+  EXPECT_EQ(8, vector.size());
 }
