@@ -204,15 +204,19 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 
 int TextureManager::get2DVirtualPageSizeX(int internalFormat)
 {
-  int result = -1;
-  gl->glGetInternalformativ(GL_TEXTURE_2D, internalFormat, 0x9195, 1, &result);
-  return result;
+  return getInternalFormat(GL_TEXTURE_2D, internalFormat, 0x9195);
 }
 
 int TextureManager::get2DVirtualPageSizeY(int internalFormat)
 {
+  return getInternalFormat(GL_TEXTURE_2D, internalFormat, 0x9196);
+}
+
+int TextureManager::getInternalFormat(int target, int internalFormat,
+                                      int parameterName)
+{
   int result = -1;
-  gl->glGetInternalformativ(GL_TEXTURE_2D, internalFormat, 0x9196, 1, &result);
+  gl->glGetInternalformativ(target, internalFormat, parameterName, 1, &result);
   return result;
 }
 

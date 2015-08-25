@@ -58,6 +58,7 @@ class TextureManager
   Texture2d *allocateTexture2d(TextureSpaceDescription spaceDescription);
   int get2DVirtualPageSizeX(int internalFormat);
   int get2DVirtualPageSizeY(int internalFormat);
+  int getInternalFormat(int target, int internalFormat, int parameterName);
 };
 
 }  // namespace Graphics
