@@ -62,7 +62,6 @@ set(SOURCES
   src/graphics/connector.cpp
   src/graphics/cube.cpp
   src/graphics/mesh.cpp
-  src/graphics/texture.cpp
   src/graphics/frame_buffer_object.cpp
   src/graphics/ha_buffer.cpp
   src/graphics/timer.cpp
