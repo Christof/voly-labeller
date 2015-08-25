@@ -14,9 +14,8 @@ TransferFunction::TransferFunction(
   : textureManager(textureManager)
 {
 
-  auto image =
-      GradientUtils::loadGradientAsImage(QString(path.c_str()), QSize(512, 1));
-  texture = textureManager->addTexture(&image);
+  auto vector = GradientUtils::loadGradientAsFloats(QString(path.c_str()), 512);
+  texture = textureManager->addTexture(vector.data(), 512, 1);
 }
 
 TransferFunction::~TransferFunction()
