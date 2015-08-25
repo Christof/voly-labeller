@@ -5,6 +5,12 @@
 namespace Graphics
 {
 
+/**
+ * \brief Describes space requirements for a texture
+ *
+ * This consists of the #width and #height, the #levels as well as the
+ * \link #internalFormat internal format\endlink.
+ */
 struct TextureSpaceDescription
 {
   TextureSpaceDescription(int levels, int internalFormat, int width,
@@ -15,7 +21,13 @@ struct TextureSpaceDescription
   int width;
   int height;
 
-  void growToNextPowerOfTwo();
+  /**
+   * \brief Grows the size to valid size
+   *
+   * This means it must be at least the virtual page size given by \p minX and
+   * \p minY and it must be a power of 2 in each dimension.
+   */
+  void growToValidSize(int minX, int minY);
 };
 
 bool operator<(const TextureSpaceDescription &left,

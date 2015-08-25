@@ -168,7 +168,11 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 {
   TextureContainer *memArray = nullptr;
 
-  spaceDescription.growToNextPowerOfTwo();
+  int virtualPageSizeX = get2DVirtualPageSizeX(spaceDescription.internalFormat);
+  int virtualPageSizeY = get2DVirtualPageSizeY(spaceDescription.internalFormat);
+  qCInfo(tmChan) << "Virtual page size: " << virtualPageSizeX << "/"
+                 << virtualPageSizeY;
+  spaceDescription.growToValidSize(virtualPageSizeX, virtualPageSizeY);
 
   auto arrayIt = textureContainers.find(spaceDescription);
   if (arrayIt == textureContainers.end())
@@ -196,6 +200,20 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 
   assert(memArray);
   return new Texture2d(memArray, memArray->virtualAlloc());
+}
+
+int TextureManager::get2DVirtualPageSizeX(int internalFormat)
+{
+  int result = -1;
+  gl->glGetInternalformativ(GL_TEXTURE_2D, internalFormat, 0x9195, 1, &result);
+  return result;
+}
+
+int TextureManager::get2DVirtualPageSizeY(int internalFormat)
+{
+  int result = -1;
+  gl->glGetInternalformativ(GL_TEXTURE_2D, internalFormat, 0x9196, 1, &result);
+  return result;
 }
 
 }  // namespace Graphics
