@@ -31,11 +31,13 @@ class TextureManager
 
   int addTexture(std::string path);
   int addTexture(QImage *image);
+  int addTexture(float* data, int width, int height);
   unsigned int add3dTexture(Eigen::Vector3i size, float *data);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);
   Texture2d *newTexture2d(QImage *image);
+  Texture2d *newTexture2d(float* data, int width, int height);
 
   void free(Texture2d *texture);
 

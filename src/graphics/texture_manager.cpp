@@ -41,6 +41,15 @@ int TextureManager::addTexture(QImage *image)
   return id;
 }
 
+int TextureManager::addTexture(float *data, int width, int height)
+{
+  int id = textures.size();
+
+  textures.push_back(newTexture2d(data, width, height));
+
+  return id;
+}
+
 unsigned int TextureManager::add3dTexture(Eigen::Vector3i size, float *data)
 {
   auto textureTarget = GL_TEXTURE_3D;
@@ -101,6 +110,21 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
     qCCritical(tmChan) << "Error loading texture: " << error.what();
     throw;
   }
+}
+
+Texture2d *TextureManager::newTexture2d(float *data, int width, int height)
+{
+  auto internalformat = GL_RGBA32F;
+  auto format = GL_RGBA;
+  auto type = GL_FLOAT;
+
+  Texture2d *texture = allocateTexture2d(
+      TextureSpaceDescription(1, internalformat, width, height));
+  texture->commit();
+
+  texture->texSubImage2D(0, 0, 0, width, height, format, type, data);
+
+  return texture;
 }
 
 bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
