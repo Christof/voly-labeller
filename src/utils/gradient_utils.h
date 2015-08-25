@@ -7,9 +7,10 @@
 #include <vector>
 
 /**
- * \brief
+ * \brief Util functions to load gradient files
  *
- *
+ * Basic functionality is taken from the [Qt source]
+ * (https://github.com/qtproject/qttools/tree/dev/src/shared/qtgradienteditor).
  */
 class GradientUtils
 {
@@ -19,6 +20,16 @@ class GradientUtils
   static QImage loadGradientAsImage(QString path, QSize size);
   static std::vector<float> loadGradientAsFloats(const QGradient &gradient,
                                                  int length);
+  /**
+   * \brief Loads a gradient file and converts it to a color array represented
+   * by a float vector
+   *
+   * The resolution is determined by the \p length.
+   *
+   * Between the stops the color is interpolated in a linear fashion. If the
+   * stops don't start at 0 or end at 1 the first or last stop's value is
+   * used respectively.
+   */
   static std::vector<float> loadGradientAsFloats(QString path, int length);
 };
 
