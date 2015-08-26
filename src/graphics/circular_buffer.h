@@ -8,6 +8,16 @@
 namespace Graphics
 {
 
+/**
+ * \brief MappedBuffer with a circular locking/usage scheme
+ *
+ * To usage pattern is to first reserve a certain amount
+ * of elements using #reserve() then writing the elements to
+ * the given pointer. Afterwards #bindBufferRange() must be
+ * called so that the buffer can be used in a shader. Finally
+ * after using drawing something the #onUsageComplete must be
+ * called.
+ */
 template <typename T> class CircularBuffer : public MappedBuffer<T>
 {
  public:
