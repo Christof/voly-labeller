@@ -58,14 +58,14 @@ void *ShaderBuffer::reserve(GLsizeiptr count)
 {
   qDebug() << "Reserve" << count << "bytes"
            << "head" << head;
-  assert(count <= this->size());
+  assert(count <= this->count);
 
-  if (head + count > this->size())
+  if (head + count > this->count)
     head = 0;
 
   GLsizeiptr lockStart = head;
 
-  this->waitForLockedRange(lockStart, count);
+  lockManager.waitForLockedRange(lockStart, count);
   return static_cast<char *>(bufferContent) + head;
 }
 
@@ -74,7 +74,7 @@ void ShaderBuffer::onUsageComplete(GLsizeiptr count)
   int alignedCount =
       std::ceil(count / static_cast<float>(offsetAlignment)) * offsetAlignment;
 
-  this->lockRange(head, alignedCount);
+  lockManager.lockRange(head, alignedCount);
   head += alignedCount;
 }
 
@@ -83,49 +83,7 @@ void ShaderBuffer::bindBufferRange(GLuint index, GLsizeiptr count)
   assert(count <= this->count);
   assert(head + count <= this->count);
 
-  glAssert(
-      gl->glBindBufferRange(this->getTarget(), index, this->id, head, count));
-}
-
-void ShaderBuffer::waitForLockedRange(size_t lockBegin, size_t lockLength)
-{
-  lockManager.waitForLockedRange(lockBegin, lockLength);
-}
-
-void *ShaderBuffer::contents()
-{
-  return bufferContent;
-}
-
-void ShaderBuffer::lockRange(size_t lockBegin, size_t lockLength)
-{
-  lockManager.lockRange(lockBegin, lockLength);
-}
-
-void ShaderBuffer::bindBuffer()
-{
-  glAssert(gl->glBindBuffer(target, id));
-}
-
-void ShaderBuffer::bindBufferBase(GLuint index)
-{
-  glAssert(gl->glBindBufferBase(target, index, id));
-}
-
-void ShaderBuffer::bindBufferRange(GLuint index, GLsizeiptr head,
-                                   GLsizeiptr count)
-{
-  glAssert(gl->glBindBufferRange(target, index, id, head, count));
-}
-
-GLsizeiptr ShaderBuffer::size() const
-{
-  return count;
-}
-
-GLenum ShaderBuffer::getTarget() const
-{
-  return target;
+  glAssert(gl->glBindBufferRange(target, index, this->id, head, count));
 }
 
 }  // namespace Graphics
