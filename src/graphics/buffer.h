@@ -28,7 +28,7 @@ class Buffer
   void adopt(Buffer const &buffer);
   void forget();
 
-  void copy(Buffer const &buffer);
+  void copyBuffer(Buffer const &buffer);
 
   void initialize(Gl *gl, uint size);
   void resize(uint size);

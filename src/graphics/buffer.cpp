@@ -16,7 +16,7 @@ Buffer::Buffer(Gl *gl, uint size) : id(0), gpuPointer(0), size(0)
 Buffer::Buffer(Buffer const &buffer)
 {
   initialize(buffer.gl, buffer.getSize());
-  copy(buffer);
+  copyBuffer(buffer);
 }
 
 GLuint Buffer::getId() const
@@ -59,7 +59,7 @@ void Buffer::forget()
   size = 0;
 }
 
-void Buffer::copy(Buffer const &buffer)
+void Buffer::copyBuffer(Buffer const &buffer)
 {
   if (buffer.getSize() != getSize())
   {

@@ -14,6 +14,9 @@ namespace Graphics
 
 class Gl;
 
+/**
+ * \brief Stores offsets into index and vertex element buffers
+ */
 struct BufferInformation
 {
   uint vertexBufferOffset;
@@ -21,9 +24,21 @@ struct BufferInformation
 };
 
 /**
- * \brief
+ * \brief Holds all buffers and provides methods to add new objects
  *
+ * The vertex data consists of:
+ * - position (3 dimensions)
+ * - normal (3 dimensions)
+ * - color (4 dimensions; red, green, blue and alpha)
+ * - texture coordinates (2 dimensions)
+ * - internally also the draw id (1 dimension)
  *
+ * Also indices are store separately.
+ *
+ * New objects can be add by calling #addObject().
+ * 
+ * All buffers can be bound with #bind() for usage
+ * and unbound with #unbind() afterwards.
  */
 class BufferManager
 {

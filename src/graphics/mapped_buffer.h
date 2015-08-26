@@ -8,6 +8,9 @@
 namespace Graphics
 {
 
+/**
+ * \brief Shader buffer mapped to a given number of elements of type \T
+ */
 template <typename T> class MappedBuffer
 {
  public:

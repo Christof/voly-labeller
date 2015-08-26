@@ -9,9 +9,11 @@
 namespace Graphics
 {
 /**
- * \brief
+ * \brief %Buffer to store vertex attributes like positions, normals or colors
  *
- *
+ * The buffer must be initialized once using the AttributeBuffer::initialize method.
+ * Before it is used AttributeBuffer::bindAttrib or bindAttribDivisor must be
+ * called. To copy data into the buffer AttributeBuffer::setData is used.
  */
 class AttributeBuffer
 {
@@ -29,20 +31,6 @@ class AttributeBuffer
   GLuint getId() const;
   int getComponentCount() const;
 
-  /*
-  GLuint type() const
-  {
-    return bufferType;
-  }
-  uint primitiveSize() const
-  {
-    return Size;
-  };
-  uint size() const
-  {
-    return count;
-  }
-  */
   uint sizeBytes() const;
 
   void initialize(Gl *gl, uint size, GLuint type = DEFAULT_BUFFER_TYPE);

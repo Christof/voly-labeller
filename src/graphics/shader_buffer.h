@@ -8,15 +8,23 @@
 namespace Graphics
 {
 
+/**
+ * \brief Shader buffer without a specific type
+ *
+ * The usage pattern is to first reserve a certain amount
+ * of elements using #reserve() then writing the elements to
+ * the given pointer. Afterwards #bindBufferRange() must be
+ * called so that the buffer can be used in a shader. Finally
+ * after using drawing something the #onUsageComplete must be
+ * called.
+ */
 class ShaderBuffer
 {
  public:
   explicit ShaderBuffer(GLenum target, bool runUpdatesOnCPU = true);
 
-  virtual bool initialize(Gl *gl, GLuint count, GLbitfield createFlags,
+  bool initialize(Gl *gl, GLuint count, GLbitfield createFlags,
                           GLbitfield mapFlags);
-
-  virtual void terminate();
 
   void *reserve(GLsizeiptr count);
 
@@ -24,23 +32,7 @@ class ShaderBuffer
 
   void bindBufferRange(GLuint index, GLsizeiptr count);
 
-  void waitForLockedRange(size_t lockBegin, size_t lockLength);
-
-  void *contents();
-
-  void lockRange(size_t lockBegin, size_t lockLength);
-
-  void bindBuffer();
-
-  void bindBufferBase(GLuint index);
-
-  void bindBufferRange(GLuint index, GLsizeiptr head, GLsizeiptr count);
-
-  GLsizeiptr size() const;
-
-  GLenum getTarget() const;
-
- protected:
+ private:
   BufferLockManager lockManager;
   GLsizeiptr count = 0;
   Gl *gl;
@@ -49,6 +41,8 @@ class ShaderBuffer
   GLenum target;
   GLsizeiptr head;
   int offsetAlignment;
+
+  void terminate();
 };
 
 }  // namespace Graphics

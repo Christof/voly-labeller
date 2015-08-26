@@ -15,9 +15,13 @@ class Gl;
 class HABuffer;
 
 /**
- * \brief
+ * \brief Used to create and retrieve ShaderProgram%s
  *
+ * The are managed by one instance of this class so that the same
+ * ShaderProgram is not instantiated multiple times.
  *
+ * ShaderProgram%s are identified by an identifier which is returend
+ * by the #addShader functions.
  */
 class ShaderManager
 {

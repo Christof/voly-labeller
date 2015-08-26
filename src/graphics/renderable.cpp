@@ -31,7 +31,7 @@ void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
   if (!objectData.isInitialized())
     initialize(gl, objectManager, textureManager, shaderManager);
 
-  objectData.transform = renderData.modelMatrix;
+  objectData.modelMatrix = renderData.modelMatrix;
   objectManager->renderLater(objectData);
 }
 
