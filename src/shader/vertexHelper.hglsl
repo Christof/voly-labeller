@@ -1,3 +1,10 @@
+/**
+ * \brief Contains helper functions for vertex shader and includes
+ * the transforms buffer which contains model-matrices
+ *
+ * The model matrix for a object with drawId can be retrieved with
+ * getModelMatrix(drawId).
+ */
 
 layout (std140, binding = 0) buffer CB0
 {
@@ -9,6 +16,9 @@ vec4 mul(mat4 matrix, vec3 vector)
   return matrix * vec4(vector, 1.0f);
 }
 
+/**
+ * \brief Returns the model matrix for the given \p drawId
+ */
 mat4 getModelMatrix(int drawId)
 {
   mat4 matrix = Transforms[drawId];
@@ -17,6 +27,9 @@ mat4 getModelMatrix(int drawId)
   return matrix;
 }
 
+/**
+ * \brief Returns the object id for the given \p drawId
+ */
 int getObjectId(int drawId)
 {
   return floatBitsToInt(Transforms[drawId][0][3]);
