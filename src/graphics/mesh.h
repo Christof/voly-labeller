@@ -21,6 +21,10 @@ namespace Graphics
 class Gl;
 class ObjectManager;
 
+/**
+ * \brief Description of phong material consisting of ambient, diffuse and specular
+ * color as well as a shininess value
+ */
 struct PhongMaterial
 {
   Eigen::Vector4f ambientColor;
@@ -30,8 +34,7 @@ struct PhongMaterial
 };
 
 /**
- * \brief Encapsulates a single mesh including its material.
- *
+ * \brief Encapsulates a single mesh including its material
  */
 class Mesh : public Renderable
 {
