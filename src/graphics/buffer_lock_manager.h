@@ -8,6 +8,15 @@
 namespace Graphics
 {
 
+/**
+ * \brief Encapsulates a locked buffer range
+ *
+ * It stores the start offset in the buffer and the length of the range.
+ * The end offset can be retrieved with #endOffset().
+ *
+ * The method #overlaps() checks if the range overlaps with the
+ * given range.
+ */
 struct BufferRange
 {
   size_t startOffset;
@@ -24,6 +33,10 @@ struct BufferRange
   }
 };
 
+/**
+ * \brief Lock on a buffer determined by \link BufferRange range \endlink and
+ * a sync object
+ */
 struct BufferLock
 {
   BufferRange range;
@@ -31,9 +44,10 @@ struct BufferLock
 };
 
 /**
- * \brief
+ * \brief Manages locks for a buffer
  *
- *
+ * Locks can be acquired with #lockRange() and #waitForLockedRange() waits until
+ * the range is free again.
  */
 class BufferLockManager
 {
