@@ -473,7 +473,7 @@ __global__ void sat_init_kernel(int image_size, float xscale, float yscale,
   thrustptr[index] = texval;
 }
 
-void resizeIfNecessary(thrust::device_vector<float> vector, unsigned long size)
+void resizeIfNecessary(thrust::device_vector<float> &vector, unsigned long size)
 {
   if (vector.size() != size)
   {
