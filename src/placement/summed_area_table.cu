@@ -607,24 +607,41 @@ void algSAT( dvector<float>& d_inout,
   algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
 
 }
-
-__host__
-void algSAT( float *h_inout,
-    const int& w,
-    const int& h ) {
-
-  alg_setup algs;
-  dvector<float> d_out, d_ybar, d_vhat, d_ysum;
-
-  prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
-
-  algSAT( d_out, d_ybar, d_vhat, d_ysum, algs );
-
-  d_out.copy_to( h_inout, algs.width, algs.height, w, h );
-
-}
 */
 
+thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
+{
+  int compute_width = w;
+  int compute_height = w;
+  if (compute_width % 32 > 0)
+    compute_width += (32 - (compute_width % 32));
+  if (compute_height % 32 > 0)
+    compute_height += (32 - (compute_height % 32));
+  int compute_m_size = (compute_width + WS - 1) / WS;
+  int compute_n_size = (compute_height + WS - 1) / WS;
+
+  // alg_setup algs;
+  thrust::device_vector<float> inout(h_inout, h_inout + w * h), ybar, vhat, ysum;
+
+  // prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
+
+  resizeIfNecessary(inout, compute_width * compute_height);
+  resizeIfNecessary(ybar, compute_n_size * compute_width);
+  resizeIfNecessary(vhat, compute_m_size * compute_height);
+  resizeIfNecessary(ysum, compute_m_size * compute_n_size);
+
+  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
+             compute_m_size, compute_n_size);
+
+  cudaDeviceSynchronize();
+  //algSAT(d_out, d_ybar, d_vhat, d_ysum, algs);
+
+  // thrust::host_vector<float> result = inout;
+  // thrust::host_vector<float> result(w * h);
+  // thrust::copy(inout.begin(), inout.end(), result.begin());
+
+  return inout;
+}
 
 __global__ void sumCudaInLib(const int *values, int size, int *result)
 {
