@@ -473,6 +473,14 @@ __global__ void sat_init_kernel(int image_size, float xscale, float yscale,
   thrustptr[index] = texval;
 }
 
+void resizeIfNecessary(thrust::device_vector<float> vector, unsigned long size)
+{
+  if (vector.size() != size)
+  {
+    vector.resize(size);
+  }
+}
+
 void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
              int screen_size_x, int screen_size_y, float z_threshold,
              thrust::device_vector<float> &inout,
@@ -490,26 +498,10 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   int compute_n_size = (compute_height + WS - 1) / WS;
 
   // set data structure sizes
-
-  if (inout.size() !=
-      static_cast<unsigned long>(compute_width * compute_height))
-  {
-    inout.resize(compute_width * compute_height);
-  }
-  if (ybar.size() != static_cast<unsigned long>(compute_n_size * compute_width))
-  {
-    ybar.resize(compute_n_size * compute_width);
-  }
-  if (vhat.size() !=
-      static_cast<unsigned long>(compute_m_size * compute_height))
-  {
-    vhat.resize(compute_m_size * compute_height);
-  }
-  if (ysum.size() !=
-      static_cast<unsigned long>(compute_m_size * compute_n_size))
-  {
-    ysum.resize(compute_m_size * compute_n_size);
-  }
+  resizeIfNecessary(inout, compute_width * compute_height);
+  resizeIfNecessary(ybar, compute_n_size * compute_width);
+  resizeIfNecessary(vhat, compute_m_size * compute_height);
+  resizeIfNecessary(ysum, compute_m_size * compute_n_size);
 
   float *d_inout = thrust::raw_pointer_cast(inout.data());
   float *d_ybar = thrust::raw_pointer_cast(ybar.data());
