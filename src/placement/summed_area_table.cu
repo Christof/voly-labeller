@@ -481,6 +481,32 @@ void resizeIfNecessary(thrust::device_vector<float> vector, unsigned long size)
   }
 }
 
+void callStages(thrust::device_vector<float> &inout, thrust::device_vector<float> &ybar,
+                thrust::device_vector<float> &vhat, thrust::device_vector<float> &ysum,
+                int compute_width, int compute_height, int compute_m_size,
+                int compute_n_size)
+{
+  const int nWm = (compute_width + MTS - 1) / MTS,
+            nHm = (compute_height + MTS - 1) / MTS;
+  const dim3 cg_img(compute_m_size, compute_n_size);
+  const dim3 cg_ybar(nWm, 1);
+  const dim3 cg_vhat(1, nHm);
+
+  float *d_inout = thrust::raw_pointer_cast(inout.data());
+  float *d_ybar = thrust::raw_pointer_cast(ybar.data());
+  float *d_vhat = thrust::raw_pointer_cast(vhat.data());
+  float *d_ysum = thrust::raw_pointer_cast(ysum.data());
+
+  algSAT_stage1<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
+      d_inout, d_ybar, d_vhat);
+  algSAT_stage2<<<cg_ybar, dim3(WS, MW)>>>(compute_m_size, compute_n_size,
+      compute_width, d_ybar, d_ysum);
+  algSAT_stage3<<<cg_vhat, dim3(WS, MW)>>>(compute_m_size, compute_height,
+      d_ysum, d_vhat);
+  algSAT_stage4<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
+      d_inout, d_ybar, d_vhat);
+}
+
 void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
              int screen_size_x, int screen_size_y, float z_threshold,
              thrust::device_vector<float> &inout,
@@ -503,10 +529,6 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   resizeIfNecessary(vhat, compute_m_size * compute_height);
   resizeIfNecessary(ysum, compute_m_size * compute_n_size);
 
-  float *d_inout = thrust::raw_pointer_cast(inout.data());
-  float *d_ybar = thrust::raw_pointer_cast(ybar.data());
-  float *d_vhat = thrust::raw_pointer_cast(vhat.data());
-  float *d_ysum = thrust::raw_pointer_cast(ysum.data());
 
   // QElapsedTimer tm;
   // tm.start();
@@ -528,6 +550,7 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   dim3 dimBlock(64, 1, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
+  float *d_inout = thrust::raw_pointer_cast(inout.data());
   sat_init_kernel<<<dimGrid, dimBlock>>>
       (image_size, float(screen_size_x) / float(image_size),
        float(screen_size_y) / float(image_size), z_threshold, d_inout);
@@ -535,21 +558,8 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   cudaUnbindTexture(&textureReadDepth);
   cudaGraphicsUnmapResources(1, &inputImage);
 
-  // prepare SAT kernel launches
-  const int nWm = (compute_width + MTS - 1) / MTS,
-            nHm = (compute_height + MTS - 1) / MTS;
-  const dim3 cg_img(compute_m_size, compute_n_size);
-  const dim3 cg_ybar(nWm, 1);
-  const dim3 cg_vhat(1, nHm);
-
-  algSAT_stage1<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
-      d_inout, d_ybar, d_vhat);
-  algSAT_stage2<<<cg_ybar, dim3(WS, MW)>>>(compute_m_size, compute_n_size,
-      compute_width, d_ybar, d_ysum);
-  algSAT_stage3<<<cg_vhat, dim3(WS, MW)>>>(compute_m_size, compute_height,
-      d_ysum, d_vhat);
-  algSAT_stage4<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
-      d_inout, d_ybar, d_vhat);
+  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
+             compute_m_size, compute_n_size);
 }
 
 /*
