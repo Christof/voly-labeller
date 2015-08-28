@@ -138,7 +138,7 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
   lastUsedProgram = shader->getId();
 }
 
-void HABuffer::render()
+void HABuffer::render(const RenderData &renderData)
 {
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -155,6 +155,10 @@ void HABuffer::render()
   renderShader->setUniform("u_Records", RecordsBuffer);
   renderShader->setUniform("u_Counts", CountsBuffer);
   renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
+  Eigen::Matrix4f viewProjectionMatrix =
+      renderData.projectionMatrix * renderData.viewMatrix;
+  renderShader->setUniform("viewProjectionMatrix", viewProjectionMatrix);
+  renderShader->setUniform("viewMatrix", renderData.viewMatrix);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));

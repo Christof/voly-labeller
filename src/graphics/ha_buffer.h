@@ -71,7 +71,7 @@ class HABuffer
 
   void clearAndPrepare();
   void begin(std::shared_ptr<ShaderProgram> shader);
-  void render();
+  void render(const RenderData &renderData);
 
   bool wireframe = false;
 

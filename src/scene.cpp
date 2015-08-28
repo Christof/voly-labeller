@@ -117,7 +117,7 @@ void Scene::render()
 
   objectManager->render(renderData);
 
-  haBuffer->render();
+  haBuffer->render(renderData);
 
   // doPick();
 
