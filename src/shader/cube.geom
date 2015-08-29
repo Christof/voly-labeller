@@ -151,22 +151,16 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
  * normal and is 0.5 units away from the center point.
  */
 void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
-                 const vec4 side, const vec4 varying1, const vec4 varying2, const bool flip)
+                 const vec4 side, const vec4 varying1, const vec4 varying2)
 {
-  vec4 triangle[3] = (flip) ? vec4[3](center + side - varying1 - varying2,
-                                      center + side - varying1 + varying2,
-                                      center + side + varying1 - varying2)
-                            : vec4[3](center + side - varying1 - varying2,
-                                      center + side + varying1 - varying2,
-                                      center + side - varying1 + varying2);
+  vec4 triangle[3] = vec4[3](center + side - varying1 - varying2,
+      center + side + varying1 - varying2,
+      center + side - varying1 + varying2);
   processTriangle(matrix, nearPlane, triangle);
 
-  triangle = (flip) ? vec4[3](center + side + varying1 - varying2,
-                              center + side - varying1 + varying2,
-                              center + side + varying1 + varying2)
-                    : vec4[3](center + side + varying1 - varying2,
-                              center + side + varying1 + varying2,
-                              center + side - varying1 + varying2);
+  triangle = vec4[3](center + side + varying1 - varying2,
+      center + side + varying1 + varying2,
+      center + side - varying1 + varying2);
   processTriangle(matrix, nearPlane, triangle);
 }
 
@@ -254,17 +248,17 @@ void main()
   vec4 center = gl_in[0].gl_Position;
 
   // top
-  processSide(matrix, nearPlane, center, yAxis, xAxis, zAxis, true);
+  processSide(matrix, nearPlane, center, yAxis, -xAxis, zAxis);
   // right
-  processSide(matrix, nearPlane, center, xAxis, yAxis, zAxis, false);
+  processSide(matrix, nearPlane, center, xAxis, yAxis, zAxis);
   // front
-  processSide(matrix, nearPlane, center, zAxis, xAxis, yAxis, false);
+  processSide(matrix, nearPlane, center, zAxis, xAxis, yAxis);
   // bottom
-  processSide(matrix, nearPlane, center, -yAxis, xAxis, zAxis, false);
+  processSide(matrix, nearPlane, center, -yAxis, xAxis, zAxis);
   // left
-  processSide(matrix, nearPlane, center, -xAxis, yAxis, zAxis, true);
+  processSide(matrix, nearPlane, center, -xAxis, -yAxis, zAxis);
   // back
-  processSide(matrix, nearPlane, center, -zAxis, xAxis, yAxis, true);
+  processSide(matrix, nearPlane, center, -zAxis, -xAxis, yAxis);
 
   fillHole(matrix);
 }
