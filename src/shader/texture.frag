@@ -35,6 +35,7 @@ FragmentData computeData()
   data.color = Texture(texAddress[vertexDrawId], vertexTexCoord.xy);
   //data.color = vec4(0, vertexTexCoord.x, vertexTexCoord.y, 0.5);
   data.eyePos = vertexEyePos;
+  data.objectId = 0;
 
   return data;
 }

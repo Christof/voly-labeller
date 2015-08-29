@@ -83,7 +83,7 @@ class HABuffer
   void displayStatistics(const char *label);
 
   // vec4 color and vec4 position
-  const int FRAGMENT_DATA_SIZE = 32;
+  const int FRAGMENT_DATA_SIZE = 36;
 
   Eigen::Vector2i size;
   Gl *gl;

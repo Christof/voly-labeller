@@ -45,6 +45,7 @@ FragmentData computeData()
   FragmentData data;
   data.color = color;
   data.eyePos = outEyePosition;
+  data.objectId = 0;
 
   return data;
 }

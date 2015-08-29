@@ -17,7 +17,9 @@ FragmentData computeData()
   data.color = vertexColor;
   // data.color = vec4(1, 0, 0, 1);
   data.eyePos = vertexEyePos;
-  //data.objectId = getObjectId(vertexDrawId);
+
+  const int objectId = getObjectId(vertexDrawId);
+  data.objectId = (gl_FrontFacing) ?  objectId : -objectId;
 
   return data;
 }

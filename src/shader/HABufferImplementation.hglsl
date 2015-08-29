@@ -28,7 +28,7 @@ struct FragmentData
 {
   vec4 color;
   vec4 eyePos;
-  //int objectId;
+  int objectId;
 };
 
 #ifndef GL_NV_shader_atomic_int64

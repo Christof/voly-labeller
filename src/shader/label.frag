@@ -13,6 +13,7 @@ FragmentData computeData()
   FragmentData data;
   data.color = texture(textureSampler, vertexTexCoord);
   data.eyePos = vertexEyePosition;
+  data.objectId = 0;
 
   return data;
 }
