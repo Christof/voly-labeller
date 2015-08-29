@@ -47,7 +47,7 @@ class ScreenQuad;
  *
  *  FragmentData data;
  *  data.color = color;
- *  data.pos = outPosition;
+ *  data.eyePos = outEyePosition;
  *
  *  return data;
  *}

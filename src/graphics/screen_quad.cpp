@@ -11,9 +11,9 @@ ScreenQuad::ScreenQuad()
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                              const RenderData &renderData)
 {
-  Eigen::Matrix4f modelViewProjection =
+  Eigen::Matrix4f viewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  shader->setUniform("viewProjectionMatrix", viewProjection);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
   shader->setUniform("modelMatrix", renderData.modelMatrix);
   shader->setUniform("textureSampler", 0);

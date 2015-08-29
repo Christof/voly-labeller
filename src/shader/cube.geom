@@ -16,8 +16,11 @@ in int vDrawId[];
 
 out vec4 vertexPos;
 out vec4 vertexColor;
+out vec4 vertexEyePos;
 
-uniform mat4 modelViewProjectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 viewProjectionMatrix;
+
 
 #include "vertexHelper.hglsl"
 
@@ -34,6 +37,8 @@ int cutPositionCount = 0;
 void emit(const mat4 matrix, const vec4 pos)
 {
   vertexPos = matrix * pos;
+  vertexEyePos = viewMatrix*getModelMatrix(vDrawId[0])*pos;
+  //vertexEyePos = (eyepos.xyz)/eyepos.w;
   gl_Position = vertexPos;
   vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
   EmitVertex();
@@ -92,7 +97,7 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
                      const vec4 triangle[3])
 {
   // use positive value to see the cutting in front of the near plane
-  const float cutOffZ = 0;
+  const float cutOffZ = 0.000001;
   int emittedVertexCount = 0;
 
   vec4 firstPosition;
@@ -230,7 +235,7 @@ void fillHole(const mat4 matrix)
 void main()
 {
   mat4 model = getModelMatrix(vDrawId[0]);
-  mat4 matrix = modelViewProjectionMatrix * model;
+  mat4 matrix = viewProjectionMatrix * model;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);
   const vec4 yAxis = vec4(0, 0.5, 0, 0);
   const vec4 zAxis = vec4(0, 0, 0.5, 0);

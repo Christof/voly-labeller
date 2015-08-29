@@ -3,6 +3,7 @@
 #include "HABufferImplementation.hglsl"
 
 in vec4 vertexPos;
+in vec4 vertexEyePos;
 in vec3 vertexNormal;
 in vec4 vertexColor;
 in vec2 vertexTexCoord;
@@ -33,7 +34,7 @@ FragmentData computeData()
   FragmentData data;
   data.color = Texture(texAddress[vertexDrawId], vertexTexCoord.xy);
   //data.color = vec4(0, vertexTexCoord.x, vertexTexCoord.y, 0.5);
-  data.pos = vertexPos;
+  data.eyePos = vertexEyePos;
 
   return data;
 }
