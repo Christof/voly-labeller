@@ -7,11 +7,33 @@ out vec4 o_PixColor;
 layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
+uniform mat4 projectionMatrix;
 
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
 {
   return clr + (1.0 - clr.w) * vec4(srf.xyz * srf.w, srf.w);
+}
+
+bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
+{
+  uvec2 l = (ij + u_Offsets[age]);
+  uint64_t h = Haddr(l % uvec2(u_HashSz));
+
+  uint64_t rec = u_Records[h];
+
+  uint32_t key = uint32_t(rec >> uint64_t(32));
+
+  if (HA_AGE(key) == age)
+  {
+    // clr = blend(clr,RGBA(uint32_t(rec)));
+    fragment = u_FragmentData[uint32_t(rec)];
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 
@@ -35,7 +57,6 @@ void main()
 
   gl_FragDepth = 0.0;
 
-
   uint maxage = u_Counts[Saddr(ij)];
 
   if (maxage == 0)
@@ -46,22 +67,117 @@ void main()
     discard;  // no fragment, early exit
   }
 
+
+  int activeobjects = 0;
+  int activeobjectcount = 0;
+  FragmentData current_fragment;
+  FragmentData next_fragment;
+  bool current_fragment_read_status = false;
+  bool next_fragment_read_status = false;
+
+  vec3 startpos_eye;
+  vec3 endpos_eye;
+  vec3 dirvec_eye;
+  vec4 pos_proj;
+  int objectId = -1;
+
   vec4 clr = vec4(0, 0, 0, 0);
-  for (uint a = 1; a <= maxage; a++)  // all fragments
+  for (uint a = 1; a < maxage; a++)  // all fragments
+  //for (uint a = 1; a <= maxage; a++)  // all fragments
   {
-    uvec2 l = (ij + u_Offsets[a]);
-    uint64_t h = Haddr(l % uvec2(u_HashSz));
 
-    uint64_t rec = u_Records[h];
-
-    uint32_t key = uint32_t(rec >> uint64_t(32));
-    if (HA_AGE(key) == a)
+    if (a == 1)
     {
-      // clr = blend(clr,RGBA(uint32_t(rec)));
-      const FragmentData fragment = u_FragmentData[uint32_t(rec)];
-      clr = blend(clr, fragment.color);
-      // break; // just the first fragment
+      current_fragment_read_status = fetchFragment(ij, a, current_fragment);
+      startpos_eye = current_fragment.eyePos.xyz;
     }
+    else
+    {
+      current_fragment_read_status = next_fragment_read_status;
+      current_fragment = next_fragment;
+      startpos_eye = endpos_eye;
+    }
+
+    // update  active objects
+
+    if (current_fragment.objectId > 0)
+    {
+      objectId = current_fragment.objectId;
+      activeobjects |= 1 << (objectId);
+
+    }
+    else if (current_fragment.objectId < 0)
+    {
+      objectId = -current_fragment.objectId;
+      activeobjects &= (~(1 << objectId));
+    }
+
+    activeobjectcount = bitCount(activeobjects);
+
+
+    // fetch next Fragment
+
+
+    next_fragment_read_status = fetchFragment(ij, a+1, next_fragment);
+    if (next_fragment_read_status)
+    {
+      endpos_eye = next_fragment.eyePos.xyz;
+    }
+    else
+    {
+      endpos_eye = startpos_eye;
+    }
+
+    // set up segment direction vector
+
+    dirvec_eye = endpos_eye - startpos_eye;
+
+    pos_proj = projectionMatrix*vec4(startpos_eye, 1.0f);
+    pos_proj.z /= pos_proj.w;
+    // FIXME: posproj.xy ???
+    pos_proj += 1.0f;
+    pos_proj /= 2.0f;
+
+    if (activeobjectcount > 0) // in frag
+    {
+
+      uint ao = activeobjects;
+      int aoc = activeobjectcount;
+
+      for (int oi =0; oi < activeobjectcount; oi++)
+      {
+        int objectID = findLSB(ao);
+        ao &= (~(1<<objectID));
+
+        ///FIXME: continue porting from VolyRenderer
+       /// vec4 textureStartPos =
+
+
+      }
+
+    }
+    else
+    {
+      //current_fragment.color = vec4(0.0, 1.0, 1.0, 0.5);
+    }
+
+    if (current_fragment_read_status)
+    {
+      clr = blend(clr, current_fragment.color);
+    }
+
+
+    // break; // just the first fragment
+  }
+
+  if (maxage == 1)
+  {
+    next_fragment_read_status = fetchFragment(ij, 1, next_fragment);
+  }
+
+  if (next_fragment_read_status)
+  {
+    clr = blend(clr, next_fragment.color);
   }
 
   o_PixColor = blend(clr, vec4(BkgColor, 1.0));
