@@ -18,7 +18,6 @@ class Gl;
 class ScreenQuad : public Quad
 {
  public:
-  ScreenQuad();
   ScreenQuad(std::string vertexShaderFilename,
              std::string fragmentShaderFilename);
 
@@ -31,8 +30,6 @@ class ScreenQuad : public Quad
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
   std::shared_ptr<ShaderProgram> getShaderProgram();
-
-  bool skipSettingUniforms = false;
 
  private:
   void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
