@@ -10,21 +10,25 @@
 #include "./graphics/quad.h"
 #include "./graphics/cube.h"
 #include "./graphics/object_data.h"
+#include "./graphics/volume.h"
 
 struct RenderData;
 class VolumeReader;
+
 
 /**
  * \brief Node which renders a volume
  *
  */
-class VolumeNode : public Node
+class VolumeNode : public Node, public Graphics::Volume
 {
  public:
   explicit VolumeNode(std::string filename);
   virtual ~VolumeNode();
 
   void render(Graphics::Gl *gl, RenderData renderData);
+
+  virtual Graphics::VolumeData getVolumeData();
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
@@ -41,6 +45,8 @@ class VolumeNode : public Node
   std::shared_ptr<Math::Obb> obb;
   GLuint texture = 0;
   Graphics::ObjectData cubeData;
+  int volumeId;
+  int textureId = 0;
 
   void initializeTexture(Graphics::Gl *gl);
 

@@ -5,6 +5,7 @@
 #include "./volume_reader.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
+#include "./graphics/volume_manager.h"
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
@@ -18,6 +19,8 @@ VolumeNode::VolumeNode(std::string filename) : filename(filename)
   Eigen::Vector3f center = transformation.col(3).head<3>();
   obb = std::make_shared<Math::Obb>(center, halfWidths,
                                     transformation.block<3, 3>(0, 0));
+
+  Graphics::VolumeManager::instance->addVolume(this);
 }
 
 VolumeNode::~VolumeNode()
@@ -37,8 +40,20 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   auto size = volumeReader->getPhysicalSize();
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
-  cubeData.modelMatrix = transformation * scale;
+  cubeData.modelMatrix = transformation;
   objectManager->renderLater(cubeData);
+}
+
+Graphics::VolumeData VolumeNode::getVolumeData()
+{
+  Graphics::VolumeData data;
+  data.textureAddress = textureManager->getAddressFor(textureId);
+  data.textureMatrix = Eigen::Matrix4f::Identity();
+  data.volumeId = volumeId;
+  data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
+  data.transferFunctionRow = 0;
+
+  return data;
 }
 
 std::shared_ptr<Math::Obb> VolumeNode::getObb()
