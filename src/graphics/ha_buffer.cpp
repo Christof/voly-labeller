@@ -27,9 +27,15 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
   this->gl = gl;
   this->objectManager = objectManager;
 
-  quad = std::make_shared<ScreenQuad>();
-  quad->skipSettingUniforms = true;
-  quad->initialize(gl, objectManager, textureManager, shaderManager);
+  clearQuad = std::make_shared<ScreenQuad>(":shader/clearHABuffer.vert",
+                                           ":shader/clearHABuffer.frag");
+  clearQuad->skipSettingUniforms = true;
+  clearQuad->initialize(gl, objectManager, textureManager, shaderManager);
+
+  renderQuad = std::make_shared<ScreenQuad>(":shader/renderHABuffer.vert",
+                                            ":shader/renderHABuffer.frag");
+  renderQuad->skipSettingUniforms = true;
+  renderQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
   initializeShadersHash();
   initializeBufferHash();
@@ -47,12 +53,6 @@ void HABuffer::updateNearAndFarPlanes(float near, float far)
 
 void HABuffer::initializeShadersHash()
 {
-  qCDebug(channel) << "initializeShadersHash for size" << size(0) << size(1);
-
-  renderShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
-  clearShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/clearHABuffer.vert", ":shader/clearHABuffer.frag");
 }
 
 void HABuffer::initializeBufferHash()
@@ -107,14 +107,14 @@ void HABuffer::clearAndPrepare()
     offsets[i] = offsets[i] % habufferTableSize;
   }
 
+  auto clearShader = clearQuad->getShaderProgram();
   clearShader->bind();
   clearShader->setUniform("u_NumRecords", habufferNumRecords);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
   clearShader->setUniform("u_Records", RecordsBuffer);
   clearShader->setUniform("u_Counts", CountsBuffer);
 
-  quad->setShaderProgram(clearShader);
-  quad->render(gl, objectManager, RenderData());
+  clearQuad->render(gl, objectManager, RenderData());
 
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -147,6 +147,7 @@ void HABuffer::render(const RenderData &renderData)
 
   renderTimer.start();
 
+  auto renderShader = renderQuad->getShaderProgram();
   renderShader->bind();
 
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
@@ -166,8 +167,7 @@ void HABuffer::render(const RenderData &renderData)
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  quad->setShaderProgram(renderShader);
-  quad->render(gl, objectManager, RenderData());
+  renderQuad->render(gl, objectManager, RenderData());
 
   glAssert(gl->glDepthMask(GL_TRUE));
 

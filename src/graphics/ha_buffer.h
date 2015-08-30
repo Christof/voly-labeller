@@ -87,9 +87,8 @@ class HABuffer
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::shared_ptr<ScreenQuad> quad;
-  std::shared_ptr<ShaderProgram> renderShader;
-  std::shared_ptr<ShaderProgram> clearShader;
+  std::shared_ptr<ScreenQuad> clearQuad;
+  std::shared_ptr<ScreenQuad> renderQuad;;
   std::shared_ptr<ObjectManager> objectManager;
 
   unsigned int habufferScreenSize = 0;
