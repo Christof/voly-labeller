@@ -53,4 +53,9 @@ std::shared_ptr<ShaderProgram> ScreenQuad::getShaderProgram()
   return this->shaderProgram;
 }
 
+ObjectData &ScreenQuad::getObjectDataReference()
+{
+  return objectData;
+}
+
 }  // namespace Graphics

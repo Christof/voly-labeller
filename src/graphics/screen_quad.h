@@ -31,6 +31,7 @@ class ScreenQuad : public Quad
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
   std::shared_ptr<ShaderProgram> getShaderProgram();
 
+  ObjectData &getObjectDataReference();
  private:
   void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
                            const RenderData &renderData);
