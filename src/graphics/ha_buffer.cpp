@@ -4,6 +4,7 @@
 #include "./shader_program.h"
 #include "./screen_quad.h"
 #include "./object_manager.h"
+#include "./volume_manager.h"
 
 namespace Graphics
 {
@@ -154,6 +155,9 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("u_Records", recordsBuffer);
   renderShader->setUniform("u_Counts", countsBuffer);
   renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
+
+  ObjectData &objectData = renderQuad->getObjectDataReference();
+  VolumeManager::instance->fillCustomBuffer(objectData);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
