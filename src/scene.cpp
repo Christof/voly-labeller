@@ -51,9 +51,8 @@ void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Graphics::ScreenQuad>();
-  quad->setShaderProgram(std::make_shared<Graphics::ShaderProgram>(
-      gl, ":shader/pass.vert", ":shader/textureForRenderBuffer.frag"));
+  quad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -138,6 +137,7 @@ void Scene::renderScreenQuad()
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
   quad->getShaderProgram()->bind();
+  quad->getShaderProgram()->setUniform("textureSampler", 0);
   quad->render(gl, objectManager, renderData);
 }
 
