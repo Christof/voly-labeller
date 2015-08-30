@@ -71,4 +71,10 @@ void ShaderManager::bind(int id, const RenderData &renderData)
   shader->setUniform("projectionMatrix", renderData.projectionMatrix);
 }
 
+std::shared_ptr<ShaderProgram> ShaderManager::getShader(int id)
+{
+  return shaderPrograms[id];
+}
+
+
 }  // namespace Graphics
