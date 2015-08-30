@@ -9,6 +9,29 @@ layout(depth_any) out float gl_FragDepth;
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 
+struct Tex2DAddress
+{
+  uint64_t Container;
+  float Page;
+  int dummy;
+  vec2 texScale;
+};
+
+struct VolumeData
+{
+  Tex2DAddress textureAddress;
+  mat4 textureMatrix;
+  int volumeId;
+  mat4 objectToDatasetMatrix;
+  int transferFunctionRow;
+  // int transferFunctionRowCount;
+};
+
+layout(std430, binding = 1) buffer CB1
+{
+  VolumeData volumes[];
+};
+
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
 {
