@@ -29,12 +29,10 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
 
   clearQuad = std::make_shared<ScreenQuad>(":shader/clearHABuffer.vert",
                                            ":shader/clearHABuffer.frag");
-  clearQuad->skipSettingUniforms = true;
   clearQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
   renderQuad = std::make_shared<ScreenQuad>(":shader/renderHABuffer.vert",
                                             ":shader/renderHABuffer.frag");
-  renderQuad->skipSettingUniforms = true;
   renderQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
   initializeShadersHash();
@@ -156,10 +154,6 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("u_Records", RecordsBuffer);
   renderShader->setUniform("u_Counts", CountsBuffer);
   renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
-  Eigen::Matrix4f viewProjectionMatrix =
-      renderData.projectionMatrix * renderData.viewMatrix;
-  renderShader->setUniform("viewProjectionMatrix", viewProjectionMatrix);
-  renderShader->setUniform("viewMatrix", renderData.viewMatrix);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
@@ -167,7 +161,7 @@ void HABuffer::render(const RenderData &renderData)
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  renderQuad->render(gl, objectManager, RenderData());
+  renderQuad->render(gl, objectManager, renderData);
 
   glAssert(gl->glDepthMask(GL_TRUE));
 
