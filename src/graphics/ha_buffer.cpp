@@ -66,23 +66,23 @@ void HABuffer::initializeBufferHash()
           size.y(), habufferNumRecords, habufferTableSize, habufferTableSize);
 
   // HA-Buffer records
-  if (!RecordsBuffer.isInitialized())
-    RecordsBuffer.initialize(gl, habufferNumRecords * sizeof(uint) * 2);
+  if (!recordsBuffer.isInitialized())
+    recordsBuffer.initialize(gl, habufferNumRecords * sizeof(uint) * 2);
   else
-    RecordsBuffer.resize(habufferNumRecords * sizeof(uint) * 2);
+    recordsBuffer.resize(habufferNumRecords * sizeof(uint) * 2);
 
-  if (!CountsBuffer.isInitialized())
-    CountsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
+  if (!countsBuffer.isInitialized())
+    countsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
   else
-    CountsBuffer.resize(habufferCountsSize * sizeof(uint));
+    countsBuffer.resize(habufferCountsSize * sizeof(uint));
 
-  if (!FragmentDataBuffer.isInitialized())
-    FragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
+  if (!fragmentDataBuffer.isInitialized())
+    fragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
   else
-    FragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
+    fragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
 
   // clear counts
-  CountsBuffer.clear(0);
+  countsBuffer.clear(0);
 
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
@@ -109,8 +109,8 @@ void HABuffer::clearAndPrepare()
   clearShader->bind();
   clearShader->setUniform("u_NumRecords", habufferNumRecords);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
-  clearShader->setUniform("u_Records", RecordsBuffer);
-  clearShader->setUniform("u_Counts", CountsBuffer);
+  clearShader->setUniform("u_Records", recordsBuffer);
+  clearShader->setUniform("u_Counts", countsBuffer);
 
   clearQuad->render(gl, objectManager, RenderData());
 
@@ -151,9 +151,9 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
   renderShader->setUniform("u_HashSz", habufferTableSize);
   renderShader->setUniformAsVec2Array("u_Offsets", offsets, 256);
-  renderShader->setUniform("u_Records", RecordsBuffer);
-  renderShader->setUniform("u_Counts", CountsBuffer);
-  renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
+  renderShader->setUniform("u_Records", recordsBuffer);
+  renderShader->setUniform("u_Counts", countsBuffer);
+  renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
@@ -184,9 +184,9 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 
   shader->setUniform("u_ZNear", zNear);
   shader->setUniform("u_ZFar", zFar);
-  shader->setUniform("u_Records", RecordsBuffer);
-  shader->setUniform("u_Counts", CountsBuffer);
-  shader->setUniform("u_FragmentData", FragmentDataBuffer);
+  shader->setUniform("u_Records", recordsBuffer);
+  shader->setUniform("u_Counts", countsBuffer);
+  shader->setUniform("u_FragmentData", fragmentDataBuffer);
 }
 
 void HABuffer::syncAndGetCounts()
@@ -194,8 +194,8 @@ void HABuffer::syncAndGetCounts()
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
 
   uint numInserted = 1;
-  CountsBuffer.getData(&numInserted, sizeof(uint),
-                       CountsBuffer.getSize() - sizeof(uint));
+  countsBuffer.getData(&numInserted, sizeof(uint),
+                       countsBuffer.getSize() - sizeof(uint));
 
   if (numInserted >= habufferNumRecords)
   {
@@ -216,7 +216,7 @@ void HABuffer::displayStatistics(const char *label)
 {
   uint *lcounts = new uint[habufferCountsSize];
 
-  CountsBuffer.getData(lcounts, CountsBuffer.getSize());
+  countsBuffer.getData(lcounts, countsBuffer.getSize());
 
   int avgdepth = 0;
   int num = 0;

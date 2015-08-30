@@ -96,9 +96,9 @@ class HABuffer
   uint habufferNumRecords = 0;
   uint habufferCountsSize = 0;
 
-  Buffer RecordsBuffer;
-  Buffer CountsBuffer;
-  Buffer FragmentDataBuffer;
+  Buffer recordsBuffer;
+  Buffer countsBuffer;
+  Buffer fragmentDataBuffer;
 
   float zNear = 0.1f;
   float zFar = 5.0f;
