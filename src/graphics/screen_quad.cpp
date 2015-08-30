@@ -1,11 +1,29 @@
 #include "./screen_quad.h"
 #include "./shader_program.h"
+#include "./shader_manager.h"
 
 namespace Graphics
 {
 
 ScreenQuad::ScreenQuad()
 {
+}
+
+ScreenQuad::ScreenQuad(std::string vertexShaderFilename,
+                       std::string fragmentShaderFilename)
+  : Quad(vertexShaderFilename, fragmentShaderFilename)
+
+{
+}
+
+void ScreenQuad::initialize(Gl *gl,
+                            std::shared_ptr<ObjectManager> objectManager,
+                            std::shared_ptr<TextureManager> textureManager,
+                            std::shared_ptr<ShaderManager> shaderManager)
+{
+  Renderable::initialize(gl, objectManager, textureManager, shaderManager);
+  if (!shaderProgram)
+    shaderProgram = shaderManager->getShader(objectData.getShaderProgramId());
 }
 
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
