@@ -32,7 +32,7 @@ class TransferFunctionManager
  private:
   const int width = 4096;
   std::shared_ptr<TextureManager> textureManager;
-  int texture = -1;
+  int textureId = -1;
   int usedRows = 0;
 };
 

@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <stdexcept>
 #include "./texture_manager.h"
+#include "./texture2d.h"
 #include "../utils/gradient_utils.h"
 
 namespace Graphics
@@ -24,13 +25,17 @@ int TransferFunctionManager::add(std::string path)
   auto vector =
       GradientUtils::loadGradientAsFloats(QString(path.c_str()), width);
 
-  if (texture < 0)
+  if (textureId < 0)
   {
-    texture = textureManager->addTexture(vector.data(), width, 64);
+    textureId = textureManager->addTexture(vector.data(), width, 64);
     return usedRows++;
   }
 
-  throw std::runtime_error("More than one transfer function not yet supported");
+  auto texture = textureManager->getTextureFor(textureId);
+  texture->texSubImage2D(0, 0, ++usedRows, width, 1, GL_RGBA, GL_FLOAT,
+                         vector.data());
+
+  return usedRows;
 }
 
 }  // namespace Graphics
