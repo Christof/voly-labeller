@@ -32,10 +32,10 @@ int TransferFunctionManager::add(std::string path)
   }
 
   auto texture = textureManager->getTextureFor(textureId);
-  texture->texSubImage2D(0, 0, ++usedRows, width, 1, GL_RGBA, GL_FLOAT,
+  texture->texSubImage2D(0, 0, usedRows, width, 1, GL_RGBA, GL_FLOAT,
                          vector.data());
 
-  return usedRows;
+  return usedRows++;
 }
 
 TextureAddress TransferFunctionManager::getTextureAddress()
