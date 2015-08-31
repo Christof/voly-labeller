@@ -12,6 +12,9 @@ uniform mat4 viewMatrix;
 
 uniform sampler3D volumeSampler;
 
+#define transferFunctionRowCount 64.0f
+
+// TODO(SIR): move to hglsl
 struct Tex2DAddress
 {
   uint64_t Container;
@@ -34,6 +37,14 @@ layout(std430, binding = 1) buffer CB1
 {
   VolumeData volumes[];
 };
+
+// TODO(SIR): move to hglsl
+vec4 Texture(Tex2DAddress addr, vec2 uv)
+{
+  vec3 texc = vec3(uv.x * addr.texScale.x, uv.y * addr.texScale.y, addr.Page);
+
+  return texture(sampler2DArray(addr.Container), texc);
+}
 
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
@@ -180,6 +191,9 @@ void main()
         vec4 texCoord = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
         float value = texture(volumeSampler, texCoord.xyz).r;
         current_fragment.color.rgb = vec3(value);
+
+        vec4 transferFunction = Texture(volumes[0].textureAddress, vec2(texCoord.x, volumes[0].transferFunctionRow));
+        current_fragment.color = transferFunction;
       }
 
     }
