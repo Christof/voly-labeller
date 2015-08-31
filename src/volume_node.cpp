@@ -1,6 +1,7 @@
 #include "./volume_node.h"
 #include <string>
 #include <vector>
+#include <Eigen/Geometry>
 #include "./graphics/render_data.h"
 #include "./volume_reader.h"
 #include "./graphics/object_manager.h"
@@ -54,7 +55,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   auto size = volumeReader->getPhysicalSize();
   Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
   scale.diagonal().head<3>() = size;
-  cubeData.modelMatrix = transformation;
+  cubeData.modelMatrix = transformation * scale;
   objectManager->renderLater(cubeData);
 }
 
@@ -62,7 +63,10 @@ Graphics::VolumeData VolumeNode::getVolumeData()
 {
   Graphics::VolumeData data;
   data.textureAddress = transferFunctionManager->getTextureAddress();
-  data.textureMatrix = Eigen::Matrix4f::Identity();
+  Eigen::Affine3f textureMatrixTransform(
+      Eigen::Translation3f(0.5f, 0.5f, 0.5f));
+  data.textureMatrix =
+      textureMatrixTransform.matrix() * cubeData.modelMatrix.inverse();
   data.volumeId = volumeId;
   data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
   data.transferFunctionRow = transferFunctionRow;

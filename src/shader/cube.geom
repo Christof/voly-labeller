@@ -40,7 +40,7 @@ void emit(const mat4 matrix, const vec4 pos)
   vertexEyePos = viewMatrix*getModelMatrix(vDrawId[0])*pos;
   //vertexEyePos = (eyepos.xyz)/eyepos.w;
   gl_Position = vertexPos;
-  vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
+  vertexColor = pos;// + vec4(0.5, 0.5, 0.5, 0);
   EmitVertex();
 }
 

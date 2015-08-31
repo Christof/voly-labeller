@@ -8,6 +8,7 @@ layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
 
 struct Tex2DAddress
 {
@@ -175,7 +176,7 @@ void main()
         ///FIXME: continue porting from VolyRenderer
        /// vec4 textureStartPos =
 
-
+        current_fragment.color = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
       }
 
     }
