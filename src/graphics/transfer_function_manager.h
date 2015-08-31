@@ -11,20 +11,29 @@ namespace Graphics
 class TextureManager;
 
 /**
- * \brief
+ * \brief Provides access to a large lookup table wherein each row represents a
+ * transfer function
  *
- *
+ * New transfer functions can be added from a gradient file (.gra) using #add().
  */
 class TransferFunctionManager
 {
  public:
-  TransferFunctionManager(std::shared_ptr<TextureManager> textureManager,
-                   std::string path);
+  TransferFunctionManager(std::shared_ptr<TextureManager> textureManager);
+
+  /**
+   * \brief Generates a transfer function lookup row from the given gradient file
+   *
+   * \return The row in the transfer function lookup table.
+   */
+  int add(std::string path);
   virtual ~TransferFunctionManager();
 
  private:
+  const int width = 4096;
   std::shared_ptr<TextureManager> textureManager;
-  int texture;
+  int texture = -1;
+  int usedRows = 0;
 };
 
 }  // namespace Graphics

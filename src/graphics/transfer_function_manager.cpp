@@ -10,16 +10,27 @@ namespace Graphics
 // QLoggingCategory tfChan("Graphics.TransferFunction");
 
 TransferFunctionManager::TransferFunctionManager(
-    std::shared_ptr<TextureManager> textureManager, std::string path)
+    std::shared_ptr<TextureManager> textureManager)
   : textureManager(textureManager)
 {
-
-  auto vector = GradientUtils::loadGradientAsFloats(QString(path.c_str()), 512);
-  texture = textureManager->addTexture(vector.data(), 512, 1);
 }
 
 TransferFunctionManager::~TransferFunctionManager()
 {
+}
+
+int TransferFunctionManager::add(std::string path)
+{
+  auto vector =
+      GradientUtils::loadGradientAsFloats(QString(path.c_str()), width);
+
+  if (texture < 0)
+  {
+    texture = textureManager->addTexture(vector.data(), width, 64);
+    return usedRows++;
+  }
+
+  throw std::runtime_error("More than one transfer function not yet supported");
 }
 
 }  // namespace Graphics
