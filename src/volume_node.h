@@ -11,10 +11,10 @@
 #include "./graphics/cube.h"
 #include "./graphics/object_data.h"
 #include "./graphics/volume.h"
+#include "./graphics/transfer_function_manager.h"
 
 struct RenderData;
 class VolumeReader;
-
 
 /**
  * \brief Node which renders a volume
@@ -37,6 +37,7 @@ class VolumeNode : public Node, public Graphics::Volume
 
   Eigen::Matrix4f getTransformation();
   virtual std::shared_ptr<Math::Obb> getObb();
+
  private:
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
@@ -47,6 +48,10 @@ class VolumeNode : public Node, public Graphics::Volume
   Graphics::ObjectData cubeData;
   int volumeId;
   int textureId = 0;
+  int transferFunctionRow = -1;
+
+  static std::unique_ptr<Graphics::TransferFunctionManager>
+      transferFunctionManager;
 
   void initializeTexture(Graphics::Gl *gl);
 

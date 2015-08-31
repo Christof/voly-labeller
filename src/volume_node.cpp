@@ -6,6 +6,10 @@
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
 #include "./graphics/volume_manager.h"
+#include "./utils/path_helper.h"
+
+std::unique_ptr<Graphics::TransferFunctionManager>
+    VolumeNode::transferFunctionManager;
 
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
@@ -30,7 +34,17 @@ VolumeNode::~VolumeNode()
 void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 {
   if (texture == 0)
+  {
     initializeTexture(gl);
+    if (!transferFunctionManager.get())
+      transferFunctionManager =
+          std::unique_ptr<Graphics::TransferFunctionManager>(
+              new Graphics::TransferFunctionManager(textureManager));
+
+    transferFunctionRow =
+        transferFunctionManager->add(absolutePathOfProjectRelativePath(
+            std::string("assets/transferfunctions/scapula1.gra")));
+  }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
@@ -47,11 +61,11 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 Graphics::VolumeData VolumeNode::getVolumeData()
 {
   Graphics::VolumeData data;
-  data.textureAddress = textureManager->getAddressFor(textureId);
+  data.textureAddress = transferFunctionManager->getTextureAddress();
   data.textureMatrix = Eigen::Matrix4f::Identity();
   data.volumeId = volumeId;
   data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
-  data.transferFunctionRow = 0;
+  data.transferFunctionRow = transferFunctionRow;
 
   return data;
 }
