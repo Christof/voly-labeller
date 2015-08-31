@@ -45,6 +45,7 @@ class TextureManager
   bool initialize(Gl *gl, bool sparse = true, int maxTextureArrayLevels = -1);
   void shutdown();
 
+  Texture2d* getTextureFor(int textureId);
   TextureAddress getAddressFor(int textureId);
 
  private:

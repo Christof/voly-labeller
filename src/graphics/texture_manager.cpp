@@ -158,9 +158,18 @@ void TextureManager::shutdown()
   textureContainers.clear();
 }
 
+Texture2d *TextureManager::getTextureFor(int textureId)
+{
+  if (static_cast<int>(textures.size()) <= textureId)
+    throw std::invalid_argument("The given textureId " +
+                                std::to_string(textureId) + "cannot be found");
+
+  return textures[textureId];
+}
+
 TextureAddress TextureManager::getAddressFor(int textureId)
 {
-  return textures[textureId]->address();
+  return getTextureFor(textureId)->address();
 }
 
 Texture2d *
