@@ -51,11 +51,6 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
   quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
-  auto transformation = volumeReader->getTransformationMatrix();
-  auto size = volumeReader->getPhysicalSize();
-  Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
-  scale.diagonal().head<3>() = size;
-  cubeData.modelMatrix = transformation * scale;
   objectManager->renderLater(cubeData);
 }
 
@@ -63,10 +58,10 @@ Graphics::VolumeData VolumeNode::getVolumeData()
 {
   Graphics::VolumeData data;
   data.textureAddress = transferFunctionManager->getTextureAddress();
-  Eigen::Affine3f textureMatrixTransform(
-      Eigen::Translation3f(0.5f, 0.5f, 0.5f));
-  data.textureMatrix =
-      textureMatrixTransform.matrix() * cubeData.modelMatrix.inverse();
+  Eigen::Affine3f positionToTexture(Eigen::Translation3f(0.5f, 0.5f, 0.5f));
+  Eigen::Affine3f scale(Eigen::Scaling(volumeReader->getPhysicalSize()));
+  data.textureMatrix = positionToTexture.matrix() *
+                       (cubeData.modelMatrix * scale.matrix()).inverse();
   data.volumeId = volumeId;
   data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
   data.transferFunctionRow = transferFunctionRow;
@@ -90,7 +85,15 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   cubeData = objectManager->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
       shaderProgramId, GL_POINTS);
-  cubeData.modelMatrix = Eigen::Matrix4f::Identity();
+  auto transformation = volumeReader->getTransformationMatrix();
+  cubeData.modelMatrix = transformation;
+  auto physicalSize = volumeReader->getPhysicalSize();
+  cubeData.setCustomBuffer(sizeof(Eigen::Vector3f),
+                           [physicalSize](void *insertionPoint)
+                           {
+    memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector3f));
+  });
+
   glAssert(gl->glPointSize(40));
 
   texture = textureManager->add3dTexture(volumeReader->getSize(),

@@ -21,6 +21,10 @@ out vec4 vertexEyePos;
 uniform mat4 viewMatrix;
 uniform mat4 viewProjectionMatrix;
 
+layout(std430, binding = 1) buffer CB1
+{
+  vec3 physicalSize[];
+};
 
 #include "vertexHelper.hglsl"
 
@@ -34,8 +38,9 @@ int cutPositionCount = 0;
  * as well as the gl_Position. The color is calculated
  * from the position so that it can be used as texture coordinate.
  */
-void emit(const mat4 matrix, const vec4 pos)
+void emit(const mat4 matrix, vec4 pos)
 {
+  pos.xyz *= physicalSize[0];
   vertexPos = matrix * pos;
   vertexEyePos = viewMatrix*getModelMatrix(vDrawId[0])*pos;
   //vertexEyePos = (eyepos.xyz)/eyepos.w;
