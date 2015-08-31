@@ -1,4 +1,4 @@
-#include "./transfer_function.h"
+#include "./transfer_function_manager.h"
 #include <QLoggingCategory>
 #include <stdexcept>
 #include "./texture_manager.h"
@@ -9,7 +9,7 @@ namespace Graphics
 
 // QLoggingCategory tfChan("Graphics.TransferFunction");
 
-TransferFunction::TransferFunction(
+TransferFunctionManager::TransferFunctionManager(
     std::shared_ptr<TextureManager> textureManager, std::string path)
   : textureManager(textureManager)
 {
@@ -18,7 +18,7 @@ TransferFunction::TransferFunction(
   texture = textureManager->addTexture(vector.data(), 512, 1);
 }
 
-TransferFunction::~TransferFunction()
+TransferFunctionManager::~TransferFunctionManager()
 {
 }
 
