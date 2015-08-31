@@ -10,6 +10,8 @@ uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
+uniform sampler3D volumeSampler;
+
 struct Tex2DAddress
 {
   uint64_t Container;
@@ -175,8 +177,9 @@ void main()
 
         ///FIXME: continue porting from VolyRenderer
        /// vec4 textureStartPos =
-
-        current_fragment.color = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
+        vec4 texCoord = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
+        float value = texture(volumeSampler, texCoord.xyz).r;
+        current_fragment.color.rgb = vec3(value);
       }
 
     }
