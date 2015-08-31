@@ -38,4 +38,9 @@ int TransferFunctionManager::add(std::string path)
   return usedRows;
 }
 
+TextureAddress TransferFunctionManager::getTextureAddress()
+{
+  return textureManager->getAddressFor(textureId);
+}
+
 }  // namespace Graphics
