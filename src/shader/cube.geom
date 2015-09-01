@@ -40,12 +40,13 @@ int cutPositionCount = 0;
  */
 void emit(const mat4 matrix, vec4 pos)
 {
-  pos.xyz *= physicalSize[0];
   vertexPos = matrix * pos;
+  pos.xyz *= physicalSize[0];
   vertexEyePos = viewMatrix*getModelMatrix(vDrawId[0])*pos;
   //vertexEyePos = (eyepos.xyz)/eyepos.w;
   gl_Position = vertexPos;
-  vertexColor = pos;// + vec4(0.5, 0.5, 0.5, 0);
+  //vertexColor = pos;// + vec4(0.5, 0.5, 0.5, 0);
+  vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
   EmitVertex();
 }
 
@@ -102,7 +103,7 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
                      const vec4 triangle[3])
 {
   // use positive value to see the cutting in front of the near plane
-  const float cutOffZ = 0.000001;
+  const float cutOffZ = 0.0000001;
   int emittedVertexCount = 0;
 
   vec4 firstPosition;
@@ -240,7 +241,11 @@ void fillHole(const mat4 matrix)
 void main()
 {
   mat4 model = getModelMatrix(vDrawId[0]);
-  mat4 matrix = viewProjectionMatrix * model;
+  mat4 scaleMatrix = mat4(physicalSize[0].x, 0, 0, 0,
+                          0, physicalSize[0].y, 0, 0,
+                          0, 0, physicalSize[0].z, 0,
+                          0, 0, 0, 1);
+  mat4 matrix = viewProjectionMatrix * model * scaleMatrix;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);
   const vec4 yAxis = vec4(0, 0.5, 0, 0);
   const vec4 zAxis = vec4(0, 0, 0.5, 0);

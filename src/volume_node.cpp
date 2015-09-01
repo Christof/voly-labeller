@@ -44,12 +44,12 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
     transferFunctionRow =
         transferFunctionManager->add(absolutePathOfProjectRelativePath(
-            std::string("assets/transferfunctions/scapula1.gra")));
+            std::string("assets/transferfunctions/scapula4.gra")));
   }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
+  //quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   objectManager->renderLater(cubeData);
 }
