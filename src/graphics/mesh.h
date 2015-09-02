@@ -65,7 +65,6 @@ class Mesh : public Renderable
   float *textureCoordinateData;
   PhongMaterial phongMaterial;
 
-  int textureId;
   bool hasTexture;
 };
 
