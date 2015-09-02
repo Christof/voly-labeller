@@ -17,10 +17,12 @@ endif(test)
 
 include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
-set(CMAKE_CXX_FLAGS_MEMORY "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=memory -fno-omit-frame-pointer" CACHE STRING
+set(CLANG_FLAGS "-Wno-unknown-warning-option -Wno-inconsistent-missing-override")
+
+set(CMAKE_CXX_FLAGS_MEMORY "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=memory -fno-omit-frame-pointer ${CLANG_FLAGS}" CACHE STRING
   "Flags used by the C++ compiler during memory sanitization builds." FORCE)
 
-set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsanitize-blacklist=${CMAKE_SOURCE_DIR}/blacklist.txt -fno-omit-frame-pointer" CACHE STRING # -stdlib=libc++
+set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsanitize-blacklist=${CMAKE_SOURCE_DIR}/blacklist.txt -fno-omit-frame-pointer ${CLANG_FLAGS}" CACHE STRING # -stdlib=libc++
   "Flags used by the C++ compiler during address sanitization builds." FORCE)
 
 set(CMAKE_CXX_FLAGS_COV "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ftest-coverage" CACHE STRING
