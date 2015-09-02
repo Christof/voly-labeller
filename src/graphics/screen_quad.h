@@ -22,19 +22,19 @@ class ScreenQuad : public Quad
              std::string fragmentShaderFilename);
 
   virtual void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                  std::shared_ptr<TextureManager> textureManager,
-                  std::shared_ptr<ShaderManager> shaderManager);
-  virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                      const RenderData &renderData);
-
+                          std::shared_ptr<TextureManager> textureManager,
+                          std::shared_ptr<ShaderManager> shaderManager);
+  void renderImmediately(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+                         const RenderData &renderData);
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);
   std::shared_ptr<ShaderProgram> getShaderProgram();
 
   ObjectData &getObjectDataReference();
+
  private:
   void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
+                   const RenderData &renderData);
   std::shared_ptr<ShaderProgram> shaderProgram;
 };
 

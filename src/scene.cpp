@@ -138,7 +138,7 @@ void Scene::renderScreenQuad()
 
   quad->getShaderProgram()->bind();
   quad->getShaderProgram()->setUniform("textureSampler", 0);
-  quad->render(gl, objectManager, renderData);
+  quad->renderImmediately(gl, objectManager, renderData);
 }
 
 void Scene::resize(int width, int height)

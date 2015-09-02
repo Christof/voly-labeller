@@ -113,7 +113,7 @@ void HABuffer::clearAndPrepare()
   clearShader->setUniform("u_Records", recordsBuffer);
   clearShader->setUniform("u_Counts", countsBuffer);
 
-  clearQuad->render(gl, objectManager, RenderData());
+  clearQuad->renderImmediately(gl, objectManager, RenderData());
 
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -165,7 +165,7 @@ void HABuffer::render(const RenderData &renderData)
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  renderQuad->render(gl, objectManager, renderData);
+  renderQuad->renderImmediately(gl, objectManager, renderData);
 
   glAssert(gl->glDepthMask(GL_TRUE));
 

@@ -31,7 +31,7 @@ void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
   shader->setUniform("modelMatrix", renderData.modelMatrix);
 }
 
-void ScreenQuad::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+void ScreenQuad::renderImmediately(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                         const RenderData &renderData)
 {
   if (!objectData.isInitialized())
