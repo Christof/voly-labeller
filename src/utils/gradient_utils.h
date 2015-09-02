@@ -19,7 +19,8 @@ class GradientUtils
   static QImage gradientToImage(const QGradient &gradient, QSize size);
   static QImage loadGradientAsImage(QString path, QSize size);
   static std::vector<float> loadGradientAsFloats(const QGradient &gradient,
-                                                 int length);
+                                                 int length,
+                                                 bool preMultiply = true);
   /**
    * \brief Loads a gradient file and converts it to a color array represented
    * by a float vector
@@ -30,7 +31,8 @@ class GradientUtils
    * stops don't start at 0 or end at 1 the first or last stop's value is
    * used respectively.
    */
-  static std::vector<float> loadGradientAsFloats(QString path, int length);
+  static std::vector<float> loadGradientAsFloats(QString path, int length,
+                                                 bool preMultiply = true);
 };
 
 #endif  // SRC_UTILS_GRADIENT_UTILS_H_

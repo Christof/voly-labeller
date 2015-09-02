@@ -178,7 +178,8 @@ Eigen::Vector4f interpolateColors(Eigen::Vector4f first, Eigen::Vector4f second,
 }
 
 std::vector<float>
-GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
+GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length,
+                                    bool preMultiply)
 {
   std::vector<float> result;
   auto stops = gradient.stops();
@@ -217,14 +218,20 @@ GradientUtils::loadGradientAsFloats(const QGradient &gradient, int length)
     }
 
     float alpha = (progress - beforePoint) / (afterPoint - beforePoint);
-    addColorTo(result, interpolateColors(beforeColor, afterColor, alpha));
+    Eigen::Vector4f color = interpolateColors(beforeColor, afterColor, alpha);
+    if (preMultiply)
+      color = Eigen::Vector4f(color.x() * color.w(), color.y() * color.w(),
+                              color.z() * color.w(), color.w());
+
+    addColorTo(result, color);
   }
 
   return result;
 }
 
-std::vector<float> GradientUtils::loadGradientAsFloats(QString path, int length)
+std::vector<float> GradientUtils::loadGradientAsFloats(QString path, int length,
+                                                       bool preMultiply)
 {
-  return loadGradientAsFloats(loadGradient(path), length);
+  return loadGradientAsFloats(loadGradient(path), length, preMultiply);
 }
 

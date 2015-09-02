@@ -20,24 +20,24 @@ TEST(Test_GradientUtils, LoadFromFileAsImage)
   EXPECT_FALSE(image.isNull());
 }
 
-TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd2Pixels)
+TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd2PixelsWithPreMultiplication)
 {
   QGradient gradient;
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
   gradient.setColorAt(1, QColor(0, 0, 255, 10));
-  auto vector = GradientUtils::loadGradientAsFloats(gradient, 2);
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 2, true);
 
   ASSERT_EQ(8, vector.size());
 
   const float delta = 1e-4f;
-  EXPECT_NEAR(1.0f, vector[0], delta);
-  EXPECT_NEAR(0.498f, vector[1], delta);
+  EXPECT_NEAR(1.0f * 0.0392f, vector[0], delta);
+  EXPECT_NEAR(0.498f * 0.0392f, vector[1], delta);
   EXPECT_NEAR(0.0f, vector[2], delta);
   EXPECT_NEAR(0.0392f, vector[3], delta);
 
   EXPECT_NEAR(0.0f, vector[4], delta);
   EXPECT_NEAR(0.0f, vector[5], delta);
-  EXPECT_NEAR(1.0f, vector[6], delta);
+  EXPECT_NEAR(1.0f * 0.0392f, vector[6], delta);
   EXPECT_NEAR(0.0392f, vector[7], delta);
 }
 
@@ -46,7 +46,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd5Pixels)
   QGradient gradient;
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
   gradient.setColorAt(1, QColor(0, 0, 255, 10));
-  auto vector = GradientUtils::loadGradientAsFloats(gradient, 5);
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 5, false);
 
   ASSERT_EQ(20, vector.size());
 
@@ -83,7 +83,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For3StopsAnd5Pixels)
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
   gradient.setColorAt(0.5, QColor(0, 0, 0, 10));
   gradient.setColorAt(1, QColor(127, 127, 255, 10));
-  auto vector = GradientUtils::loadGradientAsFloats(gradient, 5);
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 5, false);
 
   ASSERT_EQ(20, vector.size());
 
@@ -119,7 +119,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd3PixelsButFirstStopsSt
   QGradient gradient;
   gradient.setColorAt(0.5f, QColor(255, 127, 0, 10));
   gradient.setColorAt(1, QColor(0, 0, 255, 10));
-  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3);
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3, false);
 
   ASSERT_EQ(12, vector.size());
 
@@ -145,7 +145,7 @@ TEST(Test_GradientUtils, LoadGradientAsFloats_For2StopsAnd3PixelsButLastStopIsNo
   QGradient gradient;
   gradient.setColorAt(0, QColor(255, 127, 0, 10));
   gradient.setColorAt(0.5f, QColor(0, 0, 255, 10));
-  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3);
+  auto vector = GradientUtils::loadGradientAsFloats(gradient, 3, false);
 
   ASSERT_EQ(12, vector.size());
 
