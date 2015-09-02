@@ -27,8 +27,7 @@ int TransferFunctionManager::add(std::string path)
 
   if (textureId < 0)
   {
-    textureId = textureManager->addTexture(vector.data(), width, height);
-    return usedRows++;
+    textureId = textureManager->addTexture(nullptr, width, height);
   }
 
   auto texture = textureManager->getTextureFor(textureId);
