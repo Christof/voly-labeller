@@ -11,8 +11,8 @@ layout(depth_any) out float gl_FragDepth;
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 textureAtlasSize = vec3(512, 512, 512);
-uniform vec3 sampleDistance = vec3(0.49f / 512.0, 0.49f / 512.0, 0.49f / 512.0);
+uniform vec3 textureAtlasSize = vec3(512, 512, 186);
+uniform vec3 sampleDistance = vec3(0.49f / 512.0, 0.49f / 512.0, 0.49f / 186.0);
 
 uniform sampler3D volumeSampler;
 
