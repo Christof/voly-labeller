@@ -12,9 +12,7 @@ uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform vec3 textureAtlasSize = vec3(512, 512, 512);
-uniform vec3 sampleDistance = vec3(0.49f/512.0,
-                                   0.49f/512.0,
-                                   0.49f/512.0);
+uniform vec3 sampleDistance = vec3(0.49f / 512.0, 0.49f / 512.0, 0.49f / 512.0);
 
 uniform sampler3D volumeSampler;
 
@@ -52,8 +50,8 @@ vec4 Texture(Tex2DAddress addr, vec2 uv)
   return texture(sampler2DArray(addr.Container), texc);
 }
 
-
-void getVolumeSample(in int objectID, in vec3 texturePos, out float density, out vec3 gradient)
+void getVolumeSample(in int objectID, in vec3 texturePos, out float density,
+                     out vec3 gradient)
 {
 
   const vec3 gscf = vec3(1.0, 1.0f, 1.0f);
@@ -72,7 +70,6 @@ void getVolumeSample(in int objectID, in vec3 texturePos, out float density, out
                    texture(volumeSampler, vec3(texturePos.xy, texturePos.z-sampleDistance.z*gscf.z)).x);
   gradient = normalize(mat3(viewMatrix)*transpose(mat3(volumes[0].textureMatrix))*gradient);
 } // getVolumeSample
-
 
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
@@ -100,7 +97,6 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
     return false;
   }
 }
-
 
 void main()
 {
@@ -132,7 +128,6 @@ void main()
     discard;  // no fragment, early exit
   }
 
-
   int activeobjects = 0;
   int activeobjectcount = 0;
   FragmentData current_fragment;
@@ -155,7 +150,7 @@ void main()
   vec4 finalColor = vec4(0, 0, 0, 0);
 
   for (uint a = 1; a < maxage; a++)  // all fragments
-  //for (uint a = 1; a <= maxage; a++)  // all fragments
+  // for (uint a = 1; a <= maxage; a++)  // all fragments
   {
 
     vec4 fragmentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -177,7 +172,6 @@ void main()
     {
       objectId = current_fragment.objectId;
       activeobjects |= 1 << (objectId);
-
     }
     else if (current_fragment.objectId < 0)
     {
@@ -187,11 +181,9 @@ void main()
 
     activeobjectcount = bitCount(activeobjects);
 
-
     // fetch next Fragment
 
-
-    next_fragment_read_status = fetchFragment(ij, a+1, next_fragment);
+    next_fragment_read_status = fetchFragment(ij, a + 1, next_fragment);
     if (next_fragment_read_status)
     {
       endpos_eye = next_fragment.eyePos.xyz;
@@ -205,116 +197,125 @@ void main()
 
     dirvec_eye = endpos_eye - segment_startpos_eye;
 
-
     // FIXME: do we need it?
-    //pos_proj = projectionMatrix*vec4(startpos_eye, 1.0f);
-    //pos_proj.z /= pos_proj.w;
+    // pos_proj = projectionMatrix*vec4(startpos_eye, 1.0f);
+    // pos_proj.z /= pos_proj.w;
     // FIXME: posproj.xy ???
-    //pos_proj += 1.0f;
-    //pos_proj /= 2.0f;
-
+    // pos_proj += 1.0f;
+    // pos_proj /= 2.0f;
 
     // calculate length in texture space (needed for step width calculation)
     float segment_texture_length = 0.0;
 
-    if (activeobjectcount > 0) // in frag
+    if (activeobjectcount > 0)  // in frag
     {
 
       uint ao = activeobjects;
       int aoc = activeobjectcount;
 
-      for (int oi =0; oi < activeobjectcount; oi++)
+      for (int oi = 0; oi < activeobjectcount; oi++)
       {
         int objectID = findLSB(ao);
-        ao &= (~(1<<objectID));
+        ao &= (~(1 << objectID));
 
-        ///FIXME: continue porting from VolyRenderer
-       /// vec4 textureStartPos =
-        vec4 textureStartPos = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
-        vec4 textureEndPos = volumes[0].textureMatrix * inverse(viewMatrix) * next_fragment.eyePos;
+        /// FIXME: continue porting from VolyRenderer
+        /// vec4 textureStartPos =
+        vec4 textureStartPos = volumes[0].textureMatrix * inverse(viewMatrix) *
+                               current_fragment.eyePos;
+        vec4 textureEndPos = volumes[0].textureMatrix * inverse(viewMatrix) *
+                             next_fragment.eyePos;
 
-        segment_texture_length = max(distance(textureStartPos.xyz*textureAtlasSize,
-                                     textureEndPos.xyz*textureAtlasSize),
-                                     segment_texture_length);
-        //vec4 texCoord = volumes[0].textureMatrix * inverse(viewMatrix) * current_fragment.eyePos;
-        //float value = texture(volumeSampler, texCoord.xyz).r;
-        //current_fragment.color.rgb = vec3(value);
-        //current_fragment.color.rgb = vec3(texCoord.xyz);
+        segment_texture_length =
+            max(distance(textureStartPos.xyz * textureAtlasSize,
+                         textureEndPos.xyz * textureAtlasSize),
+                segment_texture_length);
+        // vec4 texCoord = volumes[0].textureMatrix * inverse(viewMatrix) *
+        // current_fragment.eyePos;
+        // float value = texture(volumeSampler, texCoord.xyz).r;
+        // current_fragment.color.rgb = vec3(value);
+        // current_fragment.color.rgb = vec3(texCoord.xyz);
 
-        //vec4 transferFunction = Texture(volumes[0].textureAddress, vec2(value, volumes[0].transferFunctionRow));
-        //vec4 transferFunction = Texture(volumes[0].textureAddress, vec2(volumes[0].transferFunctionRow, texCoord.x ));
-        //current_fragment.color = transferFunction;
+        // vec4 transferFunction = Texture(volumes[0].textureAddress,
+        // vec2(value, volumes[0].transferFunctionRow));
+        // vec4 transferFunction = Texture(volumes[0].textureAddress,
+        // vec2(volumes[0].transferFunctionRow, texCoord.x ));
+        // current_fragment.color = transferFunction;
       }
 
       activeobjectcount = aoc;
       //FIXME:
-      segment_texture_length = (segment_texture_length >= 0.0f) ? segment_texture_length : distance(segment_startpos_eye, endpos_eye)*100.0f;
-
+      segment_texture_length =
+          (segment_texture_length >= 0.0f)
+              ? segment_texture_length
+              : distance(segment_startpos_eye, endpos_eye) * 100.0f;
 
       if (activeobjectcount > 0 && segment_texture_length > 0.0f)
       {
-        int sample_steps = int(segment_texture_length*STEP_FACTOR);
+        int sample_steps = int(segment_texture_length * STEP_FACTOR);
         clamp(sample_steps, 1, MAX_SAMPLES - 1);
-        float stepFactor = 1.0/float(sample_steps);
-
+        float stepFactor = 1.0 / float(sample_steps);
 
         // noise offset
-        startpos_eye = segment_startpos_eye; // + noise offset;
+        startpos_eye = segment_startpos_eye;  // + noise offset;
 
-        //FIXME: check code
-        //textureStartPos = textureStartPos + noiseoffset*dirvec_eye*stepfactor;
-        lastpos_eye = startpos_eye - dirvec_eye*stepFactor;
-
+        // FIXME: check code
+        // textureStartPos = textureStartPos +
+        // noiseoffset*dirvec_eye*stepfactor;
+        lastpos_eye = startpos_eye - dirvec_eye * stepFactor;
 
         // sample ray segment
         for (int step = 0; step < sample_steps; step++)
         {
-          vec4 sampleColor = vec4(0.0f,0.0f,0.0f, 0.0f);
+          vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
           vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
 
-          uint  ao = activeobjects;
+          uint ao = activeobjects;
 
           // sampling per non-isosurface object
-          for (int objectIndex = 0; objectIndex < activeobjectcount; objectIndex++)
+          for (int objectIndex = 0; objectIndex < activeobjectcount;
+               objectIndex++)
           {
             int objectID = findLSB(ao);
-            if (objectID < 0) break;
-            ao &= (~(1<<(objectID)));
+            if (objectID < 0)
+              break;
+            ao &= (~(1 << (objectID)));
 
             float squareGradientLength = 0.0f;
             vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
             vec4 TFColor;
 
-            vec3 textureSamplePos = (volumes[0].textureMatrix * inverse(viewMatrix)*vec4(startpos_eye,1.0f)).xyz;
+            vec3 textureSamplePos =
+                (volumes[0].textureMatrix * inverse(viewMatrix) *
+                 vec4(startpos_eye, 1.0f)).xyz;
 
-            getVolumeSample(objectID,
-                textureSamplePos, density, gradient);
+            getVolumeSample(objectID, textureSamplePos, density, gradient);
             squareGradientLength = dot(gradient, gradient);
-
 
             // transfer function lookup
 
+            // TFColor = tflookup(volumes[0].textureAddress, density,
+            // squareGradientLength);
 
-            //TFColor = tflookup(volumes[0].textureAddress, density, squareGradientLength);
-
-            TFColor = Texture(volumes[0].textureAddress,
-                vec2(density, (volumes[0].transferFunctionRow+0.5f)/transferFunctionRowCount));
+            TFColor =
+                Texture(volumes[0].textureAddress,
+                        vec2(density, (volumes[0].transferFunctionRow + 0.5f) /
+                                          transferFunctionRowCount));
 
             TFColor.xyz *= TFColor.w;
-            //TFColor = vec4(0.0f, 0.0f, 1.0f, density*0.01);
-            //lighting
+            // TFColor = vec4(0.0f, 0.0f, 1.0f, density*0.01);
+            // lighting
 
             if (squareGradientLength > 0.05f)
             {
               vec3 lightDir = normalize(lightPos - startpos_eye);
-              vec3 viewDir = -1.0f*normalize(startpos_eye);
+              vec3 viewDir = -1.0f * normalize(startpos_eye);
               vec3 nGradient = normalize(gradient);
 
-              //float dotNL = abs(dot(ngradient, lightDir));
+              // float dotNL = abs(dot(ngradient, lightDir));
               float dotNL = max(dot(nGradient, lightDir), 0.0f);
-              vec3 H = normalize(lightDir+viewDir);
-              //float dotNH = abs(dot(ngradient, H));
-              float dotNH = max(dot(nGradient, H),0.0f);
+              vec3 H = normalize(lightDir + viewDir);
+              // float dotNH = abs(dot(ngradient, H));
+              float dotNH = max(dot(nGradient, H), 0.0f);
               float ka = 0.3;
               float kd = 0.5;
               float ks = 0.5;
@@ -322,16 +323,16 @@ void main()
               vec3 specularColor = vec3(1.0, 1.0, 1.0);
 
               currentColor.xyz +=
-                  /*gl_LightSource[li].ambient.xyz**/ka*TFColor.xyz +
-                  /*gl_LightSource[li].diffuse.xyz**/kd*TFColor.xyz*dotNL+
-                  (shininess+2.0f)/(2.0f*3.1415f) * /*gl_LightSource[li].specular.xyz**/ks*TFColor.w*
-                  specularColor*pow(dotNH,shininess);
+                  /*gl_LightSource[li].ambient.xyz**/ ka * TFColor.xyz +
+                  /*gl_LightSource[li].diffuse.xyz**/ kd * TFColor.xyz * dotNL +
+                  (shininess + 2.0f) / (2.0f * 3.1415f) *
+                      /*gl_LightSource[li].specular.xyz**/ ks * TFColor.w *
+                      specularColor * pow(dotNH, shininess);
             }
             else
             {
               currentColor.xyz += TFColor.xyz;
             }
-
 
             // clamp color
             currentColor.xyz = clamp(currentColor.xyz, 0.0f, 1.0f);
@@ -339,45 +340,47 @@ void main()
 
             // we sum up overlapping contributions
             sampleColor += currentColor;
-          } // per active object loop
+          }  // per active object loop
 
           // clamp cumulatie sample value
-          clamp(sampleColor,vec4(0.0f,0.0f, 0.0f, 0.0f),vec4(1.0f, 1.0f, 1.0f, 1.0f));
+          clamp(sampleColor, vec4(0.0f, 0.0f, 0.0f, 0.0f),
+                vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
           // sample accumulation
 
-          fragmentColor = fragmentColor + sampleColor*(1.0f - fragmentColor.w);
+          fragmentColor =
+              fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
           // early ray termination
-          if (fragmentColor.w > 0.999) break;
+          if (fragmentColor.w > 0.999)
+            break;
 
           // prepare next segment
           lastpos_eye = startpos_eye;
           startpos_eye += stepFactor * dirvec_eye;
 
           // FIXME: do we need it?
-          //pos_proj = gl_ProjectionMatrix*vec4(startpos_eye,1.0f);
-          //pos_proj.z /= pos_proj.w;
-          //pos_proj.z += 1.0f;
-          //pos_proj.z /=2.0f;
+          // pos_proj = gl_ProjectionMatrix*vec4(startpos_eye,1.0f);
+          // pos_proj.z /= pos_proj.w;
+          // pos_proj.z += 1.0f;
+          // pos_proj.z /=2.0f;
 
-        } // sampling steps
+        }  // sampling steps
 
-
-      } // if (activeobjectcount > 0) ...
+      }  // if (activeobjectcount > 0) ...
     }
     else
     {
       fragmentColor = current_fragment.color;
-      //current_fragment.color = vec4(0.0, 1.0, 1.0, 0.5);
+      // current_fragment.color = vec4(0.0, 1.0, 1.0, 0.5);
     }
 
     if (current_fragment_read_status)
     {
-      //clr = blend(clr, current_fragment.color);
+      // clr = blend(clr, current_fragment.color);
 
       // set Fragment value
-      finalColor = finalColor+fragmentColor*(1.0f-finalColor.a);
+      finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
     }
 
     if (finalColor.a > 0.999)
@@ -390,7 +393,7 @@ void main()
 
   if (maxage == 1)
   {
-    next_fragment_read_status = fetchFragment(ij, 1, next_fragment);    
+    next_fragment_read_status = fetchFragment(ij, 1, next_fragment);
   }
 
   if (next_fragment_read_status)
