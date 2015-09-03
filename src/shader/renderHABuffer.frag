@@ -316,18 +316,16 @@ void main()
               vec3 H = normalize(lightDir + viewDir);
               // float dotNH = abs(dot(ngradient, H));
               float dotNH = max(dot(nGradient, H), 0.0f);
-              float ka = 0.3;
-              float kd = 0.5;
-              float ks = 0.5;
+              float ka = 0.3;  // gl_LightSource[li].ambient.xyz
+              float kd = 0.5;  // gl_LightSource[li].diffuse.xyz
+              float ks = 0.5;  // gl_LightSource[li].specular.xyz
               float shininess = 32.0f;
               vec3 specularColor = vec3(1.0, 1.0, 1.0);
 
+              vec3 specular = (shininess + 2.0f) / (2.0f * 3.1415f) * ks *
+                              TFColor.w * specularColor * pow(dotNH, shininess);
               currentColor.xyz +=
-                  /*gl_LightSource[li].ambient.xyz**/ ka * TFColor.xyz +
-                  /*gl_LightSource[li].diffuse.xyz**/ kd * TFColor.xyz * dotNL +
-                  (shininess + 2.0f) / (2.0f * 3.1415f) *
-                      /*gl_LightSource[li].specular.xyz**/ ks * TFColor.w *
-                      specularColor * pow(dotNH, shininess);
+                  ka * TFColor.xyz + kd * TFColor.xyz * dotNL + specular;
             }
             else
             {
