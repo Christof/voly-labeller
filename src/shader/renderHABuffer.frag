@@ -233,10 +233,8 @@ void main()
         // current_fragment.color.rgb = vec3(texCoord.xyz);
 
         // vec4 transferFunction = Texture(volumes[0].textureAddress,
-        // vec2(value, volumes[0].transferFunctionRow));
-        // vec4 transferFunction = Texture(volumes[0].textureAddress,
-        // vec2(volumes[0].transferFunctionRow, texCoord.x ));
-        // current_fragment.color = transferFunction;
+        //   vec2(textureStartPos.x, volumes[0].transferFunctionRow));
+        // fragmentColor = transferFunction;
       }
 
       activeobjectcount = aoc;
