@@ -18,6 +18,7 @@
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/cube.geom</file>
         <file>shader/cube.vert</file>
+        <file>shader/volume_cube.frag</file>
         <file>shader/vertexHelper.hglsl</file>
         <file>ui.qml</file>
     </qresource>
