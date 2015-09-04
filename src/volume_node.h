@@ -7,7 +7,6 @@
 #include "./node.h"
 #include "./graphics/gl.h"
 #include "./math/obb.h"
-#include "./graphics/quad.h"
 #include "./graphics/cube.h"
 #include "./graphics/object_data.h"
 #include "./graphics/volume.h"
@@ -41,7 +40,6 @@ class VolumeNode : public Node, public Graphics::Volume
  private:
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
-  std::unique_ptr<Graphics::Quad> quad;
   std::unique_ptr<Graphics::Cube> cube;
   std::shared_ptr<Math::Obb> obb;
   GLuint texture = 0;

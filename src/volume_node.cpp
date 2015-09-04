@@ -15,8 +15,6 @@ std::unique_ptr<Graphics::TransferFunctionManager>
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
-  quad = std::unique_ptr<Graphics::Quad>(
-      new Graphics::Quad(":shader/label.vert", ":shader/slice.frag"));
   cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
 
   auto transformation = volumeReader->getTransformationMatrix();
@@ -49,7 +47,6 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  //quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
   objectManager->renderLater(cubeData);
 }
