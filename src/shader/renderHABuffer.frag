@@ -287,19 +287,10 @@ void main()
             squareGradientLength = dot(gradient, gradient);
 
             // transfer function lookup
+            TFColor = Texture(volumes[0].textureAddress,
+                              vec2(density, volumes[0].transferFunctionRow));
 
-            // TFColor = tflookup(volumes[0].textureAddress, density,
-            // squareGradientLength);
-
-            TFColor =
-                Texture(volumes[0].textureAddress,
-                        vec2(density, (volumes[0].transferFunctionRow + 0.5f) /
-                                          transferFunctionRowCount));
-
-            TFColor.xyz *= TFColor.w;
-            // TFColor = vec4(0.0f, 0.0f, 1.0f, density*0.01);
             // lighting
-
             if (squareGradientLength > 0.05f)
             {
               vec3 lightDir = normalize(lightPos - startpos_eye);
