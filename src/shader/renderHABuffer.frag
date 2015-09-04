@@ -1,7 +1,7 @@
 #version 440
 #include "HABufferImplementation.hglsl"
 #define MAX_SAMPLES 2048
-#define STEP_FACTOR 10.5
+#define STEP_FACTOR 1.5
 
 in vec4 u_Pos;
 
