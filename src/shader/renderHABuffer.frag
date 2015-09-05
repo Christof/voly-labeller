@@ -239,8 +239,6 @@ void main()
         int objectID = findLSB(ao);
         ao &= (~(1 << objectID));
 
-        /// FIXME: continue porting from VolyRenderer
-        /// vec4 textureStartPos =
         vec4 textureStartPos = volumes[0].textureMatrix * inverse(viewMatrix) *
                                current_fragment.eyePos;
         vec4 textureEndPos = volumes[0].textureMatrix * inverse(viewMatrix) *
@@ -250,12 +248,9 @@ void main()
             max(distance(textureStartPos.xyz * textureAtlasSize,
                          textureEndPos.xyz * textureAtlasSize),
                 segment_texture_length);
-        // vec4 texCoord = volumes[0].textureMatrix * inverse(viewMatrix) *
-        // current_fragment.eyePos;
         // float value = texture(volumeSampler, texCoord.xyz).r;
-        // current_fragment.color.rgb = vec3(value);
-        // current_fragment.color.rgb = vec3(texCoord.xyz);
-
+        // fragmentColor.color.rgb = vec3(value);
+        // fragmentColor.color.rgb = vec3(textureStartPos.xyz);
         // vec4 transferFunction = Texture(volumes[0].textureAddress,
         //   vec2(textureStartPos.x, volumes[0].transferFunctionRow));
         // fragmentColor = transferFunction;
@@ -336,7 +331,6 @@ void main()
                 vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
           // sample accumulation
-
           fragmentColor =
               fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
@@ -353,9 +347,7 @@ void main()
           // pos_proj.z /= pos_proj.w;
           // pos_proj.z += 1.0f;
           // pos_proj.z /=2.0f;
-
         }  // sampling steps
-
       }  // if (activeobjectcount > 0) ...
     }
     else
@@ -366,10 +358,9 @@ void main()
 
     if (current_fragment_read_status)
     {
-      // clr = blend(clr, current_fragment.color);
-
       // set Fragment value
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+      //finalColor = blend(finalColor, fragmentColor);
     }
 
     if (finalColor.a > 0.999)
