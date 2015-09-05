@@ -49,6 +49,7 @@ QSurfaceFormat Window::createSurfaceFormat()
   format.setMinorVersion(5);
   format.setSamples(4);
   format.setOption(QSurfaceFormat::DebugContext);
+  format.setSwapInterval(0);
 
   return format;
 }
