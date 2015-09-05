@@ -111,6 +111,29 @@ void updateActiveObjects(inout int objectId, out int activeObjects)
   }
 }
 
+vec3 calculateLighting(vec4 color, vec3 startpos_eye, vec3 gradient)
+{
+  const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
+  vec3 lightDir = normalize(lightPos - startpos_eye);
+  vec3 viewDir = -1.0f * normalize(startpos_eye);
+  vec3 nGradient = normalize(gradient);
+
+  // float dotNL = abs(dot(ngradient, lightDir));
+  float dotNL = max(dot(nGradient, lightDir), 0.0f);
+  vec3 H = normalize(lightDir + viewDir);
+  // float dotNH = abs(dot(ngradient, H));
+  float dotNH = max(dot(nGradient, H), 0.0f);
+  float ka = 0.3;  // gl_LightSource[li].ambient.xyz
+  float kd = 0.5;  // gl_LightSource[li].diffuse.xyz
+  float ks = 0.5;  // gl_LightSource[li].specular.xyz
+  float shininess = 32.0f;
+  vec3 specularColor = vec3(1.0, 1.0, 1.0);
+
+  vec3 specular = (shininess + 2.0f) / (2.0f * 3.1415f) * ks * color.a *
+                  specularColor * pow(dotNH, shininess);
+  return ka * color.rgb + kd * color.rgb * dotNL + specular;
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -208,7 +231,6 @@ void main()
 
     if (activeobjectcount > 0)  // in frag
     {
-
       uint ao = activeobjects;
       int aoc = activeobjectcount;
 
@@ -264,7 +286,6 @@ void main()
         for (int step = 0; step < sample_steps; step++)
         {
           vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-          vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
 
           uint ao = activeobjects;
 
@@ -295,25 +316,7 @@ void main()
             // lighting
             if (squareGradientLength > 0.05f)
             {
-              vec3 lightDir = normalize(lightPos - startpos_eye);
-              vec3 viewDir = -1.0f * normalize(startpos_eye);
-              vec3 nGradient = normalize(gradient);
-
-              // float dotNL = abs(dot(ngradient, lightDir));
-              float dotNL = max(dot(nGradient, lightDir), 0.0f);
-              vec3 H = normalize(lightDir + viewDir);
-              // float dotNH = abs(dot(ngradient, H));
-              float dotNH = max(dot(nGradient, H), 0.0f);
-              float ka = 0.3;  // gl_LightSource[li].ambient.xyz
-              float kd = 0.5;  // gl_LightSource[li].diffuse.xyz
-              float ks = 0.5;  // gl_LightSource[li].specular.xyz
-              float shininess = 32.0f;
-              vec3 specularColor = vec3(1.0, 1.0, 1.0);
-
-              vec3 specular = (shininess + 2.0f) / (2.0f * 3.1415f) * ks *
-                              TFColor.w * specularColor * pow(dotNH, shininess);
-              currentColor.xyz +=
-                  ka * TFColor.xyz + kd * TFColor.xyz * dotNL + specular;
+              currentColor.xyz += calculateLighting(TFColor, startpos_eye, gradient);
             }
             else
             {
