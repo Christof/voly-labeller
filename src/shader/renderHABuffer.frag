@@ -98,6 +98,19 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
   }
 }
 
+void updateActiveObjects(inout int objectId, out int activeObjects)
+{
+  if (objectId > 0)
+  {
+    activeObjects |= 1 << (objectId);
+  }
+  else if (objectId < 0)
+  {
+    objectId = -objectId;
+    activeObjects &= (~(1 << objectId));
+  }
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -164,19 +177,8 @@ void main()
       segment_startpos_eye = endpos_eye;
     }
 
-    // update  active objects
-
-    if (current_fragment.objectId > 0)
-    {
-      objectId = current_fragment.objectId;
-      activeobjects |= 1 << (objectId);
-    }
-    else if (current_fragment.objectId < 0)
-    {
-      objectId = -current_fragment.objectId;
-      activeobjects &= (~(1 << objectId));
-    }
-
+    objectId = current_fragment.objectId;
+    updateActiveObjects(objectId, activeobjects);
     activeobjectcount = bitCount(activeobjects);
 
     // fetch next Fragment
