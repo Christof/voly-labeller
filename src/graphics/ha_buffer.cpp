@@ -1,6 +1,7 @@
 #include "./ha_buffer.h"
 #include <QLoggingCategory>
 #include <algorithm>
+#include <Eigen/Dense>
 #include "./shader_program.h"
 #include "./screen_quad.h"
 #include "./object_manager.h"
@@ -155,6 +156,8 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("u_Records", recordsBuffer);
   renderShader->setUniform("u_Counts", countsBuffer);
   renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
+  Eigen::Matrix4f inverseViewMatrix = renderData.viewMatrix.inverse();
+  renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   VolumeManager::instance->fillCustomBuffer(objectData);

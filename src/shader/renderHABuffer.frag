@@ -11,6 +11,7 @@ layout(depth_any) out float gl_FragDepth;
 uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
+uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize = vec3(512, 512, 186);
 uniform vec3 sampleDistance = vec3(0.49f / 512.0, 0.49f / 512.0, 0.49f / 186.0);
 
@@ -226,22 +227,22 @@ void main()
     // pos_proj += 1.0f;
     // pos_proj /= 2.0f;
 
-    // calculate length in texture space (needed for step width calculation)
-    float segment_texture_length = 0.0;
 
     if (activeobjectcount > 0)  // in frag
     {
       uint ao = activeobjects;
       int aoc = activeobjectcount;
 
+      // calculate length in texture space (needed for step width calculation)
+      float segment_texture_length = 0.0;
       for (int oi = 0; oi < activeobjectcount; oi++)
       {
         int objectID = findLSB(ao);
         ao &= (~(1 << objectID));
 
-        vec4 textureStartPos = volumes[0].textureMatrix * inverse(viewMatrix) *
+        vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
                                current_fragment.eyePos;
-        vec4 textureEndPos = volumes[0].textureMatrix * inverse(viewMatrix) *
+        vec4 textureEndPos = volumes[0].textureMatrix * inverseViewMatrix *
                              next_fragment.eyePos;
 
         segment_texture_length =
@@ -298,7 +299,7 @@ void main()
             vec4 TFColor;
 
             vec3 textureSamplePos =
-                (volumes[0].textureMatrix * inverse(viewMatrix) *
+                (volumes[0].textureMatrix * inverseViewMatrix *
                  vec4(startpos_eye, 1.0f)).xyz;
 
             getVolumeSample(objectID, textureSamplePos, density, gradient);
