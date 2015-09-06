@@ -251,7 +251,7 @@ void main()
       if (activeobjectcount > 0 && segment_texture_length > 0.0f)
       {
         int sample_steps = int(segment_texture_length * STEP_FACTOR);
-        clamp(sample_steps, 1, MAX_SAMPLES - 1);
+        sample_steps = clamp(sample_steps, 1, MAX_SAMPLES - 1);
         float stepFactor = 1.0 / float(sample_steps);
 
         // noise offset
