@@ -165,6 +165,10 @@ void Window::onMessageLogged(QOpenGLDebugMessage message)
   if (message.id() == 131186)
     return;
 
+  // Ignore generic vertex attribute array 1 uses a pointer with a small value
+  if (message.id() == 131076)
+    return;
+
   switch (message.severity())
   {
   case QOpenGLDebugMessage::Severity::NotificationSeverity:
