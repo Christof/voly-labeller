@@ -37,7 +37,7 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 Window::~Window()
 {
   disconnect(logger, &QOpenGLDebugLogger::messageLogged, this,
-          &Window::onMessageLogged);
+             &Window::onMessageLogged);
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -56,10 +56,14 @@ QSurfaceFormat Window::createSurfaceFormat()
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = std::make_shared<Graphics::Gl>();
+  context->makeCurrent(this);
+
+  gl = new Graphics::Gl();
   gl->initialize(context, size());
 
-  logger = new QOpenGLDebugLogger();
+  logger = new QOpenGLDebugLogger(context);
+  connect(context, &QOpenGLContext::aboutToBeDestroyed, this,
+          &Window::contextAboutToBeDestroyed, Qt::DirectConnection);
 
   connect(logger, &QOpenGLDebugLogger::messageLogged, this,
           &Window::onMessageLogged, Qt::DirectConnection);
@@ -96,7 +100,7 @@ void Window::handleLazyInitialization()
   {
     initializeOpenGL();
 
-    scene->setContext(context, gl.get());
+    scene->setContext(context, gl);
     scene->resize(size().width(), size().height());
     scene->initialize();
     initialized = true;
@@ -118,7 +122,7 @@ void Window::render()
 
 void Window::resizeOpenGL()
 {
-  if (!gl.get())
+  if (!gl)
     return;
 
   scene->resize(width(), height());
@@ -137,6 +141,15 @@ void Window::toggleFullscreen()
 {
   setVisibility(visibility() == QWindow::Windowed ? QWindow::FullScreen
                                                   : QWindow::Windowed);
+}
+
+void Window::contextAboutToBeDestroyed()
+{
+  qCWarning(openGlChan) << "Closing rendering thread";
+  context->makeCurrent(this);
+  // Problem is that the functions are not working
+  // context->functions()->initializeOpenGLFunctions();
+  delete logger;
 }
 
 void Window::updateAverageFrameTime(double frameTime)

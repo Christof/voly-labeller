@@ -38,6 +38,7 @@ signals:
   void update();
 
   void toggleFullscreen();
+  void contextAboutToBeDestroyed();
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
@@ -52,7 +53,7 @@ signals:
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  std::shared_ptr<Graphics::Gl> gl;
+  Graphics::Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
   QOpenGLDebugLogger *logger;
   bool updatePending;
