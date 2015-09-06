@@ -93,10 +93,10 @@ int main(int argc, char **argv)
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
                 std::placeholders::_2));
 
-  Window window(scene);
-  window.setResizeMode(QQuickView::SizeRootObjectToView);
-  window.rootContext()->setContextProperty("window", &window);
-  window.rootContext()->setContextProperty("nodes", nodes.get());
+  std::unique_ptr<Window> window = std::unique_ptr<Window>(new Window(scene));
+  window->setResizeMode(QQuickView::SizeRootObjectToView);
+  window->rootContext()->setContextProperty("window", window.get());
+  window->rootContext()->setContextProperty("nodes", nodes.get());
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
@@ -110,34 +110,37 @@ int main(int argc, char **argv)
     else
       nodes->removeNode(forcesVisualizerNode);
   });
-  window.rootContext()->setContextProperty("labeller", &labellerModel);
+  window->rootContext()->setContextProperty("labeller", &labellerModel);
 
   LabelsModel labelsModel(labels, pickingController);
-  window.rootContext()->setContextProperty("labels", &labelsModel);
-  window.setSource(QUrl("qrc:ui.qml"));
+  window->rootContext()->setContextProperty("labels", &labelsModel);
+  window->setSource(QUrl("qrc:ui.qml"));
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
                          invokeManager, signalManager);
 
-  invokeManager->addHandler(&window);
+  invokeManager->addHandler(window.get());
   invokeManager->addHandler("mouseShape", &mouseShapeController);
   invokeManager->addHandler("picking", &pickingController);
-  signalManager->addSender("KeyboardEventSender", &window);
+  signalManager->addSender("KeyboardEventSender", window.get());
   signalManager->addSender("labels", &labelsModel);
 
   auto stateMachine = importer.import();
 
   // just for printCurrentState slot for debugging
-  window.stateMachine = stateMachine;
+  window->stateMachine = stateMachine;
 
   stateMachine->start();
 
-  window.show();
+  window->show();
 
   auto resultCode = application.exec();
 
   unsubscribeLabelChanges();
 
+  scene.reset();
+
   return resultCode;
 }
+
