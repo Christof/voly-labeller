@@ -45,7 +45,6 @@ signals:
 
  private:
   QSurfaceFormat createSurfaceFormat();
-  QOpenGLDebugLogger *logger;
   void onMessageLogged(QOpenGLDebugMessage message);
   void handleLazyInitialization();
   void initializeOpenGL();
@@ -53,8 +52,9 @@ signals:
 
   QElapsedTimer timer;
   QOpenGLContext *context;
-  Graphics::Gl *gl = nullptr;
+  std::shared_ptr<Graphics::Gl> gl;
   std::shared_ptr<AbstractScene> scene;
+  QOpenGLDebugLogger *logger;
   bool updatePending;
   QSet<Qt::Key> keysPressed;
 

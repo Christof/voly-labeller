@@ -36,9 +36,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
 Window::~Window()
 {
-  delete gl;
-  if (logger)
-    delete logger;
+  disconnect(logger, &QOpenGLDebugLogger::messageLogged, this,
+          &Window::onMessageLogged);
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -57,7 +56,7 @@ QSurfaceFormat Window::createSurfaceFormat()
 void Window::initializeOpenGL()
 {
   context = openglContext();
-  gl = new Graphics::Gl();
+  gl = std::make_shared<Graphics::Gl>();
   gl->initialize(context, size());
 
   logger = new QOpenGLDebugLogger();
@@ -97,7 +96,7 @@ void Window::handleLazyInitialization()
   {
     initializeOpenGL();
 
-    scene->setContext(context, gl);
+    scene->setContext(context, gl.get());
     scene->resize(size().width(), size().height());
     scene->initialize();
     initialized = true;
@@ -119,7 +118,7 @@ void Window::render()
 
 void Window::resizeOpenGL()
 {
-  if (!gl)
+  if (!gl.get())
     return;
 
   scene->resize(width(), height());
