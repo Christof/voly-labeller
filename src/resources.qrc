@@ -20,6 +20,7 @@
         <file>shader/cube.vert</file>
         <file>shader/volume_cube.frag</file>
         <file>shader/vertexHelper.hglsl</file>
+        <file>shader/bindlessTexture.hglsl</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

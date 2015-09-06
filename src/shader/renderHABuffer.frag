@@ -1,5 +1,6 @@
 #version 440
 #include "HABufferImplementation.hglsl"
+#include "bindlessTexture.hglsl"
 #define MAX_SAMPLES 2048
 #define STEP_FACTOR 1.5
 
@@ -19,15 +20,6 @@ uniform sampler3D volumeSampler;
 
 #define transferFunctionRowCount 64.0f
 
-// TODO(SIR): move to hglsl
-struct Tex2DAddress
-{
-  uint64_t Container;
-  float Page;
-  int dummy;
-  vec2 texScale;
-};
-
 struct VolumeData
 {
   Tex2DAddress textureAddress;
@@ -42,14 +34,6 @@ layout(std430, binding = 1) buffer CB1
 {
   VolumeData volumes[];
 };
-
-// TODO(SIR): move to hglsl
-vec4 Texture(Tex2DAddress addr, vec2 uv)
-{
-  vec3 texc = vec3(uv.x * addr.texScale.x, uv.y * addr.texScale.y, addr.Page);
-
-  return texture(sampler2DArray(addr.Container), texc);
-}
 
 void getVolumeSample(in int objectID, in vec3 texturePos, out float density,
                      out vec3 gradient)
