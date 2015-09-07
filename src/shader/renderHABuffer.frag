@@ -170,15 +170,25 @@ void main()
 
   vec4 finalColor = vec4(0, 0, 0, 0);
 
-  for (uint age = 1; age < maxage; age++)  // all fragments
+  uint age = 1;
+  while (!next_fragment_read_status && age < maxage)
+  {
+      next_fragment_read_status = fetchFragment(ij, age, next_fragment);
+      endpos_eye = next_fragment.eyePos.xyz;
+      ++age;
+  }
+
+  for (--age; age < maxage; age++)  // all fragments
   {
     vec4 fragmentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    /*
     if (age == 1)
     {
       current_fragment_read_status = fetchFragment(ij, age, current_fragment);
       segment_startpos_eye = current_fragment.eyePos.xyz;
     }
     else
+    */
     {
       current_fragment_read_status = next_fragment_read_status;
       current_fragment = next_fragment;
@@ -190,7 +200,13 @@ void main()
     activeobjectcount = bitCount(activeobjects);
 
     // fetch next Fragment
-    next_fragment_read_status = fetchFragment(ij, age + 1, next_fragment);
+    next_fragment_read_status = false;
+    while (!next_fragment_read_status && age < maxage)
+    {
+      next_fragment_read_status = fetchFragment(ij, age + 1, next_fragment);
+      ++age;
+    }
+
     if (next_fragment_read_status)
     {
       endpos_eye = next_fragment.eyePos.xyz;
