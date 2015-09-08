@@ -295,7 +295,6 @@ void main()
             ao &= (~(1 << (objectID)));
 
             float squareGradientLength = 0.0f;
-            vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
             vec4 TFColor;
 
             vec3 textureSamplePos =
@@ -310,6 +309,7 @@ void main()
                               vec2(density, volumes[0].transferFunctionRow));
 
             // lighting
+            vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
             if (squareGradientLength > 0.05f)
             {
               currentColor.xyz += calculateLighting(TFColor, startpos_eye, gradient);
@@ -320,7 +320,7 @@ void main()
             }
 
             // clamp color
-            currentColor.xyz = clamp(currentColor.xyz, 0.0f, 1.0f);
+            currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
             currentColor.w = TFColor.w;
 
             // we sum up overlapping contributions
@@ -328,8 +328,7 @@ void main()
           }  // per active object loop
 
           // clamp cumulatie sample value
-          clamp(sampleColor, vec4(0.0f, 0.0f, 0.0f, 0.0f),
-                vec4(1.0f, 1.0f, 1.0f, 1.0f));
+          sampleColor = clamp(sampleColor, vec4(0.0f), vec4(1.0f));
 
           // sample accumulation
           fragmentColor =
