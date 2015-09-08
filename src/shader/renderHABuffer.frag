@@ -309,19 +309,18 @@ void main()
                               vec2(density, volumes[0].transferFunctionRow));
 
             // lighting
-            vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+            vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, TFColor.a);
             if (squareGradientLength > 0.05f)
             {
-              currentColor.xyz += calculateLighting(TFColor, startpos_eye, gradient);
+              currentColor.xyz = calculateLighting(TFColor, startpos_eye, gradient);
             }
             else
             {
-              currentColor.xyz += TFColor.xyz;
+              currentColor.xyz = TFColor.xyz;
             }
 
             // clamp color
             currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
-            currentColor.w = TFColor.w;
 
             // we sum up overlapping contributions
             sampleColor += currentColor;
