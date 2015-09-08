@@ -19,7 +19,7 @@ FragmentData computeData()
   data.eyePos = vertexEyePos;
 
   const int objectId = getObjectId(vertexDrawId);
-  data.objectId = (gl_FrontFacing) ?  objectId : -objectId;
+  data.objectId = gl_FrontFacing ?  objectId : -objectId;
 
   return data;
 }
