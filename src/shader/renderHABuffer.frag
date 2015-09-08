@@ -181,19 +181,9 @@ void main()
   for (--age; age < maxage; age++)  // all fragments
   {
     vec4 fragmentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-    /*
-    if (age == 1)
-    {
-      current_fragment_read_status = fetchFragment(ij, age, current_fragment);
-      segment_startpos_eye = current_fragment.eyePos.xyz;
-    }
-    else
-    */
-    {
-      current_fragment_read_status = next_fragment_read_status;
-      current_fragment = next_fragment;
-      segment_startpos_eye = endpos_eye;
-    }
+    current_fragment_read_status = next_fragment_read_status;
+    current_fragment = next_fragment;
+    segment_startpos_eye = endpos_eye;
 
     objectId = current_fragment.objectId;
     updateActiveObjects(objectId, activeobjects);
