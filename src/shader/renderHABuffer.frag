@@ -180,10 +180,10 @@ void main()
 
   for (--age; age < maxage; age++)  // all fragments
   {
-    vec4 fragmentColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
     current_fragment_read_status = next_fragment_read_status;
     current_fragment = next_fragment;
     segment_startpos_eye = endpos_eye;
+    vec4 fragmentColor = current_fragment.color;
 
     objectId = current_fragment.objectId;
     updateActiveObjects(objectId, activeobjects);
