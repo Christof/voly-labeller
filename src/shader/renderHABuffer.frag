@@ -337,25 +337,21 @@ void main()
           // pos_proj.z += 1.0f;
           // pos_proj.z /=2.0f;
         }  // sampling steps
+
+        finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }  // if (activeobjectcount > 0) ...
     }
     else
     {
-      fragmentColor = current_fragment.color;
-      // current_fragment.color = vec4(0.0, 1.0, 1.0, 0.5);
+      finalColor = blend(finalColor, current_fragment.color);
     }
 
-    if (current_fragment_read_status)
-    {
-      // set Fragment value
-      finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-      //finalColor = blend(finalColor, fragmentColor);
-    }
-
+    /*
     if (finalColor.a > 0.999)
     {
       break;
     }
+    */
 
     // break; // just the first fragment
   }  // all ages except last ...
