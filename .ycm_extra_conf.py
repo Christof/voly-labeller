@@ -84,6 +84,8 @@ flags = [
 '-isystem',
 '/usr/share/Qt/5.5/gcc_64/include/QtCore',
 '-isystem',
+'/usr/share/Qt/5.5/gcc_64/include/QtXml',
+'-isystem',
 '/usr/share/Qt/5.5/gcc_64/include/QtWidgets',
 '-isystem',
 '/usr/share/Qt/5.5/gcc_64/include/QtQml',

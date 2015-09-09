@@ -41,6 +41,15 @@ int TextureManager::addTexture(QImage *image)
   return id;
 }
 
+int TextureManager::addTexture(float *data, int width, int height)
+{
+  int id = textures.size();
+
+  textures.push_back(newTexture2d(data, width, height));
+
+  return id;
+}
+
 unsigned int TextureManager::add3dTexture(Eigen::Vector3i size, float *data)
 {
   auto textureTarget = GL_TEXTURE_3D;
@@ -103,6 +112,21 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
   }
 }
 
+Texture2d *TextureManager::newTexture2d(float *data, int width, int height)
+{
+  auto internalformat = GL_RGBA32F;
+  auto format = GL_RGBA;
+  auto type = GL_FLOAT;
+
+  Texture2d *texture = allocateTexture2d(
+      TextureSpaceDescription(1, internalformat, width, height));
+  texture->commit();
+
+  texture->texSubImage2D(0, 0, 0, width, height, format, type, data);
+
+  return texture;
+}
+
 bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 {
   this->gl = gl;
@@ -134,9 +158,18 @@ void TextureManager::shutdown()
   textureContainers.clear();
 }
 
+Texture2d *TextureManager::getTextureFor(int textureId)
+{
+  if (static_cast<int>(textures.size()) <= textureId)
+    throw std::invalid_argument("The given textureId " +
+                                std::to_string(textureId) + "cannot be found");
+
+  return textures[textureId];
+}
+
 TextureAddress TextureManager::getAddressFor(int textureId)
 {
-  return textures[textureId]->address();
+  return getTextureFor(textureId)->address();
 }
 
 Texture2d *
@@ -144,7 +177,11 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 {
   TextureContainer *memArray = nullptr;
 
-  spaceDescription.growToNextPowerOfTwo();
+  int virtualPageSizeX = get2DVirtualPageSizeX(spaceDescription.internalFormat);
+  int virtualPageSizeY = get2DVirtualPageSizeY(spaceDescription.internalFormat);
+  qCInfo(tmChan) << "Virtual page size: " << virtualPageSizeX << "/"
+                 << virtualPageSizeY;
+  spaceDescription.growToValidSize(virtualPageSizeX, virtualPageSizeY);
 
   auto arrayIt = textureContainers.find(spaceDescription);
   if (arrayIt == textureContainers.end())
@@ -172,6 +209,24 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 
   assert(memArray);
   return new Texture2d(memArray, memArray->virtualAlloc());
+}
+
+int TextureManager::get2DVirtualPageSizeX(int internalFormat)
+{
+  return getInternalFormat(GL_TEXTURE_2D, internalFormat, 0x9195);
+}
+
+int TextureManager::get2DVirtualPageSizeY(int internalFormat)
+{
+  return getInternalFormat(GL_TEXTURE_2D, internalFormat, 0x9196);
+}
+
+int TextureManager::getInternalFormat(int target, int internalFormat,
+                                      int parameterName)
+{
+  int result = -1;
+  gl->glGetInternalformativ(target, internalFormat, parameterName, 1, &result);
+  return result;
 }
 
 }  // namespace Graphics

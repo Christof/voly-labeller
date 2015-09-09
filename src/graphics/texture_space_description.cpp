@@ -44,8 +44,13 @@ int computeNextPowerOfTwo(int value)
   return powerOfTwo;
 }
 
-void TextureSpaceDescription::growToNextPowerOfTwo()
+void TextureSpaceDescription::growToValidSize(int minX, int minY)
 {
+  if (width < minX)
+    width = minX;
+  if (height < minY)
+    height = minY;
+
   width = computeNextPowerOfTwo(width);
   height = computeNextPowerOfTwo(height);
 }
