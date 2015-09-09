@@ -101,7 +101,10 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
+  delete[] indexData;
   delete[] positionData;
+  delete[] normalData;
+  delete[] textureCoordinateData;
 }
 
 void Mesh::createObb()
