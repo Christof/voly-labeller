@@ -132,6 +132,27 @@ int calculateNextObjectId(inout uint remainingActiveObjects)
   return currentObjectId;
 }
 
+float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
+    vec4 currentFragmentPos_eye, vec4 nextFragmentPos_eye)
+{
+  float segmentTextureLength = 0.0f;
+  for (int oi = 0; oi < activeObjectCount; oi++)
+  {
+    int currentObjectId = calculateNextObjectId(activeObjects);
+
+    vec4 textureStartPos =
+        volumes[0].textureMatrix * inverseViewMatrix * currentFragmentPos_eye;
+    vec4 textureEndPos =
+        volumes[0].textureMatrix * inverseViewMatrix * nextFragmentPos_eye;
+
+    segmentTextureLength = max(distance(textureStartPos.xyz * textureAtlasSize,
+                                        textureEndPos.xyz * textureAtlasSize),
+                               segmentTextureLength);
+  }
+
+  return segmentTextureLength;
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -225,107 +246,87 @@ void main()
     // pos_proj += 1.0f;
     // pos_proj /= 2.0f;
 
-    if (activeObjectCount > 0)  // in frag
+    if (activeObjectCount > 0)
     {
-      uint remainingActiveObjects = activeObjects;
+      // float value = texture(volumeSampler, texCoord.xyz).r;
+      // fragmentColor.color.rgb = vec3(value);
+      // fragmentColor.color.rgb = vec3(textureStartPos.xyz);
+      // vec4 transferFunction = Texture(volumes[0].textureAddress,
+      //   vec2(textureStartPos.x, volumes[0].transferFunctionRow));
+      // fragmentColor = transferFunction;
+      float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount, activeObjects,
+        currentFragment.eyePos, nextFragment.eyePos);
+      int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
+      sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
+      float stepFactor = 1.0 / float(sampleSteps);
 
-      // calculate length in texture space (needed for step width calculation)
-      float segmentTextureLength = 0.0;
-      for (int oi = 0; oi < activeObjectCount; oi++)
+      // noise offset
+      startPos_eye = segmentStartPos_eye;  // + noise offset;
+
+      // FIXME: check code
+      // textureStartPos = textureStartPos +
+      // noiseoffset*direction_eye*stepfactor;
+      lastPos_eye = startPos_eye - direction_eye * stepFactor;
+
+      // sample ray segment
+      for (int step = 0; step < sampleSteps; step++)
       {
-        int currentObjectId = calculateNextObjectId(remainingActiveObjects);
+        vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-        vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
-                               currentFragment.eyePos;
-        vec4 textureEndPos = volumes[0].textureMatrix * inverseViewMatrix *
-                             nextFragment.eyePos;
+        uint remainingActiveObjects = activeObjects;
 
-        segmentTextureLength =
-            max(distance(textureStartPos.xyz * textureAtlasSize,
-                         textureEndPos.xyz * textureAtlasSize),
-                segmentTextureLength);
-        // float value = texture(volumeSampler, texCoord.xyz).r;
-        // fragmentColor.color.rgb = vec3(value);
-        // fragmentColor.color.rgb = vec3(textureStartPos.xyz);
-        // vec4 transferFunction = Texture(volumes[0].textureAddress,
-        //   vec2(textureStartPos.x, volumes[0].transferFunctionRow));
-        // fragmentColor = transferFunction;
-      }
-
-      if (activeObjectCount > 0)
-      {
-        int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
-        sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
-        float stepFactor = 1.0 / float(sampleSteps);
-
-        // noise offset
-        startPos_eye = segmentStartPos_eye;  // + noise offset;
-
-        // FIXME: check code
-        // textureStartPos = textureStartPos +
-        // noiseoffset*direction_eye*stepfactor;
-        lastPos_eye = startPos_eye - direction_eye * stepFactor;
-
-        // sample ray segment
-        for (int step = 0; step < sampleSteps; step++)
+        // sampling per non-isosurface object
+        for (int objectIndex = 0; objectIndex < activeObjectCount;
+             objectIndex++)
         {
-          vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-          uint remainingActiveObjects = activeObjects;
-
-          // sampling per non-isosurface object
-          for (int objectIndex = 0; objectIndex < activeObjectCount;
-               objectIndex++)
-          {
-            int currentObjectId = calculateNextObjectId(remainingActiveObjects);
-            if (currentObjectId < 0)
-              break;
-
-            float squareGradientLength = 0.0f;
-
-            vec3 textureSamplePos =
-                (volumes[0].textureMatrix * inverseViewMatrix *
-                 vec4(startPos_eye, 1.0f)).xyz;
-
-            getVolumeSample(currentObjectId, textureSamplePos, density, gradient);
-            squareGradientLength = dot(gradient, gradient);
-
-            vec4 currentColor = transferFunctionLookUp(0, density);
-            if (squareGradientLength > 0.05f)
-            {
-              currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
-            }
-            currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
-
-            // we sum up overlapping contributions
-            sampleColor += currentColor;
-          }  // per active object loop
-
-          // clamp cumulatie sample value
-          sampleColor = clamp(sampleColor, vec4(0.0f), vec4(1.0f));
-
-          // sample accumulation
-          fragmentColor =
-              fragmentColor + sampleColor * (1.0f - fragmentColor.w);
-
-          // early ray termination
-          if (fragmentColor.w > 0.999)
+          int currentObjectId = calculateNextObjectId(remainingActiveObjects);
+          if (currentObjectId < 0)
             break;
 
-          // prepare next segment
-          lastPos_eye = startPos_eye;
-          startPos_eye += stepFactor * direction_eye;
+          float squareGradientLength = 0.0f;
 
-          // FIXME: do we need it?
-          // pos_proj = gl_ProjectionMatrix*vec4(startPos_eye,1.0f);
-          // pos_proj.z /= pos_proj.w;
-          // pos_proj.z += 1.0f;
-          // pos_proj.z /=2.0f;
-        }  // sampling steps
+          vec3 textureSamplePos =
+              (volumes[0].textureMatrix * inverseViewMatrix *
+               vec4(startPos_eye, 1.0f)).xyz;
 
-        finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-      }  // if (activeObjectCount > 0) ...
-    }
+          getVolumeSample(currentObjectId, textureSamplePos, density, gradient);
+          squareGradientLength = dot(gradient, gradient);
+
+          vec4 currentColor = transferFunctionLookUp(0, density);
+          if (squareGradientLength > 0.05f)
+          {
+            currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
+          }
+          currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
+
+          // we sum up overlapping contributions
+          sampleColor += currentColor;
+        }  // per active object loop
+
+        // clamp cumulatie sample value
+        sampleColor = clamp(sampleColor, vec4(0.0f), vec4(1.0f));
+
+        // sample accumulation
+        fragmentColor =
+            fragmentColor + sampleColor * (1.0f - fragmentColor.w);
+
+        // early ray termination
+        if (fragmentColor.w > 0.999)
+          break;
+
+        // prepare next segment
+        lastPos_eye = startPos_eye;
+        startPos_eye += stepFactor * direction_eye;
+
+        // FIXME: do we need it?
+        // pos_proj = gl_ProjectionMatrix*vec4(startPos_eye,1.0f);
+        // pos_proj.z /= pos_proj.w;
+        // pos_proj.z += 1.0f;
+        // pos_proj.z /=2.0f;
+      }  // sampling steps
+
+      finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+    }  // if (activeObjectCount > 0) ...
     else
     {
       finalColor = blend(finalColor, currentFragment.color);
