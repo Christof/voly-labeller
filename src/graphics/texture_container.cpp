@@ -47,13 +47,12 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
   const uint textureSize =
       spaceDescription.width * spaceDescription.height * slices * 3;
-  unsigned char *textureData = new unsigned char[textureSize];
-  for (uint i = 0; i < textureSize; i++)
-    textureData[i] = 0;
+  std::vector<unsigned char> textureData(textureSize, 0);
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,
                                spaceDescription.width, spaceDescription.height,
-                               slices, GL_RGB, GL_UNSIGNED_BYTE, textureData));
+                               slices, GL_RGB, GL_UNSIGNED_BYTE,
+                               textureData.data()));
 
   for (int i = 0; i < slices; ++i)
   {
