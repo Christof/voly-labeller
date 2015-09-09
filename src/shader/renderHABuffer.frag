@@ -124,6 +124,14 @@ vec4 transferFunctionLookUp(int volumeId, float density)
                               vec2(density, volumes[volumeId].transferFunctionRow));
 }
 
+int calculateNextObjectId(inout uint remainingActiveObjects)
+{
+  int currentObjectId = findLSB(remainingActiveObjects);
+  remainingActiveObjects &= (~(1 << (currentObjectId)));
+
+  return currentObjectId;
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -225,8 +233,7 @@ void main()
       float segmentTextureLength = 0.0;
       for (int oi = 0; oi < activeObjectCount; oi++)
       {
-        int currentObjectId = findLSB(remainingActiveObjects);
-        remainingActiveObjects &= (~(1 << currentObjectId));
+        int currentObjectId = calculateNextObjectId(remainingActiveObjects);
 
         vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
                                currentFragment.eyePos;
@@ -270,10 +277,9 @@ void main()
           for (int objectIndex = 0; objectIndex < activeObjectCount;
                objectIndex++)
           {
-            int currentObjectId = findLSB(remainingActiveObjects);
+            int currentObjectId = calculateNextObjectId(remainingActiveObjects);
             if (currentObjectId < 0)
               break;
-            remainingActiveObjects &= (~(1 << (currentObjectId)));
 
             float squareGradientLength = 0.0f;
 
