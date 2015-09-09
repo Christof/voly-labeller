@@ -9,7 +9,7 @@ in vec4 u_Pos;
 out vec4 o_PixColor;
 layout(depth_any) out float gl_FragDepth;
 
-uniform vec3 BkgColor = vec3(1.0, 1.0, 1.0);
+uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
@@ -45,8 +45,7 @@ void getVolumeSample(in int objectID, in vec3 texturePos, out float density,
 
   density = texture(volumeSampler, texturePos).r;
 
-  // gradient calculation based on dataset values
-
+  // gradient calculation based on dataset values using central differences
   gradient = -vec3(texture(volumeSampler, vec3(texturePos.x+sampleDistance.x*gscf.x, texturePos.yz)).x-
                    texture(volumeSampler, vec3(texturePos.x-sampleDistance.x*gscf.y, texturePos.yz)).x,
                    texture(volumeSampler, vec3(texturePos.x,texturePos.y+sampleDistance.y*gscf.y, texturePos.z)).x-
@@ -101,13 +100,13 @@ vec3 calculateLighting(vec4 color, vec3 startpos_eye, vec3 gradient)
   const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
   vec3 lightDir = normalize(lightPos - startpos_eye);
   vec3 viewDir = -1.0f * normalize(startpos_eye);
-  vec3 nGradient = normalize(gradient);
+  vec3 normalizedGradient = normalize(gradient);
 
   // float dotNL = abs(dot(ngradient, lightDir));
-  float dotNL = max(dot(nGradient, lightDir), 0.0f);
+  float dotNL = max(dot(normalizedGradient, lightDir), 0.0f);
   vec3 H = normalize(lightDir + viewDir);
   // float dotNH = abs(dot(ngradient, H));
-  float dotNH = max(dot(nGradient, H), 0.0f);
+  float dotNH = max(dot(normalizedGradient, H), 0.0f);
   float ka = 0.3;  // gl_LightSource[li].ambient.xyz
   float kd = 0.5;  // gl_LightSource[li].diffuse.xyz
   float ks = 0.5;  // gl_LightSource[li].specular.xyz
@@ -143,17 +142,14 @@ void main()
 
   if (maxage == 0)
   {
-    // o_PixColor = vec4(0.0, 0.5, 0.8, 1.0);
-    // return;
-
     discard;  // no fragment, early exit
   }
 
   int activeobjects = 0;
   int activeobjectcount = 0;
-  FragmentData current_fragment;
+  FragmentData currentFragment;
   FragmentData next_fragment;
-  bool current_fragment_read_status = false;
+  bool currentFragmentReadStatus = false;
   bool next_fragment_read_status = false;
 
   vec3 startpos_eye;
@@ -180,12 +176,12 @@ void main()
 
   for (--age; age < maxage; age++)  // all fragments
   {
-    current_fragment_read_status = next_fragment_read_status;
-    current_fragment = next_fragment;
+    currentFragmentReadStatus = next_fragment_read_status;
+    currentFragment = next_fragment;
     segment_startpos_eye = endpos_eye;
-    vec4 fragmentColor = current_fragment.color;
+    vec4 fragmentColor = currentFragment.color;
 
-    objectId = current_fragment.objectId;
+    objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeobjects);
     activeobjectcount = bitCount(activeobjects);
 
@@ -231,7 +227,7 @@ void main()
         ao &= (~(1 << objectID));
 
         vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
-                               current_fragment.eyePos;
+                               currentFragment.eyePos;
         vec4 textureEndPos = volumes[0].textureMatrix * inverseViewMatrix *
                              next_fragment.eyePos;
 
@@ -343,7 +339,7 @@ void main()
     }
     else
     {
-      finalColor = blend(finalColor, current_fragment.color);
+      finalColor = blend(finalColor, currentFragment.color);
     }
 
     /*
@@ -366,6 +362,6 @@ void main()
     finalColor = blend(finalColor, next_fragment.color);
   }
 
-  o_PixColor = blend(finalColor, vec4(BkgColor, 1.0));
+  o_PixColor = blend(finalColor, vec4(backgroundColor, 1.0));
 }
 
