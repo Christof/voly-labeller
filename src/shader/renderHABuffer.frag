@@ -213,14 +213,14 @@ void main()
 
     if (activeObjectCount > 0)  // in frag
     {
-      uint ao = activeObjects;
+      uint remainingActiveObjects = activeObjects;
 
       // calculate length in texture space (needed for step width calculation)
       float segmentTextureLength = 0.0;
       for (int oi = 0; oi < activeObjectCount; oi++)
       {
-        int objectID = findLSB(ao);
-        ao &= (~(1 << objectID));
+        int currentObjectId = findLSB(remainingActiveObjects);
+        remainingActiveObjects &= (~(1 << currentObjectId));
 
         vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
                                currentFragment.eyePos;
@@ -241,9 +241,9 @@ void main()
 
       if (activeObjectCount > 0)
       {
-        int sample_steps = int(segmentTextureLength * STEP_FACTOR);
-        sample_steps = clamp(sample_steps, 1, MAX_SAMPLES - 1);
-        float stepFactor = 1.0 / float(sample_steps);
+        int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
+        sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
+        float stepFactor = 1.0 / float(sampleSteps);
 
         // noise offset
         startPos_eye = segmentStartPos_eye;  // + noise offset;
@@ -254,20 +254,20 @@ void main()
         lastPos_eye = startPos_eye - direction_eye * stepFactor;
 
         // sample ray segment
-        for (int step = 0; step < sample_steps; step++)
+        for (int step = 0; step < sampleSteps; step++)
         {
           vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-          uint ao = activeObjects;
+          uint remainingActiveObjects = activeObjects;
 
           // sampling per non-isosurface object
           for (int objectIndex = 0; objectIndex < activeObjectCount;
                objectIndex++)
           {
-            int objectID = findLSB(ao);
-            if (objectID < 0)
+            int currentObjectId = findLSB(remainingActiveObjects);
+            if (currentObjectId < 0)
               break;
-            ao &= (~(1 << (objectID)));
+            remainingActiveObjects &= (~(1 << (currentObjectId)));
 
             float squareGradientLength = 0.0f;
             vec4 TFColor;
