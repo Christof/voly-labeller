@@ -216,7 +216,7 @@ void main()
       uint ao = activeObjects;
 
       // calculate length in texture space (needed for step width calculation)
-      float segment_texture_length = 0.0;
+      float segmentTextureLength = 0.0;
       for (int oi = 0; oi < activeObjectCount; oi++)
       {
         int objectID = findLSB(ao);
@@ -227,10 +227,10 @@ void main()
         vec4 textureEndPos = volumes[0].textureMatrix * inverseViewMatrix *
                              nextFragment.eyePos;
 
-        segment_texture_length =
+        segmentTextureLength =
             max(distance(textureStartPos.xyz * textureAtlasSize,
                          textureEndPos.xyz * textureAtlasSize),
-                segment_texture_length);
+                segmentTextureLength);
         // float value = texture(volumeSampler, texCoord.xyz).r;
         // fragmentColor.color.rgb = vec3(value);
         // fragmentColor.color.rgb = vec3(textureStartPos.xyz);
@@ -239,15 +239,9 @@ void main()
         // fragmentColor = transferFunction;
       }
 
-      //FIXME:
-      segment_texture_length =
-          (segment_texture_length >= 0.0f)
-              ? segment_texture_length
-              : distance(segmentStartPos_eye, endPos_eye) * 100.0f;
-
-      if (activeObjectCount > 0 && segment_texture_length > 0.0f)
+      if (activeObjectCount > 0)
       {
-        int sample_steps = int(segment_texture_length * STEP_FACTOR);
+        int sample_steps = int(segmentTextureLength * STEP_FACTOR);
         sample_steps = clamp(sample_steps, 1, MAX_SAMPLES - 1);
         float stepFactor = 1.0 / float(sample_steps);
 
