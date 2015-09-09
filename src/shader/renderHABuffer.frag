@@ -95,11 +95,11 @@ void updateActiveObjects(inout int objectId, out int activeObjects)
   }
 }
 
-vec3 calculateLighting(vec4 color, vec3 startpos_eye, vec3 gradient)
+vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
 {
   const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
-  vec3 lightDir = normalize(lightPos - startpos_eye);
-  vec3 viewDir = -1.0f * normalize(startpos_eye);
+  vec3 lightDir = normalize(lightPos - startPos_eye);
+  vec3 viewDir = -1.0f * normalize(startPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
   // float dotNL = abs(dot(ngradient, lightDir));
@@ -138,25 +138,25 @@ void main()
 
   gl_FragDepth = 0.0;
 
-  uint maxage = u_Counts[Saddr(ij)];
+  uint maxAge = u_Counts[Saddr(ij)];
 
-  if (maxage == 0)
+  if (maxAge == 0)
   {
     discard;  // no fragment, early exit
   }
 
-  int activeobjects = 0;
-  int activeobjectcount = 0;
+  int activeObjects = 0;
+  int activeObjectCount = 0;
   FragmentData currentFragment;
-  FragmentData next_fragment;
+  FragmentData nextFragment;
   bool currentFragmentReadStatus = false;
-  bool next_fragment_read_status = false;
+  bool nextFragmentReadStatus = false;
 
-  vec3 startpos_eye;
-  vec3 lastpos_eye;
-  vec3 endpos_eye;
-  vec3 segment_startpos_eye;
-  vec3 dirvec_eye;
+  vec3 startPos_eye;
+  vec3 lastPos_eye;
+  vec3 endPos_eye;
+  vec3 segmentStartPos_eye;
+  vec3 direction_eye;
   vec4 pos_proj;
 
   float density = 0.0f;
@@ -167,61 +167,58 @@ void main()
   vec4 finalColor = vec4(0, 0, 0, 0);
 
   uint age = 1;
-  while (!next_fragment_read_status && age < maxage)
+  while (!nextFragmentReadStatus && age < maxAge)
   {
-      next_fragment_read_status = fetchFragment(ij, age, next_fragment);
-      endpos_eye = next_fragment.eyePos.xyz;
+      nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
+      endPos_eye = nextFragment.eyePos.xyz;
       ++age;
   }
 
-  for (--age; age < maxage; age++)  // all fragments
+  for (--age; age < maxAge; age++)  // all fragments
   {
-    currentFragmentReadStatus = next_fragment_read_status;
-    currentFragment = next_fragment;
-    segment_startpos_eye = endpos_eye;
+    currentFragmentReadStatus = nextFragmentReadStatus;
+    currentFragment = nextFragment;
+    segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
 
     objectId = currentFragment.objectId;
-    updateActiveObjects(objectId, activeobjects);
-    activeobjectcount = bitCount(activeobjects);
+    updateActiveObjects(objectId, activeObjects);
+    activeObjectCount = bitCount(activeObjects);
 
     // fetch next Fragment
-    next_fragment_read_status = false;
-    while (!next_fragment_read_status && age < maxage)
+    nextFragmentReadStatus = false;
+    while (!nextFragmentReadStatus && age < maxAge)
     {
-      next_fragment_read_status = fetchFragment(ij, age + 1, next_fragment);
+      nextFragmentReadStatus = fetchFragment(ij, age + 1, nextFragment);
       ++age;
     }
 
-    if (next_fragment_read_status)
+    if (nextFragmentReadStatus)
     {
-      endpos_eye = next_fragment.eyePos.xyz;
+      endPos_eye = nextFragment.eyePos.xyz;
     }
     else
     {
-      endpos_eye = segment_startpos_eye;
+      endPos_eye = segmentStartPos_eye;
     }
 
     // set up segment direction vector
-
-    dirvec_eye = endpos_eye - segment_startpos_eye;
+    direction_eye = endPos_eye - segmentStartPos_eye;
 
     // FIXME: do we need it?
-    // pos_proj = projectionMatrix*vec4(startpos_eye, 1.0f);
+    // pos_proj = projectionMatrix*vec4(startPos_eye, 1.0f);
     // pos_proj.z /= pos_proj.w;
-    // FIXME: posproj.xy ???
     // pos_proj += 1.0f;
     // pos_proj /= 2.0f;
 
-
-    if (activeobjectcount > 0)  // in frag
+    if (activeObjectCount > 0)  // in frag
     {
-      uint ao = activeobjects;
-      int aoc = activeobjectcount;
+      uint ao = activeObjects;
+      int aoc = activeObjectCount;
 
       // calculate length in texture space (needed for step width calculation)
       float segment_texture_length = 0.0;
-      for (int oi = 0; oi < activeobjectcount; oi++)
+      for (int oi = 0; oi < activeObjectCount; oi++)
       {
         int objectID = findLSB(ao);
         ao &= (~(1 << objectID));
@@ -229,7 +226,7 @@ void main()
         vec4 textureStartPos = volumes[0].textureMatrix * inverseViewMatrix *
                                currentFragment.eyePos;
         vec4 textureEndPos = volumes[0].textureMatrix * inverseViewMatrix *
-                             next_fragment.eyePos;
+                             nextFragment.eyePos;
 
         segment_texture_length =
             max(distance(textureStartPos.xyz * textureAtlasSize,
@@ -243,36 +240,36 @@ void main()
         // fragmentColor = transferFunction;
       }
 
-      activeobjectcount = aoc;
+      activeObjectCount = aoc;
       //FIXME:
       segment_texture_length =
           (segment_texture_length >= 0.0f)
               ? segment_texture_length
-              : distance(segment_startpos_eye, endpos_eye) * 100.0f;
+              : distance(segmentStartPos_eye, endPos_eye) * 100.0f;
 
-      if (activeobjectcount > 0 && segment_texture_length > 0.0f)
+      if (activeObjectCount > 0 && segment_texture_length > 0.0f)
       {
         int sample_steps = int(segment_texture_length * STEP_FACTOR);
         sample_steps = clamp(sample_steps, 1, MAX_SAMPLES - 1);
         float stepFactor = 1.0 / float(sample_steps);
 
         // noise offset
-        startpos_eye = segment_startpos_eye;  // + noise offset;
+        startPos_eye = segmentStartPos_eye;  // + noise offset;
 
         // FIXME: check code
         // textureStartPos = textureStartPos +
-        // noiseoffset*dirvec_eye*stepfactor;
-        lastpos_eye = startpos_eye - dirvec_eye * stepFactor;
+        // noiseoffset*direction_eye*stepfactor;
+        lastPos_eye = startPos_eye - direction_eye * stepFactor;
 
         // sample ray segment
         for (int step = 0; step < sample_steps; step++)
         {
           vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
-          uint ao = activeobjects;
+          uint ao = activeObjects;
 
           // sampling per non-isosurface object
-          for (int objectIndex = 0; objectIndex < activeobjectcount;
+          for (int objectIndex = 0; objectIndex < activeObjectCount;
                objectIndex++)
           {
             int objectID = findLSB(ao);
@@ -285,7 +282,7 @@ void main()
 
             vec3 textureSamplePos =
                 (volumes[0].textureMatrix * inverseViewMatrix *
-                 vec4(startpos_eye, 1.0f)).xyz;
+                 vec4(startPos_eye, 1.0f)).xyz;
 
             getVolumeSample(objectID, textureSamplePos, density, gradient);
             squareGradientLength = dot(gradient, gradient);
@@ -298,7 +295,7 @@ void main()
             vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, TFColor.a);
             if (squareGradientLength > 0.05f)
             {
-              currentColor.xyz = calculateLighting(TFColor, startpos_eye, gradient);
+              currentColor.xyz = calculateLighting(TFColor, startPos_eye, gradient);
             }
             else
             {
@@ -324,18 +321,18 @@ void main()
             break;
 
           // prepare next segment
-          lastpos_eye = startpos_eye;
-          startpos_eye += stepFactor * dirvec_eye;
+          lastPos_eye = startPos_eye;
+          startPos_eye += stepFactor * direction_eye;
 
           // FIXME: do we need it?
-          // pos_proj = gl_ProjectionMatrix*vec4(startpos_eye,1.0f);
+          // pos_proj = gl_ProjectionMatrix*vec4(startPos_eye,1.0f);
           // pos_proj.z /= pos_proj.w;
           // pos_proj.z += 1.0f;
           // pos_proj.z /=2.0f;
         }  // sampling steps
 
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-      }  // if (activeobjectcount > 0) ...
+      }  // if (activeObjectCount > 0) ...
     }
     else
     {
@@ -352,14 +349,14 @@ void main()
     // break; // just the first fragment
   }  // all ages except last ...
 
-  if (maxage == 1)
+  if (maxAge == 1)
   {
-    next_fragment_read_status = fetchFragment(ij, 1, next_fragment);
+    nextFragmentReadStatus = fetchFragment(ij, 1, nextFragment);
   }
 
-  if (next_fragment_read_status)
+  if (nextFragmentReadStatus)
   {
-    finalColor = blend(finalColor, next_fragment.color);
+    finalColor = blend(finalColor, nextFragment.color);
   }
 
   o_PixColor = blend(finalColor, vec4(backgroundColor, 1.0));
