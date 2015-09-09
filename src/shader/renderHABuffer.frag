@@ -270,31 +270,22 @@ void main()
             remainingActiveObjects &= (~(1 << (currentObjectId)));
 
             float squareGradientLength = 0.0f;
-            vec4 TFColor;
 
             vec3 textureSamplePos =
                 (volumes[0].textureMatrix * inverseViewMatrix *
                  vec4(startPos_eye, 1.0f)).xyz;
 
-            getVolumeSample(objectID, textureSamplePos, density, gradient);
+            getVolumeSample(currentObjectId, textureSamplePos, density, gradient);
             squareGradientLength = dot(gradient, gradient);
 
             // transfer function lookup
-            TFColor = Texture(volumes[0].textureAddress,
+            vec4 currentColor = Texture(volumes[0].textureAddress,
                               vec2(density, volumes[0].transferFunctionRow));
 
-            // lighting
-            vec4 currentColor = vec4(0.0f, 0.0f, 0.0f, TFColor.a);
             if (squareGradientLength > 0.05f)
             {
-              currentColor.xyz = calculateLighting(TFColor, startPos_eye, gradient);
+              currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
             }
-            else
-            {
-              currentColor.xyz = TFColor.xyz;
-            }
-
-            // clamp color
             currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
 
             // we sum up overlapping contributions
