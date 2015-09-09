@@ -214,7 +214,6 @@ void main()
     if (activeObjectCount > 0)  // in frag
     {
       uint ao = activeObjects;
-      int aoc = activeObjectCount;
 
       // calculate length in texture space (needed for step width calculation)
       float segment_texture_length = 0.0;
@@ -240,7 +239,6 @@ void main()
         // fragmentColor = transferFunction;
       }
 
-      activeObjectCount = aoc;
       //FIXME:
       segment_texture_length =
           (segment_texture_length >= 0.0f)
