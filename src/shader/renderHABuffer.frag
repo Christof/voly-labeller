@@ -118,6 +118,12 @@ vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
   return ka * color.rgb + kd * color.rgb * dotNL + specular;
 }
 
+vec4 transferFunctionLookUp(int volumeId, float density)
+{
+  return Texture(volumes[volumeId].textureAddress,
+                              vec2(density, volumes[volumeId].transferFunctionRow));
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -278,10 +284,7 @@ void main()
             getVolumeSample(currentObjectId, textureSamplePos, density, gradient);
             squareGradientLength = dot(gradient, gradient);
 
-            // transfer function lookup
-            vec4 currentColor = Texture(volumes[0].textureAddress,
-                              vec2(density, volumes[0].transferFunctionRow));
-
+            vec4 currentColor = transferFunctionLookUp(0, density);
             if (squareGradientLength > 0.05f)
             {
               currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
