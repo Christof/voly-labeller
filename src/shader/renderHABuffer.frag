@@ -215,6 +215,7 @@ void main()
     currentFragment = nextFragment;
     segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
+    fragmentColor.xyz *= fragmentColor.w;
 
     objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
