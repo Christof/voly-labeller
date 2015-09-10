@@ -228,6 +228,7 @@ void main()
       nextFragmentReadStatus = fetchFragment(ij, age + 1, nextFragment);
       ++age;
     }
+    --age;
 
     if (nextFragmentReadStatus)
     {
