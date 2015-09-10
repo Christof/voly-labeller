@@ -82,16 +82,16 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
   }
 }
 
-void updateActiveObjects(inout int objectId, out int activeObjects)
+void updateActiveObjects(inout int objectId, inout int activeObjects)
 {
   if (objectId > 0)
   {
-    activeObjects |= 1 << (objectId);
+    activeObjects |= 1 << (objectId - 1);
   }
   else if (objectId < 0)
   {
     objectId = -objectId;
-    activeObjects &= (~(1 << objectId));
+    activeObjects &= (~(1 << (objectId - 1)));
   }
 }
 
