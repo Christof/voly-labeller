@@ -1,8 +1,8 @@
 #version 440
 #include "HABufferImplementation.hglsl"
 #include "bindlessTexture.hglsl"
-#define MAX_SAMPLES 2048
-#define STEP_FACTOR 1.5
+#define MAX_SAMPLES 4096
+#define STEP_FACTOR 2.5
 
 in vec4 u_Pos;
 
