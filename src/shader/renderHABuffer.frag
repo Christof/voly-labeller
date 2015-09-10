@@ -334,12 +334,10 @@ void main()
       finalColor = blend(finalColor, currentFragment.color);
     }
 
-    /*
     if (finalColor.a > 0.999)
     {
       break;
     }
-    */
 
     // break; // just the first fragment
   }  // all ages except last ...
