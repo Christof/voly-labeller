@@ -354,6 +354,8 @@ void main()
     finalColor = blend(finalColor, nextFragment.color);
   }
 
+  finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
+
   o_PixColor = blend(finalColor, vec4(backgroundColor, 1.0));
 }
 
