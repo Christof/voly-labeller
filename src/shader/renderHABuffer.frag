@@ -184,7 +184,6 @@ void main()
   int activeObjectCount = 0;
   FragmentData currentFragment;
   FragmentData nextFragment;
-  bool currentFragmentReadStatus = false;
   bool nextFragmentReadStatus = false;
 
   vec3 startPos_eye;
@@ -211,7 +210,6 @@ void main()
 
   for (--age; age < maxAge; age++)  // all fragments
   {
-    currentFragmentReadStatus = nextFragmentReadStatus;
     currentFragment = nextFragment;
     segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
