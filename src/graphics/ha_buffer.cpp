@@ -29,12 +29,12 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
   this->gl = gl;
   this->objectManager = objectManager;
 
-  clearQuad = std::make_shared<ScreenQuad>(":shader/clearHABuffer.vert",
-                                           ":shader/clearHABuffer.frag");
+  clearQuad = std::make_shared<ScreenQuad>(":/shader/clearHABuffer.vert",
+                                           ":/shader/clearHABuffer.frag");
   clearQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
-  renderQuad = std::make_shared<ScreenQuad>(":shader/renderHABuffer.vert",
-                                            ":shader/renderHABuffer.frag");
+  renderQuad = std::make_shared<ScreenQuad>(":/shader/renderHABuffer.vert",
+                                            ":/shader/renderHABuffer.frag");
   renderQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
   initializeShadersHash();
