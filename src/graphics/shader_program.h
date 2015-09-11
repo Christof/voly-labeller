@@ -59,6 +59,7 @@ class ShaderProgram
 
   inline int getLocation(const char *name);
   void addShaderFromSource(QOpenGLShader::ShaderType type, std::string path);
+  void writeBinary();
   std::string getName();
 };
 

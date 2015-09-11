@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QDir>
 #include <string>
+#include <fstream>
 #include "./gl.h"
 
 namespace Graphics
@@ -25,6 +26,8 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
   }
 
   glCheckError();
+
+  writeBinary();
 }
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
@@ -43,6 +46,8 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
   }
 
   glCheckError();
+
+  writeBinary();
 }
 
 ShaderProgram::~ShaderProgram()
@@ -195,6 +200,20 @@ void ShaderProgram::addShaderFromSource(QOpenGLShader::ShaderType type,
   {
     throw std::runtime_error("error during compilation of" + path);
   }
+}
+
+void ShaderProgram::writeBinary()
+{
+  const size_t MAX_SIZE = 1 << 24;
+  std::vector<char> binary(MAX_SIZE);
+
+  GLenum format;
+  GLint length;
+  gl->glGetProgramBinary(getId(), MAX_SIZE, &length, &format, binary.data());
+  glCheckError();
+
+  std::ofstream binaryfile(getName() + ".txt");
+  binaryfile.write(binary.data(), length);
 }
 
 std::string ShaderProgram::getName()
