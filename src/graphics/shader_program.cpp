@@ -13,16 +13,15 @@ namespace Graphics
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
-  : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath),
-    gl(gl)
+  : vertexShaderPath(vertexShaderPath), geometryShaderPath(""),
+    fragmentShaderPath(fragmentShaderPath), gl(gl)
 {
   addShaderFromSource(QOpenGLShader::Vertex, vertexShaderPath);
   addShaderFromSource(QOpenGLShader::Fragment, fragmentShaderPath);
 
   if (!shaderProgram.link())
   {
-    throw std::runtime_error("error during linking of" + vertexShaderPath +
-                             "/" + fragmentShaderPath);
+    throw std::runtime_error("error during linking of" + getName());
   }
 
   glCheckError();
@@ -40,9 +39,7 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
 
   if (!shaderProgram.link())
   {
-    throw std::runtime_error("error during linking of" + vertexShaderPath +
-                             "/" + geometryShaderPath + "/" +
-                             fragmentShaderPath);
+    throw std::runtime_error("error during linking of" + getName());
   }
 
   glCheckError();
@@ -183,8 +180,7 @@ int ShaderProgram::getLocation(const char *name)
 
   int location = shaderProgram.uniformLocation(name);
   if (location < 0)
-    qWarning() << "Uniform" << name << "not found in"
-               << vertexShaderPath.c_str() << "|" << fragmentShaderPath.c_str();
+    qWarning() << "Uniform" << name << "not found in" << getName().c_str();
 
   locationCache[name] = location;
 
@@ -199,6 +195,24 @@ void ShaderProgram::addShaderFromSource(QOpenGLShader::ShaderType type,
   {
     throw std::runtime_error("error during compilation of" + path);
   }
+}
+
+std::string ShaderProgram::getName()
+{
+  std::string concat =
+      vertexShaderPath + "_" + geometryShaderPath + "_" + fragmentShaderPath;
+  const std::string toReplace = ":/shader/";
+  size_t index = 0;
+  while (true)
+  {
+    index = concat.find(toReplace, index);
+    if (index == std::string::npos)
+      break;
+
+    concat = concat.replace(index, toReplace.size(), "");
+  }
+
+  return concat;
 }
 
 }  // namespace Graphics
