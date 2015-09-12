@@ -1,24 +1,28 @@
 #include "./mesh.h"
 #include <QDebug>
+#include <QLoggingCategory>
 #include <string>
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
 #include "../utils/path_helper.h"
+#include "../eigen_qdebug.h"
 
 namespace Graphics
 {
 
+QLoggingCategory meshChan("Graphics.Mesh");
+
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 {
-  /*
+  qCInfo(meshChan) << "Loading " << mesh->mName.C_Str();
+
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
     auto property = material->mProperties[i];
-    std::cout << property->mKey.C_Str() << ": " << property->mType << "|"
-              << property->mDataLength << std::endl;
+    qCDebug(meshChan) << property->mKey.C_Str() << ": " << property->mType
+                      << "|" << property->mDataLength;
   }
-  */
 
   phongMaterial.ambientColor =
       loadVector4FromMaterial("$clr.ambient", material);
@@ -28,14 +32,14 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
       loadVector4FromMaterial("$clr.specular", material);
   phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
 
-  /*
-  std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
-            << " specular: " << specularColor << " shininess: " << shininess
-            << std::endl;
-            */
+  qCDebug(meshChan) << "diffuse: " << phongMaterial.diffuseColor
+                    << " ambient: " << phongMaterial.ambientColor
+                    << " specular: " << phongMaterial.specularColor
+                    << " shininess: " << phongMaterial.shininess;
 
   unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
   indexCount = indicesPerFace * mesh->mNumFaces;
+  assert(indexCount > 0);
 
   indexData = new unsigned int[indexCount];
   auto indexInsertPoint = indexData;
