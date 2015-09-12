@@ -1,5 +1,6 @@
 #include "./texture_manager.h"
 #include <QLoggingCategory>
+#include <QFileInfo>
 #include <vector>
 #include <map>
 #include <string>
@@ -80,7 +81,11 @@ TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 
 Texture2d *TextureManager::newTexture2d(std::string path)
 {
-  auto image = new QImage(path.c_str());
+  QFileInfo file(path.c_str());
+  if (!file.exists())
+    throw std::invalid_argument("Given file '" + path + "' does not exist");
+
+  auto image = new QImage(file.absoluteFilePath());
   auto texture = newTexture2d(image);
 
   delete image;
