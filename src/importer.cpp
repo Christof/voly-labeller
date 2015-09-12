@@ -2,9 +2,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <QDebug>
+#include <QLoggingCategory>
 #include <string>
 #include <vector>
 #include "./utils/path_helper.h"
+
+QLoggingCategory importerChan("importer");
 
 Importer::Importer()
 {
@@ -16,7 +19,7 @@ Importer::~Importer()
 
 const aiScene *Importer::readScene(std::string filename)
 {
-  qDebug() << "readScene:" << filename.c_str();
+  qCInfo(importerChan) << "readScene:" << filename.c_str();
 
   if (scenes.count(filename))
     return scenes[filename];
@@ -28,7 +31,7 @@ const aiScene *Importer::readScene(std::string filename)
 
   if (!scene)
   {
-    qCritical() << "Could not load " << path.c_str();
+    qCCritical(importerChan) << "Could not load " << path.c_str();
     exit(1);
   }
 
