@@ -37,7 +37,7 @@ void DefaultSceneCreator::create()
 void DefaultSceneCreator::addMeshNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
-  const std::string filename = "assets/assets.dae";
+  const std::string filename = "assets/human-edited.dae";
   Importer importer;
 
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
