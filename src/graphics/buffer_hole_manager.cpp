@@ -1,5 +1,6 @@
 #include "./buffer_hole_manager.h"
 #include <QLoggingCategory>
+#include <cassert>
 
 namespace Graphics
 {
@@ -13,6 +14,9 @@ BufferHoleManager::BufferHoleManager(int bufferSize) : bufferSize(bufferSize)
 
 bool BufferHoleManager::reserve(uint requestSize, uint &offset)
 {
+  qCInfo(bhmChan) << this << "request" << requestSize;
+  assert(requestSize > 0);
+
   if (requestSize > bufferSize)
     return false;
 
@@ -40,6 +44,8 @@ bool BufferHoleManager::reserve(uint requestSize, uint &offset)
     }
   }
 
+  qCCritical(bhmChan) << this << "No buffer hole found for size "
+                      << requestSize << " in buffer of size " << bufferSize;
   return false;
 }
 
@@ -65,7 +71,7 @@ void BufferHoleManager::tryJoiningWithNextHole(uint offset, uint chunkSize)
   auto hole = holes.find(offset + chunkSize);
   if (hole != holes.end())
   {
-    qCDebug(bhmChan) << "joining next hole at" << hole->first << "("
+    qCDebug(bhmChan) << this << "joining next hole at" << hole->first << "("
                      << hole->second
                      << "). New size:" << hole->second + chunkSize;
 
@@ -81,7 +87,7 @@ void BufferHoleManager::tryJoiningWithPreviousHole(uint offset)
 
   if ((hole->first + hole->second) == offset)
   {
-    qCDebug(bhmChan) << "joining previous hole at" << hole->first << "("
+    qCDebug(bhmChan) << this << "joining previous hole at" << hole->first << "("
                      << hole->second
                      << "). New size:" << hole->second + holes[offset];
 
