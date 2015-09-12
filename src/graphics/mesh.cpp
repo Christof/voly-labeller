@@ -5,6 +5,7 @@
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
+#include "./texture_manager.h"
 #include "../utils/path_helper.h"
 #include "../eigen_qdebug.h"
 
@@ -62,10 +63,27 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   hasTexture = mesh->GetNumUVChannels() > 0;
   if (hasTexture)
   {
+    aiString texturePath;
+    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, nullptr,
+                             nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
+    {
+      std::string textureName(texturePath.C_Str());
+      textureFilePath = "assets/" + textureName;
+      qCDebug(meshChan) << "texture" << textureFilePath.c_str();
+    }
+    else
+    {
+      qCWarning(meshChan) << "Could not load texture from material";
+      hasTexture = false;
+    }
+  }
+
+  if (hasTexture)
+  {
     for (int i = 0; i < vertexCount; ++i)
     {
       textureCoordinateData[i * 2] = mesh->mTextureCoords[0][i].x;
-      textureCoordinateData[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
+      textureCoordinateData[i * 2 + 1] = -mesh->mTextureCoords[0][i].y;
     }
   }
   else
@@ -117,8 +135,8 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
 
   if (hasTexture)
   {
-    int textureId = objectManager->addTexture(absolutePathOfProjectRelativePath(
-        std::string("assets/tiger/tiger-atlas.jpg")));
+    int textureId = textureManager->addTexture(
+        absolutePathOfProjectRelativePath(std::string(textureFilePath)));
     objectData.setCustomBuffer(sizeof(TextureAddress),
                                [objectManager, textureId](void *insertionPoint)
                                {

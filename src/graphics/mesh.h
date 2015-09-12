@@ -66,6 +66,7 @@ class Mesh : public Renderable
   PhongMaterial phongMaterial;
 
   bool hasTexture;
+  std::string textureFilePath;
 };
 
 }  // namespace Graphics
