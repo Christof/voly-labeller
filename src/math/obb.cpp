@@ -1,6 +1,7 @@
 #include "./obb.h"
 #include <Eigen/Eigenvalues>
 #include <limits>
+#include "./eigen.h"
 
 namespace Math
 {
@@ -39,6 +40,24 @@ Eigen::Vector3f Obb::getCenter()
 Eigen::Vector3f Obb::getHalfWidths()
 {
   return halfWidths;
+}
+
+Obb &Obb::operator*=(const Eigen::Matrix4f &rhs)
+{
+  center = toVector3f(mul(rhs, center));
+  axes = axes * rhs.block<3, 3>(0, 0);
+  halfWidths = halfWidths.cwiseProduct(rhs.diagonal().block<3, 1>(0, 0));
+  for (int i = 0; i < 8; ++i)
+    corners[i] = toVector3f(mul(rhs, corners[i]));
+
+  return *this;
+}
+
+Obb Obb::operator*(const Eigen::Matrix4f &rhs)
+{
+  Obb lhs = *this;
+  lhs *= rhs;
+  return lhs;
 }
 
 void Obb::calculateCenterAndHalfWidhts(Eigen::MatrixXf &onAxes)

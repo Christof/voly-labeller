@@ -26,6 +26,10 @@ class Obb
 
   Eigen::Vector3f getCenter();
   Eigen::Vector3f getHalfWidths();
+
+  Obb &operator*=(const Eigen::Matrix4f &rhs);
+  Obb operator*(const Eigen::Matrix4f &rhs);
+
  private:
   Eigen::Matrix3f axes;
 
