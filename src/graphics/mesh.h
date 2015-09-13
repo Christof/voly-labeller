@@ -22,8 +22,8 @@ class Gl;
 class ObjectManager;
 
 /**
- * \brief Description of phong material consisting of ambient, diffuse and specular
- * color as well as a shininess value
+ * \brief Description of phong material consisting of ambient, diffuse and
+ * specular color as well as a shininess value
  */
 struct PhongMaterial
 {
