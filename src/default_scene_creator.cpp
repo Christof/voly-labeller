@@ -43,8 +43,9 @@ void DefaultSceneCreator::addMeshNodesTo(
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
+    auto transformation = importer.getTransformationFor(filename, meshIndex);
     auto node =
-        new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
+        new MeshNode(filename, meshIndex, mesh, transformation);
     sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
 }
