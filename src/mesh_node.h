@@ -66,6 +66,7 @@ class MeshNode : public Node
   int meshIndex;
   std::shared_ptr<Graphics::Mesh> mesh;
   Eigen::Matrix4f transformation;
+  std::shared_ptr<Math::Obb> obb;
 };
 
 namespace boost
