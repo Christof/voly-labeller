@@ -69,17 +69,6 @@ ObjectData ObjectManager::clone(const ObjectData &object)
                     object.getShaderProgramId(), object.getPrimitiveType());
 }
 
-int ObjectManager::addShader(std::string vertexShaderPath,
-                             std::string fragmentShaderPath)
-{
-  auto id = shaderManager->addShader(vertexShaderPath, fragmentShaderPath);
-
-  qCDebug(omChan) << "Added" << vertexShaderPath.c_str() << "|"
-                  << fragmentShaderPath.c_str() << "which got id" << id;
-
-  return id;
-}
-
 int ObjectManager::addTexture(std::string path)
 {
   return textureManager->addTexture(path);
