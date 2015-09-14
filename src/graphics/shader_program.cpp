@@ -96,6 +96,12 @@ void ShaderProgram::setUniform(const char *name, Eigen::Vector3f vector)
       gl->glProgramUniform3fv(getId(), getLocation(name), 1, vector.data()));
 }
 
+void ShaderProgram::setUniform(const char *name, Eigen::Vector3i vector)
+{
+  glAssert(
+      gl->glProgramUniform3iv(getId(), getLocation(name), 1, vector.data()));
+}
+
 void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
 {
   glAssert(

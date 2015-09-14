@@ -41,6 +41,7 @@ class ShaderProgram
   void setUniform(const char *name, Eigen::Matrix4f matrix);
   void setUniform(const char *name, Eigen::Vector4f vector);
   void setUniform(const char *name, Eigen::Vector3f vector);
+  void setUniform(const char *name, Eigen::Vector3i vector);
   void setUniform(const char *name, Eigen::Vector2f vector);
   void setUniform(const char *name, float value);
   void setUniform(const char *name, int value);
