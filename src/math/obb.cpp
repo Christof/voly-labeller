@@ -32,14 +32,19 @@ Obb::Obb(Eigen::Vector3f center, Eigen::Vector3f halfWidths,
   calculateCorners();
 }
 
-Eigen::Vector3f Obb::getCenter()
+Eigen::Vector3f Obb::getCenter() const
 {
   return center;
 }
 
-Eigen::Vector3f Obb::getHalfWidths()
+Eigen::Vector3f Obb::getHalfWidths() const
 {
   return halfWidths;
+}
+
+bool Obb::isInitialized() const
+{
+  return halfWidths != Eigen::Vector3f::Zero();
 }
 
 Obb &Obb::operator*=(const Eigen::Matrix4f &rhs)
