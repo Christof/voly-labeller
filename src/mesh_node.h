@@ -48,8 +48,6 @@ class MeshNode : public Node
     ar << BOOST_SERIALIZATION_NVP(transformation);
   };
 
-  virtual std::shared_ptr<Math::Obb> getObb();
-
  private:
   friend class boost::serialization::access;
 
@@ -66,7 +64,6 @@ class MeshNode : public Node
   int meshIndex;
   std::shared_ptr<Graphics::Mesh> mesh;
   Eigen::Matrix4f transformation;
-  std::shared_ptr<Math::Obb> obb;
 };
 
 namespace boost

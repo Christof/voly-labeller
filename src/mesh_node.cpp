@@ -8,16 +8,11 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {
-  obb = std::make_shared<Math::Obb>((*mesh->obb.get()) * transformation);
+  obb = *mesh->obb.get() * transformation;
 }
 
 MeshNode::~MeshNode()
 {
-}
-
-std::shared_ptr<Math::Obb> MeshNode::getObb()
-{
-  return obb;
 }
 
 void MeshNode::render(Graphics::Gl *gl, RenderData renderData)

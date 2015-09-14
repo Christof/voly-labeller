@@ -14,12 +14,12 @@ void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
   for (auto node : nodes->getNodes())
   {
     auto obb = node->getObb();
-    if (!obb.get())
+    if (!obb.isInitialized())
       continue;
 
     for (int i = 0; i < 8; ++i)
     {
-      auto point = obb->corners[i];
+      auto point = obb.corners[i];
 
       Eigen::Vector4f transformed = mul(viewMatrix, point);
 

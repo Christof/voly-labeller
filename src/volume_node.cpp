@@ -20,8 +20,7 @@ VolumeNode::VolumeNode(std::string filename) : filename(filename)
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
   Eigen::Vector3f center = transformation.col(3).head<3>();
-  obb = std::make_shared<Math::Obb>(center, halfWidths,
-                                    transformation.block<3, 3>(0, 0));
+  obb = Math::Obb(center, halfWidths, transformation.block<3, 3>(0, 0));
 
   Graphics::VolumeManager::instance->addVolume(this);
 }
@@ -64,11 +63,6 @@ Graphics::VolumeData VolumeNode::getVolumeData()
   data.transferFunctionRow = transferFunctionRow;
 
   return data;
-}
-
-std::shared_ptr<Math::Obb> VolumeNode::getObb()
-{
-  return obb;
 }
 
 void VolumeNode::initializeTexture(Graphics::Gl *gl)
