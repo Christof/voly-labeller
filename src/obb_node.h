@@ -14,7 +14,7 @@
 class ObbNode : public Node
 {
  public:
-  explicit ObbNode(std::shared_ptr<Math::Obb> obb);
+  explicit ObbNode(const Math::Obb &obb);
 
   void render(Graphics::Gl *gl, RenderData renderData);
 

@@ -48,8 +48,6 @@ class MeshNode : public Node
     ar << BOOST_SERIALIZATION_NVP(transformation);
   };
 
-  virtual std::shared_ptr<Math::Obb> getObb();
-
  private:
   friend class boost::serialization::access;
 

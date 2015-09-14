@@ -57,9 +57,6 @@ class ObjectManager
   ObjectData cloneForDifferentShader(const ObjectData &object,
                                      int shaderProgramId);
   ObjectData clone(const ObjectData &object);
-  int addShader(std::string vertexShaderPath, std::string fragmentShaderPath);
-  int addTexture(std::string path);
-  TextureAddress getAddressFor(int textureId);
   bool removeObject(int objID);
 
   void render(const RenderData &renderData);

@@ -124,7 +124,7 @@ void Nodes::toggleBoundingVolumes()
     obbNodes.clear();
     for (auto &node : nodes)
     {
-      if (node->getObb().get())
+      if (node->getObb().isInitialized())
       {
         obbNodes.push_back(std::make_shared<ObbNode>(node->getObb()));
       }

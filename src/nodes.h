@@ -55,7 +55,7 @@ class Nodes : public QObject
   void toggleBoundingVolumes();
 
   void addNode(std::shared_ptr<Node> node);
-signals:
+ signals:
   void nodesChanged();
 
  private:

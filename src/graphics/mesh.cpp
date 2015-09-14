@@ -1,24 +1,30 @@
 #include "./mesh.h"
 #include <QDebug>
+#include <QLoggingCategory>
 #include <string>
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
+#include "./texture_manager.h"
+#include "./shader_manager.h"
 #include "../utils/path_helper.h"
+#include "../eigen_qdebug.h"
 
 namespace Graphics
 {
 
+QLoggingCategory meshChan("Graphics.Mesh");
+
 Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 {
-  /*
+  qCInfo(meshChan) << "Loading " << mesh->mName.C_Str();
+
   for (unsigned int i = 0; i < material->mNumProperties; ++i)
   {
     auto property = material->mProperties[i];
-    std::cout << property->mKey.C_Str() << ": " << property->mType << "|"
-              << property->mDataLength << std::endl;
+    qCDebug(meshChan) << property->mKey.C_Str() << ": " << property->mType
+                      << "|" << property->mDataLength;
   }
-  */
 
   phongMaterial.ambientColor =
       loadVector4FromMaterial("$clr.ambient", material);
@@ -28,14 +34,14 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
       loadVector4FromMaterial("$clr.specular", material);
   phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
 
-  /*
-  std::cout << "diffuse: " << diffuseColor << " ambient: " << ambientColor
-            << " specular: " << specularColor << " shininess: " << shininess
-            << std::endl;
-            */
+  qCDebug(meshChan) << "diffuse: " << phongMaterial.diffuseColor
+                    << " ambient: " << phongMaterial.ambientColor
+                    << " specular: " << phongMaterial.specularColor
+                    << " shininess: " << phongMaterial.shininess;
 
   unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
   indexCount = indicesPerFace * mesh->mNumFaces;
+  assert(indexCount > 0);
 
   indexData = new unsigned int[indexCount];
   auto indexInsertPoint = indexData;
@@ -58,10 +64,27 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   hasTexture = mesh->GetNumUVChannels() > 0;
   if (hasTexture)
   {
+    aiString texturePath;
+    if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, nullptr,
+                             nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
+    {
+      std::string textureName(texturePath.C_Str());
+      textureFilePath = "assets/" + textureName;
+      qCDebug(meshChan) << "texture" << textureFilePath.c_str();
+    }
+    else
+    {
+      qCWarning(meshChan) << "Could not load texture from material";
+      hasTexture = false;
+    }
+  }
+
+  if (hasTexture)
+  {
     for (int i = 0; i < vertexCount; ++i)
     {
       textureCoordinateData[i * 2] = mesh->mTextureCoords[0][i].x;
-      textureCoordinateData[i * 2 + 1] = mesh->mTextureCoords[0][i].y;
+      textureCoordinateData[i * 2 + 1] = -mesh->mTextureCoords[0][i].y;
     }
   }
   else
@@ -88,7 +111,7 @@ void Mesh::createObb()
     data.col(i) = Eigen::Vector3f(positionData[i * 3], positionData[i * 3 + 1],
                                   positionData[i * 3 + 2]);
 
-  obb = std::make_shared<Math::Obb>(data);
+  obb = Math::Obb(data);
 }
 
 ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
@@ -103,9 +126,9 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId = hasTexture
-                            ? objectManager->addShader(":/shader/pass.vert",
+                            ? shaderManager->addShader(":/shader/pass.vert",
                                                        ":/shader/texture.frag")
-                            : objectManager->addShader(":/shader/phong.vert",
+                            : shaderManager->addShader(":/shader/phong.vert",
                                                        ":/shader/phong.frag");
 
   ObjectData objectData =
@@ -113,12 +136,12 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
 
   if (hasTexture)
   {
-    int textureId = objectManager->addTexture(absolutePathOfProjectRelativePath(
-        std::string("assets/tiger/tiger-atlas.jpg")));
+    int textureId = textureManager->addTexture(
+        absolutePathOfProjectRelativePath(std::string(textureFilePath)));
     objectData.setCustomBuffer(sizeof(TextureAddress),
-                               [objectManager, textureId](void *insertionPoint)
+                               [textureManager, textureId](void *insertionPoint)
                                {
-      auto textureAddress = objectManager->getAddressFor(textureId);
+      auto textureAddress = textureManager->getAddressFor(textureId);
       std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
     });
   }

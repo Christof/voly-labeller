@@ -40,7 +40,7 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
       labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
                                 [this](void *insertionPoint)
                                 {
-        auto textureAddress = objectManager->getAddressFor(textureId);
+        auto textureAddress = textureManager->getAddressFor(textureId);
         std::memcpy(insertionPoint, &textureAddress,
                     sizeof(Graphics::TextureAddress));
       });

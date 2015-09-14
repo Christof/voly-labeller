@@ -6,7 +6,7 @@
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="MeshNode" tracking_level="1" version="0" object_id="_0">
-			<assetFilename>assets/assets.dae</assetFilename>
+			<assetFilename>assets/human-edited.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation class_id="3" tracking_level="0" version="0">
 				<r0c0>1.000000000e+00</r0c0>
@@ -30,7 +30,7 @@
 	</item>
 	<item>
 		<px class_id_reference="2" object_id="_1">
-			<assetFilename>assets/assets.dae</assetFilename>
+			<assetFilename>assets/human-edited.dae</assetFilename>
 			<meshIndex>1</meshIndex>
 			<transformation>
 				<r0c0>1.000000000e+00</r0c0>

@@ -37,14 +37,15 @@ void DefaultSceneCreator::create()
 void DefaultSceneCreator::addMeshNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
-  const std::string filename = "assets/assets.dae";
+  const std::string filename = "assets/human-edited.dae";
   Importer importer;
 
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
+    auto transformation = importer.getTransformationFor(filename, meshIndex);
     auto node =
-        new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
+        new MeshNode(filename, meshIndex, mesh, transformation);
     sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
 }

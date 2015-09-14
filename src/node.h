@@ -39,9 +39,9 @@ class Node
     render(gl, renderData);
   }
 
-  virtual std::shared_ptr<Math::Obb> getObb()
+  const Math::Obb &getObb()
   {
-    return std::shared_ptr<Math::Obb>();
+    return obb;
   }
 
   bool isPersistable()
@@ -60,6 +60,7 @@ class Node
   std::shared_ptr<Graphics::ObjectManager> objectManager;
   std::shared_ptr<Graphics::TextureManager> textureManager;
   std::shared_ptr<Graphics::ShaderManager> shaderManager;
+  Math::Obb obb;
 
  private:
   friend class boost::serialization::access;
