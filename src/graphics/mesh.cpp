@@ -6,6 +6,7 @@
 #include "./gl.h"
 #include "./shader_program.h"
 #include "./texture_manager.h"
+#include "./shader_manager.h"
 #include "../utils/path_helper.h"
 #include "../eigen_qdebug.h"
 
@@ -125,9 +126,9 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId = hasTexture
-                            ? objectManager->addShader(":/shader/pass.vert",
+                            ? shaderManager->addShader(":/shader/pass.vert",
                                                        ":/shader/texture.frag")
-                            : objectManager->addShader(":/shader/phong.vert",
+                            : shaderManager->addShader(":/shader/phong.vert",
                                                        ":/shader/phong.frag");
 
   ObjectData objectData =
