@@ -47,6 +47,7 @@ class TextureManager
 
   Texture2d* getTextureFor(int textureId);
   TextureAddress getAddressFor(int textureId);
+  Eigen::Vector3i getVolumeAtlasSize() const;
 
  private:
   Gl *gl;
@@ -55,6 +56,8 @@ class TextureManager
       textureContainers;
   int maxTextureArrayLevels;
   bool isSparse;
+
+  Eigen::Vector3i volumeAtlasSize;
 
   Texture2d *allocateTexture2d(TextureSpaceDescription spaceDescription);
   int get2DVirtualPageSizeX(int internalFormat);

@@ -53,6 +53,7 @@ int TextureManager::addTexture(float *data, int width, int height)
 
 unsigned int TextureManager::add3dTexture(Eigen::Vector3i size, float *data)
 {
+  volumeAtlasSize = size;
   auto textureTarget = GL_TEXTURE_3D;
   unsigned int texture = 0;
 
@@ -176,6 +177,11 @@ Texture2d *TextureManager::getTextureFor(int textureId)
 TextureAddress TextureManager::getAddressFor(int textureId)
 {
   return getTextureFor(textureId)->address();
+}
+
+Eigen::Vector3i TextureManager::getVolumeAtlasSize() const
+{
+  return volumeAtlasSize;
 }
 
 Texture2d *
