@@ -37,7 +37,6 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
                                             ":/shader/renderHABuffer.frag");
   renderQuad->initialize(gl, objectManager, textureManager, shaderManager);
 
-  initializeShadersHash();
   initializeBufferHash();
 
   clearTimer.initialize(gl);
@@ -49,10 +48,6 @@ void HABuffer::updateNearAndFarPlanes(float near, float far)
 {
   zNear = near;
   zFar = far;
-}
-
-void HABuffer::initializeShadersHash()
-{
 }
 
 void HABuffer::initializeBufferHash()

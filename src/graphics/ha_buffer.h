@@ -76,7 +76,6 @@ class HABuffer
   bool wireframe = false;
 
  private:
-  void initializeShadersHash();
   void initializeBufferHash();
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
   void syncAndGetCounts();
