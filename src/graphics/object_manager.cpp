@@ -69,11 +69,6 @@ ObjectData ObjectManager::clone(const ObjectData &object)
                     object.getShaderProgramId(), object.getPrimitiveType());
 }
 
-int ObjectManager::addTexture(std::string path)
-{
-  return textureManager->addTexture(path);
-}
-
 TextureAddress ObjectManager::getAddressFor(int textureId)
 {
   return textureManager->getAddressFor(textureId);
