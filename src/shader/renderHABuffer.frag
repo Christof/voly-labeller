@@ -35,25 +35,25 @@ layout(std430, binding = 1) buffer CB1
   VolumeData volumes[];
 };
 
-void getVolumeSample(in int objectID, in vec3 texturePos, out float density,
-                     out vec3 gradient)
+float getVolumeSampleDensity(in int objectId, in vec3 texturePos)
 {
+  return texture(volumeSampler, texturePos).r;
+}
 
+vec3 getVolumeSampleGradient(in int objectID, in vec3 texturePos)
+{
   const vec3 gscf = vec3(1.0, 1.0f, 1.0f);
 
-  // density sampling
-
-  density = texture(volumeSampler, texturePos).r;
-
   // gradient calculation based on dataset values using central differences
-  gradient = -vec3(texture(volumeSampler, vec3(texturePos.x+sampleDistance.x*gscf.x, texturePos.yz)).x-
+  vec3 gradient = -vec3(texture(volumeSampler, vec3(texturePos.x+sampleDistance.x*gscf.x, texturePos.yz)).x-
                    texture(volumeSampler, vec3(texturePos.x-sampleDistance.x*gscf.y, texturePos.yz)).x,
                    texture(volumeSampler, vec3(texturePos.x,texturePos.y+sampleDistance.y*gscf.y, texturePos.z)).x-
                    texture(volumeSampler, vec3(texturePos.x,texturePos.y-sampleDistance.y*gscf.y, texturePos.z)).x,
                    texture(volumeSampler, vec3(texturePos.xy, texturePos.z+sampleDistance.z*gscf.z)).x-
                    texture(volumeSampler, vec3(texturePos.xy, texturePos.z-sampleDistance.z*gscf.z)).x);
-  gradient = normalize(mat3(viewMatrix)*transpose(mat3(volumes[0].textureMatrix))*gradient);
-} // getVolumeSample
+  return normalize(mat3(viewMatrix) *
+                   transpose(mat3(volumes[0].textureMatrix)) * gradient);
+}
 
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
@@ -193,7 +193,6 @@ void main()
   vec3 direction_eye;
   vec4 pos_proj;
 
-  float density = 0.0f;
   vec3 gradient = vec3(0.0f);
 
   int objectId = -1;
@@ -283,14 +282,13 @@ void main()
           if (currentObjectId < 0)
             break;
 
-          float squareGradientLength = 0.0f;
-
           vec3 textureSamplePos =
               (volumes[0].textureMatrix * inverseViewMatrix *
                vec4(startPos_eye, 1.0f)).xyz;
 
-          getVolumeSample(currentObjectId, textureSamplePos, density, gradient);
-          squareGradientLength = dot(gradient, gradient);
+          float density = getVolumeSampleDensity(currentObjectId, textureSamplePos);
+          vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
+          float squareGradientLength = dot(gradient, gradient);
 
           vec4 currentColor = transferFunctionLookUp(0, density);
           if (squareGradientLength > 0.05f)
