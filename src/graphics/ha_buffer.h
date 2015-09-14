@@ -89,6 +89,7 @@ class HABuffer
   std::shared_ptr<ScreenQuad> clearQuad;
   std::shared_ptr<ScreenQuad> renderQuad;;
   std::shared_ptr<ObjectManager> objectManager;
+  std::shared_ptr<TextureManager> textureManager;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;

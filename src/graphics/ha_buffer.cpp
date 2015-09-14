@@ -6,6 +6,7 @@
 #include "./screen_quad.h"
 #include "./object_manager.h"
 #include "./volume_manager.h"
+#include "./texture_manager.h"
 
 namespace Graphics
 {
@@ -28,6 +29,7 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
 {
   this->gl = gl;
   this->objectManager = objectManager;
+  this->textureManager = textureManager;
 
   clearQuad = std::make_shared<ScreenQuad>(":/shader/clearHABuffer.vert",
                                            ":/shader/clearHABuffer.frag");
@@ -151,8 +153,16 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("u_Records", recordsBuffer);
   renderShader->setUniform("u_Counts", countsBuffer);
   renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
+
   Eigen::Matrix4f inverseViewMatrix = renderData.viewMatrix.inverse();
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
+
+  Eigen::Vector3f textureAtlasSize =
+      textureManager->getVolumeAtlasSize().cast<float>();
+  renderShader->setUniform("textureAtlasSize", textureAtlasSize);
+  Eigen::Vector3f sampleDistance =
+      Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
+  renderShader->setUniform("sampleDistance", sampleDistance);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   VolumeManager::instance->fillCustomBuffer(objectData);

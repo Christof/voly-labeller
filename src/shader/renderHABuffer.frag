@@ -13,8 +13,8 @@ uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
-uniform vec3 textureAtlasSize = vec3(512, 512, 186);
-uniform vec3 sampleDistance = vec3(0.49f / 512.0, 0.49f / 512.0, 0.49f / 186.0);
+uniform vec3 textureAtlasSize;
+uniform vec3 sampleDistance;
 
 uniform sampler3D volumeSampler;
 
