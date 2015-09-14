@@ -43,7 +43,7 @@ class Mesh : public Renderable
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  std::shared_ptr<Math::Obb> obb;
+  Math::Obb obb;
 
  protected:
   virtual ObjectData

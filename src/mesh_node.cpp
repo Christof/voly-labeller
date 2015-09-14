@@ -8,7 +8,7 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {
-  obb = *mesh->obb.get() * transformation;
+  obb = mesh->obb * transformation;
 }
 
 MeshNode::~MeshNode()
