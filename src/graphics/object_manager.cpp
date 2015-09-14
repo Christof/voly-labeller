@@ -69,11 +69,6 @@ ObjectData ObjectManager::clone(const ObjectData &object)
                     object.getShaderProgramId(), object.getPrimitiveType());
 }
 
-TextureAddress ObjectManager::getAddressFor(int textureId)
-{
-  return textureManager->getAddressFor(textureId);
-}
-
 void ObjectManager::render(const RenderData &renderData)
 {
   std::map<int, std::vector<ObjectData>> objectsByShader;

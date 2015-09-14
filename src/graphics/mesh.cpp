@@ -139,9 +139,9 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
     int textureId = textureManager->addTexture(
         absolutePathOfProjectRelativePath(std::string(textureFilePath)));
     objectData.setCustomBuffer(sizeof(TextureAddress),
-                               [objectManager, textureId](void *insertionPoint)
+                               [textureManager, textureId](void *insertionPoint)
                                {
-      auto textureAddress = objectManager->getAddressFor(textureId);
+      auto textureAddress = textureManager->getAddressFor(textureId);
       std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
     });
   }

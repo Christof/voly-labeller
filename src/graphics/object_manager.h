@@ -57,7 +57,6 @@ class ObjectManager
   ObjectData cloneForDifferentShader(const ObjectData &object,
                                      int shaderProgramId);
   ObjectData clone(const ObjectData &object);
-  TextureAddress getAddressFor(int textureId);
   bool removeObject(int objID);
 
   void render(const RenderData &renderData);
