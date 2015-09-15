@@ -34,10 +34,11 @@ class VolumeManager
  private:
   int nextVolumeId = 1;
   unsigned int texture;
-  Gl* gl;
+  Gl* gl = nullptr;
   std::vector<Volume *> volumes;
+  std::vector<Volume *> volumesToAdd;
   std::map<int, Eigen::Matrix4f> objectToDatasetMatrices;
-  Eigen::Vector3i volumeAtlasSize = Eigen::Vector3i(1024, 1024, 200);
+  Eigen::Vector3i volumeAtlasSize = Eigen::Vector3i(560, 560, 200);
 };
 }  // namespace Graphics
 

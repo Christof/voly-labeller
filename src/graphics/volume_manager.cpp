@@ -21,13 +21,23 @@ void VolumeManager::initialize(Gl *gl)
   gl->glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, volumeAtlasSize.x(),
                    volumeAtlasSize.y(), volumeAtlasSize.z(), 0, GL_RED,
                    GL_FLOAT, nullptr);
+
+  for (auto volume : volumesToAdd)
+  {
+    add3dTexture(volume->getDataSize(), volume->getData());
+  }
+  volumesToAdd.clear();
 }
 
 int VolumeManager::addVolume(Volume *volume)
 {
   qCInfo(vmChan) << "addVolume";
 
+  if (gl == nullptr)
+    volumesToAdd.push_back(volume);
+
   volumes.push_back(volume);
+
   return nextVolumeId++;
 }
 
@@ -38,8 +48,7 @@ void VolumeManager::fillCustomBuffer(ObjectData &objectData)
   for (auto volume : volumes)
   {
     auto volumeData = volume->getVolumeData();
-    volumeData.objectToDatasetMatrix =
-        objectToDatasetMatrices[1];
+    volumeData.objectToDatasetMatrix = objectToDatasetMatrices[1];
     data.push_back(volumeData);
   }
 

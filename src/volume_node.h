@@ -27,6 +27,8 @@ class VolumeNode : public Node, public Graphics::Volume
   void render(Graphics::Gl *gl, RenderData renderData);
 
   virtual Graphics::VolumeData getVolumeData();
+  virtual float* getData();
+  virtual Eigen::Vector3i getDataSize();
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
@@ -48,7 +50,7 @@ class VolumeNode : public Node, public Graphics::Volume
   static std::unique_ptr<Graphics::TransferFunctionManager>
       transferFunctionManager;
 
-  void initializeTexture(Graphics::Gl *gl);
+  void initialize(Graphics::Gl *gl);
 
   friend class boost::serialization::access;
   template <class Archive>

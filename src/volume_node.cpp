@@ -15,7 +15,6 @@ std::unique_ptr<Graphics::TransferFunctionManager>
 VolumeNode::VolumeNode(std::string filename) : filename(filename)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
-  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
@@ -31,9 +30,9 @@ VolumeNode::~VolumeNode()
 
 void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 {
-  if (texture == 0)
+  if (cube.get() == nullptr)
   {
-    initializeTexture(gl);
+    initialize(gl);
     if (!transferFunctionManager.get())
       transferFunctionManager =
           std::unique_ptr<Graphics::TransferFunctionManager>(
@@ -45,7 +44,6 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
-  glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
 
   objectManager->renderLater(cubeData);
 }
@@ -65,8 +63,19 @@ Graphics::VolumeData VolumeNode::getVolumeData()
   return data;
 }
 
-void VolumeNode::initializeTexture(Graphics::Gl *gl)
+float* VolumeNode::getData()
 {
+  return volumeReader->getDataPointer();
+}
+
+Eigen::Vector3i VolumeNode::getDataSize()
+{
+  return volumeReader->getSize();
+}
+
+void VolumeNode::initialize(Graphics::Gl *gl)
+{
+  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
   cube->initialize(gl, objectManager, textureManager, shaderManager);
   int shaderProgramId = shaderManager->addShader(
       ":/shader/cube.vert", ":/shader/cube.geom", ":/shader/volume_cube.frag");
@@ -86,8 +95,5 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
   });
 
   glAssert(gl->glPointSize(40));
-
-  texture = Graphics::VolumeManager::instance->add3dTexture(
-      volumeReader->getSize(), volumeReader->getDataPointer());
 }
 
