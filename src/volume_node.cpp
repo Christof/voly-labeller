@@ -87,7 +87,7 @@ void VolumeNode::initializeTexture(Graphics::Gl *gl)
 
   glAssert(gl->glPointSize(40));
 
-  texture = textureManager->add3dTexture(volumeReader->getSize(),
-                                         volumeReader->getDataPointer());
+  texture = Graphics::VolumeManager::instance->add3dTexture(
+      volumeReader->getSize(), volumeReader->getDataPointer());
 }
 

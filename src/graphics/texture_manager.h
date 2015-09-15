@@ -32,7 +32,6 @@ class TextureManager
   int addTexture(std::string path);
   int addTexture(QImage *image);
   int addTexture(float* data, int width, int height);
-  unsigned int add3dTexture(Eigen::Vector3i size, float *data);
 
   Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
   Texture2d *newTexture2d(std::string path);
@@ -47,7 +46,6 @@ class TextureManager
 
   Texture2d* getTextureFor(int textureId);
   TextureAddress getAddressFor(int textureId);
-  Eigen::Vector3i getVolumeAtlasSize() const;
 
  private:
   Gl *gl;
@@ -56,8 +54,6 @@ class TextureManager
       textureContainers;
   int maxTextureArrayLevels;
   bool isSparse;
-
-  Eigen::Vector3i volumeAtlasSize;
 
   Texture2d *allocateTexture2d(TextureSpaceDescription spaceDescription);
   int get2DVirtualPageSizeX(int internalFormat);

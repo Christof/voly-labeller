@@ -158,7 +158,7 @@ void HABuffer::render(const RenderData &renderData)
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
 
   Eigen::Vector3f textureAtlasSize =
-      textureManager->getVolumeAtlasSize().cast<float>();
+      VolumeManager::instance->getVolumeAtlasSize().cast<float>();
   renderShader->setUniform("textureAtlasSize", textureAtlasSize);
   Eigen::Vector3f sampleDistance =
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);

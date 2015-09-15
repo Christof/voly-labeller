@@ -8,6 +8,7 @@
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"
 #include "./graphics/shader_program.h"
+#include "./graphics/volume_manager.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
 #include "./camera_zoom_controller.h"
@@ -58,6 +59,7 @@ void Scene::initialize()
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   shaderManager->initialize(gl, haBuffer);
+  Graphics::VolumeManager::instance->initialize(gl);
 
   objectManager->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, objectManager, textureManager, shaderManager);

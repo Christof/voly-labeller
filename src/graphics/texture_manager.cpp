@@ -51,26 +51,6 @@ int TextureManager::addTexture(float *data, int width, int height)
   return id;
 }
 
-unsigned int TextureManager::add3dTexture(Eigen::Vector3i size, float *data)
-{
-  volumeAtlasSize = size;
-  auto textureTarget = GL_TEXTURE_3D;
-  unsigned int texture = 0;
-
-  glAssert(gl->glGenTextures(1, &texture));
-  glAssert(gl->glBindTexture(textureTarget, texture));
-  glAssert(gl->glTexImage3D(textureTarget, 0, GL_R32F, size.x(), size.y(),
-                            size.z(), 0, GL_RED, GL_FLOAT, data));
-
-  glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-
-  return texture;
-}
-
 Texture2d *
 TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
@@ -177,11 +157,6 @@ Texture2d *TextureManager::getTextureFor(int textureId)
 TextureAddress TextureManager::getAddressFor(int textureId)
 {
   return getTextureFor(textureId)->address();
-}
-
-Eigen::Vector3i TextureManager::getVolumeAtlasSize() const
-{
-  return volumeAtlasSize;
 }
 
 Texture2d *

@@ -10,6 +10,7 @@
 namespace Graphics
 {
 
+class Gl;
 
 /**
  * \brief
@@ -21,15 +22,20 @@ class VolumeManager
  public:
   VolumeManager() = default;
 
-  int addVolume(Volume* volume);
+  void initialize(Gl *gl);
+  int addVolume(Volume *volume);
   void fillCustomBuffer(ObjectData &objectData);
+  Eigen::Vector3i getVolumeAtlasSize() const;
 
-  static VolumeManager* instance;
+  unsigned int add3dTexture(Eigen::Vector3i size, float *data);
+
+  static VolumeManager *instance;
+
  private:
-
   int nextVolumeId = 1;
-
-  std::vector<Volume*> volumes;
+  Gl* gl;
+  std::vector<Volume *> volumes;
+  Eigen::Vector3i volumeAtlasSize;
 };
 }  // namespace Graphics
 
