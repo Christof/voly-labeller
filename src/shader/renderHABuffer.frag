@@ -283,8 +283,8 @@ void main()
             break;
 
           vec3 textureSamplePos =
-              (volumes[0].textureMatrix * inverseViewMatrix *
-               vec4(startPos_eye, 1.0f)).xyz;
+              (volumes[0].objectToDatasetMatrix * volumes[0].textureMatrix *
+               inverseViewMatrix * vec4(startPos_eye, 1.0f)).xyz;
 
           float density = getVolumeSampleDensity(currentObjectId, textureSamplePos);
           vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
