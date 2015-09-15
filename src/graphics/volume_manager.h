@@ -38,7 +38,7 @@ class VolumeManager
   std::vector<Volume *> volumes;
   std::vector<Volume *> volumesToAdd;
   std::map<int, Eigen::Matrix4f> objectToDatasetMatrices;
-  Eigen::Vector3i volumeAtlasSize = Eigen::Vector3i(560, 560, 200);
+  Eigen::Vector3i volumeAtlasSize = Eigen::Vector3i::Zero();
 };
 }  // namespace Graphics
 

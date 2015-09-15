@@ -16,6 +16,13 @@ void VolumeManager::initialize(Gl *gl)
   qCInfo(vmChan) << "initialize";
   this->gl = gl;
 
+  for (size_t i = 0; i < volumesToAdd.size(); ++i)
+  {
+    volumeAtlasSize += volumesToAdd[i]->getDataSize();
+    if (i != volumesToAdd.size() - 1)
+      volumeAtlasSize += Eigen::Vector3i(2, 2, 2);
+  }
+
   gl->glGenTextures(1, &texture);
   gl->glBindTexture(GL_TEXTURE_3D, texture);
   gl->glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, volumeAtlasSize.x(),
