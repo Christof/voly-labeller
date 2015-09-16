@@ -28,6 +28,8 @@ void VolumeManager::initialize(Gl *gl)
   gl->glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, volumeAtlasSize.x(),
                    volumeAtlasSize.y(), volumeAtlasSize.z(), 0, GL_RED,
                    GL_FLOAT, nullptr);
+  int zero = 0;
+  gl->glClearTexImage(texture, 0, GL_RED, GL_FLOAT, &zero);
 
   for (auto volume : volumesToAdd)
   {
