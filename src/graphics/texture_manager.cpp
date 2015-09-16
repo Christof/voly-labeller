@@ -108,8 +108,7 @@ Texture2d *TextureManager::newTexture2d(float *data, int width, int height)
       TextureSpaceDescription(1, internalformat, width, height));
   texture->commit();
 
-  if (data)
-    texture->texSubImage2D(0, 0, 0, width, height, format, type, data);
+  texture->texSubImage2D(0, 0, 0, width, height, format, type, data);
 
   return texture;
 }

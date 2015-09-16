@@ -143,9 +143,18 @@ void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
                   << "depth:" << depth << "format:" << format
                   << "type:" << type;
 
-  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
-                               zOffset, width, height, depth, format, type,
-                               data));
+  if (data == nullptr)
+  {
+    float clearValue = 0.0f;
+    gl->glClearTexSubImage(textureId, level, xOffset, yOffset, zOffset, width,
+                           height, depth, format, type, &clearValue);
+  }
+  else
+  {
+    glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
+                                 zOffset, width, height, depth, format, type,
+                                 data));
+  }
 }
 
 unsigned long int TextureContainer::getHandle() const
