@@ -40,7 +40,7 @@ float getVolumeSampleDensity(in int objectId, in vec3 texturePos)
   return texture(volumeSampler, texturePos).r;
 }
 
-vec3 getVolumeSampleGradient(in int objectID, in vec3 texturePos)
+vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
 {
   const vec3 gscf = vec3(1.0, 1.0f, 1.0f);
 
@@ -287,10 +287,10 @@ void main()
                inverseViewMatrix * vec4(startPos_eye, 1.0f)).xyz;
 
           float density = getVolumeSampleDensity(currentObjectId, textureSamplePos);
+          vec4 currentColor = transferFunctionLookUp(0, density);
           vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
           float squareGradientLength = dot(gradient, gradient);
 
-          vec4 currentColor = transferFunctionLookUp(0, density);
           if (squareGradientLength > 0.05f)
           {
             currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
