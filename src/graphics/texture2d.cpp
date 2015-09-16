@@ -4,8 +4,9 @@
 namespace Graphics
 {
 
-Texture2d::Texture2d(TextureContainer *container, int sliceCount)
-  : container(container), sliceCount(sliceCount)
+Texture2d::Texture2d(TextureContainer *container, int sliceCount, int width,
+                     int height)
+  : container(container), width(width), height(height), sliceCount(sliceCount)
 {
 }
 
@@ -48,9 +49,6 @@ void Texture2d::compressedTexSubImage2D(int level, int xOffset, int yOffset,
                                         int width, int height, int format,
                                         int imageSize, const void *data)
 {
-  this->width = width;
-  this->height = height;
-
   container->compressedTexSubImage3d(level, xOffset, yOffset, sliceCount, width,
                                      height, 1, format, imageSize, data);
 }
@@ -59,9 +57,6 @@ void Texture2d::texSubImage2D(int level, int xOffset, int yOffset, int width,
                               int height, int format, int type,
                               const void *data)
 {
-  this->width = width;
-  this->height = height;
-
   container->texSubImage3d(level, xOffset, yOffset, sliceCount, width, height,
                            1, format, type, data);
 }

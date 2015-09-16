@@ -195,7 +195,8 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
   }
 
   assert(memArray);
-  return new Texture2d(memArray, memArray->virtualAlloc());
+  return new Texture2d(memArray, memArray->virtualAlloc(),
+                       spaceDescription.width, spaceDescription.height);
 }
 
 int TextureManager::get2DVirtualPageSizeX(int internalFormat)

@@ -17,7 +17,7 @@ class TextureContainer;
 class Texture2d
 {
  public:
-  Texture2d(TextureContainer *container, int sliceCount);
+  Texture2d(TextureContainer *container, int sliceCount, int width, int height);
   ~Texture2d();
   void commit();
   void free();
