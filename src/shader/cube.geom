@@ -10,13 +10,14 @@
 #version 440
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 85) out;
+layout(triangle_strip, max_vertices = 78) out;
 
 in int vDrawId[];
 
 out vec4 vertexPos;
 out vec4 vertexColor;
 out vec4 vertexEyePos;
+out int volumeId;
 
 uniform mat4 viewMatrix;
 uniform mat4 viewProjectionMatrix;
@@ -44,8 +45,10 @@ void emit(const mat4 matrix, vec4 pos)
   // vertexColor = vec4(physicalSize[vDrawId[0]].xyz, 1);
   // vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
   vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
-  pos.xyz *= physicalSize[vDrawId[0]].xyz;
+  const vec4 size = physicalSize[vDrawId[0]];
+  pos.xyz *= size.xyz;
   vertexEyePos = viewMatrix * getModelMatrix(vDrawId[0]) * pos;
+  volumeId = floatBitsToInt(size.w);
   gl_Position = vertexPos;
   EmitVertex();
 }
@@ -241,10 +244,11 @@ void fillHole(const mat4 matrix)
 void main()
 {
   int drawId = vDrawId[0];
+  vec4 size = physicalSize[drawId];
   mat4 model = getModelMatrix(drawId);
-  mat4 scaleMatrix = mat4(physicalSize[drawId].x, 0, 0, 0,
-                          0, physicalSize[drawId].y, 0, 0,
-                          0, 0, physicalSize[drawId].z, 0,
+  mat4 scaleMatrix = mat4(size.x, 0, 0, 0,
+                          0, size.y, 0, 0,
+                          0, 0, size.z, 0,
                           0, 0, 0, 1);
   mat4 matrix = viewProjectionMatrix * model * scaleMatrix;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);

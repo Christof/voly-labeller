@@ -9,6 +9,7 @@ in vec3 vertexNormal;
 in vec4 vertexColor;
 in vec2 vertexTexCoord;
 in flat int vertexDrawId;
+in flat int volumeId;
 
 FragmentData computeData()
 {
@@ -18,7 +19,7 @@ FragmentData computeData()
   // data.color = vec4(1, 0, 0, 1);
   data.eyePos = vertexEyePos;
 
-  const int objectId = getObjectId(vertexDrawId);
+  const int objectId = volumeId;
   data.objectId = gl_FrontFacing ?  objectId : -objectId;
 
   return data;
