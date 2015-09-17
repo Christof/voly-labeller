@@ -18,10 +18,15 @@ void VolumeManager::initialize(Gl *gl)
 
   for (size_t i = 0; i < volumesToAdd.size(); ++i)
   {
-    volumeAtlasSize += volumesToAdd[i]->getDataSize();
+    auto volumeSize = volumesToAdd[i]->getDataSize();
+    volumeAtlasSize.z() += volumeSize.z();
+    volumeAtlasSize.x() = std::max(volumeSize.x(), volumeAtlasSize.x());
+    volumeAtlasSize.y() = std::max(volumeSize.y(), volumeAtlasSize.y());
+
     if (i != volumesToAdd.size() - 1)
-      volumeAtlasSize += Eigen::Vector3i(2, 2, 2);
+      volumeAtlasSize.z() += zPadding;
   }
+  qCInfo(vmChan) << "volumeAtlasSize" << volumeAtlasSize;
 
   gl->glGenTextures(1, &texture);
   gl->glBindTexture(GL_TEXTURE_3D, texture);
@@ -31,9 +36,12 @@ void VolumeManager::initialize(Gl *gl)
   int zero = 0;
   gl->glClearTexImage(texture, 0, GL_RED, GL_FLOAT, &zero);
 
+  int id = 1;
+  int voxelZOffset = 0;
   for (auto volume : volumesToAdd)
   {
-    add3dTexture(volume->getDataSize(), volume->getData());
+    add3dTexture(id++, volume->getDataSize(), volume->getData(), voxelZOffset);
+    voxelZOffset += volume->getDataSize().z() + zPadding;
   }
   volumesToAdd.clear();
 }
@@ -57,7 +65,8 @@ void VolumeManager::fillCustomBuffer(ObjectData &objectData)
   for (auto volume : volumes)
   {
     auto volumeData = volume->getVolumeData();
-    volumeData.objectToDatasetMatrix = objectToDatasetMatrices[1];
+    volumeData.objectToDatasetMatrix =
+        objectToDatasetMatrices[volumeData.volumeId];
     data.push_back(volumeData);
   }
 
@@ -72,30 +81,32 @@ Eigen::Vector3i VolumeManager::getVolumeAtlasSize() const
   return volumeAtlasSize;
 }
 
-unsigned int VolumeManager::add3dTexture(Eigen::Vector3i size, float *data)
+void VolumeManager::add3dTexture(int volumeId, Eigen::Vector3i size,
+                                 float *data, int voxelZOffset)
 {
   auto textureTarget = GL_TEXTURE_3D;
 
   gl->glBindTexture(textureTarget, texture);
-  Eigen::Vector3i offset(0, 0, 0);
-  gl->glTexSubImage3D(textureTarget, 0, offset.x(), offset.y(), offset.z(),
-                      size.x(), size.y(), size.z(), GL_RED, GL_FLOAT, data);
+  gl->glTexSubImage3D(textureTarget, 0, 0, 0, voxelZOffset, size.x(), size.y(),
+                      size.z(), GL_RED, GL_FLOAT, data);
 
   Eigen::Vector3f scaling =
       size.cast<float>().cwiseQuotient(volumeAtlasSize.cast<float>());
-  Eigen::Affine3f transformation(Eigen::Scaling(scaling) *
-                                 Eigen::Translation3f(offset.cast<float>()));
+  Eigen::Affine3f transformation(
+      Eigen::Translation3f(Eigen::Vector3f(
+          0, 0, voxelZOffset / static_cast<float>(volumeAtlasSize.z()))) *
+      Eigen::Scaling(scaling));
 
-  qCInfo(vmChan) << "transformation" << transformation.matrix();
-  objectToDatasetMatrices[1] = transformation.matrix();
+  Eigen::Matrix4f matrix = transformation.matrix();
+  qCInfo(vmChan) << "transformation for" << volumeId << matrix << "size"
+                 << size;
+  objectToDatasetMatrices[volumeId] = matrix;
 
   glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
   glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
   glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-
-  return texture;
 }
 
 }  // namespace Graphics
