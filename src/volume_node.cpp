@@ -42,6 +42,12 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
     transferFunctionRow =
         transferFunctionManager->add(absolutePathOfProjectRelativePath(
             std::string("assets/transferfunctions/scapula4.gra")));
+    if (volumeId == 1)
+    {
+      transferFunctionRow =
+          transferFunctionManager->add(absolutePathOfProjectRelativePath(
+              std::string("assets/transferfunctions/scapula1.gra")));
+    }
   }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));

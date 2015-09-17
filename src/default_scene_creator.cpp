@@ -25,6 +25,8 @@ void DefaultSceneCreator::create()
   addLabelNodesTo(sceneNodes);
   sceneNodes.push_back(
       std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
+  sceneNodes.push_back(
+       std::make_shared<VolumeNode>("assets/datasets/MR-head.nrrd"));
   Persister::save(sceneNodes, "config/scene.xml");
 
   // nodes->addSceneNodesFrom("config/scene.xml");
