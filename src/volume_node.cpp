@@ -8,6 +8,7 @@
 #include "./graphics/shader_manager.h"
 #include "./graphics/volume_manager.h"
 #include "./utils/path_helper.h"
+#include "./eigen_qdebug.h"
 
 std::unique_ptr<Graphics::TransferFunctionManager>
     VolumeNode::transferFunctionManager;

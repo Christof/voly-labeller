@@ -41,10 +41,8 @@ class VolumeNode : public Node, public Graphics::Volume
   std::string filename;
   std::unique_ptr<VolumeReader> volumeReader;
   std::unique_ptr<Graphics::Cube> cube;
-  GLuint texture = 0;
   Graphics::ObjectData cubeData;
   int volumeId;
-  int textureId = 0;
   int transferFunctionRow = -1;
 
   static std::unique_ptr<Graphics::TransferFunctionManager>
