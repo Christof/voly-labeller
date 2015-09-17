@@ -35,7 +35,7 @@ layout(std430, binding = 1) buffer CB1
   VolumeData volumes[];
 };
 
-float getVolumeSampleDensity(in int objectId, in vec3 texturePos)
+float getVolumeSampleDensity(in vec3 texturePos)
 {
   return texture(volumeSampler, texturePos).r;
 }
@@ -52,7 +52,7 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
                    texture(volumeSampler, vec3(texturePos.xy, texturePos.z+sampleDistance.z*gscf.z)).x-
                    texture(volumeSampler, vec3(texturePos.xy, texturePos.z-sampleDistance.z*gscf.z)).x);
   return normalize(mat3(viewMatrix) *
-                   transpose(mat3(volumes[0].textureMatrix)) * gradient);
+                   transpose(mat3(volumes[objectId].textureMatrix)) * gradient);
 }
 
 // Blending equation for in-order traversal
@@ -140,10 +140,10 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   {
     int currentObjectId = calculateNextObjectId(activeObjects);
 
-    vec4 textureStartPos =
-        volumes[0].textureMatrix * inverseViewMatrix * currentFragmentPos_eye;
-    vec4 textureEndPos =
-        volumes[0].textureMatrix * inverseViewMatrix * nextFragmentPos_eye;
+    vec4 textureStartPos = volumes[currentObjectId].textureMatrix *
+                           inverseViewMatrix * currentFragmentPos_eye;
+    vec4 textureEndPos = volumes[currentObjectId].textureMatrix *
+                         inverseViewMatrix * nextFragmentPos_eye;
 
     segmentTextureLength = max(distance(textureStartPos.xyz * textureAtlasSize,
                                         textureEndPos.xyz * textureAtlasSize),
@@ -283,11 +283,12 @@ void main()
             break;
 
           vec3 textureSamplePos =
-              (volumes[0].objectToDatasetMatrix * volumes[0].textureMatrix *
-               inverseViewMatrix * vec4(startPos_eye, 1.0f)).xyz;
+              (volumes[currentObjectId].objectToDatasetMatrix *
+               volumes[currentObjectId].textureMatrix * inverseViewMatrix *
+               vec4(startPos_eye, 1.0f)).xyz;
 
-          float density = getVolumeSampleDensity(currentObjectId, textureSamplePos);
-          vec4 currentColor = transferFunctionLookUp(0, density);
+          float density = getVolumeSampleDensity(textureSamplePos);
+          vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
           vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
           float squareGradientLength = dot(gradient, gradient);
 
