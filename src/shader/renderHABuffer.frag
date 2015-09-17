@@ -120,8 +120,10 @@ vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
 
 vec4 transferFunctionLookUp(int volumeId, float density)
 {
+  float row = volumes[volumeId].transferFunctionRow;
+
   return Texture(volumes[volumeId].textureAddress,
-                              vec2(density, volumes[volumeId].transferFunctionRow));
+                 vec2(density, row / (transferFunctionRowCount - 1.0f)));
 }
 
 int calculateNextObjectId(inout uint remainingActiveObjects)
