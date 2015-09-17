@@ -21,7 +21,7 @@ VolumeNode::VolumeNode(std::string filename) : filename(filename)
   Eigen::Vector3f center = transformation.col(3).head<3>();
   obb = Math::Obb(center, halfWidths, transformation.block<3, 3>(0, 0));
 
-  Graphics::VolumeManager::instance->addVolume(this);
+  volumeId = Graphics::VolumeManager::instance->addVolume(this);
 }
 
 VolumeNode::~VolumeNode()
@@ -63,7 +63,7 @@ Graphics::VolumeData VolumeNode::getVolumeData()
   return data;
 }
 
-float* VolumeNode::getData()
+float *VolumeNode::getData()
 {
   return volumeReader->getDataPointer();
 }
@@ -87,11 +87,15 @@ void VolumeNode::initialize(Graphics::Gl *gl)
       shaderProgramId, GL_POINTS);
   auto transformation = volumeReader->getTransformationMatrix();
   cubeData.modelMatrix = transformation;
-  auto physicalSize = volumeReader->getPhysicalSize();
-  cubeData.setCustomBuffer(sizeof(Eigen::Vector3f),
+  float volumeIdAsFloat = *reinterpret_cast<float *>(&volumeId);
+  Eigen::Vector4f physicalSize(
+      volumeReader->getPhysicalSize().x(), volumeReader->getPhysicalSize().y(),
+      volumeReader->getPhysicalSize().z(), volumeIdAsFloat);
+
+  cubeData.setCustomBuffer(sizeof(Eigen::Vector4f),
                            [physicalSize](void *insertionPoint)
                            {
-    memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector3f));
+    memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector4f));
   });
 
   glAssert(gl->glPointSize(40));

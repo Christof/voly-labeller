@@ -21,9 +21,9 @@ out vec4 vertexEyePos;
 uniform mat4 viewMatrix;
 uniform mat4 viewProjectionMatrix;
 
-layout(std430, binding = 1) buffer CB1
+layout(std140, binding = 1) buffer CB1
 {
-  vec3 physicalSize[];
+  vec4 physicalSize[];
 };
 
 #include "vertexHelper.hglsl"
@@ -41,12 +41,12 @@ int cutPositionCount = 0;
 void emit(const mat4 matrix, vec4 pos)
 {
   vertexPos = matrix * pos;
-  pos.xyz *= physicalSize[0];
-  vertexEyePos = viewMatrix*getModelMatrix(vDrawId[0])*pos;
-  //vertexEyePos = (eyepos.xyz)/eyepos.w;
-  gl_Position = vertexPos;
-  //vertexColor = pos;// + vec4(0.5, 0.5, 0.5, 0);
+  // vertexColor = vec4(physicalSize[vDrawId[0]].xyz, 1);
+  // vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
   vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
+  pos.xyz *= physicalSize[vDrawId[0]].xyz;
+  vertexEyePos = viewMatrix * getModelMatrix(vDrawId[0]) * pos;
+  gl_Position = vertexPos;
   EmitVertex();
 }
 
@@ -240,10 +240,11 @@ void fillHole(const mat4 matrix)
 
 void main()
 {
-  mat4 model = getModelMatrix(vDrawId[0]);
-  mat4 scaleMatrix = mat4(physicalSize[0].x, 0, 0, 0,
-                          0, physicalSize[0].y, 0, 0,
-                          0, 0, physicalSize[0].z, 0,
+  int drawId = vDrawId[0];
+  mat4 model = getModelMatrix(drawId);
+  mat4 scaleMatrix = mat4(physicalSize[drawId].x, 0, 0, 0,
+                          0, physicalSize[drawId].y, 0, 0,
+                          0, 0, physicalSize[drawId].z, 0,
                           0, 0, 0, 1);
   mat4 matrix = viewProjectionMatrix * model * scaleMatrix;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);
