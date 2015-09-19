@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="11">
 <data class_id="0" tracking_level="0" version="0">
-	<count>7</count>
+	<count>8</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="MeshNode" tracking_level="1" version="0" object_id="_0">
@@ -123,6 +123,11 @@
 	<item>
 		<px class_id="8" class_name="VolumeNode" tracking_level="1" version="0" object_id="_6">
 			<filename>assets/datasets/neurochirurgie_test.mhd</filename>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_7">
+			<filename>assets/datasets/MR-head.nrrd</filename>
 		</px>
 	</item>
 </data>
