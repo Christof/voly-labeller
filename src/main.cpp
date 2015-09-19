@@ -42,7 +42,16 @@ void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
   }
 };
 
-int main(int argc, char **argv)
+/**
+ * \brief Setup logging
+ *
+ * [Documentation for the
+ * pattern](http://doc.qt.io/qt-5/qtglobal.html#qSetMessagePattern)
+ *
+ * [Documentation for console formatting]
+ * (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
+ */
+void setupLogging()
 {
   qputenv("QT_MESSAGE_PATTERN",
           QString("%{time [yyyy'-'MM'-'dd' "
@@ -59,6 +68,11 @@ int main(int argc, char **argv)
                   "separator=\"\n\t\"}%{endif}\033[0m").toUtf8());
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
+}
+
+int main(int argc, char **argv)
+{
+  setupLogging();
 
   QGuiApplication application(argc, argv);
 
