@@ -104,7 +104,5 @@ void VolumeNode::initialize(Graphics::Gl *gl)
                            {
     memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector4f));
   });
-
-  glAssert(gl->glPointSize(40));
 }
 
