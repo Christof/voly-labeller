@@ -21,6 +21,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
+  connect(this, &Window::sceneGraphInvalidated, this, &Window::onInvalidated,
+          Qt::DirectConnection);
 
   connect(reinterpret_cast<QObject *>(engine()), SIGNAL(quit()), this,
           SLOT(close()));
@@ -55,6 +57,7 @@ QSurfaceFormat Window::createSurfaceFormat()
 
 void Window::initializeOpenGL()
 {
+  qCInfo(openGlChan) << "initializeOpenGL";
   context = openglContext();
   context->makeCurrent(this);
 
@@ -91,6 +94,12 @@ void Window::keyPressEvent(QKeyEvent *event)
 {
   QQuickView::keyPressEvent(event);
   keysPressed += static_cast<Qt::Key>(event->key());
+}
+
+void Window::onInvalidated()
+{
+  qCInfo(openGlChan) << "on invalidated: delete logger";
+  delete logger;
 }
 
 void Window::handleLazyInitialization()
@@ -145,11 +154,7 @@ void Window::toggleFullscreen()
 
 void Window::contextAboutToBeDestroyed()
 {
-  qCWarning(openGlChan) << "Closing rendering thread";
-  context->makeCurrent(this);
-  // Problem is that the functions are not working
-  // context->functions()->initializeOpenGLFunctions();
-  delete logger;
+  qCInfo(openGlChan) << "Closing rendering thread";
 }
 
 void Window::updateAverageFrameTime(double frameTime)

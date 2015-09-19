@@ -29,7 +29,7 @@ class Window : public QQuickView
 
   std::shared_ptr<QStateMachine> stateMachine;
 
-signals:
+ signals:
   void averageFrameTimeUpdated();
 
  protected slots:
@@ -39,6 +39,7 @@ signals:
 
   void toggleFullscreen();
   void contextAboutToBeDestroyed();
+  void onInvalidated();
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
