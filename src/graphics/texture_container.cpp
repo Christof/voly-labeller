@@ -144,9 +144,9 @@ void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
 
   if (data == nullptr)
   {
-    float clearValue = 0.0f;
+    float clearValue[4] = { 0, 0, 0, 0 };
     gl->glClearTexSubImage(textureId, level, xOffset, yOffset, zOffset, width,
-                           height, depth, format, type, &clearValue);
+                           height, depth, format, type, clearValue);
   }
   else
   {
