@@ -45,14 +45,24 @@ void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
 int main(int argc, char **argv)
 {
   qputenv("QT_MESSAGE_PATTERN",
-          QString("%{time [yyyy'-'MM'-'dd' 'hh':'mm':'ss]} - %{threadid} "
-                  "%{if-category}%{category}: %{endif}%{message}").toUtf8());
+          QString("%{time [yyyy'-'MM'-'dd' "
+                  "'hh':'mm':'ss]} "
+                  "%{if-fatal}\033[31;1m%{endif}"
+                  "%{if-critical}\033[31m%{endif}"
+                  "%{if-warning}\033[33m%{endif}"
+                  "%{if-info}\033[34m%{endif}"
+                  "- %{threadid} "
+                  "%{if-category}%{category}: %{endif}%{message}"
+                  "%{if-warning}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
+                  "separator=\"\n\t\"}%{endif}"
+                  "%{if-critical}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
+                  "separator=\"\n\t\"}%{endif}\033[0m").toUtf8());
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 
   QGuiApplication application(argc, argv);
 
-  qDebug() << "Application start";
+  qInfo() << "Application start";
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
