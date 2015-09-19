@@ -24,9 +24,10 @@ void DefaultSceneCreator::create()
   addMeshNodesTo(sceneNodes);
   addLabelNodesTo(sceneNodes);
   sceneNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
-  sceneNodes.push_back(
-       std::make_shared<VolumeNode>("assets/datasets/MR-head.nrrd"));
+      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd",
+                                   "assets/transferfunctions/scapula4.gra"));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/MR-head.nrrd", "assets/transferfunctions/scapula1.gra"));
   Persister::save(sceneNodes, "config/scene.xml");
 
   // nodes->addSceneNodesFrom("config/scene.xml");
@@ -46,8 +47,7 @@ void DefaultSceneCreator::addMeshNodesTo(
   {
     auto mesh = importer.import(filename, meshIndex);
     auto transformation = importer.getTransformationFor(filename, meshIndex);
-    auto node =
-        new MeshNode(filename, meshIndex, mesh, transformation);
+    auto node = new MeshNode(filename, meshIndex, mesh, transformation);
     sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
 }

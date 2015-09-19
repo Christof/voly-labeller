@@ -21,7 +21,7 @@ class VolumeReader;
 class VolumeNode : public Node, public Graphics::Volume
 {
  public:
-  explicit VolumeNode(std::string filename);
+  explicit VolumeNode(std::string volumePath, std::string transferFunctionPath);
   virtual ~VolumeNode();
 
   void render(Graphics::Gl *gl, RenderData renderData);
@@ -32,13 +32,15 @@ class VolumeNode : public Node, public Graphics::Volume
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
-    ar << BOOST_SERIALIZATION_NVP(filename);
+    ar << BOOST_SERIALIZATION_NVP(volumePath);
+    ar << BOOST_SERIALIZATION_NVP(transferFunctionPath);
   };
 
   Eigen::Matrix4f getTransformation();
 
  private:
-  std::string filename;
+  std::string volumePath;
+  std::string transferFunctionPath;
   std::unique_ptr<VolumeReader> volumeReader;
   std::unique_ptr<Graphics::Cube> cube;
   Graphics::ObjectData cubeData;
@@ -75,10 +77,12 @@ template <class Archive>
 inline void load_construct_data(Archive &ar, VolumeNode *t,
                                 const unsigned int version)
 {
-  std::string filename;
-  ar >> BOOST_SERIALIZATION_NVP(filename);
+  std::string volumePath;
+  ar >> BOOST_SERIALIZATION_NVP(volumePath);
+  std::string transferFunctionPath;
+  ar >> BOOST_SERIALIZATION_NVP(transferFunctionPath);
 
-  ::new (t) VolumeNode(filename);
+  ::new (t) VolumeNode(volumePath, transferFunctionPath);
 }
 }  // namespace serialization
 }  // namespace boost

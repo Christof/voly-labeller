@@ -13,9 +13,10 @@
 std::unique_ptr<Graphics::TransferFunctionManager>
     VolumeNode::transferFunctionManager;
 
-VolumeNode::VolumeNode(std::string filename) : filename(filename)
+VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath)
+  : volumePath(volumePath), transferFunctionPath(transferFunctionPath)
 {
-  volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
+  volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(volumePath));
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
@@ -34,20 +35,14 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
   if (cube.get() == nullptr)
   {
     initialize(gl);
+
     if (!transferFunctionManager.get())
       transferFunctionManager =
           std::unique_ptr<Graphics::TransferFunctionManager>(
               new Graphics::TransferFunctionManager(textureManager));
 
-    transferFunctionRow =
-        transferFunctionManager->add(absolutePathOfProjectRelativePath(
-            std::string("assets/transferfunctions/scapula4.gra")));
-    if (volumeId == 1)
-    {
-      transferFunctionRow =
-          transferFunctionManager->add(absolutePathOfProjectRelativePath(
-              std::string("assets/transferfunctions/scapula1.gra")));
-    }
+    transferFunctionRow = transferFunctionManager->add(
+        absolutePathOfProjectRelativePath(transferFunctionPath));
   }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
