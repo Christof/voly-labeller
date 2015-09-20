@@ -27,6 +27,7 @@ class ShaderManager
 {
  public:
   ShaderManager() = default;
+  ~ShaderManager();
 
   void initialize(Gl *gl, std::shared_ptr<HABuffer> haBuffer);
 

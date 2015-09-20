@@ -8,6 +8,11 @@
 namespace Graphics
 {
 
+ShaderManager::~ShaderManager()
+{
+  qInfo() << "Destructor of ShaderManager";
+}
+
 void ShaderManager::initialize(Gl *gl, std::shared_ptr<HABuffer> haBuffer)
 {
   this->gl = gl;

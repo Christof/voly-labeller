@@ -26,6 +26,7 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
 
 ObjectManager::~ObjectManager()
 {
+  qCInfo(omChan) << "Destructor of ObjectManager";
 }
 
 void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)

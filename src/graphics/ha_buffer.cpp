@@ -20,6 +20,7 @@ HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 
 HABuffer::~HABuffer()
 {
+  qCInfo(channel) << "Destructor";
   delete[] offsets;
 }
 
