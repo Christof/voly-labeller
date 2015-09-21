@@ -23,21 +23,18 @@ HABuffer::~HABuffer()
   delete[] offsets;
 }
 
-void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                          std::shared_ptr<TextureManager> textureManager,
-                          std::shared_ptr<ShaderManager> shaderManager)
+void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
   this->gl = gl;
-  this->objectManager = objectManager;
-  this->textureManager = textureManager;
+  this->managers = managers;
 
   clearQuad = std::make_shared<ScreenQuad>(":/shader/clearHABuffer.vert",
                                            ":/shader/clearHABuffer.frag");
-  clearQuad->initialize(gl, objectManager, textureManager, shaderManager);
+  clearQuad->initialize(gl, managers);
 
   renderQuad = std::make_shared<ScreenQuad>(":/shader/renderHABuffer.vert",
                                             ":/shader/renderHABuffer.frag");
-  renderQuad->initialize(gl, objectManager, textureManager, shaderManager);
+  renderQuad->initialize(gl, managers);
 
   initializeBufferHash();
 
@@ -111,7 +108,7 @@ void HABuffer::clearAndPrepare()
   clearShader->setUniform("u_Records", recordsBuffer);
   clearShader->setUniform("u_Counts", countsBuffer);
 
-  clearQuad->renderImmediately(gl, objectManager, RenderData());
+  clearQuad->renderImmediately(gl, managers, RenderData());
 
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -173,7 +170,7 @@ void HABuffer::render(const RenderData &renderData)
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  renderQuad->renderImmediately(gl, objectManager, renderData);
+  renderQuad->renderImmediately(gl, managers, renderData);
 
   glAssert(gl->glDepthMask(GL_TRUE));
 

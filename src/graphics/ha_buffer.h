@@ -13,9 +13,7 @@ namespace Graphics
 {
 
 class ShaderProgram;
-class ObjectManager;
-class TextureManager;
-class ShaderManager;
+class Managers;
 class ScreenQuad;
 
 /**
@@ -64,9 +62,7 @@ class HABuffer
   explicit HABuffer(Eigen::Vector2i size);
   ~HABuffer();
 
-  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                  std::shared_ptr<TextureManager> textureManager,
-                  std::shared_ptr<ShaderManager> shaderManager);
+  void initialize(Gl *gl, std::shared_ptr<Managers> managers);
   void updateNearAndFarPlanes(float near, float far);
 
   void clearAndPrepare();
@@ -87,9 +83,8 @@ class HABuffer
   Eigen::Vector2i size;
   Gl *gl;
   std::shared_ptr<ScreenQuad> clearQuad;
-  std::shared_ptr<ScreenQuad> renderQuad;;
-  std::shared_ptr<ObjectManager> objectManager;
-  std::shared_ptr<TextureManager> textureManager;
+  std::shared_ptr<ScreenQuad> renderQuad;
+  std::shared_ptr<Managers> managers;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;
