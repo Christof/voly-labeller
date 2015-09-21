@@ -2,6 +2,8 @@
 
 #define SRC_GRAPHICS_TEXTURE_SPACE_DESCRIPTION_H_
 
+#include <string>
+
 namespace Graphics
 {
 
@@ -28,6 +30,8 @@ struct TextureSpaceDescription
    * \p minY and it must be a power of 2 in each dimension.
    */
   void growToValidSize(int minX, int minY);
+
+  std::string toString() const;
 };
 
 bool operator<(const TextureSpaceDescription &left,

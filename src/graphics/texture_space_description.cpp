@@ -1,4 +1,5 @@
 #include "./texture_space_description.h"
+#include <string>
 
 namespace Graphics
 {
@@ -53,6 +54,12 @@ void TextureSpaceDescription::growToValidSize(int minX, int minY)
 
   width = computeNextPowerOfTwo(width);
   height = computeNextPowerOfTwo(height);
+}
+
+std::string TextureSpaceDescription::toString() const
+{
+  return "Levels: " + std::to_string(levels) + " width: " +
+         std::to_string(width) + " height: " + std::to_string(height);
 }
 
 }  // namespace Graphics
