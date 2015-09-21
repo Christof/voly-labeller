@@ -74,9 +74,8 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
 TextureContainer::~TextureContainer()
 {
-  // If this fires, it means there was a texture leaked somewhere.
-  assert(freeList.size() == static_cast<size_t>(slices));
-
+  qCInfo(tcChan) << "Destructor" << spaceDescription.toString().c_str()
+                 << "freeList size" << freeList.size() << "slices" << slices;
   if (handle != 0)
   {
     glAssert(
@@ -93,6 +92,7 @@ int TextureContainer::hasRoom() const
 
 int TextureContainer::virtualAlloc()
 {
+  qCDebug(tcChan) << "VirtualAlloc";
   int returnValue = freeList.front();
   freeList.pop();
 
@@ -101,6 +101,7 @@ int TextureContainer::virtualAlloc()
 
 void TextureContainer::virtualFree(int slice)
 {
+  qCDebug(tcChan) << "Virtual free for slice" << slice;
   freeList.push(slice);
 }
 
