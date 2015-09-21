@@ -9,6 +9,7 @@
 #include "./graphics/render_data.h"
 #include "./math/obb.h"
 #include "./graphics/gl.h"
+#include "./graphics/managers.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/texture_manager.h"
 #include "./graphics/shader_manager.h"
@@ -28,14 +29,12 @@ class Node
   }
 
   void render(Graphics::Gl *gl,
-              std::shared_ptr<Graphics::ObjectManager> objectManager,
-              std::shared_ptr<Graphics::TextureManager> textureManager,
-              std::shared_ptr<Graphics::ShaderManager> shaderManager,
+              std::shared_ptr<Graphics::Managers> managers,
               RenderData renderData)
   {
-    this->objectManager = objectManager;
-    this->textureManager = textureManager;
-    this->shaderManager = shaderManager;
+    this->objectManager = managers->getObjectManager();
+    this->textureManager = managers->getTextureManager();
+    this->shaderManager = managers->getShaderManager();
     render(gl, renderData);
   }
 

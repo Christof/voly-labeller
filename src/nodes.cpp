@@ -79,19 +79,16 @@ void Nodes::importFrom(QUrl url)
 }
 
 void Nodes::render(Graphics::Gl *gl,
-                   std::shared_ptr<Graphics::ObjectManager> objectManager,
-                   std::shared_ptr<Graphics::TextureManager> textureManager,
-                   std::shared_ptr<Graphics::ShaderManager> shaderManager,
+                   std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData)
 {
   for (auto &node : nodes)
-    node->render(gl, objectManager, textureManager, shaderManager, renderData);
+    node->render(gl, managers, renderData);
 
   if (showBoundingVolumes)
   {
     for (auto &node : obbNodes)
-      node->render(gl, objectManager, textureManager, shaderManager,
-                   renderData);
+      node->render(gl, managers, renderData);
   }
 }
 
