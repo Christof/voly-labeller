@@ -29,6 +29,7 @@ class Nodes : public QObject
   Q_OBJECT
  public:
   Nodes();
+  ~Nodes();
   void render(Graphics::Gl *gl, std::shared_ptr<Graphics::Managers> managers,
               RenderData renderData);
 
@@ -50,13 +51,17 @@ class Nodes : public QObject
   void toggleBoundingVolumes();
 
   void addNode(std::shared_ptr<Node> node);
-signals:
+  void addForcesVisualizerNode(std::shared_ptr<Node> node);
+  void removeForcesVisualizerNode();
+
+ signals:
   void nodesChanged();
 
  private:
   std::vector<std::shared_ptr<Node>> nodes;
   bool showBoundingVolumes = false;
   std::vector<std::shared_ptr<Node>> obbNodes;
+  std::shared_ptr<Node> forcesVisualizerNode;
 };
 
 #endif  // SRC_NODES_H_

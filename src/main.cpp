@@ -82,8 +82,6 @@ int main(int argc, char **argv)
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
   auto labeller = std::make_shared<Forces::Labeller>(labels);
-  auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
-  nodes->addNode(forcesVisualizerNode);
 
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
@@ -103,12 +101,13 @@ int main(int argc, char **argv)
 
   LabellerModel labellerModel(labeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
-                        [&labellerModel, &nodes, &forcesVisualizerNode]()
+                        [&labellerModel, &nodes, &labeller]()
                         {
     if (labellerModel.getIsVisible())
-      nodes->addNode(forcesVisualizerNode);
+      nodes->addForcesVisualizerNode(
+          std::make_shared<ForcesVisualizerNode>(labeller));
     else
-      nodes->removeNode(forcesVisualizerNode);
+      nodes->removeForcesVisualizerNode();
   });
   window->rootContext()->setContextProperty("labeller", &labellerModel);
 

@@ -14,6 +14,11 @@ Nodes::Nodes()
   addNode(std::make_shared<CoordinateSystemNode>());
 }
 
+Nodes::~Nodes()
+{
+  qInfo() << "Destructor of Nodes";
+}
+
 std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
 {
   std::vector<std::shared_ptr<LabelNode>> result;
@@ -127,5 +132,16 @@ void Nodes::toggleBoundingVolumes()
       }
     }
   }
+}
+
+void Nodes::addForcesVisualizerNode(std::shared_ptr<Node> node)
+{
+  addNode(node);
+  forcesVisualizerNode = node;
+}
+
+void Nodes::removeForcesVisualizerNode()
+{
+  removeNode(forcesVisualizerNode);
 }
 
