@@ -109,13 +109,13 @@ void Scene::render()
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  haBuffer->clearAndPrepare();
+  haBuffer->clearAndPrepare(managers);
 
   nodes->render(gl, managers, renderData);
 
   managers->getObjectManager()->render(renderData);
 
-  haBuffer->render(renderData);
+  haBuffer->render(managers, renderData);
 
   // doPick();
 

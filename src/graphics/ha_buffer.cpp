@@ -26,7 +26,6 @@ HABuffer::~HABuffer()
 void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
   this->gl = gl;
-  this->managers = managers;
 
   clearQuad = std::make_shared<ScreenQuad>(":/shader/clearHABuffer.vert",
                                            ":/shader/clearHABuffer.frag");
@@ -91,7 +90,7 @@ void HABuffer::initializeBufferHash()
                           1024.0f << "MB";
 }
 
-void HABuffer::clearAndPrepare()
+void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
 {
   clearTimer.start();
 
@@ -132,7 +131,8 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
   lastUsedProgram = shader->getId();
 }
 
-void HABuffer::render(const RenderData &renderData)
+void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
+                      const RenderData &renderData)
 {
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

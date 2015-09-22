@@ -65,9 +65,10 @@ class HABuffer
   void initialize(Gl *gl, std::shared_ptr<Managers> managers);
   void updateNearAndFarPlanes(float near, float far);
 
-  void clearAndPrepare();
+  void clearAndPrepare(std::shared_ptr<Managers> managers);
   void begin(std::shared_ptr<ShaderProgram> shader);
-  void render(const RenderData &renderData);
+  void render(std::shared_ptr<Graphics::Managers> managers,
+              const RenderData &renderData);
 
   bool wireframe = false;
 
@@ -84,7 +85,6 @@ class HABuffer
   Gl *gl;
   std::shared_ptr<ScreenQuad> clearQuad;
   std::shared_ptr<ScreenQuad> renderQuad;
-  std::shared_ptr<Managers> managers;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;
