@@ -11,6 +11,7 @@ class ObjectManager;
 class TextureManager;
 class ShaderManager;
 class TransferFunctionManager;
+class VolumeManager;
 
 /**
  * \brief
@@ -26,12 +27,14 @@ class Managers
   std::shared_ptr<TextureManager> getTextureManager() const;
   std::shared_ptr<ShaderManager> getShaderManager() const;
   std::shared_ptr<TransferFunctionManager> getTransferFunctionManager() const;
+  std::shared_ptr<VolumeManager> getVolumeManager() const;
 
  private:
   std::shared_ptr<ObjectManager> objectManager;
   std::shared_ptr<TextureManager> textureManager;
   std::shared_ptr<ShaderManager> shaderManager;
   std::shared_ptr<TransferFunctionManager> transferFunctionManager;
+  std::shared_ptr<VolumeManager> volumeManager;
 };
 
 }  // namespace Graphics
