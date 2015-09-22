@@ -127,6 +127,8 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 
 void TextureManager::shutdown()
 {
+  textures.clear();
+
   for (auto containIt = textureContainers.begin();
        containIt != textureContainers.end(); ++containIt)
   {
