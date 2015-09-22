@@ -1,6 +1,8 @@
 #include "./volume_manager.h"
 #include <QLoggingCategory>
 #include <Eigen/Geometry>
+#include <algorithm>
+#include <vector>
 #include "../eigen_qdebug.h"
 #include "./gl.h"
 

@@ -1,7 +1,7 @@
 #include "./volume_node.h"
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
-#include <Eigen/Geometry>
 #include "./graphics/render_data.h"
 #include "./volume_reader.h"
 #include "./graphics/object_manager.h"

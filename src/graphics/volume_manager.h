@@ -2,8 +2,9 @@
 
 #define SRC_GRAPHICS_VOLUME_MANAGER_H_
 
-#include <vector>
 #include <Eigen/Core>
+#include <vector>
+#include <map>
 #include "./volume.h"
 #include "./object_data.h"
 

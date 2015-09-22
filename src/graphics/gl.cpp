@@ -28,7 +28,8 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   glCheckError();
 
   bool hasShaderBufferLoad = context->hasExtension("GL_NV_shader_buffer_load");
-  qCWarning(openGlChan) << "Has GL_NV_shader_buffer_load:" << hasShaderBufferLoad;
+  qCWarning(openGlChan) << "Has GL_NV_shader_buffer_load:"
+                        << hasShaderBufferLoad;
   shaderBufferLoad = new QOpenGLExtension_NV_shader_buffer_load();
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
@@ -40,7 +41,7 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   glCheckError();
 
   qCWarning(openGlChan) << "Has GL_ARB_sparse_texture:"
-             << context->hasExtension("GL_ARB_sparse_texture");
+                        << context->hasExtension("GL_ARB_sparse_texture");
 
   glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
       context->getProcAddress("glTexturePageCommitmentEXT"));

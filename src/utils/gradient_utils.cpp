@@ -3,6 +3,7 @@
 #include <QDomDocument>
 #include <QPainter>
 #include <QFile>
+#include <vector>
 #include <stdexcept>
 
 static QColor loadColor(const QDomElement &elem)

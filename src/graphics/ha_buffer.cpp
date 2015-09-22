@@ -1,7 +1,7 @@
 #include "./ha_buffer.h"
+#include <Eigen/Dense>
 #include <QLoggingCategory>
 #include <algorithm>
-#include <Eigen/Dense>
 #include "./shader_program.h"
 #include "./screen_quad.h"
 #include "./object_manager.h"

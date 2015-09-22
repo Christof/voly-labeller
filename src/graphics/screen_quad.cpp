@@ -1,4 +1,5 @@
 #include "./screen_quad.h"
+#include <string>
 #include "./shader_program.h"
 #include "./shader_manager.h"
 #include "./managers.h"

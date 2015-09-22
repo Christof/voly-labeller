@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <cassert>
 #include <algorithm>
+#include <vector>
 #include "./gl.h"
 #include "./texture2d.h"
 
