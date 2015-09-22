@@ -42,7 +42,9 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
 Scene::~Scene()
 {
-  qDebug() << "Destructor of Scene";
+  nodes->clear();
+  qInfo() << "Destructor of Scene"
+          << "Remaining managers instances" << managers.use_count();
 }
 
 void Scene::initialize()
