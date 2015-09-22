@@ -58,7 +58,6 @@ void Scene::initialize()
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
-  Graphics::VolumeManager::instance->initialize(gl);
 
   managers->getObjectManager()->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, managers);

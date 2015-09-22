@@ -11,21 +11,25 @@ namespace Graphics
 
 QLoggingCategory vmChan("Graphics.VolumeManager");
 
-VolumeManager *VolumeManager::instance = new VolumeManager();
-
-void VolumeManager::initialize(Gl *gl)
+void VolumeManager::updateStorage(Gl *gl)
 {
+  if (texture)
+    gl->glDeleteTextures(1, &texture);
+
   qCInfo(vmChan) << "initialize";
   this->gl = gl;
 
-  for (size_t i = 0; i < volumesToAdd.size(); ++i)
+  if (volumes.size() == 0)
+    return;
+
+  for (size_t i = 0; i < volumes.size(); ++i)
   {
-    auto volumeSize = volumesToAdd[i]->getDataSize();
+    auto volumeSize = volumes[i]->getDataSize();
     volumeAtlasSize.z() += volumeSize.z();
     volumeAtlasSize.x() = std::max(volumeSize.x(), volumeAtlasSize.x());
     volumeAtlasSize.y() = std::max(volumeSize.y(), volumeAtlasSize.y());
 
-    if (i != volumesToAdd.size() - 1)
+    if (i != volumes.size() - 1)
       volumeAtlasSize.z() += zPadding;
   }
   qCInfo(vmChan) << "volumeAtlasSize" << volumeAtlasSize;
@@ -40,22 +44,20 @@ void VolumeManager::initialize(Gl *gl)
 
   int id = 1;
   int voxelZOffset = 0;
-  for (auto volume : volumesToAdd)
+  for (auto volume : volumes)
   {
     add3dTexture(id++, volume->getDataSize(), volume->getData(), voxelZOffset);
     voxelZOffset += volume->getDataSize().z() + zPadding;
   }
-  volumesToAdd.clear();
 }
 
-int VolumeManager::addVolume(Volume *volume)
+int VolumeManager::addVolume(Volume *volume, Gl *gl)
 {
   qCInfo(vmChan) << "addVolume";
 
-  if (gl == nullptr)
-    volumesToAdd.push_back(volume);
-
   volumes.push_back(volume);
+
+  updateStorage(gl);
 
   return nextVolumeId++;
 }

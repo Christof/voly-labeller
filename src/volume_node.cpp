@@ -20,8 +20,6 @@ VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath)
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
   Eigen::Vector3f center = transformation.col(3).head<3>();
   obb = Math::Obb(center, halfWidths, transformation.block<3, 3>(0, 0));
-
-  volumeId = Graphics::VolumeManager::instance->addVolume(this);
 }
 
 VolumeNode::~VolumeNode()
@@ -68,6 +66,7 @@ Eigen::Vector3i VolumeNode::getDataSize()
 void VolumeNode::initialize(Graphics::Gl *gl,
                             std::shared_ptr<Graphics::Managers> managers)
 {
+  volumeId = managers->getVolumeManager()->addVolume(this, gl);
   cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
   cube->initialize(gl, managers);
   int shaderProgramId = managers->getShaderManager()->addShader(
