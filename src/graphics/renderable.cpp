@@ -16,10 +16,9 @@ Renderable::~Renderable()
 
 void Renderable::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
-  this->objectManager = managers->getObjectManager();
-
-  objectData = createBuffers(objectManager, managers->getTextureManager(),
-                             managers->getShaderManager());
+  objectData =
+      createBuffers(managers->getObjectManager(), managers->getTextureManager(),
+                    managers->getShaderManager());
 }
 
 void Renderable::render(Gl *gl, std::shared_ptr<Managers> managers,
@@ -29,7 +28,7 @@ void Renderable::render(Gl *gl, std::shared_ptr<Managers> managers,
     initialize(gl, managers);
 
   objectData.modelMatrix = renderData.modelMatrix;
-  objectManager->renderLater(objectData);
+  managers->getObjectManager()->renderLater(objectData);
 }
 
 ObjectData Renderable::getObjectData()

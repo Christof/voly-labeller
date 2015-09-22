@@ -39,8 +39,6 @@ class Renderable
                 std::shared_ptr<TextureManager> textureManager,
                 std::shared_ptr<ShaderManager> shaderManager) = 0;
 
-  std::shared_ptr<ObjectManager> objectManager;
-
   ObjectData objectData;
 };
 
