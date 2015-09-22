@@ -21,8 +21,8 @@ class TextureManager;
 class TransferFunctionManager
 {
  public:
-  TransferFunctionManager(std::shared_ptr<TextureManager> textureManager);
-  virtual ~TransferFunctionManager();
+  explicit TransferFunctionManager(
+      std::shared_ptr<TextureManager> textureManager);
 
   /**
    * \brief Generates a transfer function lookup row from the given gradient
