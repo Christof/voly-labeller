@@ -32,6 +32,8 @@ class Cube : public Renderable
   std::vector<Eigen::Vector3f> points;
   static const int indexCount = 36;
   ObjectData objectData;
+
+  void createPoints();
 };
 
 }  // namespace Graphics

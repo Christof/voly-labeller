@@ -15,20 +15,7 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                                std::shared_ptr<TextureManager> textureManager,
                                std::shared_ptr<ShaderManager> shaderManager)
 {
-  Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
-  Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
-  Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
-  Eigen::Vector3f frontTopRight(0.5f, 0.5f, 0.5f);
-
-  Eigen::Vector3f backBottomLeft(-0.5f, -0.5f, -0.5f);
-  Eigen::Vector3f backTopLeft(-0.5f, 0.5f, -0.5f);
-  Eigen::Vector3f backBottomRight(0.5f, -0.5f, -0.5f);
-  Eigen::Vector3f backTopRight(0.5f, 0.5f, -0.5f);
-
-  points = std::vector<Eigen::Vector3f>{ frontBottomLeft,  frontTopLeft,
-                                         frontBottomRight, frontTopRight,
-                                         backBottomRight,  backTopRight,
-                                         backBottomLeft,   backTopLeft };
+  createPoints();
 
   std::vector<float> positions;
   std::vector<float> normals;
@@ -62,6 +49,24 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
       shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
   return objectManager->addObject(positions, normals, colors, texCoords,
                                   indices, shaderProgramId);
+}
+
+void Cube::createPoints()
+{
+  Eigen::Vector3f frontBottomLeft(-0.5f, -0.5f, 0.5f);
+  Eigen::Vector3f frontTopLeft(-0.5f, 0.5f, 0.5f);
+  Eigen::Vector3f frontBottomRight(0.5f, -0.5f, 0.5f);
+  Eigen::Vector3f frontTopRight(0.5f, 0.5f, 0.5f);
+
+  Eigen::Vector3f backBottomLeft(-0.5f, -0.5f, -0.5f);
+  Eigen::Vector3f backTopLeft(-0.5f, 0.5f, -0.5f);
+  Eigen::Vector3f backBottomRight(0.5f, -0.5f, -0.5f);
+  Eigen::Vector3f backTopRight(0.5f, 0.5f, -0.5f);
+
+  points = std::vector<Eigen::Vector3f>{ frontBottomLeft,  frontTopLeft,
+                                         frontBottomRight, frontTopRight,
+                                         backBottomRight,  backTopRight,
+                                         backBottomLeft,   backTopLeft };
 }
 
 }  // namespace Graphics
