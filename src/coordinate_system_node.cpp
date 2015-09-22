@@ -22,10 +22,12 @@ CoordinateSystemNode::~CoordinateSystemNode()
 {
 }
 
-void CoordinateSystemNode::render(Graphics::Gl *gl, RenderData renderData)
+void CoordinateSystemNode::render(Graphics::Gl *gl,
+                                  std::shared_ptr<Graphics::Managers> managers,
+                                  RenderData renderData)
 {
-  x->render(gl, objectManager, textureManager, shaderManager, renderData);
-  y->render(gl, objectManager, textureManager, shaderManager, renderData);
-  z->render(gl, objectManager, textureManager, shaderManager, renderData);
+  x->render(gl, managers, renderData);
+  y->render(gl, managers, renderData);
+  z->render(gl, managers, renderData);
 }
 

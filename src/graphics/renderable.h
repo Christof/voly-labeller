@@ -12,10 +12,10 @@ namespace Graphics
 
 class Gl;
 class RenderObject;
-class ShaderManager;
-class TextureManager;
+class Managers;
 class ObjectManager;
-class ShaderProgram;
+class TextureManager;
+class ShaderManager;
 
 /**
  * \brief Base class for easier access to a RenderObject
@@ -26,13 +26,9 @@ class Renderable
   Renderable();
   virtual ~Renderable();
 
-  virtual void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                          std::shared_ptr<TextureManager> textureManager,
-                          std::shared_ptr<ShaderManager> shaderManager);
+  virtual void initialize(Gl *gl, std::shared_ptr<Managers> managers);
 
-  virtual void render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                      std::shared_ptr<TextureManager> textureManager,
-                      std::shared_ptr<ShaderManager> shaderManager,
+  virtual void render(Gl *gl, std::shared_ptr<Managers> managers,
                       const RenderData &renderData);
 
   ObjectData getObjectData();

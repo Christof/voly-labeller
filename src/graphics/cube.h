@@ -8,6 +8,7 @@
 #include "./render_data.h"
 #include "./renderable.h"
 #include "./object_manager.h"
+#include "./shader_program.h"
 
 namespace Graphics
 {

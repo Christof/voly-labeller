@@ -59,11 +59,8 @@ void Scene::initialize()
   Graphics::VolumeManager::instance->initialize(gl);
 
   managers->getObjectManager()->initialize(gl, 128, 10000000);
-  haBuffer->initialize(gl, managers->getObjectManager(),
-                       managers->getTextureManager(),
-                       managers->getShaderManager());
-  quad->initialize(gl, managers->getObjectManager(),
-                   managers->getTextureManager(), managers->getShaderManager());
+  haBuffer->initialize(gl, managers);
+  quad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 }
@@ -140,7 +137,7 @@ void Scene::renderScreenQuad()
 
   quad->getShaderProgram()->bind();
   quad->getShaderProgram()->setUniform("textureSampler", 0);
-  quad->renderImmediately(gl, managers->getObjectManager(), renderData);
+  quad->renderImmediately(gl, managers, renderData);
 }
 
 void Scene::resize(int width, int height)

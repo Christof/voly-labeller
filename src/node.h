@@ -28,15 +28,9 @@ class Node
   {
   }
 
-  void render(Graphics::Gl *gl,
-              std::shared_ptr<Graphics::Managers> managers,
-              RenderData renderData)
-  {
-    this->objectManager = managers->getObjectManager();
-    this->textureManager = managers->getTextureManager();
-    this->shaderManager = managers->getShaderManager();
-    render(gl, renderData);
-  }
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData) = 0;
 
   const Math::Obb &getObb()
   {
@@ -53,12 +47,7 @@ class Node
   {
   }
 
-  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
-
   bool persistable = true;
-  std::shared_ptr<Graphics::ObjectManager> objectManager;
-  std::shared_ptr<Graphics::TextureManager> textureManager;
-  std::shared_ptr<Graphics::ShaderManager> shaderManager;
   Math::Obb obb;
 
  private:

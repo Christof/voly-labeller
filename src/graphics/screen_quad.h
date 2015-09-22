@@ -22,12 +22,7 @@ class ScreenQuad : public Quad
   ScreenQuad(std::string vertexShaderFilename,
              std::string fragmentShaderFilename);
 
-  virtual void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                          std::shared_ptr<TextureManager> textureManager,
-                          std::shared_ptr<ShaderManager> shaderManager);
   virtual void initialize(Gl *gl, std::shared_ptr<Managers> managers);
-  void renderImmediately(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                         const RenderData &renderData);
   void renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
                          const RenderData &renderData);
 
