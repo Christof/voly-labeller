@@ -27,8 +27,6 @@ class Cube : public Renderable
   createBuffers(std::shared_ptr<ObjectManager> objectManager,
                 std::shared_ptr<TextureManager> textureManager,
                 std::shared_ptr<ShaderManager> shaderManager);
-  virtual void setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                           const RenderData &renderData);
 
  private:
   std::vector<Eigen::Vector3f> points;

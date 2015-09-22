@@ -64,17 +64,4 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                                   indices, shaderProgramId);
 }
 
-void Cube::setUniforms(std::shared_ptr<ShaderProgram> shaderProgram,
-                       const RenderData &renderData)
-{
-  objectData.modelMatrix = renderData.modelMatrix;
-  objectManager->renderLater(objectData);
-  /*
-  Eigen::Matrix4f modelViewProjection =
-      renderData.projectionMatrix * renderData.viewMatrix *
-      renderData.modelMatrix;
-  shaderProgram->setUniform("modelViewProjectionMatrix", modelViewProjection);
-  */
-}
-
 }  // namespace Graphics
