@@ -86,6 +86,7 @@ set(SOURCES
   src/graphics/volume.h
   src/graphics/volume_data.h
   src/graphics/volume_manager.cpp
+  src/graphics/managers.cpp
   ${RESOURCES})
 
 file(GLOB SHADER src/shader/*)

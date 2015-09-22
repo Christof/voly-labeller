@@ -24,13 +24,16 @@ LabelNode::~LabelNode()
 {
 }
 
-void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
+void LabelNode::render(Graphics::Gl *gl,
+                       std::shared_ptr<Graphics::Managers> managers,
+                       RenderData renderData)
 {
-  quad->initialize(gl, objectManager, textureManager, shaderManager);
+  quad->initialize(gl, managers);
 
   if (textureId == -1 || textureText != label.text)
   {
     auto image = renderLabelTextToQImage();
+    auto textureManager = managers->getTextureManager();
     textureId = textureManager->addTexture(image);
     delete image;
 
@@ -38,7 +41,7 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
     {
       labelQuad = quad->getObjectData();
       labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
-                                [this](void *insertionPoint)
+                                [textureManager, this](void *insertionPoint)
                                 {
         auto textureAddress = textureManager->getAddressFor(textureId);
         std::memcpy(insertionPoint, &textureAddress,
@@ -47,12 +50,14 @@ void LabelNode::render(Graphics::Gl *gl, RenderData renderData)
     }
   }
 
-  renderConnector(gl, renderData);
-  renderAnchor(gl, renderData);
-  renderLabel(gl, renderData);
+  renderConnector(gl, managers, renderData);
+  renderAnchor(gl, managers, renderData);
+  renderLabel(gl, managers, renderData);
 }
 
-void LabelNode::renderConnector(Graphics::Gl *gl, RenderData renderData)
+void LabelNode::renderConnector(Graphics::Gl *gl,
+                                std::shared_ptr<Graphics::Managers> managers,
+                                RenderData renderData)
 {
   Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
   auto length = anchorToPosition.norm();
@@ -63,28 +68,30 @@ void LabelNode::renderConnector(Graphics::Gl *gl, RenderData renderData)
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
-  connector->render(gl, objectManager, textureManager, shaderManager,
-                    renderData);
+  connector->render(gl, managers, renderData);
 }
 
-void LabelNode::renderAnchor(Graphics::Gl *gl, RenderData renderData)
+void LabelNode::renderAnchor(Graphics::Gl *gl,
+                             std::shared_ptr<Graphics::Managers> managers,
+                             RenderData renderData)
 {
   Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
                                  Eigen::Scaling(0.005f));
   renderData.modelMatrix = modelTransform.matrix();
 
-  anchorMesh->render(gl, objectManager, textureManager, shaderManager,
-                     renderData);
+  anchorMesh->render(gl, managers, renderData);
 }
 
-void LabelNode::renderLabel(Graphics::Gl *gl, RenderData renderData)
+void LabelNode::renderLabel(Graphics::Gl *gl,
+                            std::shared_ptr<Graphics::Managers> managers,
+                            RenderData renderData)
 {
   Eigen::Affine3f labelTransform(
       Eigen::Translation3f(labelPosition) *
       Eigen::Scaling(label.size.x(), label.size.y(), 1.0f));
 
   labelQuad.modelMatrix = labelTransform.matrix();
-  objectManager->renderLater(labelQuad);
+  managers->getObjectManager()->renderLater(labelQuad);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()

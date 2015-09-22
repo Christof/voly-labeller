@@ -10,6 +10,7 @@ namespace Graphics
 {
 
 class Gl;
+class Managers;
 
 /**
  * \brief A screen filling quad which is rendered to the currently bound frame
@@ -21,10 +22,8 @@ class ScreenQuad : public Quad
   ScreenQuad(std::string vertexShaderFilename,
              std::string fragmentShaderFilename);
 
-  virtual void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                          std::shared_ptr<TextureManager> textureManager,
-                          std::shared_ptr<ShaderManager> shaderManager);
-  void renderImmediately(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
+  virtual void initialize(Gl *gl, std::shared_ptr<Managers> managers);
+  void renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
                          const RenderData &renderData);
 
   void setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram);

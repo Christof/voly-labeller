@@ -25,7 +25,9 @@ class LabelNode : public Node
   explicit LabelNode(Label label);
   virtual ~LabelNode();
 
-  void render(Graphics::Gl *gl, RenderData renderData);
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData);
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
@@ -35,6 +37,7 @@ class LabelNode : public Node
   Eigen::Vector3f labelPosition;
 
   Label label;
+
  private:
   std::string textureText;
 
@@ -46,9 +49,15 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
-  void renderConnector(Graphics::Gl *gl, RenderData renderData);
-  void renderAnchor(Graphics::Gl *gl, RenderData renderData);
-  void renderLabel(Graphics::Gl *gl, RenderData renderData);
+  void renderConnector(Graphics::Gl *gl,
+                       std::shared_ptr<Graphics::Managers> managers,
+                       RenderData renderData);
+  void renderAnchor(Graphics::Gl *gl,
+                    std::shared_ptr<Graphics::Managers> managers,
+                    RenderData renderData);
+  void renderLabel(Graphics::Gl *gl,
+                   std::shared_ptr<Graphics::Managers> managers,
+                   RenderData renderData);
   QImage *renderLabelTextToQImage();
 
   std::shared_ptr<Graphics::Mesh> anchorMesh;

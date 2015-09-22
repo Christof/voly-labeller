@@ -1,6 +1,7 @@
 #include "./screen_quad.h"
 #include "./shader_program.h"
 #include "./shader_manager.h"
+#include "./managers.h"
 
 namespace Graphics
 {
@@ -12,13 +13,11 @@ ScreenQuad::ScreenQuad(std::string vertexShaderFilename,
 {
 }
 
-void ScreenQuad::initialize(Gl *gl,
-                            std::shared_ptr<ObjectManager> objectManager,
-                            std::shared_ptr<TextureManager> textureManager,
-                            std::shared_ptr<ShaderManager> shaderManager)
+void ScreenQuad::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
-  Renderable::initialize(gl, objectManager, textureManager, shaderManager);
-  shaderProgram = shaderManager->getShader(objectData.getShaderProgramId());
+  Renderable::initialize(gl, managers);
+  shaderProgram =
+      managers->getShaderManager()->getShader(objectData.getShaderProgramId());
 }
 
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
@@ -31,16 +30,15 @@ void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
   shader->setUniform("modelMatrix", renderData.modelMatrix);
 }
 
-void ScreenQuad::renderImmediately(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                        const RenderData &renderData)
+void ScreenQuad::renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
+                                   const RenderData &renderData)
 {
   if (!objectData.isInitialized())
-    initialize(gl, objectManager, std::shared_ptr<TextureManager>(),
-               std::shared_ptr<ShaderManager>());
+    initialize(gl, managers);
 
   setUniforms(shaderProgram, renderData);
 
-  objectManager->renderImmediately(objectData);
+  managers->getObjectManager()->renderImmediately(objectData);
 }
 
 void ScreenQuad::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)

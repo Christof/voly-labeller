@@ -15,10 +15,12 @@ MeshNode::~MeshNode()
 {
 }
 
-void MeshNode::render(Graphics::Gl *gl, RenderData renderData)
+void MeshNode::render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData)
 {
   renderData.modelMatrix = transformation;
-  mesh->render(gl, objectManager, textureManager, shaderManager, renderData);
+  mesh->render(gl, managers, renderData);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()

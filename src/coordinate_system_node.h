@@ -20,7 +20,8 @@ class CoordinateSystemNode : public Node
   CoordinateSystemNode();
   virtual ~CoordinateSystemNode();
 
-  void render(Graphics::Gl *gl, RenderData renderData);
+  virtual void render(Graphics::Gl *gl, std::shared_ptr<Graphics::Managers> managers,
+              RenderData renderData);
 
  private:
   std::shared_ptr<Graphics::Connector> x;

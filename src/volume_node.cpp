@@ -30,16 +30,19 @@ VolumeNode::~VolumeNode()
 {
 }
 
-void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
+void VolumeNode::render(Graphics::Gl *gl,
+                        std::shared_ptr<Graphics::Managers> managers,
+                        RenderData renderData)
 {
   if (cube.get() == nullptr)
   {
-    initialize(gl);
+    initialize(gl, managers);
 
     if (!transferFunctionManager.get())
       transferFunctionManager =
           std::unique_ptr<Graphics::TransferFunctionManager>(
-              new Graphics::TransferFunctionManager(textureManager));
+              new Graphics::TransferFunctionManager(
+                  managers->getTextureManager()));
 
     transferFunctionRow = transferFunctionManager->add(
         absolutePathOfProjectRelativePath(transferFunctionPath));
@@ -47,7 +50,7 @@ void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
 
-  objectManager->renderLater(cubeData);
+  managers->getObjectManager()->renderLater(cubeData);
 }
 
 Graphics::VolumeData VolumeNode::getVolumeData()
@@ -75,16 +78,17 @@ Eigen::Vector3i VolumeNode::getDataSize()
   return volumeReader->getSize();
 }
 
-void VolumeNode::initialize(Graphics::Gl *gl)
+void VolumeNode::initialize(Graphics::Gl *gl,
+                            std::shared_ptr<Graphics::Managers> managers)
 {
   cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
-  cube->initialize(gl, objectManager, textureManager, shaderManager);
-  int shaderProgramId = shaderManager->addShader(
+  cube->initialize(gl, managers);
+  int shaderProgramId = managers->getShaderManager()->addShader(
       ":/shader/cube.vert", ":/shader/cube.geom", ":/shader/volume_cube.frag");
 
   auto colors = std::vector<float>{ 1, 0, 0, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0 };
-  cubeData = objectManager->addObject(
+  cubeData = managers->getObjectManager()->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
       shaderProgramId, GL_POINTS);
   auto transformation = volumeReader->getTransformationMatrix();

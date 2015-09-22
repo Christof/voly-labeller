@@ -24,10 +24,12 @@ class VolumeNode : public Node, public Graphics::Volume
   explicit VolumeNode(std::string volumePath, std::string transferFunctionPath);
   virtual ~VolumeNode();
 
-  void render(Graphics::Gl *gl, RenderData renderData);
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData);
 
   virtual Graphics::VolumeData getVolumeData();
-  virtual float* getData();
+  virtual float *getData();
   virtual Eigen::Vector3i getDataSize();
 
   template <class Archive> void save_construct_data(Archive &ar) const
@@ -50,7 +52,8 @@ class VolumeNode : public Node, public Graphics::Volume
   static std::unique_ptr<Graphics::TransferFunctionManager>
       transferFunctionManager;
 
-  void initialize(Graphics::Gl *gl);
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::Managers> managers);
 
   friend class boost::serialization::access;
   template <class Archive>
