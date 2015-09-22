@@ -7,11 +7,9 @@
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
 #include "./graphics/volume_manager.h"
+#include "./graphics/transfer_function_manager.h"
 #include "./utils/path_helper.h"
 #include "./eigen_qdebug.h"
-
-std::unique_ptr<Graphics::TransferFunctionManager>
-    VolumeNode::transferFunctionManager;
 
 VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath)
   : volumePath(volumePath), transferFunctionPath(transferFunctionPath)
@@ -35,18 +33,7 @@ void VolumeNode::render(Graphics::Gl *gl,
                         RenderData renderData)
 {
   if (cube.get() == nullptr)
-  {
     initialize(gl, managers);
-
-    if (!transferFunctionManager.get())
-      transferFunctionManager =
-          std::unique_ptr<Graphics::TransferFunctionManager>(
-              new Graphics::TransferFunctionManager(
-                  managers->getTextureManager()));
-
-    transferFunctionRow = transferFunctionManager->add(
-        absolutePathOfProjectRelativePath(transferFunctionPath));
-  }
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
 
@@ -56,7 +43,7 @@ void VolumeNode::render(Graphics::Gl *gl,
 Graphics::VolumeData VolumeNode::getVolumeData()
 {
   Graphics::VolumeData data;
-  data.textureAddress = transferFunctionManager->getTextureAddress();
+  data.textureAddress = transferFunctionAddress;
   Eigen::Affine3f positionToTexture(Eigen::Translation3f(0.5f, 0.5f, 0.5f));
   Eigen::Affine3f scale(Eigen::Scaling(volumeReader->getPhysicalSize()));
   data.textureMatrix = positionToTexture.matrix() *
@@ -103,5 +90,10 @@ void VolumeNode::initialize(Graphics::Gl *gl,
                            {
     memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector4f));
   });
+
+  auto transferFunctionManager = managers->getTransferFunctionManager();
+  transferFunctionRow = transferFunctionManager->add(
+      absolutePathOfProjectRelativePath(transferFunctionPath));
+  transferFunctionAddress = transferFunctionManager->getTextureAddress();
 }
 

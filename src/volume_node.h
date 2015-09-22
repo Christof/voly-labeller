@@ -9,7 +9,6 @@
 #include "./graphics/cube.h"
 #include "./graphics/object_data.h"
 #include "./graphics/volume.h"
-#include "./graphics/transfer_function_manager.h"
 
 struct RenderData;
 class VolumeReader;
@@ -48,9 +47,7 @@ class VolumeNode : public Node, public Graphics::Volume
   Graphics::ObjectData cubeData;
   int volumeId;
   int transferFunctionRow = -1;
-
-  static std::unique_ptr<Graphics::TransferFunctionManager>
-      transferFunctionManager;
+  Graphics::TextureAddress transferFunctionAddress;
 
   void initialize(Graphics::Gl *gl,
                   std::shared_ptr<Graphics::Managers> managers);
