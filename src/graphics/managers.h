@@ -14,9 +14,15 @@ class TransferFunctionManager;
 class VolumeManager;
 
 /**
- * \brief
+ * \brief Instantiates and holds instances of all major graphics
+ * related managers
  *
- *
+ * The managers are:
+ * - ObjectManager
+ * - TextureManager
+ * - ShaderManager
+ * - TransferFunctionManager
+ * - VolumeManager
  */
 class Managers
 {

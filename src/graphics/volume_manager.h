@@ -14,9 +14,9 @@ namespace Graphics
 class Gl;
 
 /**
- * \brief
+ * \brief Creates and manages a texture atlas for volumes
  *
- *
+ * Volume%s are added via #addVolume.
  */
 class VolumeManager
 {
