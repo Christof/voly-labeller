@@ -38,6 +38,7 @@ void ScreenQuad::renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
     initialize(gl, managers);
 
   setUniforms(shaderProgram, renderData);
+  objectData.modelMatrix = renderData.modelMatrix;
 
   managers->getObjectManager()->renderImmediately(objectData);
 }
