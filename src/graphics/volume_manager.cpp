@@ -36,9 +36,9 @@ void VolumeManager::updateStorage(Gl *gl)
 
   gl->glGenTextures(1, &texture);
   gl->glBindTexture(GL_TEXTURE_3D, texture);
-  gl->glTexImage3D(GL_TEXTURE_3D, 0, GL_R32F, volumeAtlasSize.x(),
-                   volumeAtlasSize.y(), volumeAtlasSize.z(), 0, GL_RED,
-                   GL_FLOAT, nullptr);
+  gl->glTexStorage3D(GL_TEXTURE_3D, 1, GL_R32F, volumeAtlasSize.x(),
+                     volumeAtlasSize.y(), volumeAtlasSize.z());
+
   float zero = 0.0f;
   gl->glClearTexImage(texture, 0, GL_RED, GL_FLOAT, &zero);
 
