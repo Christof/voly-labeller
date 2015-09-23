@@ -66,6 +66,7 @@ class Scene : public AbstractScene
   int height;
   bool shouldResize = false;
 
+  void renderQuad(Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
 
   bool performPicking;

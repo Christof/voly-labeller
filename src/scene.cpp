@@ -125,20 +125,23 @@ void Scene::render()
   renderScreenQuad();
 }
 
-void Scene::renderScreenQuad()
+void Scene::renderQuad(Eigen::Matrix4f modelMatrix)
 {
   RenderData renderData;
   renderData.projectionMatrix = Eigen::Matrix4f::Identity();
   renderData.viewMatrix = Eigen::Matrix4f::Identity();
-  renderData.modelMatrix =
-      Eigen::Affine3f(Eigen::AlignedScaling3f(1, -1, 1)).matrix();
-
-  fbo->bindColorTexture(GL_TEXTURE0);
-  // fbo->bindDepthTexture(GL_TEXTURE0);
+  renderData.modelMatrix = modelMatrix;
 
   quad->getShaderProgram()->bind();
   quad->getShaderProgram()->setUniform("textureSampler", 0);
   quad->renderImmediately(gl, managers, renderData);
+}
+
+void Scene::renderScreenQuad()
+{
+  fbo->bindColorTexture(GL_TEXTURE0);
+
+  renderQuad(Eigen::Matrix4f::Identity());
 }
 
 void Scene::resize(int width, int height)
