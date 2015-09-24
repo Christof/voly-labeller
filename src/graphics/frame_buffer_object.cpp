@@ -94,4 +94,9 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
                             component, type, NULL));
 }
 
+unsigned int FrameBufferObject::getRenderTextureId()
+{
+  return renderTexture;
+}
+
 }  // namespace Graphics
