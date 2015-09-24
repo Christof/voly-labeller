@@ -41,6 +41,7 @@ class FrameBufferObject
   void bindColorTexture(unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
 
+  unsigned int getRenderTextureId();
  private:
   unsigned int framebuffer = 0;
   unsigned int renderTexture = 0;
