@@ -10,8 +10,7 @@ namespace Graphics
 class TextureContainer;
 
 /**
- * \brief
- *
+ * \brief 2d bindless texture which is stored in a TextureContainer
  *
  */
 class Texture2d

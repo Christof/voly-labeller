@@ -19,9 +19,14 @@ class Texture2d;
 class Gl;
 
 /**
- * \brief
+ * \brief Manages all 2d texture using TextureContainer%s and Texture2d
+ * instances
  *
- *
+ * Textures can be loaded using #addTexture by passing either a path to
+ * an image file, a QImage or the raw data via a pointer and the texture size.
+ * The method returns an id for the texture, which is later used to either
+ * get the TextureAddress using #getAddressFor or retrieve the Texture2d using
+ * #getTextureFor.
  */
 class TextureManager
 {
