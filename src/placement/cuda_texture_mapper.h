@@ -2,7 +2,14 @@
 
 #define SRC_PLACEMENT_CUDA_TEXTURE_MAPPER_H_
 
-struct CUgraphicsResource_st;
+#include <QtOpenGLExtensions>
+#include <cuda.h>
+#include <cuda_runtime.h>
+#include <cudaGL.h>
+#include <cuda_gl_interop.h>
+
+
+cudaError registerImage(cudaGraphicsResource *resource, unsigned int id);
 
 /**
  * \brief
@@ -17,7 +24,7 @@ class CudaTextureMapper
 
  private:
   unsigned int textureId;
-  CUgraphicsResource_st *resource = 0;
+  cudaGraphicsResource *resource = 0;
 };
 
 #endif  // SRC_PLACEMENT_CUDA_TEXTURE_MAPPER_H_
