@@ -1,17 +1,23 @@
 #include "./cuda_texture_mapper.h"
-#include <QtOpenGLExtensions>
-#include <cuda.h>
-#include <cudaGL.h>
+
+cudaError registerImage(cudaGraphicsResource *resource, unsigned int id)
+{
+  return cudaGraphicsGLRegisterImage(&resource, id, GL_RENDERBUFFER,
+                                     cudaGraphicsRegisterFlagsNone);
+}
 
 CudaTextureMapper::CudaTextureMapper(unsigned int textureId)
   : textureId(textureId)
 {
-  CUresult error = cuGraphicsGLRegisterImage(
-      &resource, textureId, GL_RENDERBUFFER, CU_GRAPHICS_REGISTER_FLAGS_NONE);
-  qWarning() << "register image" << error;
+  // cudaError error = registerImage(resource, textureId);
+  qInfo() << "map texture" << textureId;
+  cudaError error = cudaGraphicsGLRegisterImage(&resource, textureId, GL_TEXTURE_2D,
+                                                cudaGraphicsRegisterFlagsNone);
+
+  qWarning() << "register image" << cudaGetErrorString(error);
 }
 
 CudaTextureMapper::~CudaTextureMapper()
 {
-  cuGraphicsUnregisterResource(resource);
+  cudaGraphicsUnregisterResource(resource);
 }
