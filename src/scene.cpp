@@ -123,6 +123,12 @@ void Scene::render()
   fbo->unbind();
 
   renderScreenQuad();
+
+  Eigen::Affine3f transformation(
+      Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
+      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  fbo->bindColorTexture(GL_TEXTURE0);
+  renderQuad(transformation.matrix());
 }
 
 void Scene::renderQuad(Eigen::Matrix4f modelMatrix)
