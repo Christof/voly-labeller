@@ -670,3 +670,60 @@ int sumUsingCudaInLib()
   return result[0];
 }
 
+texture<char, 4, cudaReadModeElementType> image;
+//texture<char, 4, cudaReadModeNormalizedFloat> image;
+
+__global__ void toGrayKernel(int image_size)
+{
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+  if (x >= image_size || y >= image_size)
+    return;
+
+  //int index = y * image_size + x;
+
+  //char4 color = out[index];
+  char4 color = tex2D(image, x + 0.5f, y + 0.5f);
+
+  //out[index] = color;
+  surf2Dwrite(color, image, x + 0.5f, y + 0.5f, cudaBoundaryModeClamp);
+//0.2989 * R + 0.5870 * G + 0.1140 * B 
+
+}
+
+void toGray(cudaGraphicsResource_t *inputImage, int image_size)
+{
+  image.normalized = 0;
+  image.filterMode = cudaFilterModeLinear;
+  image.addressMode[0] = cudaAddressModeWrap;
+  image.addressMode[1] = cudaAddressModeWrap;
+
+  cudaGraphicsMapResources(1, inputImage);
+  cudaArray_t input_array;
+  cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0);
+  cudaChannelFormatDesc channeldesc;
+  cudaGetChannelDesc(&channeldesc, input_array);
+
+  cudaBindTextureToArray(&image, input_array, &channeldesc);
+
+  dim3 dimBlock(64, 64, 1);
+  dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
+
+  /*
+  char4* data;
+  size_t size;
+  cudaGraphicsResourceGetMappedPointer((void **)(&data), &size, *inputImage);
+  */
+
+  //float *d_inout = thrust::raw_pointer_cast(inout.data());
+  toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
+    /*
+      (image_size, float(screen_size_x) / float(image_size),
+       float(screen_size_y) / float(image_size), z_threshold, d_inout);
+       */
+  cudaThreadSynchronize();
+  cudaUnbindTexture(&image);
+  cudaGraphicsUnmapResources(1, inputImage);
+
+}
+

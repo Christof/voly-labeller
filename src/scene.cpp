@@ -89,6 +89,8 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   }
 }
 
+void toGray(cudaGraphicsResource_t *inputImage, int image_size);
+
 void Scene::render()
 {
   if (shouldResize)
@@ -123,8 +125,10 @@ void Scene::render()
   fbo->unbind();
 
   if (!colorTextureMapper.get())
+  {
     colorTextureMapper =
         std::make_shared<CudaTextureMapper>(fbo->getRenderTextureId());
+  }
 
   renderScreenQuad();
 
@@ -132,6 +136,7 @@ void Scene::render()
       Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   fbo->bindColorTexture(GL_TEXTURE0);
+  toGray(colorTextureMapper->getResource(), width);
   renderQuad(transformation.matrix());
 }
 
