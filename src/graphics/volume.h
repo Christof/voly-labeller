@@ -8,8 +8,8 @@
 namespace Graphics
 {
 /**
- * \brief
- *
+ * \brief Represents an interface for volumes to get data
+ * and met information
  *
  */
 class Volume

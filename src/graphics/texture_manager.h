@@ -19,9 +19,14 @@ class Texture2d;
 class Gl;
 
 /**
- * \brief
+ * \brief Manages all 2d texture using TextureContainer%s and Texture2d
+ * instances
  *
- *
+ * Textures can be loaded using #addTexture by passing either a path to
+ * an image file, a QImage or the raw data via a pointer and the texture size.
+ * The method returns an id for the texture, which is later used to either
+ * get the TextureAddress using #getAddressFor or retrieve the Texture2d using
+ * #getTextureFor.
  */
 class TextureManager
 {
@@ -31,12 +36,13 @@ class TextureManager
 
   int addTexture(std::string path);
   int addTexture(QImage *image);
-  int addTexture(float* data, int width, int height);
+  int addTexture(float *data, int width, int height);
 
-  Texture2d *newTexture2d(TextureSpaceDescription spaceDescription);
-  Texture2d *newTexture2d(std::string path);
-  Texture2d *newTexture2d(QImage *image);
-  Texture2d *newTexture2d(float* data, int width, int height);
+  std::shared_ptr<Texture2d>
+  newTexture2d(TextureSpaceDescription spaceDescription);
+  std::shared_ptr<Texture2d> newTexture2d(std::string path);
+  std::shared_ptr<Texture2d> newTexture2d(QImage *image);
+  std::shared_ptr<Texture2d> newTexture2d(float *data, int width, int height);
 
   void free(Texture2d *texture);
 
@@ -44,18 +50,19 @@ class TextureManager
   bool initialize(Gl *gl, bool sparse = true, int maxTextureArrayLevels = -1);
   void shutdown();
 
-  Texture2d* getTextureFor(int textureId);
+  std::shared_ptr<Texture2d> getTextureFor(int textureId);
   TextureAddress getAddressFor(int textureId);
 
  private:
   Gl *gl;
-  std::vector<Texture2d *> textures;
+  std::vector<std::shared_ptr<Texture2d>> textures;
   std::map<TextureSpaceDescription, std::vector<TextureContainer *>>
       textureContainers;
   int maxTextureArrayLevels;
   bool isSparse;
 
-  Texture2d *allocateTexture2d(TextureSpaceDescription spaceDescription);
+  std::shared_ptr<Texture2d>
+  allocateTexture2d(TextureSpaceDescription spaceDescription);
   int get2DVirtualPageSizeX(int internalFormat);
   int get2DVirtualPageSizeY(int internalFormat);
   int getInternalFormat(int target, int internalFormat, int parameterName);

@@ -1,4 +1,5 @@
 #include "./shader_buffer.h"
+#include <QLoggingCategory>
 #include <cassert>
 
 namespace Graphics
@@ -7,6 +8,12 @@ namespace Graphics
 ShaderBuffer::ShaderBuffer(GLenum target, bool runUpdatesOnCPU)
   : lockManager(runUpdatesOnCPU), target(target)
 {
+}
+
+ShaderBuffer::~ShaderBuffer()
+{
+  qInfo() << "Destructor of ShaderBuffer";
+  terminate();
 }
 
 bool ShaderBuffer::initialize(Gl *gl, GLuint count, GLbitfield createFlags,

@@ -85,8 +85,8 @@ Eigen::Matrix4f Importer::getTransformationFor(std::string filename,
   Eigen::Matrix4f transformation = Eigen::Matrix4f::Identity();
   bool found = findTransformationForMesh(
       scene->mRootNode, static_cast<unsigned int>(meshIndex), transformation);
-  qCWarning(importerChan) << "Transformation for" << filename.c_str()
-                          << meshIndex << found << transformation;
+  qCDebug(importerChan) << "Transformation for" << filename.c_str() << meshIndex
+                        << found << transformation;
 
   return transformation;
 }

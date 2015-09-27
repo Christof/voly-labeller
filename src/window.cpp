@@ -21,6 +21,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
   connect(this, SIGNAL(widthChanged(int)), this, SLOT(resizeOpenGL()));
   connect(this, SIGNAL(heightChanged(int)), this, SLOT(resizeOpenGL()));
+  connect(this, &Window::sceneGraphInvalidated, this, &Window::onInvalidated,
+          Qt::DirectConnection);
 
   connect(reinterpret_cast<QObject *>(engine()), SIGNAL(quit()), this,
           SLOT(close()));
@@ -36,9 +38,8 @@ Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
 
 Window::~Window()
 {
-  delete gl;
-  if (logger)
-    delete logger;
+  disconnect(logger, &QOpenGLDebugLogger::messageLogged, this,
+             &Window::onMessageLogged);
 }
 
 QSurfaceFormat Window::createSurfaceFormat()
@@ -56,11 +57,16 @@ QSurfaceFormat Window::createSurfaceFormat()
 
 void Window::initializeOpenGL()
 {
+  qCInfo(openGlChan) << "initializeOpenGL";
   context = openglContext();
+  context->makeCurrent(this);
+
   gl = new Graphics::Gl();
   gl->initialize(context, size());
 
-  logger = new QOpenGLDebugLogger();
+  logger = new QOpenGLDebugLogger(context);
+  connect(context, &QOpenGLContext::aboutToBeDestroyed, this,
+          &Window::contextAboutToBeDestroyed, Qt::DirectConnection);
 
   connect(logger, &QOpenGLDebugLogger::messageLogged, this,
           &Window::onMessageLogged, Qt::DirectConnection);
@@ -88,6 +94,12 @@ void Window::keyPressEvent(QKeyEvent *event)
 {
   QQuickView::keyPressEvent(event);
   keysPressed += static_cast<Qt::Key>(event->key());
+}
+
+void Window::onInvalidated()
+{
+  qCInfo(openGlChan) << "on invalidated: delete logger";
+  delete logger;
 }
 
 void Window::handleLazyInitialization()
@@ -140,6 +152,11 @@ void Window::toggleFullscreen()
                                                   : QWindow::Windowed);
 }
 
+void Window::contextAboutToBeDestroyed()
+{
+  qCInfo(openGlChan) << "Closing rendering thread";
+}
+
 void Window::updateAverageFrameTime(double frameTime)
 {
   runningTime += frameTime;
@@ -163,6 +180,10 @@ void Window::onMessageLogged(QOpenGLDebugMessage message)
 
   // Ignore buffer performance warning
   if (message.id() == 131186)
+    return;
+
+  // Ignore generic vertex attribute array 1 uses a pointer with a small value
+  if (message.id() == 131076)
     return;
 
   switch (message.severity())

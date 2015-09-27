@@ -16,11 +16,6 @@ QLoggingCategory tmChan("Graphics.TextureManager");
 
 TextureManager::~TextureManager()
 {
-  for (auto texture : textures)
-    delete texture;
-
-  textures.clear();
-
   shutdown();
 }
 
@@ -51,16 +46,16 @@ int TextureManager::addTexture(float *data, int width, int height)
   return id;
 }
 
-Texture2d *
+std::shared_ptr<Texture2d>
 TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
-  Texture2d *texture = allocateTexture2d(spaceDescription);
+  auto texture = allocateTexture2d(spaceDescription);
   texture->commit();
 
   return texture;
 }
 
-Texture2d *TextureManager::newTexture2d(std::string path)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(std::string path)
 {
   QFileInfo file(path.c_str());
   if (!file.exists())
@@ -74,7 +69,7 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   return texture;
 }
 
-Texture2d *TextureManager::newTexture2d(QImage *image)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(QImage *image)
 {
   try
   {
@@ -82,7 +77,7 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
 
-    Texture2d *texture = allocateTexture2d(TextureSpaceDescription(
+    auto texture = allocateTexture2d(TextureSpaceDescription(
         1, internalformat, image->width(), image->height()));
     texture->commit();
 
@@ -98,13 +93,14 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
   }
 }
 
-Texture2d *TextureManager::newTexture2d(float *data, int width, int height)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(float *data, int width,
+                                                        int height)
 {
   auto internalformat = GL_RGBA32F;
   auto format = GL_RGBA;
   auto type = GL_FLOAT;
 
-  Texture2d *texture = allocateTexture2d(
+  auto texture = allocateTexture2d(
       TextureSpaceDescription(1, internalformat, width, height));
   texture->commit();
 
@@ -131,6 +127,8 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 
 void TextureManager::shutdown()
 {
+  textures.clear();
+
   for (auto containIt = textureContainers.begin();
        containIt != textureContainers.end(); ++containIt)
   {
@@ -144,7 +142,7 @@ void TextureManager::shutdown()
   textureContainers.clear();
 }
 
-Texture2d *TextureManager::getTextureFor(int textureId)
+std::shared_ptr<Texture2d> TextureManager::getTextureFor(int textureId)
 {
   if (static_cast<int>(textures.size()) <= textureId)
     throw std::invalid_argument("The given textureId " +
@@ -158,7 +156,7 @@ TextureAddress TextureManager::getAddressFor(int textureId)
   return getTextureFor(textureId)->address();
 }
 
-Texture2d *
+std::shared_ptr<Texture2d>
 TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 {
   TextureContainer *memArray = nullptr;
@@ -194,8 +192,9 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
   }
 
   assert(memArray);
-  return new Texture2d(memArray, memArray->virtualAlloc(),
-                       spaceDescription.width, spaceDescription.height);
+  return std::make_shared<Texture2d>(memArray, memArray->virtualAlloc(),
+                                     spaceDescription.width,
+                                     spaceDescription.height);
 }
 
 int TextureManager::get2DVirtualPageSizeX(int internalFormat)

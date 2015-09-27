@@ -10,14 +10,13 @@ namespace Graphics
 class TextureContainer;
 
 /**
- * \brief
- *
+ * \brief 2d bindless texture which is stored in a TextureContainer
  *
  */
 class Texture2d
 {
  public:
-  Texture2d(TextureContainer *container, int sliceCount, int width, int height);
+  Texture2d(TextureContainer *container, int sliceIndex, int width, int height);
   ~Texture2d();
   void commit();
   void free();
@@ -30,7 +29,7 @@ class Texture2d
 
   const TextureContainer *getTextureContainer() const;
 
-  int getSliceCount() const;
+  int getSliceIndex() const;
 
   TextureAddress address() const;
 
@@ -39,7 +38,7 @@ class Texture2d
 
   int width;
   int height;
-  int sliceCount;
+  int sliceIndex;
 };
 
 }  // namespace Graphics

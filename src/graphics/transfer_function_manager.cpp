@@ -1,7 +1,7 @@
 #include "./transfer_function_manager.h"
-#include <QLoggingCategory>
 #include <stdexcept>
 #include <map>
+#include <string>
 #include "./texture_manager.h"
 #include "./texture2d.h"
 #include "../utils/gradient_utils.h"
@@ -9,15 +9,9 @@
 namespace Graphics
 {
 
-// QLoggingCategory tfChan("Graphics.TransferFunction");
-
 TransferFunctionManager::TransferFunctionManager(
     std::shared_ptr<TextureManager> textureManager)
   : textureManager(textureManager)
-{
-}
-
-TransferFunctionManager::~TransferFunctionManager()
 {
 }
 

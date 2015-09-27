@@ -101,7 +101,11 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
+  qCInfo(meshChan) << "Destructor of mesh";
+  delete[] indexData;
   delete[] positionData;
+  delete[] normalData;
+  delete[] textureCoordinateData;
 }
 
 void Mesh::createObb()
@@ -148,7 +152,7 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   else
   {
     objectData.setCustomBuffer(sizeof(PhongMaterial),
-                               [objectManager, this](void *insertionPoint)
+                               [this](void *insertionPoint)
                                {
       std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
     });

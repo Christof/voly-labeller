@@ -1,9 +1,10 @@
 #include "./ha_buffer.h"
+#include <Eigen/Dense>
 #include <QLoggingCategory>
 #include <algorithm>
-#include <Eigen/Dense>
 #include "./shader_program.h"
 #include "./screen_quad.h"
+#include "./managers.h"
 #include "./object_manager.h"
 #include "./volume_manager.h"
 #include "./texture_manager.h"
@@ -20,6 +21,7 @@ HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 
 HABuffer::~HABuffer()
 {
+  qCInfo(channel) << "Destructor";
   delete[] offsets;
 }
 
@@ -155,14 +157,14 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
 
   Eigen::Vector3f textureAtlasSize =
-      VolumeManager::instance->getVolumeAtlasSize().cast<float>();
+      managers->getVolumeManager()->getVolumeAtlasSize().cast<float>();
   renderShader->setUniform("textureAtlasSize", textureAtlasSize);
   Eigen::Vector3f sampleDistance =
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
   renderShader->setUniform("sampleDistance", sampleDistance);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
-  VolumeManager::instance->fillCustomBuffer(objectData);
+  managers->getVolumeManager()->fillCustomBuffer(objectData);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));

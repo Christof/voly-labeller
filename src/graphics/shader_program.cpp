@@ -6,6 +6,7 @@
 #include <QTextStream>
 #include <QDir>
 #include <string>
+#include <vector>
 #include <fstream>
 #include "./gl.h"
 
