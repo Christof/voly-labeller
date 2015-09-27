@@ -8,9 +8,6 @@
 #include <cudaGL.h>
 #include <cuda_gl_interop.h>
 
-
-cudaError registerImage(cudaGraphicsResource *resource, unsigned int id);
-
 /**
  * \brief
  *
@@ -21,6 +18,8 @@ class CudaTextureMapper
  public:
   CudaTextureMapper(unsigned int textureId);
   virtual ~CudaTextureMapper();
+
+  cudaGraphicsResource **getResource();
 
  private:
   unsigned int textureId;
