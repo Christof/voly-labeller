@@ -122,6 +122,10 @@ void Scene::render()
 
   fbo->unbind();
 
+  if (!colorTextureMapper.get())
+    colorTextureMapper =
+        std::make_shared<CudaTextureMapper>(fbo->getRenderTextureId());
+
   renderScreenQuad();
 
   Eigen::Affine3f transformation(

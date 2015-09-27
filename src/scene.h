@@ -13,7 +13,7 @@
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
 #include "./graphics/object_manager.h"
-
+#include "./placement/cuda_texture_mapper.h"
 #include "./graphics/managers.h"
 
 class Nodes;
@@ -73,6 +73,8 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void doPick();
+
+  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
 };
 
 #endif  // SRC_SCENE_H_
