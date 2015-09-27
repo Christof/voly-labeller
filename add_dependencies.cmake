@@ -10,7 +10,12 @@ find_package(Qt5Xml 5.5 REQUIRED)
 
 find_package(CUDA 7.0 REQUIRED)
 set(CUDA_SEPARABLE_COMPILATION ON)
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 -std=c++11 -gencode arch=compute_30,code=sm_30)
+set(CUDA_VERBOSE_BUILD ON)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3 -gencode arch=compute_30,code=sm_30)
+add_definitions(-DUSECUDA)
+include_directories(${CUDA_INCLUDE_DIRS})
+list(APPEND LIBRARIES ${CUDA_LIB})
+list(APPEND LIBRARIES ${CUDA_LIBRARIES})
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
