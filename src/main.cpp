@@ -18,6 +18,9 @@
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
 #include "./default_scene_creator.h"
+#include "./utils/cuda_helper.h"
+#include <cuda_runtime.h>
+#include <cuda_gl_interop.h>
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
@@ -71,17 +74,30 @@ void setupLogging()
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 }
 
-int main(int argc, char **argv)
+void setupCuda()
 {
-  setupLogging();
-
   int deviceCount = 0;
   cudaGetDeviceCount(&deviceCount);
   if (deviceCount == 0)
   {
     qCritical() << "No cuda device found!";
-    return 1;
+    exit(EXIT_FAILURE);
   }
+
+  cudaDeviceProp prop;
+  int device;
+  memset(&prop, 0, sizeof(cudaDeviceProp));
+  prop.major = 3;
+  prop.minor = 0;
+  HANDLE_ERROR(cudaChooseDevice(&device, &prop));
+  HANDLE_ERROR(cudaGLSetGLDevice(device));
+}
+
+int main(int argc, char **argv)
+{
+  setupLogging();
+
+  setupCuda();
 
   QGuiApplication application(argc, argv);
 
