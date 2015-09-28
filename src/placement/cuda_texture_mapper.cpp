@@ -6,7 +6,7 @@ CudaTextureMapper::CudaTextureMapper(unsigned int textureId)
 {
   qInfo() << "map texture" << textureId;
   HANDLE_ERROR(cudaGraphicsGLRegisterImage(
-      &resource, textureId, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsNone));
+      &resource, textureId, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsSurfaceLoadStore));
 }
 
 CudaTextureMapper::~CudaTextureMapper()

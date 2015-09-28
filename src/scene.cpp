@@ -18,6 +18,7 @@
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
+#include "./placement/summed_area_table.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -89,8 +90,6 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   }
 }
 
-void toGray(cudaGraphicsResource_t *inputImage, int image_size);
-
 void Scene::render()
 {
   if (shouldResize)
@@ -132,11 +131,11 @@ void Scene::render()
 
   renderScreenQuad();
 
+  toGray(colorTextureMapper->getResource(), width);
+
   Eigen::Affine3f transformation(
       Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  fbo->bindColorTexture(GL_TEXTURE0);
-  toGray(colorTextureMapper->getResource(), width);
   renderQuad(transformation.matrix());
 }
 
