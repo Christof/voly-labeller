@@ -674,7 +674,6 @@ int sumUsingCudaInLib()
 }
 
 surface<void, cudaSurfaceType2D> image;
-//texture<char, 4, cudaReadModeNormalizedFloat> image;
 
 __global__ void toGrayKernel(int image_size)
 {
@@ -683,9 +682,6 @@ __global__ void toGrayKernel(int image_size)
   if (x >= image_size || y >= image_size)
     return;
 
-  //int index = y * image_size + x;
-
-  //char4 color = out[index];
   char4 color;
   surf2Dread(&color, image, x * 4, y);
 
@@ -694,43 +690,24 @@ __global__ void toGrayKernel(int image_size)
   color.y = gray;
   color.z = gray;
   surf2Dwrite(color, image, x * 4, y);
-//
-
 }
 
 void toGray(cudaGraphicsResource_t *inputImage, int image_size)
 {
-  /*
-  image.normalized = 0;
-  image.filterMode = cudaFilterModeLinear;
-  image.addressMode[0] = cudaAddressModeWrap;
-  image.addressMode[1] = cudaAddressModeWrap;
-  */
-  //std::cout << "in to gray" << std::endl;
-  HANDLE_ERROR(cudaThreadSynchronize());
-
   HANDLE_ERROR(cudaGraphicsMapResources(1, inputImage));
   cudaArray_t input_array;
-  HANDLE_ERROR(cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0));
+  HANDLE_ERROR(
+      cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0));
   cudaChannelFormatDesc channeldesc;
   HANDLE_ERROR(cudaGetChannelDesc(&channeldesc, input_array));
-  //std::cout << channeldesc.x << "|" << channeldesc.y << "|" << channeldesc.z << "|" << channeldesc.w << "|" << (channeldesc.f == cudaChannelFormatKindUnsigned) << std::endl;
-  std::cout << input_array << std::endl;
-  std::cout << &image << std::endl;
 
   HANDLE_ERROR(cudaBindSurfaceToArray(image, input_array, channeldesc));
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
-  toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
-    /*
-      (image_size, float(screen_size_x) / float(image_size),
-       float(screen_size_y) / float(image_size), z_threshold, d_inout);
-       */
+  toGrayKernel << <dimGrid, dimBlock>>> (image_size);
   HANDLE_ERROR(cudaThreadSynchronize());
-  //cudaUnbindTexture(&image);
   HANDLE_ERROR(cudaGraphicsUnmapResources(1, inputImage));
-
 }
 
