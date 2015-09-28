@@ -5,17 +5,18 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <iostream>
+#include <stdexcept>
 
-static void HandleError(cudaError_t err, const char *file, int line)
+static void HandleError(cudaError_t error, const char *file, int line)
 {
-  if (err != cudaSuccess)
+  if (error != cudaSuccess)
   {
-    printf("%s in %s at line %d\n", cudaGetErrorString(err), file, line);
-    exit(EXIT_FAILURE);
+    printf("%s in %s at line %d\n", cudaGetErrorString(error), file, line);
+    throw std::runtime_error(cudaGetErrorString(error));
   }
 }
 
-#define HANDLE_ERROR(err) (HandleError(err, __FILE__, __LINE__))
+#define HANDLE_ERROR(error) (HandleError(error, __FILE__, __LINE__))
 
 #define HANDLE_NULL(a)                                                         \
   {                                                                            \
