@@ -10,7 +10,10 @@
  * Code adapted from https://github.com/andmax/gpufilter
  */
 
+#include "./summed_area_table.h"
 #include <thrust/device_vector.h>
+#include <iostream>
+#include "../utils/cuda_helper.h"
 
 texture<float, 2, cudaReadModeElementType> textureReadDepth;
 
@@ -670,7 +673,7 @@ int sumUsingCudaInLib()
   return result[0];
 }
 
-texture<char, 4, cudaReadModeElementType> image;
+surface<void, cudaSurfaceType2D> image;
 //texture<char, 4, cudaReadModeNormalizedFloat> image;
 
 __global__ void toGrayKernel(int image_size)
@@ -683,47 +686,51 @@ __global__ void toGrayKernel(int image_size)
   //int index = y * image_size + x;
 
   //char4 color = out[index];
-  char4 color = tex2D(image, x + 0.5f, y + 0.5f);
+  char4 color;
+  surf2Dread(&color, image, x * 4, y);
 
-  //out[index] = color;
-  surf2Dwrite(color, image, x + 0.5f, y + 0.5f, cudaBoundaryModeClamp);
-//0.2989 * R + 0.5870 * G + 0.1140 * B 
+  char gray = 0.2989 * color.x + 0.5870 * color.y + 0.1140 * color.z;
+  color.x = gray;
+  color.y = gray;
+  color.z = gray;
+  surf2Dwrite(color, image, x * 4, y);
+//
 
 }
 
 void toGray(cudaGraphicsResource_t *inputImage, int image_size)
 {
+  /*
   image.normalized = 0;
   image.filterMode = cudaFilterModeLinear;
   image.addressMode[0] = cudaAddressModeWrap;
   image.addressMode[1] = cudaAddressModeWrap;
+  */
+  //std::cout << "in to gray" << std::endl;
+  HANDLE_ERROR(cudaThreadSynchronize());
 
-  cudaGraphicsMapResources(1, inputImage);
+  HANDLE_ERROR(cudaGraphicsMapResources(1, inputImage));
   cudaArray_t input_array;
-  cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0);
+  HANDLE_ERROR(cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0));
   cudaChannelFormatDesc channeldesc;
-  cudaGetChannelDesc(&channeldesc, input_array);
+  HANDLE_ERROR(cudaGetChannelDesc(&channeldesc, input_array));
+  //std::cout << channeldesc.x << "|" << channeldesc.y << "|" << channeldesc.z << "|" << channeldesc.w << "|" << (channeldesc.f == cudaChannelFormatKindUnsigned) << std::endl;
+  std::cout << input_array << std::endl;
+  std::cout << &image << std::endl;
 
-  cudaBindTextureToArray(&image, input_array, &channeldesc);
+  HANDLE_ERROR(cudaBindSurfaceToArray(image, input_array, channeldesc));
 
-  dim3 dimBlock(64, 64, 1);
+  dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
-  /*
-  char4* data;
-  size_t size;
-  cudaGraphicsResourceGetMappedPointer((void **)(&data), &size, *inputImage);
-  */
-
-  //float *d_inout = thrust::raw_pointer_cast(inout.data());
   toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
     /*
       (image_size, float(screen_size_x) / float(image_size),
        float(screen_size_y) / float(image_size), z_threshold, d_inout);
        */
-  cudaThreadSynchronize();
-  cudaUnbindTexture(&image);
-  cudaGraphicsUnmapResources(1, inputImage);
+  HANDLE_ERROR(cudaThreadSynchronize());
+  //cudaUnbindTexture(&image);
+  HANDLE_ERROR(cudaGraphicsUnmapResources(1, inputImage));
 
 }
 
