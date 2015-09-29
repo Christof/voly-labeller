@@ -32,10 +32,10 @@ void DefaultSceneCreator::create()
       */
   sceneNodes.push_back(
       std::make_shared<VolumeNode>("assets/datasets/GRCH_Abdomen.mhd",
-                                   "assets/transferfunctions/MANIX_skin.gra"));
+                                   "assets/transferfunctions/scapula4.gra"));
   sceneNodes.push_back(
       std::make_shared<VolumeNode>("assets/datasets/GRCH_Schaedel_fein_H31.mhd",
-                                   "assets/transferfunctions/scapula1.gra"));
+                                   "assets/transferfunctions/scapula4.gra"));
   Persister::save(sceneNodes, "config/scene.xml");
 
   // nodes->addSceneNodesFrom("config/scene.xml");
