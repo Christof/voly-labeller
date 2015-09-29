@@ -15,6 +15,7 @@
 #include <iostream>
 #include "../utils/cuda_helper.h"
 
+
 texture<float, 2, cudaReadModeElementType> textureReadDepth;
 
 inline unsigned int divUp(unsigned int a, unsigned int b)
@@ -692,22 +693,17 @@ __global__ void toGrayKernel(int image_size)
   surf2Dwrite(color, image, x * 4, y);
 }
 
-void toGray(cudaGraphicsResource_t *inputImage, int image_size)
+void toGray(std::shared_ptr<CudaTextureMapper> tex, int image_size)
 {
-  HANDLE_ERROR(cudaGraphicsMapResources(1, inputImage));
-  cudaArray_t input_array;
-  HANDLE_ERROR(
-      cudaGraphicsSubResourceGetMappedArray(&input_array, *inputImage, 0, 0));
-  cudaChannelFormatDesc channeldesc;
-  HANDLE_ERROR(cudaGetChannelDesc(&channeldesc, input_array));
+  tex->map();
 
-  HANDLE_ERROR(cudaBindSurfaceToArray(image, input_array, channeldesc));
+  HANDLE_ERROR(cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
   toGrayKernel << <dimGrid, dimBlock>>> (image_size);
   HANDLE_ERROR(cudaThreadSynchronize());
-  HANDLE_ERROR(cudaGraphicsUnmapResources(1, inputImage));
+  tex->unmap();
 }
 
