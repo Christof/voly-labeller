@@ -131,7 +131,7 @@ void Scene::render()
 
   renderScreenQuad();
 
-  toGray(colorTextureMapper->getResource(), width);
+  toGray(colorTextureMapper, width);
 
   Eigen::Affine3f transformation(
       Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
