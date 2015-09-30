@@ -6,12 +6,13 @@ layout(location = 2) in vec4 color;
 layout(location = 3) in vec2 texCoord;
 layout(location = 4) in int drawId;
 
-uniform mat4 modelViewProjectionMatrix;
+uniform mat4 viewProjectionMatrix;
 uniform mat4 viewMatrix;
 
 out vec4 outColor;
 out vec3 outNormal;
 out vec4 outPosition;
+out vec4 outEyePosition;
 out vec2 outTextureCoordinate;
 out int outDrawId;
 out vec3 cameraDirection;
@@ -23,7 +24,8 @@ void main()
   mat4 modelMatrix = getModelMatrix(drawId);
 
   outColor = color;
-  outPosition = modelViewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
+  outPosition = viewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
+  outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
   outNormal = mul(modelMatrix, normal).xyz;
   outTextureCoordinate = texCoord;

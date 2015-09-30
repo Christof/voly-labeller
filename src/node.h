@@ -9,6 +9,7 @@
 #include "./graphics/render_data.h"
 #include "./math/obb.h"
 #include "./graphics/gl.h"
+#include "./graphics/managers.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/texture_manager.h"
 #include "./graphics/shader_manager.h"
@@ -27,21 +28,13 @@ class Node
   {
   }
 
-  void render(Graphics::Gl *gl,
-              std::shared_ptr<Graphics::ObjectManager> objectManager,
-              std::shared_ptr<Graphics::TextureManager> textureManager,
-              std::shared_ptr<Graphics::ShaderManager> shaderManager,
-              RenderData renderData)
-  {
-    this->objectManager = objectManager;
-    this->textureManager = textureManager;
-    this->shaderManager = shaderManager;
-    render(gl, renderData);
-  }
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData) = 0;
 
-  virtual std::shared_ptr<Math::Obb> getObb()
+  const Math::Obb &getObb()
   {
-    return std::shared_ptr<Math::Obb>();
+    return obb;
   }
 
   bool isPersistable()
@@ -54,12 +47,8 @@ class Node
   {
   }
 
-  virtual void render(Graphics::Gl *gl, RenderData renderData) = 0;
-
   bool persistable = true;
-  std::shared_ptr<Graphics::ObjectManager> objectManager;
-  std::shared_ptr<Graphics::TextureManager> textureManager;
-  std::shared_ptr<Graphics::ShaderManager> shaderManager;
+  Math::Obb obb;
 
  private:
   friend class boost::serialization::access;

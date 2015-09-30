@@ -19,7 +19,9 @@ class ForcesVisualizerNode : public Node
  public:
   explicit ForcesVisualizerNode(std::shared_ptr<Forces::Labeller> labeller);
 
-  void render(Graphics::Gl *gl, RenderData renderData);
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData);
 
  private:
   std::shared_ptr<Forces::Labeller> labeller;
@@ -27,7 +29,9 @@ class ForcesVisualizerNode : public Node
   std::shared_ptr<Graphics::Connector> connector;
 
   void renderForce(Eigen::Vector2f labelPosition, Eigen::Vector2f force,
-                   Graphics::Gl *gl, RenderData renderData);
+                   Graphics::Gl *gl,
+                   std::shared_ptr<Graphics::Managers> managers,
+                   RenderData renderData);
 };
 
 #endif  // SRC_FORCES_VISUALIZER_NODE_H_

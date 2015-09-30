@@ -24,7 +24,10 @@ void DefaultSceneCreator::create()
   addMeshNodesTo(sceneNodes);
   addLabelNodesTo(sceneNodes);
   sceneNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd"));
+      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd",
+                                   "assets/transferfunctions/scapula4.gra"));
+  // addMultiVolumeNodesTo(sceneNodes);
+
   Persister::save(sceneNodes, "config/scene.xml");
 
   // nodes->addSceneNodesFrom("config/scene.xml");
@@ -37,14 +40,14 @@ void DefaultSceneCreator::create()
 void DefaultSceneCreator::addMeshNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
-  const std::string filename = "assets/assets.dae";
+  const std::string filename = "assets/human-edited.dae";
   Importer importer;
 
   for (unsigned int meshIndex = 0; meshIndex < 2; ++meshIndex)
   {
     auto mesh = importer.import(filename, meshIndex);
-    auto node =
-        new MeshNode(filename, meshIndex, mesh, Eigen::Matrix4f::Identity());
+    auto transformation = importer.getTransformationFor(filename, meshIndex);
+    auto node = new MeshNode(filename, meshIndex, mesh, transformation);
     sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
   }
 }
@@ -70,5 +73,16 @@ void DefaultSceneCreator::addLabelsFromLabelNodes()
 {
   for (auto &labelNode : nodes->getLabelNodes())
     labels->add(labelNode->label);
+}
+
+void DefaultSceneCreator::addMultiVolumeNodesTo(
+    std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  sceneNodes.push_back(
+      std::make_shared<VolumeNode>("assets/datasets/GRCH_Abdomen.mhd",
+                                   "assets/transferfunctions/scapula4.gra"));
+  sceneNodes.push_back(
+      std::make_shared<VolumeNode>("assets/datasets/GRCH_Schaedel_fein_H31.mhd",
+                                   "assets/transferfunctions/scapula4.gra"));
 }
 

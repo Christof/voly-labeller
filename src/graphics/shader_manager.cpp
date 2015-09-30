@@ -8,6 +8,11 @@
 namespace Graphics
 {
 
+ShaderManager::~ShaderManager()
+{
+  qInfo() << "Destructor of ShaderManager";
+}
+
 void ShaderManager::initialize(Gl *gl, std::shared_ptr<HABuffer> haBuffer)
 {
   this->gl = gl;
@@ -66,8 +71,15 @@ void ShaderManager::bind(int id, const RenderData &renderData)
 
   Eigen::Matrix4f viewProjectionMatrix =
       renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("modelViewProjectionMatrix", viewProjectionMatrix);
+  shader->setUniform("viewProjectionMatrix", viewProjectionMatrix);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
+  shader->setUniform("projectionMatrix", renderData.projectionMatrix);
 }
+
+std::shared_ptr<ShaderProgram> ShaderManager::getShader(int id)
+{
+  return shaderPrograms[id];
+}
+
 
 }  // namespace Graphics

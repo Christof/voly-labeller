@@ -1,9 +1,13 @@
 #include "./ha_buffer.h"
+#include <Eigen/Dense>
 #include <QLoggingCategory>
 #include <algorithm>
 #include "./shader_program.h"
 #include "./screen_quad.h"
+#include "./managers.h"
 #include "./object_manager.h"
+#include "./volume_manager.h"
+#include "./texture_manager.h"
 
 namespace Graphics
 {
@@ -17,21 +21,22 @@ HABuffer::HABuffer(Eigen::Vector2i size) : size(size)
 
 HABuffer::~HABuffer()
 {
+  qCInfo(channel) << "Destructor";
   delete[] offsets;
 }
 
-void HABuffer::initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                          std::shared_ptr<TextureManager> textureManager,
-                          std::shared_ptr<ShaderManager> shaderManager)
+void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
   this->gl = gl;
-  this->objectManager = objectManager;
 
-  quad = std::make_shared<ScreenQuad>();
-  quad->skipSettingUniforms = true;
-  quad->initialize(gl, objectManager, textureManager, shaderManager);
+  clearQuad = std::make_shared<ScreenQuad>(":/shader/clearHABuffer.vert",
+                                           ":/shader/clearHABuffer.frag");
+  clearQuad->initialize(gl, managers);
 
-  initializeShadersHash();
+  renderQuad = std::make_shared<ScreenQuad>(":/shader/renderHABuffer.vert",
+                                            ":/shader/renderHABuffer.frag");
+  renderQuad->initialize(gl, managers);
+
   initializeBufferHash();
 
   clearTimer.initialize(gl);
@@ -43,16 +48,6 @@ void HABuffer::updateNearAndFarPlanes(float near, float far)
 {
   zNear = near;
   zFar = far;
-}
-
-void HABuffer::initializeShadersHash()
-{
-  qCDebug(channel) << "initializeShadersHash for size" << size(0) << size(1);
-
-  renderShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/renderHABuffer.vert", ":shader/renderHABuffer.frag");
-  clearShader = std::make_shared<ShaderProgram>(
-      gl, ":shader/clearHABuffer.vert", ":shader/clearHABuffer.frag");
 }
 
 void HABuffer::initializeBufferHash()
@@ -68,23 +63,23 @@ void HABuffer::initializeBufferHash()
           size.y(), habufferNumRecords, habufferTableSize, habufferTableSize);
 
   // HA-Buffer records
-  if (!RecordsBuffer.isInitialized())
-    RecordsBuffer.initialize(gl, habufferNumRecords * sizeof(uint) * 2);
+  if (!recordsBuffer.isInitialized())
+    recordsBuffer.initialize(gl, habufferNumRecords * sizeof(uint) * 2);
   else
-    RecordsBuffer.resize(habufferNumRecords * sizeof(uint) * 2);
+    recordsBuffer.resize(habufferNumRecords * sizeof(uint) * 2);
 
-  if (!CountsBuffer.isInitialized())
-    CountsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
+  if (!countsBuffer.isInitialized())
+    countsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
   else
-    CountsBuffer.resize(habufferCountsSize * sizeof(uint));
+    countsBuffer.resize(habufferCountsSize * sizeof(uint));
 
-  if (!FragmentDataBuffer.isInitialized())
-    FragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
+  if (!fragmentDataBuffer.isInitialized())
+    fragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
   else
-    FragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
+    fragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
 
   // clear counts
-  CountsBuffer.clear(0);
+  countsBuffer.clear(0);
 
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
@@ -97,7 +92,7 @@ void HABuffer::initializeBufferHash()
                           1024.0f << "MB";
 }
 
-void HABuffer::clearAndPrepare()
+void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
 {
   clearTimer.start();
 
@@ -107,14 +102,14 @@ void HABuffer::clearAndPrepare()
     offsets[i] = offsets[i] % habufferTableSize;
   }
 
+  auto clearShader = clearQuad->getShaderProgram();
   clearShader->bind();
   clearShader->setUniform("u_NumRecords", habufferNumRecords);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
-  clearShader->setUniform("u_Records", RecordsBuffer);
-  clearShader->setUniform("u_Counts", CountsBuffer);
+  clearShader->setUniform("u_Records", recordsBuffer);
+  clearShader->setUniform("u_Counts", countsBuffer);
 
-  quad->setShaderProgram(clearShader);
-  quad->render(gl, objectManager, RenderData());
+  clearQuad->renderImmediately(gl, managers, RenderData());
 
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -138,7 +133,8 @@ void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
   lastUsedProgram = shader->getId();
 }
 
-void HABuffer::render()
+void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
+                      const RenderData &renderData)
 {
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -147,14 +143,28 @@ void HABuffer::render()
 
   renderTimer.start();
 
+  auto renderShader = renderQuad->getShaderProgram();
   renderShader->bind();
 
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
   renderShader->setUniform("u_HashSz", habufferTableSize);
   renderShader->setUniformAsVec2Array("u_Offsets", offsets, 256);
-  renderShader->setUniform("u_Records", RecordsBuffer);
-  renderShader->setUniform("u_Counts", CountsBuffer);
-  renderShader->setUniform("u_FragmentData", FragmentDataBuffer);
+  renderShader->setUniform("u_Records", recordsBuffer);
+  renderShader->setUniform("u_Counts", countsBuffer);
+  renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
+
+  Eigen::Matrix4f inverseViewMatrix = renderData.viewMatrix.inverse();
+  renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
+
+  Eigen::Vector3f textureAtlasSize =
+      managers->getVolumeManager()->getVolumeAtlasSize().cast<float>();
+  renderShader->setUniform("textureAtlasSize", textureAtlasSize);
+  Eigen::Vector3f sampleDistance =
+      Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
+  renderShader->setUniform("sampleDistance", sampleDistance);
+
+  ObjectData &objectData = renderQuad->getObjectDataReference();
+  managers->getVolumeManager()->fillCustomBuffer(objectData);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
@@ -162,8 +172,7 @@ void HABuffer::render()
   glAssert(gl->glDepthMask(GL_FALSE));
   glAssert(gl->glDisable(GL_DEPTH_TEST));
 
-  quad->setShaderProgram(renderShader);
-  quad->render(gl, objectManager, RenderData());
+  renderQuad->renderImmediately(gl, managers, renderData);
 
   glAssert(gl->glDepthMask(GL_TRUE));
 
@@ -186,9 +195,9 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 
   shader->setUniform("u_ZNear", zNear);
   shader->setUniform("u_ZFar", zFar);
-  shader->setUniform("u_Records", RecordsBuffer);
-  shader->setUniform("u_Counts", CountsBuffer);
-  shader->setUniform("u_FragmentData", FragmentDataBuffer);
+  shader->setUniform("u_Records", recordsBuffer);
+  shader->setUniform("u_Counts", countsBuffer);
+  shader->setUniform("u_FragmentData", fragmentDataBuffer);
 }
 
 void HABuffer::syncAndGetCounts()
@@ -196,8 +205,8 @@ void HABuffer::syncAndGetCounts()
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
 
   uint numInserted = 1;
-  CountsBuffer.getData(&numInserted, sizeof(uint),
-                       CountsBuffer.getSize() - sizeof(uint));
+  countsBuffer.getData(&numInserted, sizeof(uint),
+                       countsBuffer.getSize() - sizeof(uint));
 
   if (numInserted >= habufferNumRecords)
   {
@@ -218,7 +227,7 @@ void HABuffer::displayStatistics(const char *label)
 {
   uint *lcounts = new uint[habufferCountsSize];
 
-  CountsBuffer.getData(lcounts, CountsBuffer.getSize());
+  countsBuffer.getData(lcounts, countsBuffer.getSize());
 
   int avgdepth = 0;
   int num = 0;

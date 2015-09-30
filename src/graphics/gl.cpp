@@ -5,13 +5,15 @@
 namespace Graphics
 {
 
+QLoggingCategory openGlChan("OpenGl");
+
 Gl::Gl()
 {
 }
 
 Gl::~Gl()
 {
-  qDebug() << "Destructor of Gl";
+  qCInfo(openGlChan) << "Destructor of Gl";
   if (paintDevice)
   {
     delete paintDevice;
@@ -21,24 +23,25 @@ Gl::~Gl()
 
 void Gl::initialize(QOpenGLContext *context, QSize size)
 {
-  qDebug() << "Initialize OpenGL";
+  qCInfo(openGlChan) << "Initialize OpenGL";
   initializeOpenGLFunctions();
   glCheckError();
 
   bool hasShaderBufferLoad = context->hasExtension("GL_NV_shader_buffer_load");
-  qWarning() << "Has GL_NV_shader_buffer_load:" << hasShaderBufferLoad;
+  qCWarning(openGlChan) << "Has GL_NV_shader_buffer_load:"
+                        << hasShaderBufferLoad;
   shaderBufferLoad = new QOpenGLExtension_NV_shader_buffer_load();
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
 
   bool hasBindlessTexture = context->hasExtension("GL_NV_bindless_texture");
-  qWarning() << "Has GL_NV_bindless_texture:" << hasBindlessTexture;
+  qCWarning(openGlChan) << "Has GL_NV_bindless_texture:" << hasBindlessTexture;
   bindlessTexture = new QOpenGLExtension_NV_bindless_texture();
   bindlessTexture->initializeOpenGLFunctions();
   glCheckError();
 
-  qWarning() << "Has GL_ARB_sparse_texture:"
-             << context->hasExtension("GL_ARB_sparse_texture");
+  qCWarning(openGlChan) << "Has GL_ARB_sparse_texture:"
+                        << context->hasExtension("GL_ARB_sparse_texture");
 
   glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
       context->getProcAddress("glTexturePageCommitmentEXT"));

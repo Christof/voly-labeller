@@ -20,6 +20,7 @@ class Importer
 
   std::shared_ptr<Graphics::Mesh> import(std::string filename, int meshIndex);
   std::vector<std::shared_ptr<Graphics::Mesh>> importAll(std::string filename);
+  Eigen::Matrix4f getTransformationFor(std::string filename, int meshIndex);
 
  private:
   Assimp::Importer importer;

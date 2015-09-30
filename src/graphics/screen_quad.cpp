@@ -1,35 +1,45 @@
 #include "./screen_quad.h"
+#include <string>
 #include "./shader_program.h"
+#include "./shader_manager.h"
+#include "./managers.h"
 
 namespace Graphics
 {
 
-ScreenQuad::ScreenQuad()
+ScreenQuad::ScreenQuad(std::string vertexShaderFilename,
+                       std::string fragmentShaderFilename)
+  : Quad(vertexShaderFilename, fragmentShaderFilename)
+
 {
+}
+
+void ScreenQuad::initialize(Gl *gl, std::shared_ptr<Managers> managers)
+{
+  Renderable::initialize(gl, managers);
+  shaderProgram =
+      managers->getShaderManager()->getShader(objectData.getShaderProgramId());
 }
 
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                              const RenderData &renderData)
 {
-  Eigen::Matrix4f modelViewProjection =
+  Eigen::Matrix4f viewProjection =
       renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("modelViewProjectionMatrix", modelViewProjection);
+  shader->setUniform("viewProjectionMatrix", viewProjection);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
   shader->setUniform("modelMatrix", renderData.modelMatrix);
-  shader->setUniform("textureSampler", 0);
 }
 
-void ScreenQuad::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                        const RenderData &renderData)
+void ScreenQuad::renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
+                                   const RenderData &renderData)
 {
   if (!objectData.isInitialized())
-    initialize(gl, objectManager, std::shared_ptr<TextureManager>(),
-               std::shared_ptr<ShaderManager>());
+    initialize(gl, managers);
 
-  if (!skipSettingUniforms)
-    setUniforms(shaderProgram, renderData);
+  setUniforms(shaderProgram, renderData);
 
-  objectManager->renderImmediately(objectData);
+  managers->getObjectManager()->renderImmediately(objectData);
 }
 
 void ScreenQuad::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
@@ -40,6 +50,11 @@ void ScreenQuad::setShaderProgram(std::shared_ptr<ShaderProgram> shaderProgram)
 std::shared_ptr<ShaderProgram> ScreenQuad::getShaderProgram()
 {
   return this->shaderProgram;
+}
+
+ObjectData &ScreenQuad::getObjectDataReference()
+{
+  return objectData;
 }
 
 }  // namespace Graphics

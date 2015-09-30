@@ -26,6 +26,7 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
 
 ObjectManager::~ObjectManager()
 {
+  qCInfo(omChan) << "Destructor of ObjectManager";
 }
 
 void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
@@ -67,27 +68,6 @@ ObjectData ObjectManager::clone(const ObjectData &object)
   return ObjectData(nextFreeId++, object.getVertexOffset(),
                     object.getIndexOffset(), object.getIndexSize(),
                     object.getShaderProgramId(), object.getPrimitiveType());
-}
-
-int ObjectManager::addShader(std::string vertexShaderPath,
-                             std::string fragmentShaderPath)
-{
-  auto id = shaderManager->addShader(vertexShaderPath, fragmentShaderPath);
-
-  qCDebug(omChan) << "Added" << vertexShaderPath.c_str() << "|"
-                  << fragmentShaderPath.c_str() << "which got id" << id;
-
-  return id;
-}
-
-int ObjectManager::addTexture(std::string path)
-{
-  return textureManager->addTexture(path);
-}
-
-TextureAddress ObjectManager::getAddressFor(int textureId)
-{
-  return textureManager->getAddressFor(textureId);
 }
 
 void ObjectManager::render(const RenderData &renderData)

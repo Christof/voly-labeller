@@ -1,0 +1,17 @@
+#version 440
+
+struct Tex2DAddress
+{
+  uint64_t Container;
+  float Page;
+  int dummy;
+  vec2 texScale;
+};
+
+vec4 Texture(Tex2DAddress addr, vec2 uv)
+{
+  vec3 texc = vec3(uv.x * addr.texScale.x, uv.y * addr.texScale.y, addr.Page);
+
+  return texture(sampler2DArray(addr.Container), texc);
+}
+

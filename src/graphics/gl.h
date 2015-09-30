@@ -79,7 +79,6 @@ class Gl : public QOpenGLFunctions_4_5_Core
  private:
   QOpenGLExtension_NV_shader_buffer_load *shaderBufferLoad;
   QOpenGLExtension_NV_bindless_texture *bindlessTexture;
-  QFunctionPointer glTexturePageCommitmentEXTFunction;
 };
 
 }  // namespace Graphics

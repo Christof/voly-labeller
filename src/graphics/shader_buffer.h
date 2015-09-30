@@ -22,6 +22,7 @@ class ShaderBuffer
 {
  public:
   explicit ShaderBuffer(GLenum target, bool runUpdatesOnCPU = true);
+  ~ShaderBuffer();
 
   bool initialize(Gl *gl, GLuint count, GLbitfield createFlags,
                           GLbitfield mapFlags);

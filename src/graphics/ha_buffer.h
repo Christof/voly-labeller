@@ -13,9 +13,7 @@ namespace Graphics
 {
 
 class ShaderProgram;
-class ObjectManager;
-class TextureManager;
-class ShaderManager;
+class Managers;
 class ScreenQuad;
 
 /**
@@ -47,7 +45,7 @@ class ScreenQuad;
  *
  *  FragmentData data;
  *  data.color = color;
- *  data.pos = outPosition;
+ *  data.eyePos = outEyePosition;
  *
  *  return data;
  *}
@@ -64,42 +62,38 @@ class HABuffer
   explicit HABuffer(Eigen::Vector2i size);
   ~HABuffer();
 
-  void initialize(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                  std::shared_ptr<TextureManager> textureManager,
-                  std::shared_ptr<ShaderManager> shaderManager);
+  void initialize(Gl *gl, std::shared_ptr<Managers> managers);
   void updateNearAndFarPlanes(float near, float far);
 
-  void clearAndPrepare();
+  void clearAndPrepare(std::shared_ptr<Managers> managers);
   void begin(std::shared_ptr<ShaderProgram> shader);
-  void render();
+  void render(std::shared_ptr<Graphics::Managers> managers,
+              const RenderData &renderData);
 
   bool wireframe = false;
 
  private:
-  void initializeShadersHash();
   void initializeBufferHash();
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
   void syncAndGetCounts();
   void displayStatistics(const char *label);
 
   // vec4 color and vec4 position
-  const int FRAGMENT_DATA_SIZE = 32;
+  const int FRAGMENT_DATA_SIZE = 36;
 
   Eigen::Vector2i size;
   Gl *gl;
-  std::shared_ptr<ScreenQuad> quad;
-  std::shared_ptr<ShaderProgram> renderShader;
-  std::shared_ptr<ShaderProgram> clearShader;
-  std::shared_ptr<ObjectManager> objectManager;
+  std::shared_ptr<ScreenQuad> clearQuad;
+  std::shared_ptr<ScreenQuad> renderQuad;
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;
   uint habufferNumRecords = 0;
   uint habufferCountsSize = 0;
 
-  Buffer RecordsBuffer;
-  Buffer CountsBuffer;
-  Buffer FragmentDataBuffer;
+  Buffer recordsBuffer;
+  Buffer countsBuffer;
+  Buffer fragmentDataBuffer;
 
   float zNear = 0.1f;
   float zFar = 5.0f;

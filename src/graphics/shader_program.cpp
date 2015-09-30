@@ -6,6 +6,8 @@
 #include <QTextStream>
 #include <QDir>
 #include <string>
+#include <vector>
+#include <fstream>
 #include "./gl.h"
 
 namespace Graphics
@@ -13,19 +15,20 @@ namespace Graphics
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
                              std::string fragmentShaderPath)
-  : vertexShaderPath(vertexShaderPath), fragmentShaderPath(fragmentShaderPath),
-    gl(gl)
+  : vertexShaderPath(vertexShaderPath), geometryShaderPath(""),
+    fragmentShaderPath(fragmentShaderPath), gl(gl)
 {
   addShaderFromSource(QOpenGLShader::Vertex, vertexShaderPath);
   addShaderFromSource(QOpenGLShader::Fragment, fragmentShaderPath);
 
   if (!shaderProgram.link())
   {
-    throw std::runtime_error("error during linking of" + vertexShaderPath +
-                             "/" + fragmentShaderPath);
+    throw std::runtime_error("error during linking of" + getName());
   }
 
   glCheckError();
+
+  writeBinary();
 }
 
 ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
@@ -40,12 +43,12 @@ ShaderProgram::ShaderProgram(Gl *gl, std::string vertexShaderPath,
 
   if (!shaderProgram.link())
   {
-    throw std::runtime_error("error during linking of" + vertexShaderPath +
-                             "/" + geometryShaderPath + "/" +
-                             fragmentShaderPath);
+    throw std::runtime_error("error during linking of" + getName());
   }
 
   glCheckError();
+
+  writeBinary();
 }
 
 ShaderProgram::~ShaderProgram()
@@ -92,6 +95,12 @@ void ShaderProgram::setUniform(const char *name, Eigen::Vector3f vector)
 {
   glAssert(
       gl->glProgramUniform3fv(getId(), getLocation(name), 1, vector.data()));
+}
+
+void ShaderProgram::setUniform(const char *name, Eigen::Vector3i vector)
+{
+  glAssert(
+      gl->glProgramUniform3iv(getId(), getLocation(name), 1, vector.data()));
 }
 
 void ShaderProgram::setUniform(const char *name, Eigen::Vector2f vector)
@@ -183,8 +192,7 @@ int ShaderProgram::getLocation(const char *name)
 
   int location = shaderProgram.uniformLocation(name);
   if (location < 0)
-    qWarning() << "Uniform" << name << "not found in"
-               << vertexShaderPath.c_str() << "|" << fragmentShaderPath.c_str();
+    qWarning() << "Uniform" << name << "not found in" << getName().c_str();
 
   locationCache[name] = location;
 
@@ -199,6 +207,38 @@ void ShaderProgram::addShaderFromSource(QOpenGLShader::ShaderType type,
   {
     throw std::runtime_error("error during compilation of" + path);
   }
+}
+
+void ShaderProgram::writeBinary()
+{
+  const size_t MAX_SIZE = 1 << 24;
+  std::vector<char> binary(MAX_SIZE);
+
+  GLenum format;
+  GLint length;
+  gl->glGetProgramBinary(getId(), MAX_SIZE, &length, &format, binary.data());
+  glCheckError();
+
+  std::ofstream binaryfile(getName() + ".txt");
+  binaryfile.write(binary.data(), length);
+}
+
+std::string ShaderProgram::getName()
+{
+  std::string concat =
+      vertexShaderPath + "_" + geometryShaderPath + "_" + fragmentShaderPath;
+  const std::string toReplace = ":/shader/";
+  size_t index = 0;
+  while (true)
+  {
+    index = concat.find(toReplace, index);
+    if (index == std::string::npos)
+      break;
+
+    concat = concat.replace(index, toReplace.size(), "");
+  }
+
+  return concat;
 }
 
 }  // namespace Graphics

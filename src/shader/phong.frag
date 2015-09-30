@@ -5,6 +5,7 @@
 in vec4 outColor;
 in vec3 outNormal;
 in vec4 outPosition;
+in vec4 outEyePosition;
 in vec2 outTextureCoordinate;
 in flat int outDrawId;
 in vec3 cameraDirection;
@@ -43,7 +44,8 @@ FragmentData computeData()
 
   FragmentData data;
   data.color = color;
-  data.pos = outPosition;
+  data.eyePos = outEyePosition;
+  data.objectId = 0;
 
   return data;
 }

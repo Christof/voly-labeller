@@ -6,10 +6,9 @@
 #include <memory>
 #include "./node.h"
 #include "./graphics/gl.h"
-#include "./math/obb.h"
-#include "./graphics/quad.h"
 #include "./graphics/cube.h"
 #include "./graphics/object_data.h"
+#include "./graphics/volume.h"
 
 struct RenderData;
 class VolumeReader;
@@ -18,31 +17,40 @@ class VolumeReader;
  * \brief Node which renders a volume
  *
  */
-class VolumeNode : public Node
+class VolumeNode : public Node, public Graphics::Volume
 {
  public:
-  explicit VolumeNode(std::string filename);
+  explicit VolumeNode(std::string volumePath, std::string transferFunctionPath);
   virtual ~VolumeNode();
 
-  void render(Graphics::Gl *gl, RenderData renderData);
+  virtual void render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData);
+
+  virtual Graphics::VolumeData getVolumeData();
+  virtual float *getData();
+  virtual Eigen::Vector3i getDataSize();
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
-    ar << BOOST_SERIALIZATION_NVP(filename);
+    ar << BOOST_SERIALIZATION_NVP(volumePath);
+    ar << BOOST_SERIALIZATION_NVP(transferFunctionPath);
   };
 
   Eigen::Matrix4f getTransformation();
-  virtual std::shared_ptr<Math::Obb> getObb();
- private:
-  std::string filename;
-  std::unique_ptr<VolumeReader> volumeReader;
-  std::unique_ptr<Graphics::Quad> quad;
-  std::unique_ptr<Graphics::Cube> cube;
-  std::shared_ptr<Math::Obb> obb;
-  GLuint texture = 0;
-  Graphics::ObjectData cubeData;
 
-  void initializeTexture(Graphics::Gl *gl);
+ private:
+  std::string volumePath;
+  std::string transferFunctionPath;
+  std::unique_ptr<VolumeReader> volumeReader;
+  std::unique_ptr<Graphics::Cube> cube;
+  Graphics::ObjectData cubeData;
+  int volumeId;
+  int transferFunctionRow = -1;
+  Graphics::TextureAddress transferFunctionAddress;
+
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::Managers> managers);
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -69,10 +77,12 @@ template <class Archive>
 inline void load_construct_data(Archive &ar, VolumeNode *t,
                                 const unsigned int version)
 {
-  std::string filename;
-  ar >> BOOST_SERIALIZATION_NVP(filename);
+  std::string volumePath;
+  ar >> BOOST_SERIALIZATION_NVP(volumePath);
+  std::string transferFunctionPath;
+  ar >> BOOST_SERIALIZATION_NVP(transferFunctionPath);
 
-  ::new (t) VolumeNode(filename);
+  ::new (t) VolumeNode(volumePath, transferFunctionPath);
 }
 }  // namespace serialization
 }  // namespace boost

@@ -42,24 +42,46 @@ void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
   }
 };
 
-int main(int argc, char **argv)
+/**
+ * \brief Setup logging
+ *
+ * [Documentation for the
+ * pattern](http://doc.qt.io/qt-5/qtglobal.html#qSetMessagePattern)
+ *
+ * [Documentation for console formatting]
+ * (https://en.wikipedia.org/wiki/ANSI_escape_code#Colors)
+ */
+void setupLogging()
 {
   qputenv("QT_MESSAGE_PATTERN",
-          QString("%{time [yyyy'-'MM'-'dd' 'hh':'mm':'ss]} - %{threadid} "
-                  "%{if-category}%{category}: %{endif}%{message}").toUtf8());
+          QString("%{time [yyyy'-'MM'-'dd' "
+                  "'hh':'mm':'ss]} "
+                  "%{if-fatal}\033[31;1m%{endif}"
+                  "%{if-critical}\033[31m%{endif}"
+                  "%{if-warning}\033[33m%{endif}"
+                  "%{if-info}\033[34m%{endif}"
+                  "- %{threadid} "
+                  "%{if-category}%{category}: %{endif}%{message}"
+                  "%{if-warning}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
+                  "separator=\"\n\t\"}%{endif}"
+                  "%{if-critical}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
+                  "separator=\"\n\t\"}%{endif}\033[0m").toUtf8());
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
+}
+
+int main(int argc, char **argv)
+{
+  setupLogging();
 
   QGuiApplication application(argc, argv);
 
-  qDebug() << "Application start";
+  qInfo() << "Application start";
 
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
   auto labeller = std::make_shared<Forces::Labeller>(labels);
-  auto forcesVisualizerNode = std::make_shared<ForcesVisualizerNode>(labeller);
-  nodes->addNode(forcesVisualizerNode);
 
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
@@ -69,51 +91,55 @@ int main(int argc, char **argv)
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
                 std::placeholders::_2));
 
-  Window window(scene);
-  window.setResizeMode(QQuickView::SizeRootObjectToView);
-  window.rootContext()->setContextProperty("window", &window);
-  window.rootContext()->setContextProperty("nodes", nodes.get());
+  std::unique_ptr<Window> window = std::unique_ptr<Window>(new Window(scene));
+  window->setResizeMode(QQuickView::SizeRootObjectToView);
+  window->rootContext()->setContextProperty("window", window.get());
+  window->rootContext()->setContextProperty("nodes", nodes.get());
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
 
   LabellerModel labellerModel(labeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
-                        [&labellerModel, &nodes, &forcesVisualizerNode]()
+                        [&labellerModel, &nodes, &labeller]()
                         {
     if (labellerModel.getIsVisible())
-      nodes->addNode(forcesVisualizerNode);
+      nodes->addForcesVisualizerNode(
+          std::make_shared<ForcesVisualizerNode>(labeller));
     else
-      nodes->removeNode(forcesVisualizerNode);
+      nodes->removeForcesVisualizerNode();
   });
-  window.rootContext()->setContextProperty("labeller", &labellerModel);
+  window->rootContext()->setContextProperty("labeller", &labellerModel);
 
   LabelsModel labelsModel(labels, pickingController);
-  window.rootContext()->setContextProperty("labels", &labelsModel);
-  window.setSource(QUrl("qrc:ui.qml"));
+  window->rootContext()->setContextProperty("labels", &labelsModel);
+  window->setSource(QUrl("qrc:ui.qml"));
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
                          invokeManager, signalManager);
 
-  invokeManager->addHandler(&window);
+  invokeManager->addHandler(window.get());
   invokeManager->addHandler("mouseShape", &mouseShapeController);
   invokeManager->addHandler("picking", &pickingController);
-  signalManager->addSender("KeyboardEventSender", &window);
+  signalManager->addSender("KeyboardEventSender", window.get());
   signalManager->addSender("labels", &labelsModel);
 
   auto stateMachine = importer.import();
 
   // just for printCurrentState slot for debugging
-  window.stateMachine = stateMachine;
+  window->stateMachine = stateMachine;
 
   stateMachine->start();
 
-  window.show();
+  window->show();
 
   auto resultCode = application.exec();
 
   unsubscribeLabelChanges();
 
+  scene.reset();
+
   return resultCode;
 }
+

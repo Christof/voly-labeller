@@ -8,21 +8,19 @@ MeshNode::MeshNode(std::string assetFilename, int meshIndex,
   : assetFilename(assetFilename), meshIndex(meshIndex), mesh(mesh),
     transformation(transformation)
 {
+  obb = mesh->obb * transformation;
 }
 
 MeshNode::~MeshNode()
 {
 }
 
-std::shared_ptr<Math::Obb> MeshNode::getObb()
-{
-  return mesh->obb;
-}
-
-void MeshNode::render(Graphics::Gl *gl, RenderData renderData)
+void MeshNode::render(Graphics::Gl *gl,
+                      std::shared_ptr<Graphics::Managers> managers,
+                      RenderData renderData)
 {
   renderData.modelMatrix = transformation;
-  mesh->render(gl, objectManager, textureManager, shaderManager, renderData);
+  mesh->render(gl, managers, renderData);
 }
 
 Eigen::Matrix4f MeshNode::getTransformation()

@@ -1,5 +1,6 @@
 #include "./texture_manager.h"
 #include <QLoggingCategory>
+#include <QFileInfo>
 #include <vector>
 #include <map>
 #include <string>
@@ -15,11 +16,6 @@ QLoggingCategory tmChan("Graphics.TextureManager");
 
 TextureManager::~TextureManager()
 {
-  for (auto texture : textures)
-    delete texture;
-
-  textures.clear();
-
   shutdown();
 }
 
@@ -50,37 +46,22 @@ int TextureManager::addTexture(float *data, int width, int height)
   return id;
 }
 
-unsigned int TextureManager::add3dTexture(Eigen::Vector3i size, float *data)
-{
-  auto textureTarget = GL_TEXTURE_3D;
-  unsigned int texture = 0;
-
-  glAssert(gl->glGenTextures(1, &texture));
-  glAssert(gl->glBindTexture(textureTarget, texture));
-  glAssert(gl->glTexImage3D(textureTarget, 0, GL_R32F, size.x(), size.y(),
-                            size.z(), 0, GL_RED, GL_FLOAT, data));
-
-  glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-
-  return texture;
-}
-
-Texture2d *
+std::shared_ptr<Texture2d>
 TextureManager::newTexture2d(TextureSpaceDescription spaceDescription)
 {
-  Texture2d *texture = allocateTexture2d(spaceDescription);
+  auto texture = allocateTexture2d(spaceDescription);
   texture->commit();
 
   return texture;
 }
 
-Texture2d *TextureManager::newTexture2d(std::string path)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(std::string path)
 {
-  auto image = new QImage(path.c_str());
+  QFileInfo file(path.c_str());
+  if (!file.exists())
+    throw std::invalid_argument("Given file '" + path + "' does not exist");
+
+  auto image = new QImage(file.absoluteFilePath());
   auto texture = newTexture2d(image);
 
   delete image;
@@ -88,7 +69,7 @@ Texture2d *TextureManager::newTexture2d(std::string path)
   return texture;
 }
 
-Texture2d *TextureManager::newTexture2d(QImage *image)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(QImage *image)
 {
   try
   {
@@ -96,7 +77,7 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
     auto format = GL_BGRA;
     auto type = GL_UNSIGNED_BYTE;
 
-    Texture2d *texture = allocateTexture2d(TextureSpaceDescription(
+    auto texture = allocateTexture2d(TextureSpaceDescription(
         1, internalformat, image->width(), image->height()));
     texture->commit();
 
@@ -112,13 +93,14 @@ Texture2d *TextureManager::newTexture2d(QImage *image)
   }
 }
 
-Texture2d *TextureManager::newTexture2d(float *data, int width, int height)
+std::shared_ptr<Texture2d> TextureManager::newTexture2d(float *data, int width,
+                                                        int height)
 {
   auto internalformat = GL_RGBA32F;
   auto format = GL_RGBA;
   auto type = GL_FLOAT;
 
-  Texture2d *texture = allocateTexture2d(
+  auto texture = allocateTexture2d(
       TextureSpaceDescription(1, internalformat, width, height));
   texture->commit();
 
@@ -145,6 +127,8 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 
 void TextureManager::shutdown()
 {
+  textures.clear();
+
   for (auto containIt = textureContainers.begin();
        containIt != textureContainers.end(); ++containIt)
   {
@@ -158,7 +142,7 @@ void TextureManager::shutdown()
   textureContainers.clear();
 }
 
-Texture2d *TextureManager::getTextureFor(int textureId)
+std::shared_ptr<Texture2d> TextureManager::getTextureFor(int textureId)
 {
   if (static_cast<int>(textures.size()) <= textureId)
     throw std::invalid_argument("The given textureId " +
@@ -172,7 +156,7 @@ TextureAddress TextureManager::getAddressFor(int textureId)
   return getTextureFor(textureId)->address();
 }
 
-Texture2d *
+std::shared_ptr<Texture2d>
 TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
 {
   TextureContainer *memArray = nullptr;
@@ -208,7 +192,9 @@ TextureManager::allocateTexture2d(TextureSpaceDescription spaceDescription)
   }
 
   assert(memArray);
-  return new Texture2d(memArray, memArray->virtualAlloc());
+  return std::make_shared<Texture2d>(memArray, memArray->virtualAlloc(),
+                                     spaceDescription.width,
+                                     spaceDescription.height);
 }
 
 int TextureManager::get2DVirtualPageSizeX(int internalFormat)

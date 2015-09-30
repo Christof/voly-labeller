@@ -14,6 +14,13 @@ QDebug operator<<(QDebug dbg, const Eigen::Vector3f &vector)
   return dbg.maybeSpace();
 }
 
+QDebug operator<<(QDebug dbg, const Eigen::Vector3i &vector)
+{
+  dbg << "[" << vector.x() << "|" << vector.y() << "|" << vector.z() << "]";
+
+  return dbg.maybeSpace();
+}
+
 QDebug operator<<(QDebug dbg, const Eigen::Vector4f &vector)
 {
   dbg << "[" << vector.x() << "|" << vector.y() << "|" << vector.z() << "|"

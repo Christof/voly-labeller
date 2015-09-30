@@ -22,8 +22,8 @@ class Gl;
 class ObjectManager;
 
 /**
- * \brief Description of phong material consisting of ambient, diffuse and specular
- * color as well as a shininess value
+ * \brief Description of phong material consisting of ambient, diffuse and
+ * specular color as well as a shininess value
  */
 struct PhongMaterial
 {
@@ -43,7 +43,7 @@ class Mesh : public Renderable
   Mesh(aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
-  std::shared_ptr<Math::Obb> obb;
+  Math::Obb obb;
 
  protected:
   virtual ObjectData
@@ -65,8 +65,8 @@ class Mesh : public Renderable
   float *textureCoordinateData;
   PhongMaterial phongMaterial;
 
-  int textureId;
   bool hasTexture;
+  std::string textureFilePath;
 };
 
 }  // namespace Graphics

@@ -24,12 +24,18 @@ class Obb
 
   Eigen::Vector3f corners[8];
 
-  Eigen::Vector3f getCenter();
-  Eigen::Vector3f getHalfWidths();
+  Eigen::Vector3f getCenter() const;
+  Eigen::Vector3f getHalfWidths() const;
+
+  bool isInitialized() const;
+
+  Obb &operator*=(const Eigen::Matrix4f &rhs);
+  Obb operator*(const Eigen::Matrix4f &rhs);
+
  private:
   Eigen::Matrix3f axes;
 
-  Eigen::Vector3f halfWidths;
+  Eigen::Vector3f halfWidths = Eigen::Vector3f::Zero();
 
   Eigen::Vector3f center;
 

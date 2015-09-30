@@ -11,6 +11,10 @@ namespace Graphics
 class Texture2d;
 class Gl;
 
+/**
+ * \brief Manages texture storage space for a certain size and format
+ *
+ */
 class TextureContainer
 {
  public:

@@ -1,5 +1,4 @@
 #include "./scene.h"
-#include <QCursor>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
@@ -7,6 +6,8 @@
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"
+#include "./graphics/managers.h"
+#include "./graphics/volume_manager.h"
 #include "./graphics/shader_program.h"
 #include "./camera_controller.h"
 #include "./camera_rotation_controller.h"
@@ -36,35 +37,33 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
-  textureManager = std::make_shared<Graphics::TextureManager>();
-  shaderManager = std::make_shared<Graphics::ShaderManager>();
-  objectManager =
-      std::make_shared<Graphics::ObjectManager>(textureManager, shaderManager);
+  managers = std::make_shared<Graphics::Managers>();
 }
 
 Scene::~Scene()
 {
-  qDebug() << "Destructor of Scene";
+  nodes->clear();
+  qInfo() << "Destructor of Scene"
+          << "Remaining managers instances" << managers.use_count();
 }
 
 void Scene::initialize()
 {
   glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
 
-  quad = std::make_shared<Graphics::ScreenQuad>();
-  quad->setShaderProgram(std::make_shared<Graphics::ShaderProgram>(
-      gl, ":shader/pass.vert", ":shader/textureForRenderBuffer.frag"));
+  quad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
-  shaderManager->initialize(gl, haBuffer);
+  managers->getShaderManager()->initialize(gl, haBuffer);
 
-  objectManager->initialize(gl, 128, 10000000);
-  haBuffer->initialize(gl, objectManager, textureManager, shaderManager);
-  quad->initialize(gl, objectManager, textureManager, shaderManager);
+  managers->getObjectManager()->initialize(gl, 128, 10000000);
+  haBuffer->initialize(gl, managers);
+  quad->initialize(gl, managers);
 
-  textureManager->initialize(gl, true, 8);
+  managers->getTextureManager()->initialize(gl, true, 8);
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -111,13 +110,13 @@ void Scene::render()
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
 
-  haBuffer->clearAndPrepare();
+  haBuffer->clearAndPrepare(managers);
 
-  nodes->render(gl, objectManager, textureManager, shaderManager, renderData);
+  nodes->render(gl, managers, renderData);
 
-  objectManager->render(renderData);
+  managers->getObjectManager()->render(renderData);
 
-  haBuffer->render();
+  haBuffer->render(managers, renderData);
 
   // doPick();
 
@@ -138,7 +137,8 @@ void Scene::renderScreenQuad()
   // fbo->bindDepthTexture(GL_TEXTURE0);
 
   quad->getShaderProgram()->bind();
-  quad->render(gl, objectManager, renderData);
+  quad->getShaderProgram()->setUniform("textureSampler", 0);
+  quad->renderImmediately(gl, managers, renderData);
 }
 
 void Scene::resize(int width, int height)

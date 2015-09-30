@@ -27,6 +27,7 @@ class ShaderManager
 {
  public:
   ShaderManager() = default;
+  ~ShaderManager();
 
   void initialize(Gl *gl, std::shared_ptr<HABuffer> haBuffer);
 
@@ -34,6 +35,7 @@ class ShaderManager
   int addShader(std::string vertexShaderPath, std::string geometryShaderPath,
                 std::string fragmentShaderPath);
   void bind(int id, const RenderData &renderData);
+  std::shared_ptr<ShaderProgram> getShader(int id);
 
  private:
   std::vector<std::shared_ptr<ShaderProgram>> shaderPrograms;

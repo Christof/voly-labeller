@@ -1,6 +1,7 @@
 #include "./renderable.h"
 #include <string>
 #include "./object_manager.h"
+#include "./managers.h"
 
 namespace Graphics
 {
@@ -13,26 +14,21 @@ Renderable::~Renderable()
 {
 }
 
-void Renderable::initialize(Gl *gl,
-                            std::shared_ptr<ObjectManager> objectManager,
-                            std::shared_ptr<TextureManager> textureManager,
-                            std::shared_ptr<ShaderManager> shaderManager)
+void Renderable::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 {
-  this->objectManager = objectManager;
-
-  objectData = createBuffers(objectManager, textureManager, shaderManager);
+  objectData =
+      createBuffers(managers->getObjectManager(), managers->getTextureManager(),
+                    managers->getShaderManager());
 }
 
-void Renderable::render(Gl *gl, std::shared_ptr<ObjectManager> objectManager,
-                        std::shared_ptr<TextureManager> textureManager,
-                        std::shared_ptr<ShaderManager> shaderManager,
+void Renderable::render(Gl *gl, std::shared_ptr<Managers> managers,
                         const RenderData &renderData)
 {
   if (!objectData.isInitialized())
-    initialize(gl, objectManager, textureManager, shaderManager);
+    initialize(gl, managers);
 
   objectData.modelMatrix = renderData.modelMatrix;
-  objectManager->renderLater(objectData);
+  managers->getObjectManager()->renderLater(objectData);
 }
 
 ObjectData Renderable::getObjectData()

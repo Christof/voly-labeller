@@ -2,6 +2,7 @@
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
+#include "./shader_manager.h"
 
 namespace Graphics
 {
@@ -45,7 +46,7 @@ Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
 
   int shaderProgramId =
-      objectManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
   return objectManager->addObject(positions, normals, colors, texCoords,
                                   indices, shaderProgramId, GL_LINES);
 }

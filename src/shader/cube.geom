@@ -10,14 +10,22 @@
 #version 440
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 85) out;
+layout(triangle_strip, max_vertices = 78) out;
 
 in int vDrawId[];
 
 out vec4 vertexPos;
 out vec4 vertexColor;
+out vec4 vertexEyePos;
+out int volumeId;
 
-uniform mat4 modelViewProjectionMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 viewProjectionMatrix;
+
+layout(std140, binding = 1) buffer CB1
+{
+  vec4 physicalSize[];
+};
 
 #include "vertexHelper.hglsl"
 
@@ -31,11 +39,17 @@ int cutPositionCount = 0;
  * as well as the gl_Position. The color is calculated
  * from the position so that it can be used as texture coordinate.
  */
-void emit(const mat4 matrix, const vec4 pos)
+void emit(const mat4 matrix, vec4 pos)
 {
   vertexPos = matrix * pos;
+  // vertexColor = vec4(physicalSize[vDrawId[0]].xyz, 1);
+  // vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
+  vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
+  const vec4 size = physicalSize[vDrawId[0]];
+  pos.xyz *= size.xyz;
+  vertexEyePos = viewMatrix * getModelMatrix(vDrawId[0]) * pos;
+  volumeId = floatBitsToInt(size.w);
   gl_Position = vertexPos;
-  vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
   EmitVertex();
 }
 
@@ -92,7 +106,7 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
                      const vec4 triangle[3])
 {
   // use positive value to see the cutting in front of the near plane
-  const float cutOffZ = 0;
+  const float cutOffZ = 0.000001;
   int emittedVertexCount = 0;
 
   vec4 firstPosition;
@@ -149,13 +163,13 @@ void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
                  const vec4 side, const vec4 varying1, const vec4 varying2)
 {
   vec4 triangle[3] = vec4[3](center + side - varying1 - varying2,
-                             center + side - varying1 + varying2,
-                             center + side + varying1 - varying2);
+      center + side + varying1 - varying2,
+      center + side - varying1 + varying2);
   processTriangle(matrix, nearPlane, triangle);
 
   triangle = vec4[3](center + side + varying1 - varying2,
-                     center + side - varying1 + varying2,
-                     center + side + varying1 + varying2);
+      center + side + varying1 + varying2,
+      center + side - varying1 + varying2);
   processTriangle(matrix, nearPlane, triangle);
 }
 
@@ -229,8 +243,14 @@ void fillHole(const mat4 matrix)
 
 void main()
 {
-  mat4 model = getModelMatrix(vDrawId[0]);
-  mat4 matrix = modelViewProjectionMatrix * model;
+  int drawId = vDrawId[0];
+  vec4 size = physicalSize[drawId];
+  mat4 model = getModelMatrix(drawId);
+  mat4 scaleMatrix = mat4(size.x, 0, 0, 0,
+                          0, size.y, 0, 0,
+                          0, 0, size.z, 0,
+                          0, 0, 0, 1);
+  mat4 matrix = viewProjectionMatrix * model * scaleMatrix;
   const vec4 xAxis = vec4(0.5, 0, 0, 0);
   const vec4 yAxis = vec4(0, 0.5, 0, 0);
   const vec4 zAxis = vec4(0, 0, 0.5, 0);
@@ -243,7 +263,7 @@ void main()
   vec4 center = gl_in[0].gl_Position;
 
   // top
-  processSide(matrix, nearPlane, center, yAxis, xAxis, zAxis);
+  processSide(matrix, nearPlane, center, yAxis, -xAxis, zAxis);
   // right
   processSide(matrix, nearPlane, center, xAxis, yAxis, zAxis);
   // front
@@ -251,9 +271,9 @@ void main()
   // bottom
   processSide(matrix, nearPlane, center, -yAxis, xAxis, zAxis);
   // left
-  processSide(matrix, nearPlane, center, -xAxis, yAxis, zAxis);
+  processSide(matrix, nearPlane, center, -xAxis, -yAxis, zAxis);
   // back
-  processSide(matrix, nearPlane, center, -zAxis, xAxis, yAxis);
+  processSide(matrix, nearPlane, center, -zAxis, -xAxis, yAxis);
 
   fillHole(matrix);
 }

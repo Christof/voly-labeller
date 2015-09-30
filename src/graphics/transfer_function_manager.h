@@ -4,6 +4,8 @@
 
 #include <string>
 #include <memory>
+#include <map>
+#include "./texture_address.h"
 
 namespace Graphics
 {
@@ -19,19 +21,25 @@ class TextureManager;
 class TransferFunctionManager
 {
  public:
-  TransferFunctionManager(std::shared_ptr<TextureManager> textureManager);
+  explicit TransferFunctionManager(
+      std::shared_ptr<TextureManager> textureManager);
 
   /**
-   * \brief Generates a transfer function lookup row from the given gradient file
+   * \brief Generates a transfer function lookup row from the given gradient
+   * file
    *
    * \return The row in the transfer function lookup table.
    */
   int add(std::string path);
-  virtual ~TransferFunctionManager();
+
+  TextureAddress getTextureAddress();
 
  private:
   const int width = 4096;
+  const int height = 64;
   std::shared_ptr<TextureManager> textureManager;
+  // <path, row>
+  std::map<std::string, int> rowsCache;
   int textureId = -1;
   int usedRows = 0;
 };

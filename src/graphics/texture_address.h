@@ -7,6 +7,12 @@
 namespace Graphics
 {
 
+/**
+ * \brief Texture address for bindless textures
+ *
+ * This is passed to shaders to access the bindless
+ * texture.
+ */
 struct TextureAddress
 {
   GLuint64 containerHandle;

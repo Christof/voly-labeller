@@ -2,6 +2,7 @@
 #include <QLoggingCategory>
 #include <cassert>
 #include <algorithm>
+#include <vector>
 #include "./gl.h"
 #include "./texture2d.h"
 
@@ -47,13 +48,12 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
   const uint textureSize =
       spaceDescription.width * spaceDescription.height * slices * 3;
-  unsigned char *textureData = new unsigned char[textureSize];
-  for (uint i = 0; i < textureSize; i++)
-    textureData[i] = 0;
+  std::vector<unsigned char> textureData(textureSize, 0);
 
   glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, 0,
                                spaceDescription.width, spaceDescription.height,
-                               slices, GL_RGB, GL_UNSIGNED_BYTE, textureData));
+                               slices, GL_RGB, GL_UNSIGNED_BYTE,
+                               textureData.data()));
 
   for (int i = 0; i < slices; ++i)
   {
@@ -75,9 +75,8 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 
 TextureContainer::~TextureContainer()
 {
-  // If this fires, it means there was a texture leaked somewhere.
-  assert(freeList.size() == static_cast<size_t>(slices));
-
+  qCInfo(tcChan) << "Destructor" << spaceDescription.toString().c_str()
+                 << "freeList size" << freeList.size() << "slices" << slices;
   if (handle != 0)
   {
     glAssert(
@@ -94,6 +93,7 @@ int TextureContainer::hasRoom() const
 
 int TextureContainer::virtualAlloc()
 {
+  qCDebug(tcChan) << "VirtualAlloc";
   int returnValue = freeList.front();
   freeList.pop();
 
@@ -102,6 +102,7 @@ int TextureContainer::virtualAlloc()
 
 void TextureContainer::virtualFree(int slice)
 {
+  qCDebug(tcChan) << "Virtual free for slice" << slice;
   freeList.push(slice);
 }
 
@@ -109,13 +110,13 @@ void TextureContainer::commit(Texture2d *texture)
 {
   assert(texture->getTextureContainer() == this);
 
-  changeCommitment(texture->getSliceCount(), GL_TRUE);
+  changeCommitment(texture->getSliceIndex(), GL_TRUE);
 }
 
 void TextureContainer::free(Texture2d *texture)
 {
   assert(texture->getTextureContainer() == this);
-  changeCommitment(texture->getSliceCount(), GL_FALSE);
+  changeCommitment(texture->getSliceIndex(), GL_FALSE);
 }
 
 void TextureContainer::compressedTexSubImage3d(int level, int xOffset,
@@ -143,9 +144,18 @@ void TextureContainer::texSubImage3d(int level, int xOffset, int yOffset,
                   << "depth:" << depth << "format:" << format
                   << "type:" << type;
 
-  glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
-                               zOffset, width, height, depth, format, type,
-                               data));
+  if (data == nullptr)
+  {
+    float clearValue[4] = { 0, 0, 0, 0 };
+    gl->glClearTexSubImage(textureId, level, xOffset, yOffset, zOffset, width,
+                           height, depth, format, type, clearValue);
+  }
+  else
+  {
+    glAssert(gl->glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, xOffset, yOffset,
+                                 zOffset, width, height, depth, format, type,
+                                 data));
+  }
 }
 
 unsigned long int TextureContainer::getHandle() const

@@ -3,6 +3,7 @@
 #include <vector>
 #include "./gl.h"
 #include "./shader_program.h"
+#include "./shader_manager.h"
 
 namespace Graphics
 {
@@ -40,7 +41,7 @@ ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   std::vector<uint> indices = { 0, 2, 1, 1, 2, 3 };
 
   int shaderProgramId =
-      objectManager->addShader(vertexShaderFilename, fragmentShaderFilename);
+      shaderManager->addShader(vertexShaderFilename, fragmentShaderFilename);
 
   if (!staticObjectData.isInitialized())
     staticObjectData = objectManager->addObject(

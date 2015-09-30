@@ -29,7 +29,7 @@ class Window : public QQuickView
 
   std::shared_ptr<QStateMachine> stateMachine;
 
-signals:
+ signals:
   void averageFrameTimeUpdated();
 
  protected slots:
@@ -38,6 +38,8 @@ signals:
   void update();
 
   void toggleFullscreen();
+  void contextAboutToBeDestroyed();
+  void onInvalidated();
 
  protected:
   void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
@@ -45,7 +47,6 @@ signals:
 
  private:
   QSurfaceFormat createSurfaceFormat();
-  QOpenGLDebugLogger *logger;
   void onMessageLogged(QOpenGLDebugMessage message);
   void handleLazyInitialization();
   void initializeOpenGL();
@@ -55,6 +56,7 @@ signals:
   QOpenGLContext *context;
   Graphics::Gl *gl = nullptr;
   std::shared_ptr<AbstractScene> scene;
+  QOpenGLDebugLogger *logger;
   bool updatePending;
   QSet<Qt::Key> keysPressed;
 

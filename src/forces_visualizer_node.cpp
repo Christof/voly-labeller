@@ -14,21 +14,24 @@ ForcesVisualizerNode::ForcesVisualizerNode(
   connector->zOffset = -0.02f;
 }
 
-void ForcesVisualizerNode::render(Graphics::Gl *gl, RenderData renderData)
+void ForcesVisualizerNode::render(Graphics::Gl *gl,
+                                  std::shared_ptr<Graphics::Managers> managers,
+                                  RenderData renderData)
 {
   for (auto &label : labeller->getLabels())
   {
     for (auto &forcePair : label.forces)
     {
       connector->color.head<3>() = forcePair.first->color;
-      renderForce(label.labelPosition2D, forcePair.second, gl, renderData);
+      renderForce(label.labelPosition2D, forcePair.second, gl, managers,
+                  renderData);
     }
   }
 }
 
-void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
-                                       Eigen::Vector2f force, Graphics::Gl *gl,
-                                       RenderData renderData)
+void ForcesVisualizerNode::renderForce(
+    Eigen::Vector2f labelPosition, Eigen::Vector2f force, Graphics::Gl *gl,
+    std::shared_ptr<Graphics::Managers> managers, RenderData renderData)
 {
   auto length = force.norm() * 10;
   auto rotation = Eigen::Quaternionf::FromTwoVectors(
@@ -43,7 +46,6 @@ void ForcesVisualizerNode::renderForce(Eigen::Vector2f labelPosition,
                            renderData.projectionMatrix.inverse() *
                            connectorTransform.matrix();
 
-  connector->render(gl, objectManager, textureManager, shaderManager,
-                    renderData);
+  connector->render(gl, managers, renderData);
 }
 

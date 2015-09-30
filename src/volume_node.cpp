@@ -1,66 +1,98 @@
 #include "./volume_node.h"
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
 #include "./graphics/render_data.h"
 #include "./volume_reader.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/shader_manager.h"
+#include "./graphics/volume_manager.h"
+#include "./graphics/transfer_function_manager.h"
+#include "./utils/path_helper.h"
+#include "./eigen_qdebug.h"
 
-VolumeNode::VolumeNode(std::string filename) : filename(filename)
+VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath)
+  : volumePath(volumePath), transferFunctionPath(transferFunctionPath)
 {
-  volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(filename));
-  quad = std::unique_ptr<Graphics::Quad>(
-      new Graphics::Quad(":shader/label.vert", ":shader/slice.frag"));
-  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
+  volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(volumePath));
 
   auto transformation = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
   Eigen::Vector3f center = transformation.col(3).head<3>();
-  obb = std::make_shared<Math::Obb>(center, halfWidths,
-                                    transformation.block<3, 3>(0, 0));
+  obb = Math::Obb(center, halfWidths, transformation.block<3, 3>(0, 0));
 }
 
 VolumeNode::~VolumeNode()
 {
 }
 
-void VolumeNode::render(Graphics::Gl *gl, RenderData renderData)
+void VolumeNode::render(Graphics::Gl *gl,
+                        std::shared_ptr<Graphics::Managers> managers,
+                        RenderData renderData)
 {
-  if (texture == 0)
-    initializeTexture(gl);
+  if (cube.get() == nullptr)
+    initialize(gl, managers);
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
-  glAssert(gl->glBindTexture(GL_TEXTURE_3D, texture));
-  quad->render(gl, objectManager, textureManager, shaderManager, renderData);
 
-  auto transformation = volumeReader->getTransformationMatrix();
-  auto size = volumeReader->getPhysicalSize();
-  Eigen::Matrix4f scale = Eigen::Matrix4f::Identity();
-  scale.diagonal().head<3>() = size;
-  cubeData.modelMatrix = transformation * scale;
-  objectManager->renderLater(cubeData);
+  managers->getObjectManager()->renderLater(cubeData);
 }
 
-std::shared_ptr<Math::Obb> VolumeNode::getObb()
+Graphics::VolumeData VolumeNode::getVolumeData()
 {
-  return obb;
+  Graphics::VolumeData data;
+  data.textureAddress = transferFunctionAddress;
+  Eigen::Affine3f positionToTexture(Eigen::Translation3f(0.5f, 0.5f, 0.5f));
+  Eigen::Affine3f scale(Eigen::Scaling(volumeReader->getPhysicalSize()));
+  data.textureMatrix = positionToTexture.matrix() *
+                       (cubeData.modelMatrix * scale.matrix()).inverse();
+  data.volumeId = volumeId;
+  data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
+  data.transferFunctionRow = transferFunctionRow;
+
+  return data;
 }
 
-void VolumeNode::initializeTexture(Graphics::Gl *gl)
+float *VolumeNode::getData()
 {
-  cube->initialize(gl, objectManager, textureManager, shaderManager);
-  int shaderProgramId = shaderManager->addShader(
-      ":/shader/cube.vert", ":/shader/cube.geom", ":/shader/test.frag");
+  return volumeReader->getDataPointer();
+}
+
+Eigen::Vector3i VolumeNode::getDataSize()
+{
+  return volumeReader->getSize();
+}
+
+void VolumeNode::initialize(Graphics::Gl *gl,
+                            std::shared_ptr<Graphics::Managers> managers)
+{
+  volumeId = managers->getVolumeManager()->addVolume(this, gl);
+  cube = std::unique_ptr<Graphics::Cube>(new Graphics::Cube());
+  cube->initialize(gl, managers);
+  int shaderProgramId = managers->getShaderManager()->addShader(
+      ":/shader/cube.vert", ":/shader/cube.geom", ":/shader/volume_cube.frag");
 
   auto colors = std::vector<float>{ 1, 0, 0, 0.5f };
   auto pos = std::vector<float>{ 0, 0, 0 };
-  cubeData = objectManager->addObject(
+  cubeData = managers->getObjectManager()->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
       shaderProgramId, GL_POINTS);
-  cubeData.modelMatrix = Eigen::Matrix4f::Identity();
-  glAssert(gl->glPointSize(40));
+  auto transformation = volumeReader->getTransformationMatrix();
+  cubeData.modelMatrix = transformation;
+  float volumeIdAsFloat = *reinterpret_cast<float *>(&volumeId);
+  Eigen::Vector4f physicalSize(
+      volumeReader->getPhysicalSize().x(), volumeReader->getPhysicalSize().y(),
+      volumeReader->getPhysicalSize().z(), volumeIdAsFloat);
 
-  texture = textureManager->add3dTexture(volumeReader->getSize(),
-                                         volumeReader->getDataPointer());
+  cubeData.setCustomBuffer(sizeof(Eigen::Vector4f),
+                           [physicalSize](void *insertionPoint)
+                           {
+    memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector4f));
+  });
+
+  auto transferFunctionManager = managers->getTransferFunctionManager();
+  transferFunctionRow = transferFunctionManager->add(
+      absolutePathOfProjectRelativePath(transferFunctionPath));
+  transferFunctionAddress = transferFunctionManager->getTextureAddress();
 }
 
