@@ -30,6 +30,7 @@ class DefaultSceneCreator
   void addMeshNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes);
   void addLabelNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes);
   void addLabelsFromLabelNodes();
+  void addMultiVolumeNodesTo(std::vector<std::shared_ptr<Node>> &sceneNodes);
 };
 
 #endif  // SRC_DEFAULT_SCENE_CREATOR_H_
