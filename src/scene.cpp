@@ -67,6 +67,11 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 }
 
+void Scene::cleanup()
+{
+  colorTextureMapper.reset();
+}
+
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
