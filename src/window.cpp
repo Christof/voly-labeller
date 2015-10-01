@@ -8,7 +8,6 @@
 #include <QAbstractState>
 #include <QAbstractTransition>
 #include <QLoggingCategory>
-#include <iostream>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
 
@@ -99,6 +98,7 @@ void Window::keyPressEvent(QKeyEvent *event)
 void Window::onInvalidated()
 {
   qCInfo(openGlChan) << "on invalidated: delete logger";
+  scene->cleanup();
   delete logger;
 }
 

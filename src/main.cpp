@@ -163,8 +163,6 @@ int main(int argc, char **argv)
 
   unsubscribeLabelChanges();
 
-  scene.reset();
-
   return resultCode;
 }
 
