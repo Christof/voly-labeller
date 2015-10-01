@@ -18,7 +18,7 @@ typedef unsigned int GLenum;
 class CudaTextureMapper
 {
  public:
-  CudaTextureMapper(unsigned int textureId);
+  explicit CudaTextureMapper(unsigned int textureId);
   virtual ~CudaTextureMapper();
 
   void map();

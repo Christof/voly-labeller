@@ -2,8 +2,8 @@
 #include <QQmlContext>
 #include <QStateMachine>
 #include <QDebug>
-#include <memory>
 #include <cuda_runtime.h>
+#include <memory>
 #include "./window.h"
 #include "./scene.h"
 #include "./nodes.h"
@@ -19,8 +19,6 @@
 #include "./forces_visualizer_node.h"
 #include "./default_scene_creator.h"
 #include "./utils/cuda_helper.h"
-#include <cuda_runtime.h>
-#include <cuda_gl_interop.h>
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
