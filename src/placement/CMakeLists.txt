@@ -6,6 +6,7 @@ include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(SOURCES
   summed_area_table.cu
+  distance_transform.cu
   labeller.cpp
   cuda_texture_mapper.cpp
   )
