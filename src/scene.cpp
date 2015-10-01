@@ -14,7 +14,7 @@
 #include "./camera_zoom_controller.h"
 #include "./camera_move_controller.h"
 #include "./nodes.h"
-#include "./forces/labeller_frame_data.h"
+#include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
@@ -87,7 +87,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
-  auto newPositions = forcesLabeller->update(Forces::LabellerFrameData(
+  auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
   for (auto &labelNode : nodes->getLabelNodes())
