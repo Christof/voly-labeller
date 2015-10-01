@@ -1,11 +1,9 @@
-#ifndef SRC_FORCES_LABELLER_FRAME_DATA_H_
+#ifndef SRC_LABELLING_LABELLER_FRAME_DATA_H_
 
-#define SRC_FORCES_LABELLER_FRAME_DATA_H_
+#define SRC_LABELLING_LABELLER_FRAME_DATA_H_
 
 #include "../math/eigen.h"
 
-namespace Forces
-{
 /**
  * \brief Data which changes every frame and is passed on to the labeller
  * and then to the forces
@@ -35,6 +33,5 @@ class LabellerFrameData
     return projected.head<3>() / projected.w();
   }
 };
-}  // namespace Forces
 
-#endif  // SRC_FORCES_LABELLER_FRAME_DATA_H_
+#endif  // SRC_LABELLING_LABELLER_FRAME_DATA_H_

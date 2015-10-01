@@ -6,7 +6,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include <string>
-#include "./labeller_frame_data.h"
+#include "../labelling/labeller_frame_data.h"
 
 namespace Forces
 {

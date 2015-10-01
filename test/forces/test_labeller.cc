@@ -18,10 +18,10 @@ class TestLabeller : public ::testing::Test
 
   Label label = { 1, "Label text", Eigen::Vector3f(1, 2, 3) };
 
-  Forces::LabellerFrameData getDefaultFrameData()
+  LabellerFrameData getDefaultFrameData()
   {
     double frameTime = 1.0;
-    return Forces::LabellerFrameData(frameTime, Eigen::Matrix4f::Identity(),
+    return LabellerFrameData(frameTime, Eigen::Matrix4f::Identity(),
                                      Eigen::Matrix4f::Identity());
   }
 };
