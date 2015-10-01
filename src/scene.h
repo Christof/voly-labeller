@@ -35,7 +35,7 @@ class Scene : public AbstractScene
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-        std::shared_ptr<Forces::Labeller> labeller);
+        std::shared_ptr<Forces::Labeller> forcesLabeller);
   ~Scene();
 
   virtual void initialize();
@@ -56,7 +56,7 @@ class Scene : public AbstractScene
 
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
-  std::shared_ptr<Forces::Labeller> labeller;
+  std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
