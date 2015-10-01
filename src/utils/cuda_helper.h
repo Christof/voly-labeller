@@ -26,4 +26,9 @@
     }                                                                          \
   }
 
+inline unsigned int divUp(unsigned int a, unsigned int b)
+{
+  return (a % b != 0) ? (a / b + 1) : (a / b);
+}
+
 #endif  // SRC_UTILS_CUDA_HELPER_H_

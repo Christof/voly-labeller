@@ -15,36 +15,30 @@
 #include <iostream>
 #include "../utils/cuda_helper.h"
 
-
 texture<float, 2, cudaReadModeElementType> textureReadDepth;
 
-inline unsigned int divUp(unsigned int a, unsigned int b)
-{
-  return (a % b != 0) ? (a / b + 1) : (a / b);
-}
-
-#define WS 32   // Warp size (defines b x b block size where b = WS)
-#define HWS 16  // Half Warp Size
-#define DW 8    // Default number of warps (computational block height)
-#define CHW 7   // Carry-heavy number of warps
-                // (computational block height for some kernels)
-#define OW   6  // Optimized number of warps (computational block height for
-                // some kernels)
-#define DNB  6  // Default number of blocks per SM (minimum blocks per SM
-                // launch bounds)
-#define ONB 5   // Optimized number of blocks per SM (minimum blocks per SM
-                // for some kernels)
-#define MTS 192 // Maximum number of threads per block with 8 blocks per SM
-#define MBO 8   // Maximum number of blocks per SM using optimize or maximum
-                // warps
-#define CHB 7   // Carry-heavy number of blocks per SM using default number of
-                // warps
-#define MW 6    // Maximum number of warps per block with 8 blocks per SM (with
-                // all warps computing)
-#define SOW 5   // Dual-scheduler optimized number of warps per block (with 
-                // 8 blocks per SMand to use the dual scheduler with 1
-                // computing warp)
-#define MBH 3   // Maximum number of blocks per SM using half-warp size
+#define WS 32    // Warp size (defines b x b block size where b = WS)
+#define HWS 16   // Half Warp Size
+#define DW 8     // Default number of warps (computational block height)
+#define CHW 7    // Carry-heavy number of warps
+                 // (computational block height for some kernels)
+#define OW 6     // Optimized number of warps (computational block height for
+                 // some kernels)
+#define DNB 6    // Default number of blocks per SM (minimum blocks per SM
+                 // launch bounds)
+#define ONB 5    // Optimized number of blocks per SM (minimum blocks per SM
+                 // for some kernels)
+#define MTS 192  // Maximum number of threads per block with 8 blocks per SM
+#define MBO 8    // Maximum number of blocks per SM using optimize or maximum
+                 // warps
+#define CHB 7    // Carry-heavy number of blocks per SM using default number of
+                 // warps
+#define MW 6     // Maximum number of warps per block with 8 blocks per SM (with
+                 // all warps computing)
+#define SOW 5    // Dual-scheduler optimized number of warps per block (with
+                 // 8 blocks per SMand to use the dual scheduler with 1
+                 // computing warp)
+#define MBH 3    // Maximum number of blocks per SM using half-warp size
 
 /**
  *  @ingroup gpu
@@ -66,7 +60,6 @@ inline unsigned int divUp(unsigned int a, unsigned int b)
 __global__ void algSAT_stage1(const int c_width, const int c_height,
                               const float *g_in, float *g_ybar, float *g_vhat)
 {
-
   const int tx = threadIdx.x, ty = threadIdx.y, bx = blockIdx.x,
             by = blockIdx.y, col = bx * WS + tx, row0 = by * WS;
 
@@ -94,7 +87,6 @@ __global__ void algSAT_stage1(const int c_width, const int c_height,
 
   if (ty == 0)
   {
-
     {  // calculate ybar -----------------------
       float(*bdata)[WS + 1] = (float(*)[WS + 1]) & s_block[0][tx];
 
@@ -166,9 +158,7 @@ __global__ void algSAT_stage2(const int c_n_size, const int c_m_size,
 
   for (int n = 1; n < c_n_size; ++n)
   {
-
     // calculate ysum -----------------------
-
     s_block[ty][ln] = y;
 
     s_block[ty][ln] += s_block[ty][ln - 1];
@@ -184,7 +174,6 @@ __global__ void algSAT_stage2(const int c_n_size, const int c_m_size,
     }
 
     // fix ybar -> y -------------------------
-
     g_ybar += c_width;
     y = *g_ybar += y;
   }
@@ -226,9 +215,7 @@ __global__ void algSAT_stage3(const int c_m_size, const int c_height,
 
   for (int m = 0; m < c_m_size; ++m)
   {
-
     // fix vhat -> v -------------------------
-
     if (row0 > 0)
     {
       y = *g_ysum;
@@ -291,7 +278,6 @@ __global__ void algSAT_stage4(const int c_width, const int c_height,
 
   if (ty == 0)
   {
-
     {  // calculate y -----------------------
       float(*bdata)[WS + 1] = (float(*)[WS + 1]) & s_block[0][tx];
 
@@ -387,7 +373,6 @@ __global__ void algSAT_stage4(const int c_width, const int c_height,
 
   if (ty == 0)
   {
-
     {  // calculate y -----------------------
       float(*bdata)[WS + 1] = (float(*)[WS + 1]) & s_block[0][tx];
 
@@ -485,10 +470,11 @@ void resizeIfNecessary(thrust::device_vector<float> &vector, unsigned long size)
   }
 }
 
-void callStages(thrust::device_vector<float> &inout, thrust::device_vector<float> &ybar,
-                thrust::device_vector<float> &vhat, thrust::device_vector<float> &ysum,
-                int compute_width, int compute_height, int compute_m_size,
-                int compute_n_size)
+void callStages(thrust::device_vector<float> &inout,
+                thrust::device_vector<float> &ybar,
+                thrust::device_vector<float> &vhat,
+                thrust::device_vector<float> &ysum, int compute_width,
+                int compute_height, int compute_m_size, int compute_n_size)
 {
   const int nWm = (compute_width + MTS - 1) / MTS,
             nHm = (compute_height + MTS - 1) / MTS;
@@ -555,9 +541,10 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
   float *d_inout = thrust::raw_pointer_cast(inout.data());
-  sat_init_kernel<<<dimGrid, dimBlock>>>
-      (image_size, float(screen_size_x) / float(image_size),
-       float(screen_size_y) / float(image_size), z_threshold, d_inout);
+  sat_init_kernel << <dimGrid, dimBlock>>>(image_size,
+       static_cast<float>(screen_size_x) / static_cast<float>(image_size),
+       static_cast<float>(screen_size_y) / static_cast<float>(image_size),
+       z_threshold, d_inout);
   cudaThreadSynchronize();
   cudaUnbindTexture(&textureReadDepth);
   cudaGraphicsUnmapResources(1, &inputImage);
@@ -625,10 +612,12 @@ thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
   int compute_n_size = (compute_height + WS - 1) / WS;
 
   // alg_setup algs;
-  thrust::device_vector<float> inout(h_inout, h_inout + w * h), ybar, vhat, ysum;
+  thrust::device_vector<float> inout(h_inout, h_inout + w * h);
+  thrust::device_vector<float> ybar;
+  thrust::device_vector<float> vhat;
+  thrust::device_vector<float> ysum;
 
   // prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
-
   resizeIfNecessary(inout, compute_width * compute_height);
   resizeIfNecessary(ybar, compute_n_size * compute_width);
   resizeIfNecessary(vhat, compute_m_size * compute_height);
@@ -638,7 +627,7 @@ thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
              compute_m_size, compute_n_size);
 
   cudaDeviceSynchronize();
-  //algSAT(d_out, d_ybar, d_vhat, d_ysum, algs);
+  // algSAT(d_out, d_ybar, d_vhat, d_ysum, algs);
 
   // thrust::host_vector<float> result = inout;
   // thrust::host_vector<float> result(w * h);
@@ -697,7 +686,8 @@ void toGray(std::shared_ptr<CudaTextureMapper> tex, int image_size)
 {
   tex->map();
 
-  HANDLE_ERROR(cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
+  HANDLE_ERROR(
+      cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
