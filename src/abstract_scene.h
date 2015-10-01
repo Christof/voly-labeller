@@ -35,6 +35,7 @@ class AbstractScene
   }
 
   virtual void initialize() = 0;
+  virtual void cleanup() = 0;
 
   virtual void update(double frameTime, QSet<Qt::Key> keysPressed) = 0;
 
