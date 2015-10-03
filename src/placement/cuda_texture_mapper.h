@@ -12,9 +12,14 @@ typedef unsigned int GLenum;
 #include "../utils/cuda_array_provider.h"
 
 /**
- * \brief
+ * \brief Maps a given OpenGl texture to a CUDA resource
  *
- *
+ * Per default to given texture is mapped so that CUDA
+ * can read it and also write to it.
+ * To use the texture #map must be called. Then CUDA
+ * can access the texture memory via the cudaArray which
+ * is returned by #getArray. After the changes have been 
+ * made #unmap must be invoked.
  */
 class CudaTextureMapper : public CudaArrayProvider
 {
