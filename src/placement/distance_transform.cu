@@ -153,8 +153,10 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int image_size, int
   surf2Dwrite<float4>(color, surfaceWrite, x*sizeof(float4), y);
 }
 
+#define MAX_LABELS 256
+
 int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size, int numLabels,
-                            Cuda::DeviceMemoryLinear<float4,1> *seedbuffer,
+                            thrust::device_vector<float4> &seedbuffer,
                             thrust::device_vector<float> &distance_vector,
                             thrust::device_vector<int> &compute_vector,
                             thrust::device_vector<int> &compute_temp_vector,
@@ -179,6 +181,7 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
   int *raw_ptr = thrust::raw_pointer_cast(compute_vector.data());
   int *idptr = thrust::raw_pointer_cast(compute_seed_ids.data());
   int *idxptr = thrust::raw_pointer_cast(compute_seed_indices.data());
+  float4 *seedBufferPtr = thrust::raw_pointer_cast(seedbuffer.data());
 
   cudaArray_t input_array;
 
@@ -191,7 +194,7 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
 
   // voronoi seed initialization in cuda
 
-  jfa_seed_kernel<<<dimGrid,dimBlock>>>(image_size, numLabels, seedbuffer->getBuffer(), raw_ptr, idptr, idxptr);
+  jfa_seed_kernel<<<dimGrid,dimBlock>>>(image_size, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
 
   // apollonius diagram computation in thrust
