@@ -6,49 +6,53 @@
 
 surface<void, cudaSurfaceType2D> surfaceWrite;
 
-__global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int imageSize, int num_labels, float4* seedbuffer, int* thrustptr, int *idptr, int*idxptr)
+__global__ void jfa_seed_kernel(int imageSize, int num_labels,
+                                float4 *seedbuffer, int *thrustptr, int *idptr,
+                                int *idxptr)
 {
-  int x = blockIdx.x*blockDim.x + threadIdx.x;
-  int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int index = y*imageSize + x;
-  /*if (x< imageSize && y < imageSize)
-  {
-    surf2Dwrite<float4>(make_float4(0.0f, 0.0f, 0.0f, 1.0f), surfaceWrite, x*sizeof(float4), y);
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+  if (x >= imageSize || y >= imageSize)
+    return;
 
-  }
-  __syncthreads();
-*/
+  int index = y * imageSize + x;
   float4 outval = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
   float4 seedval = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 
   // initialize to out of bounds
-  int outindex = (imageSize*2)*(imageSize*2)-1;
+  int outindex = (imageSize * 2) * (imageSize * 2) - 1;
 
-
-  for (int i = 0; i< num_labels; i++)
+  for (int i = 0; i < num_labels; i++)
   {
     float4 seedval = seedbuffer[i];
-    //if (seedval.x > 0.0) outval = make_float4(0.0f, 1.0f, 0.0f, 1.0f);
-    if (int(seedval.x) > 0 && x == int(seedval.y) && y == int(seedval.z) && (x!=0 || y!=0))
+    // if (seedval.x > 0.0) outval = make_float4(0.0f, 1.0f, 0.0f, 1.0f);
+    if (int(seedval.x) > 0 && x == int(seedval.y) && y == int(seedval.z) &&
+        (x != 0 || y != 0))
     {
-      outval = make_float4(seedval.x/(num_labels+1), int(seedval.y)/float(imageSize), int(seedval.z)/float(imageSize), 1.0f);
+      outval = make_float4(seedval.x / (num_labels + 1),
+                           int(seedval.y) / float(imageSize),
+                           int(seedval.z) / float(imageSize), 1.0f);
 
       // index for thrust computation =
-      outindex = x + y*imageSize;
-      //printf("hit: outval: %f %f %f %f %d %d %f %f %f nl: %d oi: %d\n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z,num_labels, outindex);
-      //printf("hit: outval: %f %f %f %f %d %d\n",outval.x, outval.y, outval.z, outval.w, x, y);
-      //break;
+      outindex = x + y * imageSize;
+      // printf("hit: outval: %f %f %f %f %d %d %f %f %f nl: %d oi:
+      // %d\n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x,
+      // seedval.y, seedval.z,num_labels, outindex);
+      // printf("hit: outval: %f %f %f %f %d %d\n",outval.x, outval.y, outval.z,
+      // outval.w, x, y);
+      // break;
     }
     else
     {
-      //printf("not hit: outval: %f %f %f %f %d %d %f %f %f \n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z);
+      // printf("not hit: outval: %f %f %f %f %d %d %f %f %f \n",outval.x,
+      // outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z);
     }
     idptr[i] = int(seedval.x);
-    idxptr[i] = int(seedval.y) + int(seedval.z)*imageSize;
+    idxptr[i] = int(seedval.y) + int(seedval.z) * imageSize;
   }
 
   thrustptr[index] = outindex;
-  surf2Dwrite<float4>(outval, surfaceWrite, x*sizeof(float4), y);
+  surf2Dwrite<float4>(outval, surfaceWrite, x * sizeof(float4), y);
 }
 
 __global__ void apollonius_cuda(int *data,
