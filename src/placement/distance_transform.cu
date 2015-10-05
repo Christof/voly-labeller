@@ -155,8 +155,6 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int 
   surf2Dwrite<float4>(color, surfaceWrite, x*sizeof(float4), y);
 }
 
-#define MAX_LABELS 256
-
 void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabels,
                             thrust::device_vector<float4> &seedbuffer,
                             thrust::device_vector<float> &distance_vector,
@@ -189,7 +187,6 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabel
   cudaBindSurfaceToArray(surfaceWrite, imageArray);
 
   // voronoi seed initialization in cuda
-
   jfa_seed_kernel<<<dimGrid,dimBlock>>>(imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
 
