@@ -190,12 +190,15 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
 
-  cudaBindSurfaceToArray(surfaceWrite, imageArray);
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, imageArray, channelDesc));
 
   jfa_seed_kernel<<<dimGrid, dimBlock>>>(imageSize, numLabels, seedBufferPtr,
       raw_ptr, idptr, idxptr);
-  cudaThreadSynchronize();
+  HANDLE_ERROR(cudaThreadSynchronize());
 
+  /*
   compute_temp_vector = compute_vector;
   apollonius_cuda<<<dimGrid, dimBlock>>>(
       thrust::raw_pointer_cast(compute_vector.data()),
@@ -214,5 +217,6 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
   jfa_thrust_gather<<<dimGrid, dimBlock>>>(imageSize, numLabels, raw_ptr,
       idptr, idxptr);
   cudaThreadSynchronize();
+  */
 }
 
