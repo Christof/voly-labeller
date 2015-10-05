@@ -1,6 +1,8 @@
+#include "./distance_transform.h"
 #include <thrust/device_vector.h>
 #include <thrust/device_ptr.h>
 #include "../utils/cuda_helper.h"
+
 
 surface<void, cudaSurfaceType2D> surfaceWrite;
 
@@ -155,7 +157,7 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int 
 
 #define MAX_LABELS 256
 
-int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int imageSize, int numLabels,
+void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabels,
                             thrust::device_vector<float4> &seedbuffer,
                             thrust::device_vector<float> &distance_vector,
                             thrust::device_vector<int> &compute_vector,
@@ -163,8 +165,6 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int imageSize,
                             thrust::device_vector<int> &compute_seed_ids,
                             thrust::device_vector<int> &compute_seed_indices)
 {
-  cudaGraphicsMapResources(1, &computeImage);
-
   int pixelCount = imageSize * imageSize;
   if (compute_vector.size() != static_cast<unsigned long>(pixelCount))
   {
@@ -183,14 +183,10 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int imageSize,
   int *idxptr = thrust::raw_pointer_cast(compute_seed_indices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedbuffer.data());
 
-  cudaArray_t input_array;
-
-  cudaGraphicsSubResourceGetMappedArray(&input_array, computeImage, 0, 0);
-
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(imageSize,dimBlock.x), divUp(imageSize,dimBlock.y), 1);
 
-  cudaBindSurfaceToArray(surfaceWrite, input_array);
+  cudaBindSurfaceToArray(surfaceWrite, imageArray);
 
   // voronoi seed initialization in cuda
 
@@ -230,13 +226,8 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int imageSize,
 
 #endif
   // colorize diagram
-
   jfa_thrust_gather<<<dimGrid,dimBlock>>>(imageSize, numLabels, raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
-
-  cudaGraphicsUnmapResources(1, &computeImage);
-
-  return true;
 }
 
 
