@@ -4,12 +4,12 @@
 
 surface<void, cudaSurfaceType2D> surfaceWrite;
 
-__global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int image_size, int num_labels, float4* seedbuffer, int* thrustptr, int *idptr, int*idxptr)
+__global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int imageSize, int num_labels, float4* seedbuffer, int* thrustptr, int *idptr, int*idxptr)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int index = y*image_size + x;
-  /*if (x< image_size && y < image_size)
+  int index = y*imageSize + x;
+  /*if (x< imageSize && y < imageSize)
   {
     surf2Dwrite<float4>(make_float4(0.0f, 0.0f, 0.0f, 1.0f), surfaceWrite, x*sizeof(float4), y);
 
@@ -20,7 +20,7 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int image_size, int n
   float4 seedval = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 
   // initialize to out of bounds
-  int outindex = (image_size*2)*(image_size*2)-1;
+  int outindex = (imageSize*2)*(imageSize*2)-1;
 
 
   for (int i = 0; i< num_labels; i++)
@@ -29,10 +29,10 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int image_size, int n
     //if (seedval.x > 0.0) outval = make_float4(0.0f, 1.0f, 0.0f, 1.0f);
     if (int(seedval.x) > 0 && x == int(seedval.y) && y == int(seedval.z) && (x!=0 || y!=0))
     {
-      outval = make_float4(seedval.x/(num_labels+1), int(seedval.y)/float(image_size), int(seedval.z)/float(image_size), 1.0f);
+      outval = make_float4(seedval.x/(num_labels+1), int(seedval.y)/float(imageSize), int(seedval.z)/float(imageSize), 1.0f);
 
       // index for thrust computation =
-      outindex = x + y*image_size;
+      outindex = x + y*imageSize;
       //printf("hit: outval: %f %f %f %f %d %d %f %f %f nl: %d oi: %d\n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z,num_labels, outindex);
       //printf("hit: outval: %f %f %f %f %d %d\n",outval.x, outval.y, outval.z, outval.w, x, y);
       //break;
@@ -42,7 +42,7 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_seed_kernel(int image_size, int n
       //printf("not hit: outval: %f %f %f %f %d %d %f %f %f \n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z);
     }
     idptr[i] = int(seedval.x);
-    idxptr[i] = int(seedval.y) + int(seedval.z)*image_size;
+    idxptr[i] = int(seedval.y) + int(seedval.z)*imageSize;
   }
 
   thrustptr[index] = outindex;
@@ -94,23 +94,23 @@ __global__ void apollonius_cuda(int *data,
   data[index] = cur_nearest;
 }
 
-__global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int image_size, int num_labels,
+__global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int num_labels,
                                                              int* thrustptr, int* seedidptr, int* seedidxptr)
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
-  int index = y*image_size + x;
+  int index = y*imageSize + x;
   float4 color;
   int labelID = 100;
   int labelIndex = thrustptr[index];
-  //int ly = labelID/image_size;
-  //int lx = labelID - ly*image_size;
+  //int ly = labelID/imageSize;
+  //int lx = labelID - ly*imageSize;
 
   //bool foundcolor = false;
   for (int i=0;i<num_labels;i++)
   {
-    //int sly = seedptr[i]/image_size;
-    //int slx = seedptr[i] - sly*image_size;
+    //int sly = seedptr[i]/imageSize;
+    //int slx = seedptr[i] - sly*imageSize;
     //if (slx == lx && sly == ly)
     //{
     if (labelIndex == seedidxptr[i])
@@ -155,7 +155,7 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int image_size, int
 
 #define MAX_LABELS 256
 
-int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size, int numLabels,
+int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int imageSize, int numLabels,
                             thrust::device_vector<float4> &seedbuffer,
                             thrust::device_vector<float> &distance_vector,
                             thrust::device_vector<int> &compute_vector,
@@ -165,11 +165,11 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
 {
   cudaGraphicsMapResources(1, &computeImage);
 
-
-  if (compute_vector.size() != static_cast<unsigned long>(image_size*image_size))
+  int pixelCount = imageSize * imageSize;
+  if (compute_vector.size() != static_cast<unsigned long>(pixelCount))
   {
-    compute_vector.resize(image_size*image_size, image_size*image_size);
-    compute_temp_vector.resize(image_size*image_size, image_size*image_size);
+    compute_vector.resize(pixelCount, pixelCount);
+    compute_temp_vector.resize(pixelCount, pixelCount);
   }
 
   if (compute_seed_ids.size() != MAX_LABELS || compute_seed_indices.size() != MAX_LABELS)
@@ -188,13 +188,13 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
   cudaGraphicsSubResourceGetMappedArray(&input_array, computeImage, 0, 0);
 
   dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(image_size,dimBlock.x), divUp(image_size,dimBlock.y), 1);
+  dim3 dimGrid(divUp(imageSize,dimBlock.x), divUp(imageSize,dimBlock.y), 1);
 
   cudaBindSurfaceToArray(surfaceWrite, input_array);
 
   // voronoi seed initialization in cuda
 
-  jfa_seed_kernel<<<dimGrid,dimBlock>>>(image_size, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
+  jfa_seed_kernel<<<dimGrid,dimBlock>>>(imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
 
   // apollonius diagram computation in thrust
@@ -202,15 +202,15 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
   // first with step size 1
   compute_temp_vector = compute_vector;
   apollonius_thrust(compute_vector, compute_temp_vector,
-                    distance_vector, 1, image_size, image_size);
+                    distance_vector, 1, imageSize, imageSize);
   compute_vector.swap(compute_temp_vector);
 
 
-  for(int k = (image_size / 2); k > 0; k /= 2)
+  for(int k = (imageSize / 2); k > 0; k /= 2)
   {
     //printf("step size: %d\n",k);
     apollonius_thrust(compute_vector, compute_temp_vector,
-                      distance_vector, k, image_size, image_size);
+                      distance_vector, k, imageSize, imageSize);
 
     compute_vector.swap(compute_temp_vector);
   }
@@ -218,20 +218,20 @@ int cudaJFAApolloniusThrust(cudaGraphicsResource_t &computeImage, int image_size
   compute_temp_vector = compute_vector;
   apollonius_cuda<<<dimGrid, dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
                                          thrust::raw_pointer_cast(distance_vector.data()),
-                                         1, image_size, image_size);
+                                         1, imageSize, imageSize);
 
-  for(int k = (image_size / 2); k > 0; k /= 2)
+  for(int k = (imageSize / 2); k > 0; k /= 2)
   {
 
     apollonius_cuda<<<dimGrid,dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
                                           thrust::raw_pointer_cast(distance_vector.data()),
-                                          k, image_size, image_size);
+                                          k, imageSize, imageSize);
   }
 
 #endif
   // colorize diagram
 
-  jfa_thrust_gather<<<dimGrid,dimBlock>>>(image_size, numLabels, raw_ptr, idptr, idxptr);
+  jfa_thrust_gather<<<dimGrid,dimBlock>>>(imageSize, numLabels, raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
 
   cudaGraphicsUnmapResources(1, &computeImage);
