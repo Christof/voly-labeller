@@ -1,10 +1,10 @@
 #include "../test.h"
 #include <thrust/host_vector.h>
+#include "../../src/placement/summed_area_table.h"
 
 int sumUsingThrustReduce();
 int sumUsingCuda();
 int sumUsingCudaInLib();
-thrust::host_vector<float> algSAT(float *h_inout, int w, int h);
 
 TEST(Test_SummedAreaTable, SumUsingThrustReduce)
 {
