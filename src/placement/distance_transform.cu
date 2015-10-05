@@ -155,13 +155,14 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int 
   surf2Dwrite<float4>(color, surfaceWrite, x*sizeof(float4), y);
 }
 
-void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabels,
-                            thrust::device_vector<float4> &seedbuffer,
-                            thrust::device_vector<float> &distance_vector,
-                            thrust::device_vector<int> &compute_vector,
-                            thrust::device_vector<int> &compute_temp_vector,
-                            thrust::device_vector<int> &compute_seed_ids,
-                            thrust::device_vector<int> &compute_seed_indices)
+void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
+                             int numLabels,
+                             thrust::device_vector<float4> &seedbuffer,
+                             thrust::device_vector<float> &distance_vector,
+                             thrust::device_vector<int> &compute_vector,
+                             thrust::device_vector<int> &compute_temp_vector,
+                             thrust::device_vector<int> &compute_seed_ids,
+                             thrust::device_vector<int> &compute_seed_indices)
 {
   int pixelCount = imageSize * imageSize;
   if (compute_vector.size() != static_cast<unsigned long>(pixelCount))
@@ -170,7 +171,8 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabel
     compute_temp_vector.resize(pixelCount, pixelCount);
   }
 
-  if (compute_seed_ids.size() != MAX_LABELS || compute_seed_indices.size() != MAX_LABELS)
+  if (compute_seed_ids.size() != MAX_LABELS ||
+      compute_seed_indices.size() != MAX_LABELS)
   {
     compute_seed_ids.resize(MAX_LABELS, -1);
     compute_seed_indices.resize(MAX_LABELS, -1);
@@ -182,49 +184,31 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize, int numLabel
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedbuffer.data());
 
   dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(imageSize,dimBlock.x), divUp(imageSize,dimBlock.y), 1);
+  dim3 dimGrid(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
 
   cudaBindSurfaceToArray(surfaceWrite, imageArray);
 
-  // voronoi seed initialization in cuda
-  jfa_seed_kernel<<<dimGrid,dimBlock>>>(imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
+  jfa_seed_kernel<<<dimGrid, dimBlock>>>(imageSize, numLabels, seedBufferPtr,
+      raw_ptr, idptr, idxptr);
   cudaThreadSynchronize();
 
-  // apollonius diagram computation in thrust
-#if 0
-  // first with step size 1
   compute_temp_vector = compute_vector;
-  apollonius_thrust(compute_vector, compute_temp_vector,
-                    distance_vector, 1, imageSize, imageSize);
-  compute_vector.swap(compute_temp_vector);
+  apollonius_cuda<<<dimGrid, dimBlock>>>(
+      thrust::raw_pointer_cast(compute_vector.data()),
+      thrust::raw_pointer_cast(distance_vector.data()), 1, imageSize,
+      imageSize);
 
-
-  for(int k = (imageSize / 2); k > 0; k /= 2)
+  for (int k = (imageSize / 2); k > 0; k /= 2)
   {
-    //printf("step size: %d\n",k);
-    apollonius_thrust(compute_vector, compute_temp_vector,
-                      distance_vector, k, imageSize, imageSize);
-
-    compute_vector.swap(compute_temp_vector);
-  }
-#else
-  compute_temp_vector = compute_vector;
-  apollonius_cuda<<<dimGrid, dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
-                                         thrust::raw_pointer_cast(distance_vector.data()),
-                                         1, imageSize, imageSize);
-
-  for(int k = (imageSize / 2); k > 0; k /= 2)
-  {
-
-    apollonius_cuda<<<dimGrid,dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
-                                          thrust::raw_pointer_cast(distance_vector.data()),
-                                          k, imageSize, imageSize);
+    apollonius_cuda<<<dimGrid, dimBlock>>>(
+        thrust::raw_pointer_cast(compute_vector.data()),
+        thrust::raw_pointer_cast(distance_vector.data()), k, imageSize,
+        imageSize);
   }
 
-#endif
   // colorize diagram
-  jfa_thrust_gather<<<dimGrid,dimBlock>>>(imageSize, numLabels, raw_ptr, idptr, idxptr);
+  jfa_thrust_gather<<<dimGrid, dimBlock>>>(imageSize, numLabels, raw_ptr,
+      idptr, idxptr);
   cudaThreadSynchronize();
 }
-
 
