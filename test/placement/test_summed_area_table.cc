@@ -5,6 +5,7 @@
 int sumUsingThrustReduce();
 int sumUsingCuda();
 int sumUsingCudaInLib();
+unsigned int toGrayUsingCuda(unsigned int value);
 
 TEST(Test_SummedAreaTable, SumUsingThrustReduce)
 {
@@ -33,3 +34,11 @@ TEST(Test_SummedAreaTable, SAT)
   EXPECT_EQ(4, result[2]);
   EXPECT_EQ(10, result[3]);
 }
+
+TEST(Test_SummedAreaTable, toGray)
+{
+  unsigned int input = 0xFF00007F;
+  auto result = toGrayUsingCuda(input);
+  EXPECT_EQ(0xFF252525, result);
+}
+

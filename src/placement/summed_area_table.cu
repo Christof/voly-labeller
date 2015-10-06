@@ -672,10 +672,10 @@ __global__ void toGrayKernel(int image_size)
   if (x >= image_size || y >= image_size)
     return;
 
-  char4 color;
+  uchar4 color;
   surf2Dread(&color, image, x * 4, y);
 
-  char gray = 0.2989 * color.x + 0.5870 * color.y + 0.1140 * color.z;
+  unsigned char gray = 0.2989 * color.x + 0.5870 * color.y + 0.1140 * color.z;
   color.x = gray;
   color.y = gray;
   color.z = gray;
@@ -699,3 +699,4 @@ void toGray(cudaArray_t array, cudaChannelFormatDesc channelDesc, int image_size
   toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
+
