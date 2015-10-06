@@ -61,6 +61,9 @@ __global__ void apollonius_cuda(int *data,
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
+  if (x >= w || y >= h)
+    return;
+
   int index = y*w + x;
 
   int cur_nearest = data[index];
@@ -105,6 +108,8 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int 
 {
   int x = blockIdx.x*blockDim.x + threadIdx.x;
   int y = blockIdx.y*blockDim.y + threadIdx.y;
+  if (x >= imageSize || y >= imageSize)
+    return;
   int index = y*imageSize + x;
   float4 color;
   int labelID = 100;
