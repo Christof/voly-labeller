@@ -1,3 +1,6 @@
+#include <Eigen/Core>
+#include "../../src/utils/cuda_helper.h"
+#include "../../src/placement/summed_area_table.h"
 #include <thrust/version.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
@@ -47,5 +50,27 @@ int sumUsingCuda()
   thrust::host_vector<int> result = deviceResult;
 
   return result[0];
+}
+
+unsigned int toGrayUsingCuda(unsigned int value)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(8, 8, 8, 8, cudaChannelFormatKindUnsigned);
+  cudaArray_t array;
+  HANDLE_ERROR(
+      cudaMallocArray(&array, &channelDesc, 1, 1, cudaArraySurfaceLoadStore));
+  HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, &value,
+                                 sizeof(int),
+                                 cudaMemcpyHostToDevice));
+
+  toGray(array, channelDesc, 1);
+
+  unsigned int result = 1;
+  HANDLE_ERROR(cudaMemcpyFromArray(&result, array, 0, 0,
+                                   sizeof(int),
+                                   cudaMemcpyDeviceToHost));
+  cudaFree(array);
+
+  return result;
 }
 
