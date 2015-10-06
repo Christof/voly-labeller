@@ -685,15 +685,17 @@ __global__ void toGrayKernel(int image_size)
 void toGray(std::shared_ptr<CudaTextureMapper> tex, int image_size)
 {
   tex->map();
+  toGray(tex->getArray(), tex->getChannelDesc(), image_size);
+  tex->unmap();
+}
 
-  HANDLE_ERROR(
-      cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
+void toGray(cudaArray_t array, cudaChannelFormatDesc channelDesc, int image_size)
+{
+  HANDLE_ERROR(cudaBindSurfaceToArray(image, array, channelDesc));
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
 
-  toGrayKernel << <dimGrid, dimBlock>>> (image_size);
+  toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
   HANDLE_ERROR(cudaThreadSynchronize());
-  tex->unmap();
 }
-
