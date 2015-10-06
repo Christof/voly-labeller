@@ -27,11 +27,6 @@ void CudaTextureMapper::unmap()
   HANDLE_ERROR(cudaGraphicsUnmapResources(1, &resource));
 }
 
-cudaGraphicsResource **CudaTextureMapper::getResource()
-{
-  return &resource;
-}
-
 cudaChannelFormatDesc CudaTextureMapper::getChannelDesc()
 {
   return channelDesc;

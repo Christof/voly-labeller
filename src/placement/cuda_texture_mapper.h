@@ -24,7 +24,6 @@ class CudaTextureMapper
   void map();
   void unmap();
 
-  cudaGraphicsResource **getResource();
   cudaChannelFormatDesc getChannelDesc();
   cudaArray_t getArray();
 
