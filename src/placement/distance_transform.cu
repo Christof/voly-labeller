@@ -5,6 +5,7 @@
 
 
 surface<void, cudaSurfaceType2D> surfaceWrite;
+texture<float, 2, cudaReadModeElementType> depthTexture;
 
 __global__ void jfa_seed_kernel(int imageSize, int num_labels,
                                 float4 *seedbuffer, int *thrustptr, int *idptr,
@@ -162,6 +163,167 @@ __global__ void  /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize, int 
     color = make_float4(0.5, 0.5, 0.5,1.0);
   }
   surf2Dwrite<float4>(color, surfaceWrite, x*sizeof(float4), y);
+}
+
+__global__ void jfa_dtf_init_kernel(int image_size, float xscale, float yscale, int* thrustptr)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int index = y*image_size + x;
+
+  float texval = tex2D(depthTexture, x*xscale,y*yscale);
+  int outindex = (image_size*2)*(image_size*2)-1;
+
+  thrustptr[index] = (texval>=0.99f) ? index : outindex;
+}
+
+__global__ void jfa_cuda(int* data, unsigned int step, int w, int h)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int index = y*w + x;
+
+  int cur_nearest = data[index];
+  int cur_y = cur_nearest/w;
+  int cur_x = cur_nearest - cur_y*w;
+  int cur_dist = (x-cur_x) * (x-cur_x) + (y-cur_y) * (y-cur_y);
+
+
+  //if (x>253 && x<257 && y==255)
+//  if ((x==255 && y==255) || (x==10 && y==10))
+//  {
+//    printf("%d %d: step: %d cur: %d %d %d, %d %d\n", x, y, step, cur_nearest, cur_x, cur_y, w, h);
+//  }
+
+#pragma unroll
+  for (int i=-1; i<=1; i++)
+  {
+    int u = x+i*step;
+    if (u < 0 || u >= w)
+      continue;
+#pragma unroll
+    for (int j=-1; j<=1; j+=2-i*i)
+    {
+      int v = y+j*step;
+      if (v < 0 || v >= h)
+        continue;
+
+      int newindex = v*w+u;
+      int new_nearest = data[newindex];
+      int new_y = new_nearest/w;
+      int new_x = new_nearest - new_y*w;
+      int new_dist = (x-new_x) * (x-new_x) + (y-new_y) * (y-new_y);
+
+      if (new_dist < cur_dist) {
+        cur_dist = new_dist;
+        cur_nearest = new_nearest;
+      }
+    }
+  }
+
+  data[index] = cur_nearest;
+}
+
+__global__ void  /*__launch_bounds__(16)*/ jfa_dtf_compute_distance_kernel(int image_size, int* index_ptr, float* value_ptr)
+{
+  int x = blockIdx.x*blockDim.x + threadIdx.x;
+  int y = blockIdx.y*blockDim.y + threadIdx.y;
+  int index = y*image_size + x;
+  int voronoival = index_ptr[index];
+
+  int ty = voronoival/image_size;
+  int tx = voronoival - ty*image_size;
+
+  float sqdist = ((tx-x)*(tx-x) + (ty-y)*(ty-y));
+  //float dist = sqdist;
+  float distf = sqrtf(sqdist);
+
+  value_ptr[index] = distf;
+
+  // write to texture for debugging
+  float4 color = make_float4(16.0f*distf/image_size, 16.0f*distf/image_size, 16.0f*distf/image_size, 1.0f);
+  //float4 color = make_float4(512.0f*distf/image_size, 256.0f*distf/image_size, 16.0f*distf/image_size, 1.0f);
+  surf2Dwrite<float4>(color, surfaceWrite, x*sizeof(float4), y);
+}
+
+void cudaJFADistanceTransformThrust(cudaGraphicsResource_t &inputImage,
+                                   cudaGraphicsResource_t &outputImage,
+                                   int image_size,
+                                   int screen_size_x,
+                                   int screen_size_y,
+                                   thrust::device_vector<int> &compute_vector,
+                                   thrust::device_vector<int> &compute_temp_vector,
+                                   thrust::device_vector<float> &result_vector)
+{
+  if (compute_vector.size() != static_cast<unsigned long>(image_size*image_size))
+  {
+    compute_vector.resize(image_size*image_size, image_size*image_size);
+    compute_temp_vector.resize(image_size*image_size, image_size*image_size);
+    result_vector.resize(image_size*image_size, image_size*image_size);
+  }
+
+  int *compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
+  float *result_value_ptr = thrust::raw_pointer_cast(result_vector.data());
+
+  dim3 dimBlock(32, 1, 1);
+  dim3 dimGrid(divUp(image_size,dimBlock.x), divUp(image_size,dimBlock.y), 1);
+  {
+    // read depth buffer and initialize distance transform computation
+    depthTexture.normalized = 0;
+    depthTexture.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
+    depthTexture.addressMode[0] = cudaAddressModeWrap;
+    depthTexture.addressMode[1] = cudaAddressModeWrap;
+
+    cudaGraphicsMapResources(1, &inputImage);
+
+    cudaArray_t input_array;    
+    cudaGraphicsSubResourceGetMappedArray(&input_array, inputImage, 0, 0);
+
+    cudaChannelFormatDesc channeldesc;
+    cudaGetChannelDesc(&channeldesc, input_array );
+
+    cudaBindTextureToArray(&depthTexture, input_array, &channeldesc);
+
+    jfa_dtf_init_kernel<<<dimGrid,dimBlock>>>(image_size, float(screen_size_x)/float(image_size), float(screen_size_y)/float(image_size),
+                                              compute_index_ptr);
+    cudaThreadSynchronize();
+
+    cudaUnbindTexture(&depthTexture);
+    cudaGraphicsUnmapResources(1, &inputImage);
+  }
+
+  // voronoi diagram computation in thrust
+  {
+    //compute_temp_vector = compute_vector;
+    jfa_cuda<<<dimGrid,dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
+                                   1, image_size, image_size);
+    //compute_vector.swap(compute_temp_vector);
+
+    //cudaThreadSynchronize();
+    for(int k = (image_size / 2); k > 0; k /= 2)
+    {
+      jfa_cuda<<<dimGrid,dimBlock>>>(thrust::raw_pointer_cast(compute_vector.data()),
+                                     k, image_size, image_size);
+      //cudaThreadSynchronize();
+      //compute_vector.swap(compute_temp_vector);
+    }
+
+    cudaThreadSynchronize();
+  }
+
+  {
+    cudaGraphicsMapResources(1, &outputImage);
+
+    cudaArray_t output_array;
+    cudaGraphicsSubResourceGetMappedArray(&output_array, outputImage, 0, 0);
+    cudaBindSurfaceToArray(surfaceWrite, output_array);
+
+    // kernel which maps color to distance transform result
+
+    compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
+    jfa_dtf_compute_distance_kernel<<<dimGrid, dimBlock>>>(image_size, compute_index_ptr, result_value_ptr);
+    cudaGraphicsUnmapResources(1, &outputImage);
+  }
 }
 
 void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
