@@ -15,6 +15,7 @@
 #include "./graphics/object_manager.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./graphics/managers.h"
+#include "./graphics/standard_texture_2d.h"
 
 class Nodes;
 class InvokeManager;
@@ -76,6 +77,9 @@ class Scene : public AbstractScene
   void doPick();
 
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
+  std::shared_ptr<CudaTextureMapper> depthTextureMapper;
+  std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
 };
 
 #endif  // SRC_SCENE_H_
