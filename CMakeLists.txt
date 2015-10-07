@@ -88,6 +88,7 @@ set(SOURCES
   src/graphics/volume_data.h
   src/graphics/volume_manager.cpp
   src/graphics/managers.cpp
+  src/graphics/standard_texture_2d.cpp
   ${RESOURCES})
 
 file(GLOB SHADER src/shader/*)
