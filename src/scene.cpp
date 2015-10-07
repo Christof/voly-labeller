@@ -66,6 +66,10 @@ void Scene::initialize()
   quad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
+
+  distanceTransformTexture =
+      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_RGBA32F);
+  distanceTransformTexture->initialize(gl);
 }
 
 void Scene::cleanup()
@@ -145,9 +149,15 @@ void Scene::render()
   renderQuad(transformation.matrix());
 
   fbo->bindDepthTexture(GL_TEXTURE0);
-  transformation = Eigen::Affine3f (
-      Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
-      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(transformation.matrix());
+
+  distanceTransformTexture->bind();
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(transformation.matrix());
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
