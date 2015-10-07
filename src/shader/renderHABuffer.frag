@@ -209,6 +209,9 @@ void main()
       ++age;
   }
 
+  vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
+  gl_FragDepth = ndcPos.z / ndcPos.w;
+
   for (--age; age < maxAge; age++)  // all fragments
   {
     currentFragment = nextFragment;
