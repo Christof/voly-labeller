@@ -154,6 +154,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
 
   Eigen::Matrix4f inverseViewMatrix = renderData.viewMatrix.inverse();
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
+  renderShader->setUniform("projectionMatrix", renderData.projectionMatrix);
 
   Eigen::Vector3f textureAtlasSize =
       managers->getVolumeManager()->getVolumeAtlasSize().cast<float>();
