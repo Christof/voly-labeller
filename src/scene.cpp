@@ -135,6 +135,7 @@ void Scene::render()
         std::make_shared<CudaTextureMapper>(fbo->getRenderTextureId());
   }
 
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
   toGray(colorTextureMapper, width);
@@ -143,6 +144,7 @@ void Scene::render()
       Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(transformation.matrix());
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
 }
 
 void Scene::renderQuad(Eigen::Matrix4f modelMatrix)

@@ -121,7 +121,6 @@ void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
   buildTimer.start();
 
   glAssert(gl->glDisable(GL_CULL_FACE));
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
 }
 
 void HABuffer::begin(std::shared_ptr<ShaderProgram> shader)
@@ -169,12 +168,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
 
-  glAssert(gl->glDepthMask(GL_FALSE));
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-
   renderQuad->renderImmediately(gl, managers, renderData);
-
-  glAssert(gl->glDepthMask(GL_TRUE));
 
   renderTimer.stop();
 
