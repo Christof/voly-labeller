@@ -18,7 +18,7 @@ typedef unsigned int GLenum;
 class CudaTextureMapper
 {
  public:
-  explicit CudaTextureMapper(unsigned int textureId);
+  explicit CudaTextureMapper(unsigned int textureId, unsigned int flags);
   virtual ~CudaTextureMapper();
 
   void map();
@@ -27,6 +27,9 @@ class CudaTextureMapper
   cudaChannelFormatDesc getChannelDesc();
   cudaArray_t getArray();
 
+  static CudaTextureMapper* createReadWriteMapper(unsigned int textureId);
+  static CudaTextureMapper* createReadOnlyMapper(unsigned int textureId);
+  static CudaTextureMapper* createReadWriteDiscardMapper(unsigned int textureId);
  private:
   unsigned int textureId;
   cudaGraphicsResource *resource = 0;
