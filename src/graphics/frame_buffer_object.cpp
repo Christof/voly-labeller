@@ -99,4 +99,9 @@ unsigned int FrameBufferObject::getRenderTextureId()
   return renderTexture;
 }
 
+unsigned int FrameBufferObject::getDepthTextureId()
+{
+  return depthTexture;
+}
+
 }  // namespace Graphics
