@@ -181,7 +181,7 @@ __global__ void jfa_dtf_init_kernel(int image_size, float xscale, float yscale,
 
   int index = y * image_size + x;
 
-  float texval = tex2D(depthTexture, x * xscale, y * yscale);
+  float texval = tex2D(depthTexture, x * xscale + 0.5f, y * yscale + 0.5f);
   int outindex = (image_size * 2) * (image_size * 2) - 1;
 
   thrustptr[index] = (texval >= 0.99f) ? index : outindex;

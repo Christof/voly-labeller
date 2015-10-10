@@ -90,17 +90,17 @@ TEST(Test_DistanceTransform, DistanceTransform)
   EXPECT_NEAR(0.0f, resultVector[4], 1e-4f);
   EXPECT_NEAR(1.0f, resultVector[5], 1e-4f);
   EXPECT_NEAR(1.0f, resultVector[6], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[7], 1e-4f);
+  EXPECT_NEAR(0.0f, resultVector[7], 1e-4f);
 
   EXPECT_NEAR(0.0f, resultVector[8], 1e-4f);
   EXPECT_NEAR(1.0f, resultVector[9], 1e-4f);
-  EXPECT_NEAR(2.0f, resultVector[10], 1e-4f);
-  EXPECT_NEAR(2.0f, resultVector[11], 1e-4f);
+  EXPECT_NEAR(1.0f, resultVector[10], 1e-4f);
+  EXPECT_NEAR(0.0f, resultVector[11], 1e-4f);
 
   EXPECT_NEAR(0.0f, resultVector[12], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[13], 1e-4f);
-  EXPECT_NEAR(2.0f, resultVector[14], 1e-4f);
-  EXPECT_NEAR(3.0f, resultVector[15], 1e-4f);
+  EXPECT_NEAR(0.0f, resultVector[13], 1e-4f);
+  EXPECT_NEAR(0.0f, resultVector[14], 1e-4f);
+  EXPECT_NEAR(0.0f, resultVector[15], 1e-4f);
 
   /*
   EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[0], 1e-4f);
