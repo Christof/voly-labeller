@@ -171,20 +171,26 @@ __global__ void /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize,
   surf2Dwrite<float4>(color, surfaceWrite, x * sizeof(float4), y);
 }
 
-__global__ void jfa_dtf_init_kernel(int image_size, float xscale, float yscale,
-                                    int *thrustptr)
+/**
+ * \brief Initializes the distance transform
+ *
+ * The value from the depthTexture is read. If it is larger than or equel to
+ * 0.99 the data value is set to the index. Otherwise it is set to the given
+ * outlier value.
+ */
+__global__ void initializeForDistanceTransform(int width, int height,
+    float xscale, float yscale, int outlierValue, int *data)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
-  if (x >= image_size || y >= image_size)
+  if (x >= width || y >= height)
     return;
 
-  int index = y * image_size + x;
+  int index = y * width + x;
 
-  float texval = tex2D(depthTexture, x * xscale + 0.5f, y * yscale + 0.5f);
-  int outindex = (image_size * 2) * (image_size * 2) - 1;
+  float pixelValue = tex2D(depthTexture, x * xscale + 0.5f, y * yscale + 0.5f);
 
-  thrustptr[index] = (texval >= 0.99f) ? index : outindex;
+  data[index] = pixelValue >= 0.99f ? index : outlierValue;
 }
 
 __global__ void jfa_cuda(int *data, unsigned int step, int w, int h)
@@ -322,10 +328,12 @@ void cudaJFADistanceTransformThrust(
     depthTexture.addressMode[1] = cudaAddressModeWrap;
 
     cudaBindTextureToArray(&depthTexture, inputImageArray, &inputImageDesc);
+    float xScale = static_cast<float>(screen_size_x) / image_size;
+    float yScale = static_cast<float>(screen_size_y) / image_size;
+    int outlierValue = (image_size * 2) * (image_size * 2) - 1;
 
-    jfa_dtf_init_kernel << <dimGrid, dimBlock>>>
-        (image_size, float(screen_size_x) / float(image_size),
-         float(screen_size_y) / float(image_size), compute_index_ptr);
+    initializeForDistanceTransform<<<dimGrid, dimBlock>>>(image_size,
+        image_size, xScale, yScale, outlierValue, compute_index_ptr);
     cudaThreadSynchronize();
 
     cudaUnbindTexture(&depthTexture);
