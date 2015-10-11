@@ -9,23 +9,24 @@ typedef unsigned int GLenum;
 #include <cudaGL.h>
 #include <cuda_gl_interop.h>
 #include "../utils/cuda_helper.h"
+#include "../utils/cuda_array_provider.h"
 
 /**
  * \brief
  *
  *
  */
-class CudaTextureMapper
+class CudaTextureMapper : public CudaArrayProvider
 {
  public:
   explicit CudaTextureMapper(unsigned int textureId, unsigned int flags);
   virtual ~CudaTextureMapper();
 
-  void map();
-  void unmap();
+  virtual void map();
+  virtual void unmap();
 
-  cudaChannelFormatDesc getChannelDesc();
-  cudaArray_t getArray();
+  virtual cudaChannelFormatDesc getChannelDesc();
+  virtual cudaArray_t getArray();
 
   static CudaTextureMapper* createReadWriteMapper(unsigned int textureId);
   static CudaTextureMapper* createReadOnlyMapper(unsigned int textureId);
