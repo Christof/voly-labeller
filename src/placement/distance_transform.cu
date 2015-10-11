@@ -291,8 +291,8 @@ void cudaJFADistanceTransformThrust(
 }
 
 void cudaJFADistanceTransformThrust(
-    cudaArray_t &inputImageArray, cudaChannelFormatDesc inputImageDesc,
-    cudaArray_t &outputImageArray, int image_size, int screen_size_x,
+    cudaArray_t inputImageArray, cudaChannelFormatDesc inputImageDesc,
+    cudaArray_t outputImageArray, int image_size, int screen_size_x,
     int screen_size_y, thrust::device_vector<int> &compute_vector,
     thrust::device_vector<float> &result_vector)
 {

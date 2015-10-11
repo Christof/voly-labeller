@@ -3,6 +3,7 @@
 #include <vector>
 #include "../../src/placement/distance_transform.h"
 #include "../../src/utils/cuda_helper.h"
+#include "../cuda_array_mapper.h"
 
 void callApollonoius(std::vector<Eigen::Vector4f> &image)
 {
@@ -37,38 +38,36 @@ void callApollonoius(std::vector<Eigen::Vector4f> &image)
   cudaFree(array);
 }
 
-std::vector<Eigen::Vector4f> callDistanceTransform(std::vector<float> depth,
+std::vector<Eigen::Vector4f> callDistanceTransform(
+    std::shared_ptr<CudaArrayMapper<float>> depthImageProvider,
     std::vector<float> &result)
 {
-  cudaChannelFormatDesc channelDesc =
-      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  cudaArray_t array;
-  int imageSize = 4;
-  int pixelCount = imageSize * imageSize;
-  HANDLE_ERROR(cudaMallocArray(&array, &channelDesc, imageSize, imageSize));
-  HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, depth.data(),
-                                 pixelCount * sizeof(float),
-                                 cudaMemcpyHostToDevice));
+  depthImageProvider->map();
 
   cudaArray_t outputArray;
   cudaChannelFormatDesc outputChannelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-  HANDLE_ERROR(cudaMallocArray(&outputArray, &outputChannelDesc, imageSize,
-                               imageSize, cudaArraySurfaceLoadStore));
+  HANDLE_ERROR(cudaMallocArray(
+      &outputArray, &outputChannelDesc, depthImageProvider->getWidth(),
+      depthImageProvider->getHeight(), cudaArraySurfaceLoadStore));
 
   thrust::device_vector<int> computeVector;
   thrust::device_vector<float> resultVector;
 
-  cudaJFADistanceTransformThrust(array, channelDesc, outputArray, imageSize,
-                                 imageSize, imageSize, computeVector,
-                                 resultVector);
+  cudaJFADistanceTransformThrust(
+      depthImageProvider->getArray(), depthImageProvider->getChannelDesc(),
+      outputArray, depthImageProvider->getWidth(),
+      depthImageProvider->getWidth(), depthImageProvider->getHeight(),
+      computeVector, resultVector);
 
+  int pixelCount =
+      depthImageProvider->getWidth() * depthImageProvider->getHeight();
   std::vector<Eigen::Vector4f> resultImage(pixelCount);
   HANDLE_ERROR(cudaMemcpyFromArray(resultImage.data(), outputArray, 0, 0,
                                    pixelCount * sizeof(Eigen::Vector4f),
                                    cudaMemcpyDeviceToHost));
 
-  cudaFree(array);
+  depthImageProvider->unmap();
   cudaFree(outputArray);
 
   thrust::host_vector<float> resultHost = resultVector;
