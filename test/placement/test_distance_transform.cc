@@ -1,10 +1,13 @@
 #include "../test.h"
+#include <cuda_runtime_api.h>
+#include <memory>
 #include <Eigen/Core>
+#include "../cuda_array_mapper.h"
 
 void callApollonoius(std::vector<Eigen::Vector4f> &image);
-std::vector<Eigen::Vector4f>
-callDistanceTransform(std::vector<float> depth,
-                      std::vector<float> &resultVector);
+std::vector<Eigen::Vector4f> callDistanceTransform(
+    std::shared_ptr<CudaArrayMapper<float>> depthImageProvider,
+    std::vector<float> &resultVector);
 
 /*
 TEST(Test_DistanceTransform, Apollonoius)
@@ -78,8 +81,12 @@ TEST(Test_DistanceTransform, DistanceTransform)
   depthImage.push_back(1.0f);
   depthImage.push_back(1.0f);
 
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  auto depthImageProvider =
+      std::make_shared<CudaArrayMapper<float>>(4, 4, depthImage, channelDesc);
   std::vector<float> resultVector;
-  auto image = callDistanceTransform(depthImage, resultVector);
+  auto image = callDistanceTransform(depthImageProvider, resultVector);
 
   EXPECT_EQ(16, resultVector.size());
   EXPECT_NEAR(0.0f, resultVector[0], 1e-4f);
