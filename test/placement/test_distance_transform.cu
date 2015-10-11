@@ -44,36 +44,32 @@ std::vector<Eigen::Vector4f> callDistanceTransform(
 {
   depthImageProvider->map();
 
-  cudaArray_t outputArray;
   cudaChannelFormatDesc outputChannelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-  HANDLE_ERROR(cudaMallocArray(
-      &outputArray, &outputChannelDesc, depthImageProvider->getWidth(),
-      depthImageProvider->getHeight(), cudaArraySurfaceLoadStore));
+  int pixelCount =
+      depthImageProvider->getWidth() * depthImageProvider->getHeight();
+  std::vector<Eigen::Vector4f> resultImage(pixelCount);
+  auto output = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
+      depthImageProvider->getWidth(), depthImageProvider->getHeight(),
+      resultImage, outputChannelDesc);
+
+  output->map();
 
   thrust::device_vector<int> computeVector;
   thrust::device_vector<float> resultVector;
 
   cudaJFADistanceTransformThrust(
       depthImageProvider->getArray(), depthImageProvider->getChannelDesc(),
-      outputArray, depthImageProvider->getWidth(),
+      output->getArray(), depthImageProvider->getWidth(),
       depthImageProvider->getWidth(), depthImageProvider->getHeight(),
       computeVector, resultVector);
 
-  int pixelCount =
-      depthImageProvider->getWidth() * depthImageProvider->getHeight();
-  std::vector<Eigen::Vector4f> resultImage(pixelCount);
-  HANDLE_ERROR(cudaMemcpyFromArray(resultImage.data(), outputArray, 0, 0,
-                                   pixelCount * sizeof(Eigen::Vector4f),
-                                   cudaMemcpyDeviceToHost));
-
   depthImageProvider->unmap();
-  cudaFree(outputArray);
 
   thrust::host_vector<float> resultHost = resultVector;
   for (auto element : resultHost)
     result.push_back(element);
 
-  return resultImage;
+  return output->copyDataFromGpu();
 }
 

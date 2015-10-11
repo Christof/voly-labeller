@@ -265,24 +265,23 @@ __global__ void distanceTransformFinish(int width, int height, int *data,
   surf2Dwrite<float4>(color, surfaceWrite, x * sizeof(float4), y);
 }
 
-void cudaJFADistanceTransformThrust(
-    std::shared_ptr<CudaArrayProvider> inputImage, cudaGraphicsResource_t &outputImage,
-    int image_size, int screen_size_x, int screen_size_y,
-    thrust::device_vector<int> &compute_vector,
-    thrust::device_vector<float> &result_vector)
+void
+cudaJFADistanceTransformThrust(std::shared_ptr<CudaArrayProvider> inputImage,
+                               std::shared_ptr<CudaArrayProvider> outputImage,
+                               int image_size, int screen_size_x,
+                               int screen_size_y,
+                               thrust::device_vector<int> &compute_vector,
+                               thrust::device_vector<float> &result_vector)
 {
   inputImage->map();
-
-  cudaGraphicsMapResources(1, &outputImage);
-  cudaArray_t outputImageArray;
-  cudaGraphicsSubResourceGetMappedArray(&outputImageArray, outputImage, 0, 0);
+  outputImage->map();
 
   cudaJFADistanceTransformThrust(inputImage->getArray(), inputImage->getChannelDesc(),
-                                 outputImageArray, image_size, screen_size_x,
+                                 outputImage->getArray(), image_size, screen_size_x,
                                  screen_size_y, compute_vector,
                                  result_vector);
 
-  cudaGraphicsUnmapResources(1, &outputImage);
+  outputImage->unmap();
   inputImage->unmap();
 }
 
