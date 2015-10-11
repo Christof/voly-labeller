@@ -36,16 +36,16 @@ __global__ void jfa_seed_kernel(int imageSize, int num_labels,
       // index for thrust computation =
       outindex = x + y * imageSize;
       // printf("hit: outval: %f %f %f %f %d %d %f %f %f nl: %d oi:
-      // %d\n",outval.x, outval.y, outval.z, outval.w, x, y, seedval.x,
+      // %d\n",outval.x, outval.y, outval.z, outval.width, x, y, seedval.x,
       // seedval.y, seedval.z,num_labels, outindex);
       // printf("hit: outval: %f %f %f %f %d %d\n",outval.x, outval.y, outval.z,
-      // outval.w, x, y);
+      // outval.width, x, y);
       // break;
     }
     else
     {
       // printf("not hit: outval: %f %f %f %f %d %d %f %f %f \n",outval.x,
-      // outval.y, outval.z, outval.w, x, y, seedval.x, seedval.y, seedval.z);
+      // outval.y, outval.z, outval.width, x, y, seedval.x, seedval.y, seedval.z);
     }
     idptr[i] = int(seedval.x);
     idxptr[i] = int(seedval.y) + int(seedval.z) * imageSize;
@@ -65,13 +65,13 @@ __global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
 
   int index = y * w + x;
 
-  int cur_nearest = data[index];
-  int cur_y = cur_nearest / w;
-  int cur_x = cur_nearest - cur_y * w;
-  float curr_w = (cur_nearest < w * h) ? occupancy[cur_nearest] : 0.0f;
+  int currentNearest = data[index];
+  int currentY = currentNearest / w;
+  int currentX = currentNearest - currentY * w;
+  float curr_w = (currentNearest < w * h) ? occupancy[currentNearest] : 0.0f;
 
-  float cur_dist =
-      sqrtf(float((x - cur_x) * (x - cur_x) + (y - cur_y) * (y - cur_y))) -
+  float currentDistance =
+      sqrtf(float((x - currentX) * (x - currentX) + (y - currentY) * (y - currentY))) -
       curr_w;
 
 #pragma unroll
@@ -88,23 +88,23 @@ __global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
         continue;
 
       int newindex = v * w + u;
-      int new_nearest = data[newindex];
-      int new_y = new_nearest / w;
-      int new_x = new_nearest - new_y * w;
-      float new_w = (new_nearest < w * h) ? occupancy[new_nearest] : 0.0f;
-      float new_dist =
-          sqrtf(float((x - new_x) * (x - new_x) + (y - new_y) * (y - new_y))) -
-          new_w;
+      int newNearest = data[newindex];
+      int newY = newNearest / w;
+      int newX = newNearest - newY * w;
+      float newW = (newNearest < w * h) ? occupancy[newNearest] : 0.0f;
+      float newDistance =
+          sqrtf(float((x - newX) * (x - newX) + (y - newY) * (y - newY))) -
+          newW;
 
-      if (new_dist < cur_dist || cur_nearest >= w * h)
+      if (newDistance < currentDistance || currentNearest >= w * h)
       {
-        cur_dist = new_dist;
-        cur_nearest = new_nearest;
+        currentDistance = newDistance;
+        currentNearest = newNearest;
       }
     }
   }
 
-  data[index] = cur_nearest;
+  data[index] = currentNearest;
 }
 
 __global__ void /*__launch_bounds__(16)*/ jfa_thrust_gather(int imageSize,
@@ -193,55 +193,50 @@ __global__ void initializeForDistanceTransform(int width, int height,
   data[index] = pixelValue >= 0.99f ? index : outlierValue;
 }
 
-__global__ void jfa_cuda(int *data, unsigned int step, int w, int h)
+__global__ void distanceTransformStep(int *data, unsigned int step, int width, int height)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
-  if (x >= w || y >= h)
+  if (x >= width || y >= height)
     return;
 
-  int index = y * w + x;
+  int index = y * width + x;
 
-  int cur_nearest = data[index];
-  int cur_y = cur_nearest / w;
-  int cur_x = cur_nearest - cur_y * w;
-  int cur_dist = (x - cur_x) * (x - cur_x) + (y - cur_y) * (y - cur_y);
+  int currentNearest = data[index];
+  int currentY = currentNearest / width;
+  int currentX = currentNearest - currentY * width;
+  int currentDistance =
+      (x - currentX) * (x - currentX) + (y - currentY) * (y - currentY);
 
-// if (x>253 && x<257 && y==255)
-//  if ((x==255 && y==255) || (x==10 && y==10))
-//  {
-//    printf("%d %d: step: %d cur: %d %d %d, %d %d\n", x, y, step, cur_nearest,
-//    cur_x, cur_y, w, h);
-//  }
-
-#pragma unroll
+  #pragma unroll
   for (int i = -1; i <= 1; i++)
   {
     int u = x + i * step;
-    if (u < 0 || u >= w)
+    if (u < 0 || u >= width)
       continue;
-#pragma unroll
+
+    #pragma unroll
     for (int j = -1; j <= 1; j += 2 - i * i)
     {
       int v = y + j * step;
-      if (v < 0 || v >= h)
+      if (v < 0 || v >= height)
         continue;
 
-      int newindex = v * w + u;
-      int new_nearest = data[newindex];
-      int new_y = new_nearest / w;
-      int new_x = new_nearest - new_y * w;
-      int new_dist = (x - new_x) * (x - new_x) + (y - new_y) * (y - new_y);
+      int newIndex = v * width + u;
+      int newNearest = data[newIndex];
+      int newY = newNearest / width;
+      int newX = newNearest - newY * width;
+      int newDistance = (x - newX) * (x - newX) + (y - newY) * (y - newY);
 
-      if (new_dist < cur_dist)
+      if (newDistance < currentDistance)
       {
-        cur_dist = new_dist;
-        cur_nearest = new_nearest;
+        currentDistance = newDistance;
+        currentNearest = newNearest;
       }
     }
   }
 
-  data[index] = cur_nearest;
+  data[index] = currentNearest;
 }
 
 __global__ void jfa_dtf_compute_distance_kernel(int image_size, int *index_ptr,
@@ -342,15 +337,15 @@ void cudaJFADistanceTransformThrust(
   // voronoi diagram computation in thrust
   {
     // compute_temp_vector = compute_vector;
-    jfa_cuda << <dimGrid, dimBlock>>>
-        (thrust::raw_pointer_cast(compute_vector.data()), 1, image_size,
-         image_size);
+    distanceTransformStep<<<dimGrid, dimBlock>>>(
+        thrust::raw_pointer_cast(compute_vector.data()), 1, image_size,
+        image_size);
     // compute_vector.swap(compute_temp_vector);
 
     // cudaThreadSynchronize();
     for (int k = (image_size / 2); k > 0; k /= 2)
     {
-      jfa_cuda<<<dimGrid, dimBlock>>>(
+      distanceTransformStep<<<dimGrid, dimBlock>>>(
           thrust::raw_pointer_cast(compute_vector.data()), k, image_size,
           image_size);
       // cudaThreadSynchronize();
