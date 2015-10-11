@@ -1,5 +1,6 @@
 #include <Eigen/Core>
 #include "../../src/utils/cuda_helper.h"
+#include "../cuda_array_mapper.h"
 #include "../../src/placement/summed_area_table.h"
 #include <thrust/version.h>
 #include <thrust/host_vector.h>
@@ -56,21 +57,14 @@ unsigned int toGrayUsingCuda(unsigned int value)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(8, 8, 8, 8, cudaChannelFormatKindUnsigned);
-  cudaArray_t array;
-  HANDLE_ERROR(
-      cudaMallocArray(&array, &channelDesc, 1, 1, cudaArraySurfaceLoadStore));
-  HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, &value,
-                                 sizeof(int),
-                                 cudaMemcpyHostToDevice));
+  std::vector<unsigned int> data = { value };
+  auto arrayProvider =
+      std::make_shared<CudaArrayMapper<unsigned int>>(1, 1, data, channelDesc);
 
-  toGray(array, channelDesc, 1);
+  toGray(arrayProvider, 1);
 
-  unsigned int result = 1;
-  HANDLE_ERROR(cudaMemcpyFromArray(&result, array, 0, 0,
-                                   sizeof(int),
-                                   cudaMemcpyDeviceToHost));
-  cudaFree(array);
+  auto resultVector = arrayProvider->copyDataFromGpu();
 
-  return result;
+  return resultVector[0];
 }
 
