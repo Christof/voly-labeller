@@ -109,25 +109,23 @@ TEST(Test_DistanceTransform, DistanceTransform)
   EXPECT_NEAR(0.0f, resultVector[14], 1e-4f);
   EXPECT_NEAR(0.0f, resultVector[15], 1e-4f);
 
-  /*
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[0], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[1], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[2], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[3], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[0], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[1], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[2], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[3], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[4], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[5], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[6], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[7], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[4], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(4, 4, 4, 1), image[5], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(4, 4, 4, 1), image[6], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[7], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[8], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[9], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[10], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[11], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[8], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(4, 4, 4, 1), image[9], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(4, 4, 4, 1), image[10], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[11], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[12], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[13], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[14], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[15], 1e-4f);
-  */
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[12], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[13], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[14], 1e-4f);
+  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0, 0, 0, 1), image[15], 1e-4f);
 }
