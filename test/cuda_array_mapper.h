@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <cuda_runtime.h>
+#include "../src/utils/cuda_helper.h"
 #include "../src/utils/cuda_array_provider.h"
 
 /**
@@ -17,7 +18,7 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
  public:
   CudaArrayMapper(int width, int height, std::vector<ElementType> data,
                   cudaChannelFormatDesc channelFormat)
-    : width(width), height(height), data(data), channelFormat(channelFormat)
+    : CudaArrayProvider(width, height), data(data), channelFormat(channelFormat)
   {
   }
 
@@ -55,8 +56,6 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
   }
 
  private:
-  int width;
-  int height;
   std::vector<ElementType> data;
   cudaArray_t array;
   cudaChannelFormatDesc channelFormat;

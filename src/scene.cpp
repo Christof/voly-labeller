@@ -136,7 +136,8 @@ void Scene::render()
   if (!colorTextureMapper.get())
   {
     colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId()));
+        CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
+                                                 width, height));
   }
 
   glAssert(gl->glDisable(GL_DEPTH_TEST));

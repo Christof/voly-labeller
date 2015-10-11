@@ -1,8 +1,9 @@
 #include "./cuda_texture_mapper.h"
 #include <QtOpenGLExtensions>
 
-CudaTextureMapper::CudaTextureMapper(unsigned int textureId, unsigned int flags)
-  : textureId(textureId)
+CudaTextureMapper::CudaTextureMapper(unsigned int textureId, int width,
+                                     int height, unsigned int flags)
+  : CudaArrayProvider(width, height), textureId(textureId)
 {
   qInfo() << "map texture" << textureId;
   HANDLE_ERROR(
@@ -37,22 +38,26 @@ cudaArray_t CudaTextureMapper::getArray()
 }
 
 CudaTextureMapper *
-CudaTextureMapper::createReadWriteMapper(unsigned int textureId)
+CudaTextureMapper::createReadWriteMapper(unsigned int textureId, int width,
+                                         int height)
 {
-  return new CudaTextureMapper(textureId,
+  return new CudaTextureMapper(textureId, width, height,
                                cudaGraphicsRegisterFlagsSurfaceLoadStore);
 }
 
 CudaTextureMapper *
-CudaTextureMapper::createReadOnlyMapper(unsigned int textureId)
+CudaTextureMapper::createReadOnlyMapper(unsigned int textureId, int width,
+                                        int height)
 {
-  return new CudaTextureMapper(textureId, cudaGraphicsRegisterFlagsReadOnly);
+  return new CudaTextureMapper(textureId, width, height,
+                               cudaGraphicsRegisterFlagsReadOnly);
 }
 
 CudaTextureMapper *
-CudaTextureMapper::createReadWriteDiscardMapper(unsigned int textureId)
+CudaTextureMapper::createReadWriteDiscardMapper(unsigned int textureId,
+                                                int width, int height)
 {
-  return new CudaTextureMapper(textureId,
+  return new CudaTextureMapper(textureId, width, height,
                                cudaGraphicsRegisterFlagsWriteDiscard);
 }
 
