@@ -57,12 +57,11 @@ std::vector<Eigen::Vector4f> callDistanceTransform(std::vector<float> depth,
                                imageSize, cudaArraySurfaceLoadStore));
 
   thrust::device_vector<int> computeVector;
-  thrust::device_vector<int> computeVectorTemp;
   thrust::device_vector<float> resultVector;
 
   cudaJFADistanceTransformThrust(array, channelDesc, outputArray, imageSize,
                                  imageSize, imageSize, computeVector,
-                                 computeVectorTemp, resultVector);
+                                 resultVector);
 
   std::vector<Eigen::Vector4f> resultImage(pixelCount);
   HANDLE_ERROR(cudaMemcpyFromArray(resultImage.data(), outputArray, 0, 0,

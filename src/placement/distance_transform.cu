@@ -269,7 +269,6 @@ void cudaJFADistanceTransformThrust(
     cudaGraphicsResource_t &inputImage, cudaGraphicsResource_t &outputImage,
     int image_size, int screen_size_x, int screen_size_y,
     thrust::device_vector<int> &compute_vector,
-    thrust::device_vector<int> &compute_temp_vector,
     thrust::device_vector<float> &result_vector)
 {
   cudaGraphicsMapResources(1, &inputImage);
@@ -285,7 +284,7 @@ void cudaJFADistanceTransformThrust(
   cudaJFADistanceTransformThrust(inputImageArray, inputImageDesc,
                                  outputImageArray, image_size, screen_size_x,
                                  screen_size_y, compute_vector,
-                                 compute_temp_vector, result_vector);
+                                 result_vector);
 
   cudaGraphicsUnmapResources(1, &outputImage);
   cudaGraphicsUnmapResources(1, &inputImage);
@@ -295,15 +294,12 @@ void cudaJFADistanceTransformThrust(
     cudaArray_t &inputImageArray, cudaChannelFormatDesc inputImageDesc,
     cudaArray_t &outputImageArray, int image_size, int screen_size_x,
     int screen_size_y, thrust::device_vector<int> &compute_vector,
-    thrust::device_vector<int> &compute_temp_vector,
     thrust::device_vector<float> &result_vector)
 {
   if (compute_vector.size() !=
       static_cast<unsigned long>(image_size * image_size))
   {
     compute_vector.resize(image_size * image_size, image_size * image_size);
-    compute_temp_vector.resize(image_size * image_size,
-                               image_size * image_size);
     result_vector.resize(image_size * image_size, image_size * image_size);
   }
 
@@ -312,59 +308,48 @@ void cudaJFADistanceTransformThrust(
 
   dim3 dimBlock(32, 1, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
-  {
-    // read depth buffer and initialize distance transform computation
-    depthTexture.normalized = 0;
-    depthTexture.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
-    depthTexture.addressMode[0] = cudaAddressModeWrap;
-    depthTexture.addressMode[1] = cudaAddressModeWrap;
+  // read depth buffer and initialize distance transform computation
+  depthTexture.normalized = 0;
+  depthTexture.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
+  depthTexture.addressMode[0] = cudaAddressModeWrap;
+  depthTexture.addressMode[1] = cudaAddressModeWrap;
 
-    cudaBindTextureToArray(&depthTexture, inputImageArray, &inputImageDesc);
-    float xScale = static_cast<float>(screen_size_x) / image_size;
-    float yScale = static_cast<float>(screen_size_y) / image_size;
-    int outlierValue = (image_size * 2) * (image_size * 2) - 1;
+  cudaBindTextureToArray(&depthTexture, inputImageArray, &inputImageDesc);
+  float xScale = static_cast<float>(screen_size_x) / image_size;
+  float yScale = static_cast<float>(screen_size_y) / image_size;
+  int outlierValue = (image_size * 2) * (image_size * 2) - 1;
 
-    initializeForDistanceTransform<<<dimGrid, dimBlock>>>(image_size,
-        image_size, xScale, yScale, outlierValue, compute_index_ptr);
-    cudaThreadSynchronize();
+  initializeForDistanceTransform<<<dimGrid, dimBlock>>>(image_size,
+      image_size, xScale, yScale, outlierValue, compute_index_ptr);
+  cudaThreadSynchronize();
 
-    cudaUnbindTexture(&depthTexture);
-  }
+  cudaUnbindTexture(&depthTexture);
 
   // voronoi diagram computation in thrust
+  distanceTransformStep<<<dimGrid, dimBlock>>>(
+      thrust::raw_pointer_cast(compute_vector.data()), 1, image_size,
+      image_size);
+
+  for (int k = (image_size / 2); k > 0; k /= 2)
   {
-    // compute_temp_vector = compute_vector;
     distanceTransformStep<<<dimGrid, dimBlock>>>(
-        thrust::raw_pointer_cast(compute_vector.data()), 1, image_size,
+        thrust::raw_pointer_cast(compute_vector.data()), k, image_size,
         image_size);
-    // compute_vector.swap(compute_temp_vector);
-
-    // cudaThreadSynchronize();
-    for (int k = (image_size / 2); k > 0; k /= 2)
-    {
-      distanceTransformStep<<<dimGrid, dimBlock>>>(
-          thrust::raw_pointer_cast(compute_vector.data()), k, image_size,
-          image_size);
-      // cudaThreadSynchronize();
-      // compute_vector.swap(compute_temp_vector);
-    }
-
-    cudaThreadSynchronize();
   }
 
-  {
-    cudaChannelFormatDesc outputChannelDesc =
-        cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-    HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, outputImageArray,
-                                        outputChannelDesc));
+  cudaThreadSynchronize();
 
-    // kernel which maps color to distance transform result
-    compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
-    distanceTransformFinish<<<dimGrid, dimBlock>>>(
-        image_size, image_size, compute_index_ptr, result_value_ptr);
+  cudaChannelFormatDesc outputChannelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, outputImageArray,
+                                      outputChannelDesc));
 
-    cudaThreadSynchronize();
-  }
+  // kernel which maps color to distance transform result
+  compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
+  distanceTransformFinish<<<dimGrid, dimBlock>>>(
+      image_size, image_size, compute_index_ptr, result_value_ptr);
+
+  cudaThreadSynchronize();
 }
 
 void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
