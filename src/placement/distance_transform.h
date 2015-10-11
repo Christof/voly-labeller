@@ -1,4 +1,6 @@
+#include <memory>
 #include <thrust/device_vector.h>
+#include "../utils/cuda_array_provider.h"
 
 #define MAX_LABELS 256
 
@@ -12,7 +14,7 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
                              thrust::device_vector<int> &compute_seed_indices);
 
 void cudaJFADistanceTransformThrust(
-    cudaGraphicsResource_t &inputImage, cudaGraphicsResource_t &outputImage,
+    std::shared_ptr<CudaArrayProvider> inputImage, cudaGraphicsResource_t &outputImage,
     int image_size, int screen_size_x, int screen_size_y,
     thrust::device_vector<int> &compute_vector,
     thrust::device_vector<float> &result_vector);
