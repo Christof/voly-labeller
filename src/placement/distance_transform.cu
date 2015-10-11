@@ -239,32 +239,29 @@ __global__ void distanceTransformStep(int *data, unsigned int step, int width, i
   data[index] = currentNearest;
 }
 
-__global__ void jfa_dtf_compute_distance_kernel(int image_size, int *index_ptr,
-                                                float *value_ptr)
+__global__ void distanceTransformFinish(int width, int height, int *data,
+                                                float *result)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
-  if (x >= image_size || y >= image_size)
+  if (x >= width || y >= height)
     return;
 
-  int index = y * image_size + x;
-  int voronoival = index_ptr[index];
+  int index = y * width + x;
+  int voronoival = data[index];
 
-  int ty = voronoival / image_size;
-  int tx = voronoival - ty * image_size;
+  int ty = voronoival / height;
+  int tx = voronoival - ty * width;
 
   float sqdist = ((tx - x) * (tx - x) + (ty - y) * (ty - y));
-  // float dist = sqdist;
   float distf = sqrtf(sqdist);
 
-  value_ptr[index] = distf;
+  result[index] = distf;
 
   // write to texture for debugging
   float4 color =
-      make_float4(16.0f * distf / image_size, 16.0f * distf / image_size,
-                  16.0f * distf / image_size, 1.0f);
-  // float4 color = make_float4(512.0f*distf/image_size,
-  // 256.0f*distf/image_size, 16.0f*distf/image_size, 1.0f);
+      make_float4(16.0f * distf / width, 16.0f * distf / width,
+                  16.0f * distf / width, 1.0f);
   surf2Dwrite<float4>(color, surfaceWrite, x * sizeof(float4), y);
 }
 
@@ -363,8 +360,8 @@ void cudaJFADistanceTransformThrust(
 
     // kernel which maps color to distance transform result
     compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
-    jfa_dtf_compute_distance_kernel<<<dimGrid, dimBlock>>>(
-        image_size, compute_index_ptr, result_value_ptr);
+    distanceTransformFinish<<<dimGrid, dimBlock>>>(
+        image_size, image_size, compute_index_ptr, result_value_ptr);
 
     cudaThreadSynchronize();
   }
