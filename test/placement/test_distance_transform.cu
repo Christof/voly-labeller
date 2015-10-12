@@ -7,6 +7,7 @@
 
 void callApollonoius(std::vector<Eigen::Vector4f> &image)
 {
+  /*
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
   cudaArray_t array;
@@ -36,14 +37,13 @@ void callApollonoius(std::vector<Eigen::Vector4f> &image)
                                    cudaMemcpyDeviceToHost));
 
   cudaFree(array);
+  */
 }
 
 std::vector<Eigen::Vector4f> callDistanceTransform(
     std::shared_ptr<CudaArrayMapper<float>> depthImageProvider,
     std::vector<float> &result)
 {
-  depthImageProvider->map();
-
   cudaChannelFormatDesc outputChannelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
   int pixelCount =
@@ -53,23 +53,17 @@ std::vector<Eigen::Vector4f> callDistanceTransform(
       depthImageProvider->getWidth(), depthImageProvider->getHeight(),
       resultImage, outputChannelDesc);
 
-  output->map();
+  DistanceTransform distanceTransform(depthImageProvider, output);
+  distanceTransform.run();
 
-  thrust::device_vector<int> computeVector;
-  thrust::device_vector<float> resultVector;
-
-  cudaJFADistanceTransformThrust(
-      depthImageProvider->getArray(), depthImageProvider->getChannelDesc(),
-      output->getArray(), depthImageProvider->getWidth(),
-      depthImageProvider->getWidth(), depthImageProvider->getHeight(),
-      computeVector, resultVector);
-
-  depthImageProvider->unmap();
-
-  thrust::host_vector<float> resultHost = resultVector;
+  thrust::host_vector<float> resultHost = distanceTransform.getResults();
   for (auto element : resultHost)
     result.push_back(element);
 
-  return output->copyDataFromGpu();
+  resultImage = output->copyDataFromGpu();
+
+  output->unmap();
+
+  return resultImage;
 }
 
