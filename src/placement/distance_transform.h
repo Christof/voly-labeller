@@ -13,6 +13,35 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
                              thrust::device_vector<int> &compute_seed_ids,
                              thrust::device_vector<int> &compute_seed_indices);
 
+/**
+ * \brief
+ *
+ *
+ */
+class DistanceTransform
+{
+ public:
+  DistanceTransform(std::shared_ptr<CudaArrayProvider> inputImage,
+                    std::shared_ptr<CudaArrayProvider> outputImage);
+
+  void run();
+
+  thrust::device_vector<float>& getResults();
+ private:
+  std::shared_ptr<CudaArrayProvider> inputImage;
+  std::shared_ptr<CudaArrayProvider> outputImage;
+  thrust::device_vector<int> computeVector;
+  thrust::device_vector<float> resultVector;
+  int pixelCount;
+  dim3 dimBlock;
+  dim3 dimGrid;
+  cudaTextureObject_t inputTexture;
+  void resize();
+  void runInitializeKernel();
+  void runStepsKernels();
+  void runFinishKernel();
+};
+
 void
 cudaJFADistanceTransformThrust(std::shared_ptr<CudaArrayProvider> inputImage,
                                std::shared_ptr<CudaArrayProvider> outputImage,
