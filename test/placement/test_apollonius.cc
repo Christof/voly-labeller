@@ -4,7 +4,8 @@
 #include <Eigen/Core>
 #include "../cuda_array_mapper.h"
 
-void callApollonoius(std::vector<Eigen::Vector4f> &image);
+void callApollonoius(std::vector<Eigen::Vector4f> &image,
+                     std::vector<float> distances);
 
 TEST(Test_Apollonius, Apollonoius)
 {
@@ -29,7 +30,13 @@ TEST(Test_Apollonius, Apollonoius)
   image.push_back(Eigen::Vector4f::Zero());
   image.push_back(Eigen::Vector4f::Zero());
 
-  callApollonoius(image);
+  std::vector<float> distances(16, 0);
+  distances[5] = 1.0f;
+  distances[6] = 1.0f;
+  distances[9] = 1.0f;
+  distances[10] = 1.0f;
+
+  callApollonoius(image, distances);
 
   EXPECT_Vector4f_NEAR(Eigen::Vector4f(1, 0, 0, 1), image[0], 1e-4f);
   EXPECT_Vector4f_NEAR(Eigen::Vector4f(1, 0, 0, 1), image[1], 1e-4f);
