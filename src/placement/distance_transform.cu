@@ -27,7 +27,8 @@ __global__ void initializeForDistanceTransform(cudaTextureObject_t input,
   data[index] = pixelValue >= 0.99f ? index : outlierValue;
 }
 
-__global__ void distanceTransformStep(int *data, unsigned int step, int width, int height)
+__global__ void distanceTransformStep(int *data, unsigned int step, int width,
+                                      int height)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -176,7 +177,7 @@ void DistanceTransform::runInitializeKernel()
       (outputImage->getWidth() * 2) * (outputImage->getHeight() * 2) - 1;
 
   initializeForDistanceTransform<<<dimGrid, dimBlock>>>(inputTexture,
-      outputImage->getWidth(), outputImage->getHeight(), xScale, yScale, 
+      outputImage->getWidth(), outputImage->getHeight(), xScale, yScale,
       outlierValue, computePtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }

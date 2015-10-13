@@ -1,5 +1,9 @@
-#include <memory>
+#ifndef SRC_PLACEMENT_DISTANCE_TRANSFORM_H_
+
+#define SRC_PLACEMENT_DISTANCE_TRANSFORM_H_
+
 #include <thrust/device_vector.h>
+#include <memory>
 #include "../utils/cuda_array_provider.h"
 
 /**
@@ -33,3 +37,4 @@ class DistanceTransform
   void runFinishKernel();
 };
 
+#endif  // SRC_PLACEMENT_DISTANCE_TRANSFORM_H_

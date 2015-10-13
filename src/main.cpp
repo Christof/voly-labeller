@@ -108,7 +108,8 @@ int main(int argc, char **argv)
 
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
-  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller);
+  auto scene =
+      std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller);
 
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
