@@ -100,28 +100,6 @@ __global__ void distanceTransformFinish(int width, int height, int *data,
   surf2Dwrite<float4>(color, outputSurface, x * sizeof(float4), y);
 }
 
-/*
-void
-cudaJFADistanceTransformThrust(std::shared_ptr<CudaArrayProvider> inputImage,
-                               std::shared_ptr<CudaArrayProvider> outputImage,
-                               int image_size, int screen_size_x,
-                               int screen_size_y,
-                               thrust::device_vector<int> &compute_vector,
-                               thrust::device_vector<float> &result_vector)
-{
-  inputImage->map();
-  outputImage->map();
-
-  cudaJFADistanceTransformThrust(inputImage->getArray(), inputImage->getChannelDesc(),
-                                 outputImage->getArray(), image_size, screen_size_x,
-                                 screen_size_y, compute_vector,
-                                 result_vector);
-
-  outputImage->unmap();
-  inputImage->unmap();
-}
-*/
-
 DistanceTransform::DistanceTransform(
     std::shared_ptr<CudaArrayProvider> inputImage,
     std::shared_ptr<CudaArrayProvider> outputImage)
@@ -230,67 +208,5 @@ void DistanceTransform::runFinishKernel()
       outputImage->getWidth(), outputImage->getHeight(), computePtr, resultPtr);
 
   HANDLE_ERROR(cudaThreadSynchronize());
-}
-
-void cudaJFADistanceTransformThrust(
-    cudaArray_t inputImageArray, cudaChannelFormatDesc inputImageDesc,
-    cudaArray_t outputImageArray, int image_size, int screen_size_x,
-    int screen_size_y, thrust::device_vector<int> &compute_vector,
-    thrust::device_vector<float> &result_vector)
-{
-  if (compute_vector.size() !=
-      static_cast<unsigned long>(image_size * image_size))
-  {
-    compute_vector.resize(image_size * image_size, image_size * image_size);
-    result_vector.resize(image_size * image_size, image_size * image_size);
-  }
-
-  int *compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
-  float *result_value_ptr = thrust::raw_pointer_cast(result_vector.data());
-
-  dim3 dimBlock(32, 1, 1);
-  dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
-  // read depth buffer and initialize distance transform computation
-  inputTexture.normalized = 0;
-  inputTexture.filterMode = cudaFilterModeLinear;
-  inputTexture.addressMode[0] = cudaAddressModeWrap;
-  inputTexture.addressMode[1] = cudaAddressModeWrap;
-
-  cudaBindTextureToArray(&inputTexture, inputImageArray, &inputImageDesc);
-  float xScale = static_cast<float>(screen_size_x) / image_size;
-  float yScale = static_cast<float>(screen_size_y) / image_size;
-  int outlierValue = (image_size * 2) * (image_size * 2) - 1;
-
-  initializeForDistanceTransform<<<dimGrid, dimBlock>>>(image_size,
-      image_size, xScale, yScale, outlierValue, compute_index_ptr);
-  cudaThreadSynchronize();
-
-  cudaUnbindTexture(&inputTexture);
-
-  // voronoi diagram computation in thrust
-  distanceTransformStep<<<dimGrid, dimBlock>>>(
-      thrust::raw_pointer_cast(compute_vector.data()), 1, image_size,
-      image_size);
-
-  for (int k = (image_size / 2); k > 0; k /= 2)
-  {
-    distanceTransformStep<<<dimGrid, dimBlock>>>(
-        thrust::raw_pointer_cast(compute_vector.data()), k, image_size,
-        image_size);
-  }
-
-  cudaThreadSynchronize();
-
-  cudaChannelFormatDesc outputChannelDesc =
-      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-  HANDLE_ERROR(cudaBindSurfaceToArray(outputSurface, outputImageArray,
-                                      outputChannelDesc));
-
-  // kernel which maps color to distance transform result
-  compute_index_ptr = thrust::raw_pointer_cast(compute_vector.data());
-  distanceTransformFinish<<<dimGrid, dimBlock>>>(
-      image_size, image_size, compute_index_ptr, result_value_ptr);
-
-  cudaThreadSynchronize();
 }
 
