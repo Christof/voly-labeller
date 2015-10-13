@@ -121,30 +121,9 @@ void DistanceTransform::resize()
 void DistanceTransform::run()
 {
   resize();
-  inputImage->map();
 
-  struct cudaResourceDesc resDesc;
-  memset(&resDesc, 0, sizeof(resDesc));
-  resDesc.resType = cudaResourceTypeArray;
-  resDesc.res.array.array = inputImage->getArray();
-
-  struct cudaTextureDesc texDesc;
-  memset(&texDesc, 0, sizeof(texDesc));
-  texDesc.addressMode[0] = cudaAddressModeWrap;
-  texDesc.addressMode[1] = cudaAddressModeWrap;
-  texDesc.filterMode = cudaFilterModeLinear;
-  texDesc.readMode = cudaReadModeElementType;
-  texDesc.normalizedCoords = 0;
-
-  cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
-
-  outputImage->map();
-  struct cudaResourceDesc outputResDesc;
-  memset(&outputResDesc, 0, sizeof(outputResDesc));
-  outputResDesc.resType = cudaResourceTypeArray;
-  outputResDesc.res.array.array = outputImage->getArray();
-
-  cudaCreateSurfaceObject(&outputSurface, &outputResDesc);
+  prepareInputTexture();
+  prepareOutputSurface();
 
   dimBlock = dim3(32, 32, 1);
   dimGrid = dim3(divUp(inputImage->getWidth(), dimBlock.x),
@@ -162,6 +141,36 @@ void DistanceTransform::run()
 thrust::device_vector<float> &DistanceTransform::getResults()
 {
   return resultVector;
+}
+
+void DistanceTransform::prepareInputTexture()
+{
+  inputImage->map();
+  struct cudaResourceDesc resDesc;
+  memset(&resDesc, 0, sizeof(resDesc));
+  resDesc.resType = cudaResourceTypeArray;
+  resDesc.res.array.array = inputImage->getArray();
+
+  struct cudaTextureDesc texDesc;
+  memset(&texDesc, 0, sizeof(texDesc));
+  texDesc.addressMode[0] = cudaAddressModeWrap;
+  texDesc.addressMode[1] = cudaAddressModeWrap;
+  texDesc.filterMode = cudaFilterModeLinear;
+  texDesc.readMode = cudaReadModeElementType;
+  texDesc.normalizedCoords = 0;
+
+  cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
+}
+
+void DistanceTransform::prepareOutputSurface()
+{
+  outputImage->map();
+  struct cudaResourceDesc outputResDesc;
+  memset(&outputResDesc, 0, sizeof(outputResDesc));
+  outputResDesc.resType = cudaResourceTypeArray;
+  outputResDesc.res.array.array = outputImage->getArray();
+
+  cudaCreateSurfaceObject(&outputSurface, &outputResDesc);
 }
 
 void DistanceTransform::runInitializeKernel()
