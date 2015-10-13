@@ -15,7 +15,8 @@ class DistanceTransform
 
   void run();
 
-  thrust::device_vector<float>& getResults();
+  thrust::device_vector<float> &getResults();
+
  private:
   std::shared_ptr<CudaArrayProvider> inputImage;
   std::shared_ptr<CudaArrayProvider> outputImage;
@@ -25,6 +26,7 @@ class DistanceTransform
   dim3 dimBlock;
   dim3 dimGrid;
   cudaTextureObject_t inputTexture;
+  cudaSurfaceObject_t outputSurface;
   void resize();
   void runInitializeKernel();
   void runStepsKernels();

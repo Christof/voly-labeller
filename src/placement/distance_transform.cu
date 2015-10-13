@@ -3,8 +3,6 @@
 #include <thrust/device_ptr.h>
 #include "../utils/cuda_helper.h"
 
-surface<void, cudaSurfaceType2D> outputSurface;
-
 /**
  * \brief Initializes the distance transform
  *
@@ -75,8 +73,8 @@ __global__ void distanceTransformStep(int *data, unsigned int step, int width, i
   data[index] = currentNearest;
 }
 
-__global__ void distanceTransformFinish(int width, int height, int *data,
-                                                float *result)
+__global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
+                                        int height, int *data, float *result)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -98,7 +96,7 @@ __global__ void distanceTransformFinish(int width, int height, int *data,
   float4 color =
       make_float4(16.0f * distf / width, 16.0f * distf / width,
                   16.0f * distf / width, 1.0f);
-  surf2Dwrite<float4>(color, outputSurface, x * sizeof(float4), y);
+  surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
 DistanceTransform::DistanceTransform(
@@ -140,8 +138,13 @@ void DistanceTransform::run()
   cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
 
   outputImage->map();
-  HANDLE_ERROR(cudaBindSurfaceToArray(outputSurface, outputImage->getArray(),
-                                      outputImage->getChannelDesc()));
+  struct cudaResourceDesc outputResDesc;
+  memset(&outputResDesc, 0, sizeof(outputResDesc));
+  outputResDesc.resType = cudaResourceTypeArray;
+  outputResDesc.res.array.array = outputImage->getArray();
+
+  cudaCreateSurfaceObject(&outputSurface, &outputResDesc);
+
   dimBlock = dim3(32, 32, 1);
   dimGrid = dim3(divUp(inputImage->getWidth(), dimBlock.x),
                divUp(inputImage->getHeight(), dimBlock.y), 1);
@@ -151,6 +154,7 @@ void DistanceTransform::run()
   runFinishKernel();
 
   cudaDestroyTextureObject(inputTexture);
+  cudaDestroySurfaceObject(outputSurface);
   inputImage->unmap();
 }
 
@@ -198,7 +202,7 @@ void DistanceTransform::runFinishKernel()
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
   float *resultPtr = thrust::raw_pointer_cast(resultVector.data());
 
-  distanceTransformFinish<<<dimGrid, dimBlock>>>(
+  distanceTransformFinish<<<dimGrid, dimBlock>>>(outputSurface,
       outputImage->getWidth(), outputImage->getHeight(), computePtr, resultPtr);
 
   HANDLE_ERROR(cudaThreadSynchronize());
