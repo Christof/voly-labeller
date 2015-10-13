@@ -31,6 +31,8 @@ class DistanceTransform
   dim3 dimGrid;
   cudaTextureObject_t inputTexture;
   cudaSurfaceObject_t outputSurface;
+  void prepareInputTexture();
+  void prepareOutputSurface();
   void resize();
   void runInitializeKernel();
   void runStepsKernels();
