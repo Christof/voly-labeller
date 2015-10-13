@@ -3,6 +3,7 @@
 #define TEST_CUDA_ARRAY_MAPPER_H_
 
 #include <vector>
+#include <cassert>
 #include <cuda_runtime.h>
 #include "../src/utils/cuda_helper.h"
 #include "../src/utils/cuda_array_provider.h"
@@ -17,15 +18,17 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
 {
  public:
   CudaArrayMapper(int width, int height, std::vector<ElementType> data,
-                  cudaChannelFormatDesc channelFormat)
-    : CudaArrayProvider(width, height), data(data), channelFormat(channelFormat)
+                  cudaChannelFormatDesc channelFormat,
+                  unsigned int flags = cudaArraySurfaceLoadStore)
+    : CudaArrayProvider(width, height), data(data),
+      channelFormat(channelFormat), flags(flags)
   {
   }
 
   virtual void map()
   {
-    HANDLE_ERROR(cudaMallocArray(&array, &channelFormat, width, height,
-                                 cudaArraySurfaceLoadStore));
+    HANDLE_ERROR(cudaMallocArray(&array, &channelFormat, width, height, flags));
+
     HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, data.data(),
                                    sizeof(ElementType) * data.size(),
                                    cudaMemcpyHostToDevice));
@@ -48,6 +51,7 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
   std::vector<ElementType> copyDataFromGpu()
   {
     std::vector<ElementType> result(width * height);
+    assert(width * height == result.size());
     HANDLE_ERROR(cudaMemcpyFromArray(result.data(), array, 0, 0,
                                      sizeof(ElementType) * width * height,
                                      cudaMemcpyDeviceToHost));
@@ -59,6 +63,7 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
   std::vector<ElementType> data;
   cudaArray_t array;
   cudaChannelFormatDesc channelFormat;
+  unsigned int flags;
 };
 
 #endif  // TEST_CUDA_ARRAY_MAPPER_H_
