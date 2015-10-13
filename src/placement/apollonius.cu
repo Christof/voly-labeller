@@ -223,10 +223,11 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
         thrust::raw_pointer_cast(distance_vector.data()), k, imageSize,
         imageSize);
   }
+  HANDLE_ERROR(cudaThreadSynchronize());
 
   // colorize diagram
   jfa_thrust_gather<<<dimGrid, dimBlock>>>(imageSize, numLabels, raw_ptr,
       idptr, idxptr);
-  cudaThreadSynchronize();
+  HANDLE_ERROR(cudaThreadSynchronize());
 }
 
