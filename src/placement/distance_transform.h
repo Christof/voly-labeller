@@ -24,7 +24,7 @@ class DistanceTransform
   int pixelCount;
   dim3 dimBlock;
   dim3 dimGrid;
-  // cudaTextureObject_t inputTexture;
+  cudaTextureObject_t inputTexture;
   void resize();
   void runInitializeKernel();
   void runStepsKernels();

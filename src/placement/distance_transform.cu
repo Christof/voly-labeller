@@ -4,7 +4,6 @@
 #include "../utils/cuda_helper.h"
 
 surface<void, cudaSurfaceType2D> outputSurface;
-texture<float, 2, cudaReadModeElementType> inputTexture;
 
 /**
  * \brief Initializes the distance transform
@@ -13,8 +12,10 @@ texture<float, 2, cudaReadModeElementType> inputTexture;
  * 0.99 the data value is set to the index. Otherwise it is set to the given
  * outlier value.
  */
-__global__ void initializeForDistanceTransform(int width, int height,
-    float xscale, float yscale, int outlierValue, int *data)
+__global__ void initializeForDistanceTransform(cudaTextureObject_t input,
+                                               int width, int height,
+                                               float xscale, float yscale,
+                                               int outlierValue, int *data)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -23,7 +24,7 @@ __global__ void initializeForDistanceTransform(int width, int height,
 
   int index = y * width + x;
 
-  float pixelValue = tex2D(inputTexture, x * xscale + 0.5f, y * yscale + 0.5f);
+  float pixelValue = tex2D<float>(input, x * xscale + 0.5f, y * yscale + 0.5f);
 
   data[index] = pixelValue >= 0.99f ? index : outlierValue;
 }
@@ -123,13 +124,11 @@ void DistanceTransform::run()
   resize();
   inputImage->map();
 
-  /*
   struct cudaResourceDesc resDesc;
   memset(&resDesc, 0, sizeof(resDesc));
   resDesc.resType = cudaResourceTypeArray;
   resDesc.res.array.array = inputImage->getArray();
 
-  // Specify texture object parameters struct cudaTextureDesc
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
   texDesc.addressMode[0] = cudaAddressModeWrap;
@@ -139,11 +138,8 @@ void DistanceTransform::run()
   texDesc.normalizedCoords = 0;
 
   cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
-  */
 
   outputImage->map();
-  HANDLE_ERROR(cudaBindTextureToArray(inputTexture, inputImage->getArray(),
-                                      inputImage->getChannelDesc()));
   HANDLE_ERROR(cudaBindSurfaceToArray(outputSurface, outputImage->getArray(),
                                       outputImage->getChannelDesc()));
   dimBlock = dim3(32, 32, 1);
@@ -154,8 +150,7 @@ void DistanceTransform::run()
   runStepsKernels();
   runFinishKernel();
 
-  // cudaDestroyTextureObject(inputTexture);
-  cudaUnbindTexture(&inputTexture);
+  cudaDestroyTextureObject(inputTexture);
   inputImage->unmap();
 }
 
@@ -169,7 +164,6 @@ void DistanceTransform::runInitializeKernel()
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
 
   // read depth buffer and initialize distance transform computation
-
   float xScale =
       static_cast<float>(inputImage->getWidth()) / outputImage->getWidth();
   float yScale =
@@ -177,7 +171,7 @@ void DistanceTransform::runInitializeKernel()
   int outlierValue =
       (outputImage->getWidth() * 2) * (outputImage->getHeight() * 2) - 1;
 
-  initializeForDistanceTransform<<<dimGrid, dimBlock>>>(//inputTexture,
+  initializeForDistanceTransform<<<dimGrid, dimBlock>>>(inputTexture,
       outputImage->getWidth(), outputImage->getHeight(), xScale, yScale, 
       outlierValue, computePtr);
   HANDLE_ERROR(cudaThreadSynchronize());
