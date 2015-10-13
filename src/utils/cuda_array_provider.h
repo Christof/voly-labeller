@@ -3,6 +3,7 @@
 #define SRC_UTILS_CUDA_ARRAY_PROVIDER_H_
 
 #include <cuda_runtime.h>
+#include <cstring>
 
 /**
  * \brief Interface for classes which provide access to a cudaArray
@@ -20,6 +21,16 @@ class CudaArrayProvider
 
   virtual cudaChannelFormatDesc getChannelDesc() = 0;
   virtual cudaArray_t getArray() = 0;
+
+  cudaResourceDesc getResourceDesc()
+  {
+    struct cudaResourceDesc resDesc;
+    memset(&resDesc, 0, sizeof(resDesc));
+    resDesc.resType = cudaResourceTypeArray;
+    resDesc.res.array.array = getArray();
+
+    return resDesc;
+  }
 
   int getWidth()
   {

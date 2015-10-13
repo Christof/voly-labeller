@@ -146,10 +146,7 @@ thrust::device_vector<float> &DistanceTransform::getResults()
 void DistanceTransform::prepareInputTexture()
 {
   inputImage->map();
-  struct cudaResourceDesc resDesc;
-  memset(&resDesc, 0, sizeof(resDesc));
-  resDesc.resType = cudaResourceTypeArray;
-  resDesc.res.array.array = inputImage->getArray();
+  auto resDesc = inputImage->getResourceDesc();
 
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
@@ -165,12 +162,9 @@ void DistanceTransform::prepareInputTexture()
 void DistanceTransform::prepareOutputSurface()
 {
   outputImage->map();
-  struct cudaResourceDesc outputResDesc;
-  memset(&outputResDesc, 0, sizeof(outputResDesc));
-  outputResDesc.resType = cudaResourceTypeArray;
-  outputResDesc.res.array.array = outputImage->getArray();
+  auto resDesc = outputImage->getResourceDesc();
 
-  cudaCreateSurfaceObject(&outputSurface, &outputResDesc);
+  cudaCreateSurfaceObject(&outputSurface, &resDesc);
 }
 
 void DistanceTransform::runInitializeKernel()
