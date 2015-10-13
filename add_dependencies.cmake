@@ -10,7 +10,7 @@ find_package(Qt5Xml 5.5 REQUIRED)
 
 find_package(CUDA 7.0 REQUIRED)
 set(CUDA_SEPARABLE_COMPILATION ON)
-set(CUDA_VERBOSE_BUILD ON)
+set(CUDA_VERBOSE_BUILD OFF)
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3;-std=c++11;-gencode arch=compute_30,code=sm_30)
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 add_definitions(-DUSECUDA)
