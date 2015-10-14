@@ -15,20 +15,13 @@ void callApollonoius(std::vector<Eigen::Vector4f> &image,
   int pixelCount = imageSize * imageSize;
   auto imageMapper = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       imageSize, imageSize, image, channelDesc);
-  imageMapper->map();
 
   thrust::device_vector<float4> seedBuffer(pixelCount, make_float4(0, 0, 0, 0));
   seedBuffer[0] = make_float4(1, 1, 1, 1);
   thrust::device_vector<float> distanceVector(distances);
-  thrust::device_vector<int> computeVector;
-  thrust::device_vector<int> computeVectorTemp;
-  thrust::device_vector<int> computeSeedIds;
-  thrust::device_vector<int> computeSeedIndices;
 
-  cudaJFAApolloniusThrust(imageMapper->getArray(), imageSize, labelCount,
-                          seedBuffer, distanceVector, computeVector,
-                          computeVectorTemp, computeSeedIds,
-                          computeSeedIndices);
+  Apollonius apollonius(imageMapper, seedBuffer, distanceVector, labelCount);
+  apollonius.run();
 
   image = imageMapper->copyDataFromGpu();
 
