@@ -24,18 +24,21 @@ __global__ void seed(int imageSize, int labelCount, float4 *seedbuffer,
   for (int i = 0; i < labelCount; i++)
   {
     float4 seedval = seedbuffer[i];
-    if (int(seedval.x) > 0 && x == int(seedval.y) && y == int(seedval.z) &&
+    int4 seedValueInt =
+        make_int4(static_cast<int>(seedval.x), static_cast<int>(seedval.y),
+                  static_cast<int>(seedval.z), static_cast<int>(seedval.w));
+    if (seedValueInt.x > 0 && x == seedValueInt.y && y == seedValueInt.z &&
         (x != 0 || y != 0))
     {
-      outval = make_float4(seedval.x / (labelCount + 1),
-                           int(seedval.y) / float(imageSize),
-                           int(seedval.z) / float(imageSize), 1.0f);
+      outval =
+          make_float4(seedval.x / (labelCount + 1),
+                      seedValueInt.y / static_cast<float>(imageSize),
+                      seedValueInt.z / static_cast<float>(imageSize), 1.0f);
 
-      // index for thrust computation =
       outindex = x + y * imageSize;
     }
-    idptr[i] = int(seedval.x);
-    idxptr[i] = int(seedval.y) + int(seedval.z) * imageSize;
+    idptr[i] = seedValueInt.x;
+    idxptr[i] = seedValueInt.y + seedValueInt.z * imageSize;
   }
 
   thrustptr[index] = outindex;
@@ -57,9 +60,10 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
   int currentX = currentNearest - currentY * w;
   float curr_w = (currentNearest < w * h) ? occupancy[currentNearest] : 0.0f;
 
-  float currentDistance = sqrtf(float((x - currentX) * (x - currentX) +
-                                      (y - currentY) * (y - currentY))) -
-                          curr_w;
+  float currentDistance =
+      sqrtf(static_cast<float>((x - currentX) * (x - currentX) +
+                               (y - currentY) * (y - currentY))) -
+      curr_w;
 
 #pragma unroll
   for (int i = -1; i <= 1; i++)
@@ -79,9 +83,9 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
       int newY = newNearest / w;
       int newX = newNearest - newY * w;
       float newW = (newNearest < w * h) ? occupancy[newNearest] : 0.0f;
-      float newDistance =
-          sqrtf(float((x - newX) * (x - newX) + (y - newY) * (y - newY))) -
-          newW;
+      float newDistance = sqrtf(static_cast<float>((x - newX) * (x - newX) +
+                                                   (y - newY) * (y - newY))) -
+                          newW;
 
       if (newDistance < currentDistance || currentNearest >= w * h)
       {
@@ -196,7 +200,7 @@ void Apollonius::runSeedKernel()
   HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, inputImage->getArray(),
                                       inputImage->getChannelDesc()));
 
-  seed<<<dimGrid, dimBlock>>>(imageSize, labelCount, seedBufferPtr, raw_ptr, 
+  seed<<<dimGrid, dimBlock>>>(imageSize, labelCount, seedBufferPtr, raw_ptr,
       idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }

@@ -2,8 +2,8 @@
 
 #define SRC_PLACEMENT_APOLLONIUS_H_
 
-#include <memory>
 #include <thrust/device_vector.h>
+#include <memory>
 #include "../utils/cuda_array_provider.h"
 
 #define MAX_LABELS 256
