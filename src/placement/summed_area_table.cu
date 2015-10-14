@@ -686,7 +686,8 @@ void toGray(std::shared_ptr<CudaArrayProvider> tex, int image_size)
 {
   tex->map();
 
-  HANDLE_ERROR(cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
+  HANDLE_ERROR(
+      cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
