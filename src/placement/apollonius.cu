@@ -6,9 +6,8 @@
 surface<void, cudaSurfaceType2D> surfaceWrite;
 texture<float, 2, cudaReadModeElementType> depthTexture;
 
-__global__ void jfa_seed_kernel(int imageSize, int num_labels,
-                                float4 *seedbuffer, int *thrustptr, int *idptr,
-                                int *idxptr)
+__global__ void seed(int imageSize, int labelCount, float4 *seedbuffer,
+                     int *thrustptr, int *idptr, int *idxptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -22,13 +21,13 @@ __global__ void jfa_seed_kernel(int imageSize, int num_labels,
   // initialize to out of bounds
   int outindex = (imageSize * 2) * (imageSize * 2) - 1;
 
-  for (int i = 0; i < num_labels; i++)
+  for (int i = 0; i < labelCount; i++)
   {
     float4 seedval = seedbuffer[i];
     if (int(seedval.x) > 0 && x == int(seedval.y) && y == int(seedval.z) &&
         (x != 0 || y != 0))
     {
-      outval = make_float4(seedval.x / (num_labels + 1),
+      outval = make_float4(seedval.x / (labelCount + 1),
                            int(seedval.y) / float(imageSize),
                            int(seedval.z) / float(imageSize), 1.0f);
 
@@ -43,8 +42,8 @@ __global__ void jfa_seed_kernel(int imageSize, int num_labels,
   surf2Dwrite<float4>(outval, surfaceWrite, x * sizeof(float4), y);
 }
 
-__global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
-                                int w, int h)
+__global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
+                               int w, int h)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -58,9 +57,9 @@ __global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
   int currentX = currentNearest - currentY * w;
   float curr_w = (currentNearest < w * h) ? occupancy[currentNearest] : 0.0f;
 
-  float currentDistance =
-      sqrtf(float((x - currentX) * (x - currentX) + (y - currentY) * (y - currentY))) -
-      curr_w;
+  float currentDistance = sqrtf(float((x - currentX) * (x - currentX) +
+                                      (y - currentY) * (y - currentY))) -
+                          curr_w;
 
 #pragma unroll
   for (int i = -1; i <= 1; i++)
@@ -95,8 +94,8 @@ __global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
   data[index] = currentNearest;
 }
 
-__global__ void jfa_thrust_gather(int imageSize, int num_labels, int *thrustptr,
-                                  int *seedidptr, int *seedidxptr)
+__global__ void gather(int imageSize, int labelCount, int *thrustptr,
+                       int *seedidptr, int *seedidxptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -107,7 +106,7 @@ __global__ void jfa_thrust_gather(int imageSize, int num_labels, int *thrustptr,
   int labelID = 100;
   int labelIndex = thrustptr[index];
 
-  for (int i = 0; i < num_labels; i++)
+  for (int i = 0; i < labelCount; i++)
   {
     if (labelIndex == seedidxptr[i])
     {
@@ -150,9 +149,9 @@ __global__ void jfa_thrust_gather(int imageSize, int num_labels, int *thrustptr,
 
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
                        thrust::device_vector<float4> &seedBuffer,
-                       thrust::device_vector<float> &distances, int numLabels)
+                       thrust::device_vector<float> &distances, int labelCount)
   : inputImage(inputImage), seedBuffer(seedBuffer), distances(distances),
-    numLabels(numLabels)
+    labelCount(labelCount)
 {
   imageSize = inputImage->getWidth();
   pixelCount = imageSize * imageSize;
@@ -197,22 +196,22 @@ void Apollonius::runSeedKernel()
   HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, inputImage->getArray(),
                                       inputImage->getChannelDesc()));
 
-  jfa_seed_kernel<<<dimGrid, dimBlock>>>
-      (imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
+  seed<<<dimGrid, dimBlock>>>(imageSize, labelCount, seedBufferPtr, raw_ptr, 
+      idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
 void Apollonius::runStepsKernels()
 {
   computeVectorTemp = computeVector;
-  apollonius_cuda<<<dimGrid, dimBlock>>>
+  apolloniusStep<<<dimGrid, dimBlock>>>
       (thrust::raw_pointer_cast(computeVector.data()),
        thrust::raw_pointer_cast(distances.data()), 1, imageSize,
        imageSize);
 
   for (int k = (imageSize / 2); k > 0; k /= 2)
   {
-    apollonius_cuda<<<dimGrid, dimBlock>>>(
+    apolloniusStep<<<dimGrid, dimBlock>>>(
         thrust::raw_pointer_cast(computeVector.data()),
         thrust::raw_pointer_cast(distances.data()), k, imageSize,
         imageSize);
@@ -225,7 +224,7 @@ void Apollonius::runGatherKernel()
   int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
   int *idptr = thrust::raw_pointer_cast(seedIds.data());
   int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
-  jfa_thrust_gather<<<dimGrid, dimBlock>>>(imageSize, numLabels, raw_ptr,
+  gather<<<dimGrid, dimBlock>>>(imageSize, labelCount, raw_ptr,
       idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
