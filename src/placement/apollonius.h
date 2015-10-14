@@ -19,7 +19,7 @@ class Apollonius
   Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
              thrust::device_vector<float4> &seedBuffer,
              thrust::device_vector<float> &distances,
-             int numLabels);
+             int labelCount);
 
   void run();
 
@@ -31,7 +31,7 @@ class Apollonius
   thrust::device_vector<int> computeVectorTemp;
   thrust::device_vector<int> seedIds;
   thrust::device_vector<int> seedIndices;
-  int numLabels;
+  int labelCount;
 
   dim3 dimBlock;
   dim3 dimGrid;
