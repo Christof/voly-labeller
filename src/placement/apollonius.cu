@@ -107,11 +107,8 @@ __global__ void apollonius_cuda(int *data, float *occupancy, unsigned int step,
   data[index] = currentNearest;
 }
 
-__global__ void jfa_thrust_gather(int imageSize,
-                                                            int num_labels,
-                                                            int *thrustptr,
-                                                            int *seedidptr,
-                                                            int *seedidxptr)
+__global__ void jfa_thrust_gather(int imageSize, int num_labels, int *thrustptr,
+                                  int *seedidptr, int *seedidxptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -171,6 +168,88 @@ __global__ void jfa_thrust_gather(int imageSize,
   surf2Dwrite<float4>(color, surfaceWrite, x * sizeof(float4), y);
 }
 
+Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
+                       thrust::device_vector<float4> &seedBuffer,
+                       thrust::device_vector<float> &distances, int numLabels)
+  : inputImage(inputImage), seedBuffer(seedBuffer), distances(distances),
+    numLabels(numLabels)
+{
+  imageSize = inputImage->getWidth();
+  pixelCount = imageSize * imageSize;
+}
+
+void Apollonius::run()
+{
+  resize();
+  inputImage->map();
+  dimBlock = dim3(32, 32, 1);
+  dimGrid = dim3(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
+
+  runSeedKernel();
+  runStepsKernels();
+  runGatherKernel();
+
+  inputImage->unmap();
+}
+
+void Apollonius::resize()
+{
+  if (computeVector.size() != static_cast<unsigned long>(pixelCount))
+  {
+    computeVector.resize(pixelCount, pixelCount);
+    computeVectorTemp.resize(pixelCount, pixelCount);
+  }
+
+  if (seedIds.size() != MAX_LABELS || seedIndices.size() != MAX_LABELS)
+  {
+    seedIds.resize(MAX_LABELS, -1);
+    seedIndices.resize(MAX_LABELS, -1);
+  }
+}
+
+void Apollonius::runSeedKernel()
+{
+  int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
+  int *idptr = thrust::raw_pointer_cast(seedIds.data());
+  int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
+  float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
+
+  HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, inputImage->getArray(),
+                                      inputImage->getChannelDesc()));
+
+  jfa_seed_kernel<<<dimGrid, dimBlock>>>
+      (imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
+  HANDLE_ERROR(cudaThreadSynchronize());
+}
+
+void Apollonius::runStepsKernels()
+{
+  computeVectorTemp = computeVector;
+  apollonius_cuda<<<dimGrid, dimBlock>>>
+      (thrust::raw_pointer_cast(computeVector.data()),
+       thrust::raw_pointer_cast(distances.data()), 1, imageSize,
+       imageSize);
+
+  for (int k = (imageSize / 2); k > 0; k /= 2)
+  {
+    apollonius_cuda<<<dimGrid, dimBlock>>>(
+        thrust::raw_pointer_cast(computeVector.data()),
+        thrust::raw_pointer_cast(distances.data()), k, imageSize,
+        imageSize);
+  }
+  HANDLE_ERROR(cudaThreadSynchronize());
+}
+
+void Apollonius::runGatherKernel()
+{
+  int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
+  int *idptr = thrust::raw_pointer_cast(seedIds.data());
+  int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
+  jfa_thrust_gather<<<dimGrid, dimBlock>>>(imageSize, numLabels, raw_ptr,
+      idptr, idxptr);
+  HANDLE_ERROR(cudaThreadSynchronize());
+}
+
 void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
                              int numLabels,
                              thrust::device_vector<float4> &seedbuffer,
@@ -206,12 +285,12 @@ void cudaJFAApolloniusThrust(cudaArray_t imageArray, int imageSize,
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
   HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, imageArray, channelDesc));
 
-  jfa_seed_kernel << <dimGrid, dimBlock>>>
+  jfa_seed_kernel<<<dimGrid, dimBlock>>>
       (imageSize, numLabels, seedBufferPtr, raw_ptr, idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 
   compute_temp_vector = compute_vector;
-  apollonius_cuda << <dimGrid, dimBlock>>>
+  apollonius_cuda<<<dimGrid, dimBlock>>>
       (thrust::raw_pointer_cast(compute_vector.data()),
        thrust::raw_pointer_cast(distance_vector.data()), 1, imageSize,
        imageSize);
