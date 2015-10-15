@@ -1,13 +1,11 @@
 #include "./to_gray.h"
 #include "../utils/cuda_helper.h"
 
-surface<void, cudaSurfaceType2D> image;
-
-__global__ void toGrayKernel(int image_size)
+__global__ void toGrayKernel(cudaSurfaceObject_t image, int width, int height)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
-  if (x >= image_size || y >= image_size)
+  if (x >= width || y >= height)
     return;
 
   uchar4 color;
@@ -20,19 +18,25 @@ __global__ void toGrayKernel(int image_size)
   surf2Dwrite(color, image, x * 4, y);
 }
 
-void toGray(std::shared_ptr<CudaArrayProvider> tex, int image_size)
+ToGray::ToGray(std::shared_ptr<CudaArrayProvider> imageProvider)
+  : imageProvider(imageProvider)
 {
-  tex->map();
+}
 
-  HANDLE_ERROR(
-      cudaBindSurfaceToArray(image, tex->getArray(), tex->getChannelDesc()));
+void ToGray::runKernel()
+{
+  imageProvider->map();
+  auto resDesc = imageProvider->getResourceDesc();
+  cudaCreateSurfaceObject(&image, &resDesc);
 
   dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(image_size, dimBlock.x), divUp(image_size, dimBlock.y), 1);
+  dim3 dimGrid(divUp(imageProvider->getWidth(), dimBlock.x),
+               divUp(imageProvider->getHeight(), dimBlock.y), 1);
 
-  toGrayKernel<<<dimGrid, dimBlock>>>(image_size);
+  toGrayKernel<<<dimGrid, dimBlock>>>(image, imageProvider->getWidth(),
+      imageProvider->getHeight());
   HANDLE_ERROR(cudaThreadSynchronize());
 
-  tex->unmap();
+  imageProvider->unmap();
 }
 

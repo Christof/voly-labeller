@@ -144,7 +144,7 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
-  toGray(colorTextureMapper, width);
+  ToGray(colorTextureMapper).runKernel();
   Eigen::Affine3f transformation(
       Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
