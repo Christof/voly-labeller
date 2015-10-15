@@ -19,6 +19,7 @@
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
 #include "./placement/summed_area_table.h"
+#include "./placement/to_gray.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
