@@ -53,18 +53,3 @@ int sumUsingCuda()
   return result[0];
 }
 
-unsigned int toGrayUsingCuda(unsigned int value)
-{
-  cudaChannelFormatDesc channelDesc =
-      cudaCreateChannelDesc(8, 8, 8, 8, cudaChannelFormatKindUnsigned);
-  std::vector<unsigned int> data = { value };
-  auto arrayProvider =
-      std::make_shared<CudaArrayMapper<unsigned int>>(1, 1, data, channelDesc);
-
-  toGray(arrayProvider, 1);
-
-  auto resultVector = arrayProvider->copyDataFromGpu();
-
-  return resultVector[0];
-}
-
