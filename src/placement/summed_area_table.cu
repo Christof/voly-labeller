@@ -451,7 +451,7 @@ void prepare_algSAT(const int width
 */
 
 __global__ void sat_init_kernel(int image_size, float xscale, float yscale,
-                                float zths, float *thrustptr)
+                                float *thrustptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -544,7 +544,7 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   sat_init_kernel << <dimGrid, dimBlock>>>(image_size,
        static_cast<float>(screen_size_x) / static_cast<float>(image_size),
        static_cast<float>(screen_size_y) / static_cast<float>(image_size),
-       z_threshold, d_inout);
+       d_inout);
   cudaThreadSynchronize();
   cudaUnbindTexture(&textureReadDepth);
   cudaGraphicsUnmapResources(1, &inputImage);
@@ -634,5 +634,58 @@ thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
   // thrust::copy(inout.begin(), inout.end(), result.begin());
 
   return inout;
+}
+
+SummedAreaTable::SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage)
+  : inputImage(inputImage)
+{
+}
+
+void SummedAreaTable::runKernel()
+{
+  int compute_width = inputImage->getWidth();
+  int compute_height = inputImage->getHeight();
+  if (compute_width % 32 > 0)
+    compute_width += (32 - (compute_width % 32));
+  if (compute_height % 32 > 0)
+    compute_height += (32 - (compute_height % 32));
+  int compute_m_size = (compute_width + WS - 1) / WS;
+  int compute_n_size = (compute_height + WS - 1) / WS;
+
+  // set data structure sizes
+  resizeIfNecessary(inout, compute_width * compute_height);
+  resizeIfNecessary(ybar, compute_n_size * compute_width);
+  resizeIfNecessary(vhat, compute_m_size * compute_height);
+  resizeIfNecessary(ysum, compute_m_size * compute_n_size);
+
+  // initialize occupancy function from inputImage
+  textureReadDepth.normalized = 0;
+  textureReadDepth.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
+  textureReadDepth.addressMode[0] = cudaAddressModeWrap;
+  textureReadDepth.addressMode[1] = cudaAddressModeWrap;
+
+  inputImage->map();
+  cudaBindTextureToArray(textureReadDepth, inputImage->getArray(),
+                         inputImage->getChannelDesc());
+
+  dim3 dimBlock(64, 1, 1);
+  dim3 dimGrid(divUp(inputImage->getWidth(), dimBlock.x),
+               divUp(inputImage->getHeight(), dimBlock.y), 1);
+
+  float *d_inout = thrust::raw_pointer_cast(inout.data());
+  int image_size = inputImage->getWidth();
+  int screen_size_x = inputImage->getWidth();
+  int screen_size_y = inputImage->getHeight();
+
+  sat_init_kernel<<<dimGrid, dimBlock>>>(image_size,
+       static_cast<float>(screen_size_x) / static_cast<float>(image_size),
+       static_cast<float>(screen_size_y) / static_cast<float>(image_size),
+       d_inout);
+  cudaThreadSynchronize();
+  cudaUnbindTexture(&textureReadDepth);
+  inputImage->unmap();
+
+  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
+             compute_m_size, compute_n_size);
 }
 
