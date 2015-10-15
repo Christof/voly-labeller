@@ -7,7 +7,21 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
+/**
+ * \brief
+ *
+ *
+ */
+class ToGray
+{
+ public:
+  ToGray(std::shared_ptr<CudaArrayProvider> imageProvider);
 
-void toGray(std::shared_ptr<CudaArrayProvider> tex, int image_size);
+  void runKernel();
+
+ private:
+  std::shared_ptr<CudaArrayProvider> imageProvider;
+  cudaSurfaceObject_t image;
+};
 
 #endif  // SRC_PLACEMENT_TO_GRAY_H_

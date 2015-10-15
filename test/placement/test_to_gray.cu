@@ -9,7 +9,7 @@ unsigned int toGrayUsingCuda(unsigned int value)
   auto arrayProvider =
       std::make_shared<CudaArrayMapper<unsigned int>>(1, 1, data, channelDesc);
 
-  toGray(arrayProvider, 1);
+  ToGray(arrayProvider).runKernel();
 
   auto resultVector = arrayProvider->copyDataFromGpu();
 
