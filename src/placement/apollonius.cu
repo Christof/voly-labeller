@@ -3,11 +3,9 @@
 #include <thrust/device_ptr.h>
 #include "../utils/cuda_helper.h"
 
-surface<void, cudaSurfaceType2D> surfaceWrite;
-texture<float, 2, cudaReadModeElementType> depthTexture;
-
-__global__ void seed(int imageSize, int labelCount, float4 *seedbuffer,
-                     int *thrustptr, int *idptr, int *idxptr)
+__global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
+                     float4 *seedbuffer, int *thrustptr, int *idptr,
+                     int *idxptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -42,7 +40,7 @@ __global__ void seed(int imageSize, int labelCount, float4 *seedbuffer,
   }
 
   thrustptr[index] = outindex;
-  surf2Dwrite<float4>(outval, surfaceWrite, x * sizeof(float4), y);
+  surf2Dwrite(outval, output, x * sizeof(float4), y);
 }
 
 __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
@@ -98,8 +96,9 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
   data[index] = currentNearest;
 }
 
-__global__ void gather(int imageSize, int labelCount, int *thrustptr,
-                       int *seedidptr, int *seedidxptr)
+__global__ void gather(cudaSurfaceObject_t output, int imageSize,
+                       int labelCount, int *thrustptr, int *seedidptr,
+                       int *seedidxptr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -148,7 +147,7 @@ __global__ void gather(int imageSize, int labelCount, int *thrustptr,
   default:
     color = make_float4(0.5, 0.5, 0.5, 1.0);
   }
-  surf2Dwrite<float4>(color, surfaceWrite, x * sizeof(float4), y);
+  surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
@@ -165,6 +164,9 @@ void Apollonius::run()
 {
   resize();
   inputImage->map();
+  auto resDesc = inputImage->getResourceDesc();
+  cudaCreateSurfaceObject(&outputSurface, &resDesc);
+
   dimBlock = dim3(32, 32, 1);
   dimGrid = dim3(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
 
@@ -197,10 +199,7 @@ void Apollonius::runSeedKernel()
   int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
-  HANDLE_ERROR(cudaBindSurfaceToArray(surfaceWrite, inputImage->getArray(),
-                                      inputImage->getChannelDesc()));
-
-  seed<<<dimGrid, dimBlock>>>(imageSize, labelCount, seedBufferPtr, raw_ptr,
+  seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount, seedBufferPtr, raw_ptr,
       idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
@@ -228,7 +227,7 @@ void Apollonius::runGatherKernel()
   int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
   int *idptr = thrust::raw_pointer_cast(seedIds.data());
   int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
-  gather<<<dimGrid, dimBlock>>>(imageSize, labelCount, raw_ptr,
+  gather<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount, raw_ptr,
       idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }

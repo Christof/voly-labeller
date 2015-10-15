@@ -18,8 +18,7 @@ class Apollonius
  public:
   Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
              thrust::device_vector<float4> &seedBuffer,
-             thrust::device_vector<float> &distances,
-             int labelCount);
+             thrust::device_vector<float> &distances, int labelCount);
 
   void run();
 
@@ -38,6 +37,8 @@ class Apollonius
 
   int imageSize;
   int pixelCount;
+
+  cudaSurfaceObject_t outputSurface;
 
   void resize();
   void runSeedKernel();
