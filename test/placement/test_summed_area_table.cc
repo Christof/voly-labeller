@@ -2,25 +2,6 @@
 #include <thrust/host_vector.h>
 #include "../../src/placement/summed_area_table.h"
 
-int sumUsingThrustReduce();
-int sumUsingCuda();
-int sumUsingCudaInLib();
-
-TEST(Test_SummedAreaTable, SumUsingThrustReduce)
-{
-  EXPECT_EQ(6.0f, sumUsingThrustReduce());
-}
-
-TEST(Test_SummedAreaTable, SumUsingCuda)
-{
-  EXPECT_EQ(6.0f, sumUsingCuda());
-}
-
-TEST(Test_SummedAreaTable, SumUsingCudaInLib)
-{
-  EXPECT_EQ(6.0f, sumUsingCudaInLib());
-}
-
 TEST(Test_SummedAreaTable, SAT)
 {
   std::vector<float> input = { 1, 2, 3, 4 };
