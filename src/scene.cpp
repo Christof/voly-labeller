@@ -56,6 +56,8 @@ void Scene::initialize()
 
   quad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
+  positionQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/positionRenderTarget.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -65,6 +67,7 @@ void Scene::initialize()
   managers->getObjectManager()->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
+  positionQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
@@ -148,24 +151,26 @@ void Scene::render()
   Eigen::Affine3f transformation(
       Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(transformation.matrix());
+  renderQuad(quad, transformation.matrix());
 
   fbo->bindDepthTexture(GL_TEXTURE0);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(transformation.matrix());
+  renderQuad(quad, transformation.matrix());
 
-  distanceTransformTexture->bind();
+  // distanceTransformTexture->bind();
+  fbo->bindPositionTexture(GL_TEXTURE0);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(transformation.matrix());
+  renderQuad(positionQuad, transformation.matrix());
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 }
 
-void Scene::renderQuad(Eigen::Matrix4f modelMatrix)
+void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
+                       Eigen::Matrix4f modelMatrix)
 {
   RenderData renderData;
   renderData.projectionMatrix = Eigen::Matrix4f::Identity();
@@ -181,7 +186,7 @@ void Scene::renderScreenQuad()
 {
   fbo->bindColorTexture(GL_TEXTURE0);
 
-  renderQuad(Eigen::Matrix4f::Identity());
+  renderQuad(quad, Eigen::Matrix4f::Identity());
 }
 
 void Scene::resize(int width, int height)

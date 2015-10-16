@@ -16,6 +16,7 @@
         <file>shader/pass.vert</file>
         <file>shader/test.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
+        <file>shader/positionRenderTarget.frag</file>
         <file>shader/cube.geom</file>
         <file>shader/cube.vert</file>
         <file>shader/volume_cube.frag</file>
