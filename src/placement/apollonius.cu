@@ -177,6 +177,11 @@ void Apollonius::run()
   inputImage->unmap();
 }
 
+thrust::device_vector<int> &Apollonius::getIds()
+{
+  return seedIds;
+}
+
 void Apollonius::resize()
 {
   if (computeVector.size() != static_cast<unsigned long>(pixelCount))
