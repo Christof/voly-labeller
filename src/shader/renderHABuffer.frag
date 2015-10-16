@@ -6,7 +6,8 @@
 
 in vec4 u_Pos;
 
-out vec4 o_PixColor;
+layout(location = 0) out vec4 o_PixColor;
+layout(location = 1) out vec4 position;
 layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
@@ -210,7 +211,10 @@ void main()
   }
 
   vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
-  gl_FragDepth = ndcPos.z / ndcPos.w;
+  float depth = ndcPos.z / ndcPos.w;
+  gl_FragDepth = depth;
+  position.xyz = ndcPos.xyz;
+  position.w = depth;
 
   for (--age; age < maxAge; age++)  // all fragments
   {
