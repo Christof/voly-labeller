@@ -59,6 +59,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
+  std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
@@ -68,7 +69,8 @@ class Scene : public AbstractScene
   int height;
   bool shouldResize = false;
 
-  void renderQuad(Eigen::Matrix4f modelMatrix);
+  void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
+                  Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
 
   bool performPicking;
