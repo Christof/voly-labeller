@@ -22,6 +22,8 @@ class Apollonius
 
   void run();
 
+  thrust::device_vector<int> &getIds();
+
  private:
   std::shared_ptr<CudaArrayProvider> inputImage;
   thrust::device_vector<float4> &seedBuffer;
