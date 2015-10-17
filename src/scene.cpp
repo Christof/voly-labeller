@@ -159,7 +159,6 @@ void Scene::render()
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  // distanceTransformTexture->bind();
   fbo->bindPositionTexture(GL_TEXTURE0);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *

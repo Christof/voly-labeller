@@ -10,6 +10,7 @@ void main()
 {
   vec4 position =
       texture(textureSampler, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
-  color.rgb = position.rgb * 0.5f + vec3(0.5f, 0.5f, 0.5f);
+  // color.rgb = position.rgb * 0.5f + vec3(0.5f, 0.5f, 0.5f);
+  color.rgb = position.zzz * 0.5f + vec3(0.5, 0.5, 0.5);
   color.a = 1.0f;
 }

@@ -38,6 +38,8 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   if (status != GL_FRAMEBUFFER_COMPLETE)
     throw std::runtime_error("Framebuffer not complete " +
                              std::to_string(status));
+
+  unbind();
 }
 
 void FrameBufferObject::resize(int width, int height)
