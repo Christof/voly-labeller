@@ -20,6 +20,7 @@
 #include "./utils/path_helper.h"
 #include "./placement/summed_area_table.h"
 #include "./placement/to_gray.h"
+#include "./placement/distance_transform.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -72,13 +73,15 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 
   distanceTransformTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_RGBA32F);
+      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
   distanceTransformTexture->initialize(gl);
 }
 
 void Scene::cleanup()
 {
   colorTextureMapper.reset();
+  depthTextureMapper.reset();
+  distanceTransformTextureMapper.reset();
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -142,6 +145,12 @@ void Scene::render()
     colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
                                                  width, height));
+    depthTextureMapper = std::shared_ptr<CudaTextureMapper>(
+        CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
+                                                width, height));
+    distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
+        CudaTextureMapper::createReadWriteDiscardMapper(
+            distanceTransformTexture->getId(), width, height));
   }
 
   glAssert(gl->glDisable(GL_DEPTH_TEST));
