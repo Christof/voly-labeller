@@ -9,6 +9,7 @@ set(SOURCES
   summed_area_table.cu
   distance_transform.cu
   apollonius.cu
+  occupancy.cu
   labeller.cpp
   cuda_texture_mapper.cpp
   )
