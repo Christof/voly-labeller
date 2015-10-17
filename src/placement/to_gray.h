@@ -15,7 +15,7 @@
 class ToGray
 {
  public:
-  ToGray(std::shared_ptr<CudaArrayProvider> imageProvider);
+  explicit ToGray(std::shared_ptr<CudaArrayProvider> imageProvider);
 
   void runKernel();
 
