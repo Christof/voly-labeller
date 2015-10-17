@@ -21,6 +21,7 @@
 #include "./placement/summed_area_table.h"
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
+#include "./placement/occupancy.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -80,7 +81,7 @@ void Scene::initialize()
 void Scene::cleanup()
 {
   colorTextureMapper.reset();
-  depthTextureMapper.reset();
+  positionsTextureMapper.reset();
   distanceTransformTextureMapper.reset();
 }
 
@@ -145,7 +146,7 @@ void Scene::render()
     colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
                                                  width, height));
-    depthTextureMapper = std::shared_ptr<CudaTextureMapper>(
+    positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
                                                 width, height));
     distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
@@ -156,7 +157,8 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
-  ToGray(colorTextureMapper).runKernel();
+  Occupancy(positionsTextureMapper, distanceTransformTextureMapper).runKernel();
+  distanceTransformTexture->bind();
   Eigen::Affine3f transformation(
       Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));

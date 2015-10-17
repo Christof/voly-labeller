@@ -79,7 +79,7 @@ class Scene : public AbstractScene
   void doPick();
 
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> depthTextureMapper;
+  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
 };
