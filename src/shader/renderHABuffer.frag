@@ -210,11 +210,19 @@ void main()
       ++age;
   }
 
-  vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
-  float depth = ndcPos.z / ndcPos.w;
-  gl_FragDepth = depth;
-  position.xyz = ndcPos.xyz;
-  position.w = depth;
+  if (nextFragmentReadStatus)
+  {
+    vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
+    ndcPos = ndcPos / ndcPos.w;
+    float depth = ndcPos.z;
+    gl_FragDepth = depth;
+    position.xyz = ndcPos.xyz;// * 0.5f + vec3(0.5f, 0.5f, 0.5f);
+    position.w = 1.0f;
+  }
+  else
+  {
+    position = vec4(-2, -2, -2, -2);
+  }
 
   for (--age; age < maxAge; age++)  // all fragments
   {
