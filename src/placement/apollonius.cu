@@ -204,8 +204,8 @@ void Apollonius::runSeedKernel()
   int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
-  seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount, seedBufferPtr, raw_ptr,
-      idptr, idxptr);
+  seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
+      seedBufferPtr, raw_ptr, idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 

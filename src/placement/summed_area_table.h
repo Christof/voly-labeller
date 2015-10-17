@@ -17,7 +17,7 @@ thrust::host_vector<float> algSAT(float *h_inout, int w, int h);
 class SummedAreaTable
 {
  public:
-  SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage);
+  explicit SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage);
 
   void runKernel();
 
