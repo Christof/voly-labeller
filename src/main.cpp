@@ -2,6 +2,7 @@
 #include <QQmlContext>
 #include <QStateMachine>
 #include <QDebug>
+#include <cuda_runtime.h>
 #include <memory>
 #include "./window.h"
 #include "./scene.h"
@@ -17,6 +18,7 @@
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
 #include "./default_scene_creator.h"
+#include "./utils/cuda_helper.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
@@ -70,9 +72,30 @@ void setupLogging()
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 }
 
+void setupCuda()
+{
+  int deviceCount = 0;
+  cudaGetDeviceCount(&deviceCount);
+  if (deviceCount == 0)
+  {
+    qCritical() << "No cuda device found!";
+    exit(EXIT_FAILURE);
+  }
+
+  cudaDeviceProp prop;
+  int device;
+  memset(&prop, 0, sizeof(cudaDeviceProp));
+  prop.major = 3;
+  prop.minor = 0;
+  HANDLE_ERROR(cudaChooseDevice(&device, &prop));
+  HANDLE_ERROR(cudaGLSetGLDevice(device));
+}
+
 int main(int argc, char **argv)
 {
   setupLogging();
+
+  setupCuda();
 
   QGuiApplication application(argc, argv);
 
@@ -81,11 +104,12 @@ int main(int argc, char **argv)
   auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
-  auto labeller = std::make_shared<Forces::Labeller>(labels);
+  auto forcesLabeller = std::make_shared<Forces::Labeller>(labels);
 
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
-  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels, labeller);
+  auto scene =
+      std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller);
 
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
@@ -99,13 +123,13 @@ int main(int argc, char **argv)
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
 
-  LabellerModel labellerModel(labeller);
+  LabellerModel labellerModel(forcesLabeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
-                        [&labellerModel, &nodes, &labeller]()
+                        [&labellerModel, &nodes, &forcesLabeller]()
                         {
     if (labellerModel.getIsVisible())
       nodes->addForcesVisualizerNode(
-          std::make_shared<ForcesVisualizerNode>(labeller));
+          std::make_shared<ForcesVisualizerNode>(forcesLabeller));
     else
       nodes->removeForcesVisualizerNode();
   });
@@ -137,8 +161,6 @@ int main(int argc, char **argv)
   auto resultCode = application.exec();
 
   unsubscribeLabelChanges();
-
-  scene.reset();
 
   return resultCode;
 }

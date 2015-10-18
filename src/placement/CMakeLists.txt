@@ -5,7 +5,13 @@ project(placement)
 include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(SOURCES
+  to_gray.cu
   summed_area_table.cu
+  distance_transform.cu
+  apollonius.cu
+  occupancy.cu
+  labeller.cpp
+  cuda_texture_mapper.cpp
   )
 
 cuda_add_library(placement-lib ${SOURCES})

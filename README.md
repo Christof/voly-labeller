@@ -50,6 +50,8 @@ make
 - Assimp
 - Boost 1.57
 - ITK 4.7
+- CUDA 7.0
+- Thrust 1.8
 
 ## Testing
 - GTest

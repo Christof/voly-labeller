@@ -39,15 +39,21 @@ class FrameBufferObject
   void unbind();
 
   void bindColorTexture(unsigned int textureUnit);
+  void bindPositionTexture(unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
 
+  unsigned int getRenderTextureId();
+  unsigned int getPositionTextureId();
+  unsigned int getDepthTextureId();
  private:
   unsigned int framebuffer = 0;
   unsigned int renderTexture = 0;
+  unsigned int positionTexture = 0;
   unsigned int depthTexture = 0;
   Gl *gl;
 
   void resizeAndSetColorAttachment(int width, int height);
+  void resizeAndSetPositionAttachment(int width, int height);
   void resizeAndSetDepthAttachment(int width, int height);
   void resizeTexture(int texture, int width, int height, unsigned int component,
                      unsigned int format, unsigned int type);

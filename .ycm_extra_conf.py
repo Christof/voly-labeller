@@ -93,6 +93,10 @@ flags = [
 '/usr/local/include/eigen3/',
 '-isystem',
 '/usr/local/include/ITK-4.7/',
+'-isystem',
+'/usr/local/cuda/include/',
+'-isystem',
+'/usr/include/thrust',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the

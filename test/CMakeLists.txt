@@ -12,8 +12,8 @@ set(CMAKE_AUTOMOC ON)
 
 qt5_add_resources(RESOURCES ../src/resources.qrc)
 
-file(GLOB_RECURSE TESTS ${CMAKE_CURRENT_SOURCE_DIR}**/*.cc)
-add_executable(tests ${TESTS} ${SOURCES}
+file(GLOB_RECURSE TESTS ${CMAKE_CURRENT_SOURCE_DIR}**/*.c*)
+cuda_add_executable(tests ${TESTS} ${SOURCES}
   $<TARGET_OBJECTS:voly-labeller-lib>
   $<TARGET_OBJECTS:input>
   $<TARGET_OBJECTS:utils>
@@ -26,6 +26,7 @@ target_link_libraries(tests
   ${GTEST_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${LIBRARIES}
+  placement-lib
   -lpthread
   )
 

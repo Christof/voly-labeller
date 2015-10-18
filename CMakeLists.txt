@@ -7,6 +7,7 @@ add_subdirectory(src/input)
 add_subdirectory(src/utils)
 add_subdirectory(src/labelling)
 add_subdirectory(src/forces)
+add_subdirectory(src/placement)
 
 option(test "Build all tests." ON)
 if(test)
@@ -87,13 +88,14 @@ set(SOURCES
   src/graphics/volume_data.h
   src/graphics/volume_manager.cpp
   src/graphics/managers.cpp
+  src/graphics/standard_texture_2d.cpp
   ${RESOURCES})
 
 file(GLOB SHADER src/shader/*)
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
 
-add_executable(voly-labeller
+cuda_add_executable(voly-labeller
   src/main.cpp
   ${SHADER}
   $<TARGET_OBJECTS:voly-labeller-lib>
@@ -104,7 +106,7 @@ add_executable(voly-labeller
   $<TARGET_OBJECTS:math>
   )
 
-target_link_libraries(voly-labeller ${LIBRARIES})
+target_link_libraries(voly-labeller ${LIBRARIES} placement-lib)
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)

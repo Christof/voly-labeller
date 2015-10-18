@@ -10,7 +10,7 @@
 #include <functional>
 #include "./label_state.h"
 #include "./force.h"
-#include "./labeller_frame_data.h"
+#include "../labelling/labeller_frame_data.h"
 #include "../labelling/labels.h"
 
 /**
