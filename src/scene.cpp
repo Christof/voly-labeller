@@ -73,8 +73,11 @@ void Scene::initialize()
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
-  distanceTransformTexture =
+  occupancyTexture =
       std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
+  occupancyTexture->initialize(gl);
+  distanceTransformTexture =
+      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_RGBA32F);
   distanceTransformTexture->initialize(gl);
 }
 
@@ -82,6 +85,7 @@ void Scene::cleanup()
 {
   colorTextureMapper.reset();
   positionsTextureMapper.reset();
+  occupancyTextureMapper.reset();
   distanceTransformTextureMapper.reset();
 }
 
@@ -152,25 +156,30 @@ void Scene::render()
     distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteDiscardMapper(
             distanceTransformTexture->getId(), width, height));
+    occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
+        CudaTextureMapper::createReadWriteDiscardMapper(
+            occupancyTexture->getId(), width, height));
   }
 
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
-  Occupancy(positionsTextureMapper, distanceTransformTextureMapper).runKernel();
-  distanceTransformTexture->bind();
-  Eigen::Affine3f transformation(
-      Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
-      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(quad, transformation.matrix());
-
   fbo->bindDepthTexture(GL_TEXTURE0);
-  transformation =
+  auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  fbo->bindPositionTexture(GL_TEXTURE0);
+  Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
+  occupancyTexture->bind();
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
+
+  DistanceTransform(occupancyTextureMapper, distanceTransformTextureMapper)
+      .run();
+  distanceTransformTexture->bind();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
