@@ -136,6 +136,7 @@ void DistanceTransform::run()
   cudaDestroyTextureObject(inputTexture);
   cudaDestroySurfaceObject(outputSurface);
   inputImage->unmap();
+  outputImage->unmap();
 }
 
 thrust::device_vector<float> &DistanceTransform::getResults()
