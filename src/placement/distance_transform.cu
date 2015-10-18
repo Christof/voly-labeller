@@ -94,9 +94,8 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
   result[index] = distf;
 
   // write to texture for debugging
-  float4 color =
-      make_float4(16.0f * distf / width, 16.0f * distf / width,
-                  16.0f * distf / width, 1.0f);
+  float grayTone = 16.0f * distf / width;
+  float4 color = make_float4(grayTone, grayTone, grayTone, 1.0f);
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
