@@ -8,8 +8,7 @@
 #include "../utils/cuda_array_provider.h"
 
 /**
- * \brief
- *
+ * \brief Just an example kernel to convert a color image to gray scale
  *
  */
 class ToGray

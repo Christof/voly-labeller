@@ -1,15 +1,3 @@
-/**
- * \brief Summed are table generation
- *
- * Implementation taken from
- * Nehab, D., Maximo, A., Lima, R. S., & Hoppe, H. (2011).
- * GPU-efficient recursive filtering and summed-area tables.
- * ACM Transactions on Graphics, 30(6),
- * 1. http://doi.org/10.1145/2070781.2024210.
- *
- * Code adapted from https://github.com/andmax/gpufilter
- */
-
 #include "./summed_area_table.h"
 #include <thrust/device_vector.h>
 #include <iostream>

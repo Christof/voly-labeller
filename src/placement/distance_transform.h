@@ -7,9 +7,18 @@
 #include "../utils/cuda_array_provider.h"
 
 /**
- * \brief
+ * \brief Calculates for each pixel distance to nearest pixel with 
+ * value >= 0.99f
  *
+ * The input image must be of type float and the output image of
+ * type float4, which is only for debugging purposes. The result
+ * can be retrieved with #getResults which returns a vector
+ * of the distances.
  *
+ * It is based on Rong, G., & Tan, T. (2006). Jump flooding in GPU with
+ * applications to Voronoi diagram and distance transform. In Studies in Logical
+ * Theory, American Philosophical Quarterly Monograph 2, 109–116.
+ * http://doi.org/10.1145/1111411.1111431
  */
 class DistanceTransform
 {

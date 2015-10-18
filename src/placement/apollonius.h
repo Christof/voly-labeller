@@ -9,9 +9,14 @@
 #define MAX_LABELS 256
 
 /**
- * \brief
+ * \brief Calculates the apollonius graph for the given input image,
+ * seed values for labels and distances to determine the label insertion
+ * order.
  *
- *
+ * It is based on Rong, G., & Tan, T. (2006). Jump flooding in GPU with
+ * applications to Voronoi diagram and distance transform. In Studies in Logical
+ * Theory, American Philosophical Quarterly Monograph 2, 109–116.
+ * http://doi.org/10.1145/1111411.1111431
  */
 class Apollonius
 {

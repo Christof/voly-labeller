@@ -10,9 +10,15 @@
 thrust::host_vector<float> algSAT(float *h_inout, int w, int h);
 
 /**
- * \brief
+ * \brief Calculates the summed area table of a given float image
  *
+ * Implementation taken from
+ * Nehab, D., Maximo, A., Lima, R. S., & Hoppe, H. (2011).
+ * GPU-efficient recursive filtering and summed-area tables.
+ * ACM Transactions on Graphics, 30(6), 1.
+ * http://doi.org/10.1145/2070781.2024210.
  *
+ * Code adapted from https://github.com/andmax/gpufilter
  */
 class SummedAreaTable
 {
