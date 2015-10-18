@@ -7,24 +7,16 @@
 #include <iostream>
 #include <stdexcept>
 
-#define HANDLE_ERROR(error)                                                    \
-  {                                                                            \
-    if (error != cudaSuccess)                                                  \
-    {                                                                          \
-      printf("%s in %s at line %d\n", cudaGetErrorString(error), __FILE__,     \
-             __LINE__);                                                        \
-      throw std::runtime_error(cudaGetErrorString(error));                     \
-    }                                                                          \
+static inline void HandleError(cudaError_t err, const char *file, int line)
+{
+  if (err != cudaSuccess)
+  {
+    printf("%s in %s at line %d\n", cudaGetErrorString(err), file, line);
+    throw std::runtime_error(cudaGetErrorString(err));
   }
+}
 
-#define HANDLE_NULL(a)                                                         \
-  {                                                                            \
-    if (a == NULL)                                                             \
-    {                                                                          \
-      printf("Host memory failed in %s at line %d\n", __FILE__, __LINE__);     \
-      exit(EXIT_FAILURE);                                                      \
-    }                                                                          \
-  }
+#define HANDLE_ERROR(error) HandleError(error, __FILE__, __LINE__)
 
 inline unsigned int divUp(unsigned int a, unsigned int b)
 {
