@@ -205,7 +205,7 @@ void Apollonius::runSeedKernel()
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
   seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
-      seedBufferPtr, raw_ptr, idptr, idxptr);
+                                 seedBufferPtr, raw_ptr, idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
@@ -214,15 +214,13 @@ void Apollonius::runStepsKernels()
   computeVectorTemp = computeVector;
   apolloniusStep<<<dimGrid, dimBlock>>>
       (thrust::raw_pointer_cast(computeVector.data()),
-       thrust::raw_pointer_cast(distances.data()), 1, imageSize,
-       imageSize);
+       thrust::raw_pointer_cast(distances.data()), 1, imageSize, imageSize);
 
   for (int k = (imageSize / 2); k > 0; k /= 2)
   {
-    apolloniusStep<<<dimGrid, dimBlock>>>(
-        thrust::raw_pointer_cast(computeVector.data()),
-        thrust::raw_pointer_cast(distances.data()), k, imageSize,
-        imageSize);
+    apolloniusStep<<<dimGrid, dimBlock>>>
+        (thrust::raw_pointer_cast(computeVector.data()),
+         thrust::raw_pointer_cast(distances.data()), k, imageSize, imageSize);
   }
   HANDLE_ERROR(cudaThreadSynchronize());
 }
@@ -232,8 +230,28 @@ void Apollonius::runGatherKernel()
   int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
   int *idptr = thrust::raw_pointer_cast(seedIds.data());
   int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
-  gather<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount, raw_ptr,
-      idptr, idxptr);
+  gather<<<dimGrid, dimBlock>>>
+      (outputSurface, imageSize, labelCount, raw_ptr, idptr, idxptr);
   HANDLE_ERROR(cudaThreadSynchronize());
+}
+
+thrust::device_vector<float4>
+Apollonius::createSeedBufferFromLabels(std::vector<Label> labels,
+                                       Eigen::Matrix4f viewProjection,
+                                       Eigen::Vector2i size)
+{
+  thrust::host_vector<float4> result;
+  for (auto &label : labels)
+  {
+    Eigen::Vector4f pos =
+        viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
+                                         label.anchorPosition.y(),
+                                         label.anchorPosition.z(), 1);
+    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
+    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
+    result.push_back(make_float4(label.id, x, y, 1));
+  }
+
+  return result;
 }
 

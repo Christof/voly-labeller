@@ -3,8 +3,10 @@
 #define SRC_PLACEMENT_APOLLONIUS_H_
 
 #include <thrust/device_vector.h>
+#include <Eigen/Core>
 #include <memory>
 #include "../utils/cuda_array_provider.h"
+#include "../labelling/label.h"
 
 #define MAX_LABELS 256
 
@@ -28,6 +30,11 @@ class Apollonius
   void run();
 
   thrust::device_vector<int> &getIds();
+
+  static thrust::device_vector<float4>
+  createSeedBufferFromLabels(std::vector<Label> labels,
+                             Eigen::Matrix4f viewProjection,
+                             Eigen::Vector2i size);
 
  private:
   std::shared_ptr<CudaArrayProvider> inputImage;

@@ -22,6 +22,7 @@
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
+#include "./placement/apollonius.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -149,12 +150,12 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
-  renderDebuggingViews();
+  renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 }
 
-void Scene::renderDebuggingViews()
+void Scene::renderDebuggingViews(const RenderData &renderData)
 {
   if (!colorTextureMapper.get())
   {
@@ -185,13 +186,24 @@ void Scene::renderDebuggingViews()
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  DistanceTransform(occupancyTextureMapper, distanceTransformTextureMapper)
-      .run();
+  DistanceTransform distanceTransform(occupancyTextureMapper,
+                                      distanceTransformTextureMapper);
+  distanceTransform.run();
   distanceTransformTexture->bind();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(positionQuad, transformation.matrix());
+  renderQuad(quad, transformation.matrix());
+
+  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
+      labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
+      Eigen::Vector2i(width, height));
+  Apollonius(distanceTransformTextureMapper, seedBuffer,
+             distanceTransform.getResults(), labels->count()).run();
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
