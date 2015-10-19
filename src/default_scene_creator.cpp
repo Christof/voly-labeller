@@ -55,10 +55,10 @@ void DefaultSceneCreator::addMeshNodesTo(
 void DefaultSceneCreator::addLabelNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
-  auto label = Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.553f, 0.02f));
+  auto label = Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.55f, 0.034f));
   sceneNodes.push_back(std::make_shared<LabelNode>(label));
 
-  auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.334f, 0.317f, -0.013f));
+  auto label2 = Label(2, "Ellbow", Eigen::Vector3f(0.34f, 0.322f, -0.007f));
   sceneNodes.push_back(std::make_shared<LabelNode>(label2));
 
   auto label3 = Label(3, "Wound", Eigen::Vector3f(0.262f, 0.422f, 0.058f),

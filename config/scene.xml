@@ -59,8 +59,8 @@
 				<label.text>Shoulder</label.text>
 				<label.anchorPosition class_id="6" tracking_level="0" version="0">
 					<x>1.739999950e-01</x>
-					<y>5.529999733e-01</y>
-					<z>1.999999955e-02</z>
+					<y>5.500000119e-01</y>
+					<z>3.400000185e-02</z>
 				</label.anchorPosition>
 				<label.size class_id="7" tracking_level="0" version="0">
 					<x>1.280000000e+02</x>
@@ -75,9 +75,9 @@
 				<label.id>2</label.id>
 				<label.text>Ellbow</label.text>
 				<label.anchorPosition>
-					<x>3.339999914e-01</x>
-					<y>3.170000017e-01</y>
-					<z>-1.300000027e-02</z>
+					<x>3.400000036e-01</x>
+					<y>3.219999969e-01</y>
+					<z>-7.000000216e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>1.280000000e+02</x>
