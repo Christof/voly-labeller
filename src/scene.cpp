@@ -9,10 +9,7 @@
 #include "./graphics/managers.h"
 #include "./graphics/volume_manager.h"
 #include "./graphics/shader_program.h"
-#include "./camera_controller.h"
-#include "./camera_rotation_controller.h"
-#include "./camera_zoom_controller.h"
-#include "./camera_move_controller.h"
+#include "./camera_controllers.h"
 #include "./nodes.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
@@ -31,15 +28,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
     frustumOptimizer(nodes)
 {
-  cameraController = std::make_shared<CameraController>(camera);
-  cameraRotationController = std::make_shared<CameraRotationController>(camera);
-  cameraZoomController = std::make_shared<CameraZoomController>(camera);
-  cameraMoveController = std::make_shared<CameraMoveController>(camera);
-
-  invokeManager->addHandler("cam", cameraController.get());
-  invokeManager->addHandler("cameraRotation", cameraRotationController.get());
-  invokeManager->addHandler("cameraZoom", cameraZoomController.get());
-  invokeManager->addHandler("cameraMove", cameraMoveController.get());
+  cameraControllers =
+      std::make_shared<CameraControllers>(invokeManager, camera);
 
   fbo = std::unique_ptr<Graphics::FrameBufferObject>(
       new Graphics::FrameBufferObject());
@@ -93,10 +83,7 @@ void Scene::cleanup()
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
-  cameraController->setFrameTime(frameTime);
-  cameraRotationController->setFrameTime(frameTime);
-  cameraZoomController->setFrameTime(frameTime);
-  cameraMoveController->setFrameTime(frameTime);
+  cameraControllers->update(frameTime);
 
   frustumOptimizer.update(camera.getViewMatrix());
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
