@@ -146,6 +146,16 @@ void Scene::render()
 
   fbo->unbind();
 
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  renderScreenQuad();
+
+  renderDebuggingViews();
+
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
+}
+
+void Scene::renderDebuggingViews()
+{
   if (!colorTextureMapper.get())
   {
     colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
@@ -161,9 +171,6 @@ void Scene::render()
         CudaTextureMapper::createReadWriteDiscardMapper(
             occupancyTexture->getId(), width, height));
   }
-
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  renderScreenQuad();
 
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
@@ -185,8 +192,6 @@ void Scene::render()
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(positionQuad, transformation.matrix());
-
-  glAssert(gl->glEnable(GL_DEPTH_TEST));
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,

@@ -76,6 +76,7 @@ class Scene : public AbstractScene
   bool performPicking;
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
+  void renderDebuggingViews();
   void doPick();
 
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
