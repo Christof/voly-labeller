@@ -4,8 +4,8 @@
 #include "../utils/cuda_helper.h"
 
 __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
-                     float4 *seedbuffer, int *thrustptr, int *idptr,
-                     int *idxptr)
+                     float4 *seedBuffer, int *computePtr, int *idPtr,
+                     int *indicesPtr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -13,34 +13,33 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
     return;
 
   int index = y * imageSize + x;
-  float4 outval = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
-  float4 seedval = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
+  float4 outValue = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 
   // initialize to out of bounds
-  int outindex = (imageSize * 2) * (imageSize * 2) - 1;
+  int outIndex = (imageSize * 2) * (imageSize * 2) - 1;
 
   for (int i = 0; i < labelCount; i++)
   {
-    float4 seedval = seedbuffer[i];
+    float4 seedValue = seedBuffer[i];
     int4 seedValueInt =
-        make_int4(static_cast<int>(seedval.x), static_cast<int>(seedval.y),
-                  static_cast<int>(seedval.z), static_cast<int>(seedval.w));
+        make_int4(static_cast<int>(seedValue.x), static_cast<int>(seedValue.y),
+                  static_cast<int>(seedValue.z), static_cast<int>(seedValue.w));
     if (seedValueInt.x > 0 && x == seedValueInt.y && y == seedValueInt.z &&
         (x != 0 || y != 0))
     {
-      outval =
-          make_float4(seedval.x / (labelCount + 1),
+      outValue =
+          make_float4(seedValue.x / (labelCount + 1),
                       seedValueInt.y / static_cast<float>(imageSize),
                       seedValueInt.z / static_cast<float>(imageSize), 1.0f);
 
-      outindex = x + y * imageSize;
+      outIndex = x + y * imageSize;
     }
-    idptr[i] = seedValueInt.x;
-    idxptr[i] = seedValueInt.y + seedValueInt.z * imageSize;
+    idPtr[i] = seedValueInt.x;
+    indicesPtr[i] = seedValueInt.y + seedValueInt.z * imageSize;
   }
 
-  thrustptr[index] = outindex;
-  surf2Dwrite(outval, output, x * sizeof(float4), y);
+  computePtr[index] = outIndex;
+  surf2Dwrite(outValue, output, x * sizeof(float4), y);
 }
 
 __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
@@ -97,28 +96,29 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
 }
 
 __global__ void gather(cudaSurfaceObject_t output, int imageSize,
-                       int labelCount, int *thrustptr, int *seedidptr,
-                       int *seedidxptr)
+                       int labelCount, int *nearestIndex, int *seedIds,
+                       int *seedIndices)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= imageSize || y >= imageSize)
     return;
+
   int index = y * imageSize + x;
   float4 color;
-  int labelID = 100;
-  int labelIndex = thrustptr[index];
+  int labelId = 100;
+  int labelIndex = nearestIndex[index];
 
   for (int i = 0; i < labelCount; i++)
   {
-    if (labelIndex == seedidxptr[i])
+    if (labelIndex == seedIndices[i])
     {
-      labelID = seedidptr[i];
+      labelId = seedIds[i];
       break;
     }
   }
 
-  switch (labelID)
+  switch (labelId)
   {
   case 0:
     color = make_float4(0.0, 0.0, 0.0, 1.0);
@@ -199,13 +199,13 @@ void Apollonius::resize()
 
 void Apollonius::runSeedKernel()
 {
-  int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
-  int *idptr = thrust::raw_pointer_cast(seedIds.data());
-  int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
+  int *computePtr = thrust::raw_pointer_cast(computeVector.data());
+  int *idPtr = thrust::raw_pointer_cast(seedIds.data());
+  int *indicesPtr = thrust::raw_pointer_cast(seedIndices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
   seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
-                                 seedBufferPtr, raw_ptr, idptr, idxptr);
+                              seedBufferPtr, computePtr, idPtr, indicesPtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
@@ -227,11 +227,11 @@ void Apollonius::runStepsKernels()
 
 void Apollonius::runGatherKernel()
 {
-  int *raw_ptr = thrust::raw_pointer_cast(computeVector.data());
-  int *idptr = thrust::raw_pointer_cast(seedIds.data());
-  int *idxptr = thrust::raw_pointer_cast(seedIndices.data());
-  gather<<<dimGrid, dimBlock>>>
-      (outputSurface, imageSize, labelCount, raw_ptr, idptr, idxptr);
+  int *computePtr = thrust::raw_pointer_cast(computeVector.data());
+  int *seedIdsPtr = thrust::raw_pointer_cast(seedIds.data());
+  int *seedIndicesPtr = thrust::raw_pointer_cast(seedIndices.data());
+  gather<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
+      computePtr, seedIdsPtr, seedIndicesPtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 

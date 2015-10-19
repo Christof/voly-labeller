@@ -19,6 +19,12 @@
  * applications to Voronoi diagram and distance transform. In Studies in Logical
  * Theory, American Philosophical Quarterly Monograph 2, 109–116.
  * http://doi.org/10.1145/1111411.1111431
+ *
+ * The seedBuffer contains the following data per element:
+ * - x: Id of the label
+ * - y: x component of the anchor in window coordinates
+ * - z: y component of the anchor in window coordinates
+ * - z: is not used
  */
 class Apollonius
 {
