@@ -187,7 +187,6 @@ void Apollonius::resize()
   if (computeVector.size() != static_cast<unsigned long>(pixelCount))
   {
     computeVector.resize(pixelCount, pixelCount);
-    computeVectorTemp.resize(pixelCount, pixelCount);
   }
 
   if (seedIds.size() != MAX_LABELS || seedIndices.size() != MAX_LABELS)
@@ -211,7 +210,6 @@ void Apollonius::runSeedKernel()
 
 void Apollonius::runStepsKernels()
 {
-  computeVectorTemp = computeVector;
   apolloniusStep<<<dimGrid, dimBlock>>>
       (thrust::raw_pointer_cast(computeVector.data()),
        thrust::raw_pointer_cast(distances.data()), 1, imageSize, imageSize);

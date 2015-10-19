@@ -47,7 +47,6 @@ class Apollonius
   thrust::device_vector<float4> &seedBuffer;
   thrust::device_vector<float> &distances;
   thrust::device_vector<int> computeVector;
-  thrust::device_vector<int> computeVectorTemp;
   thrust::device_vector<int> seedIds;
   thrust::device_vector<int> seedIndices;
   int labelCount;
