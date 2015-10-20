@@ -10,6 +10,7 @@ set(SOURCES
   distance_transform.cu
   apollonius.cu
   occupancy.cu
+  cost_function_calculator.cu
   labeller.cpp
   cuda_texture_mapper.cpp
   )
