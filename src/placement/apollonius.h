@@ -5,6 +5,7 @@
 #include <thrust/device_vector.h>
 #include <Eigen/Core>
 #include <memory>
+#include <vector>
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 

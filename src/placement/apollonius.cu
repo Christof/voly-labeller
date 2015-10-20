@@ -1,6 +1,7 @@
 #include "./apollonius.h"
 #include <thrust/device_vector.h>
 #include <thrust/device_ptr.h>
+#include <vector>
 #include "../utils/cuda_helper.h"
 
 __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
