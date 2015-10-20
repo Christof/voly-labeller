@@ -4,6 +4,15 @@
 
 struct EvalResult
 {
+  __host__ __device__ EvalResult()
+  {
+  }
+
+  __host__ __device__ EvalResult(int x, int y, float cost)
+    : x(x), y(y), cost(cost)
+  {
+  }
+
   int x, y;
 
   float cost;
@@ -22,12 +31,29 @@ __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 {
   __host__ __device__ CostEvaluator(int width, int height)
+    : width(width), height(height)
   {
   }
+
+  int width;
+  int height;
+
+  float anchorX;
+  float anchorY;
+
+  const float *distances;
+
   __device__ EvalResult operator()(const int &index) const
   {
-    EvalResult result;
-    result.cost = 0;
+    int x = index % width;
+    int y = index / width;
+
+    float xDistance = x - anchorX;
+    float yDistance = y - anchorY;
+    float distanceToAnchor = xDistance * xDistance + yDistance * yDistance;
+
+    float cost = distanceToAnchor + 10.0f * distances[index];
+    EvalResult result(x, y, cost);
 
     return result;
   }
@@ -45,13 +71,25 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>
   }
 };
 
-CostFunctionCalculator::CostFunctionCalculator()
+CostFunctionCalculator::CostFunctionCalculator(int width, int height)
+  : width(width), height(height)
 {
 }
 
-void CostFunctionCalculator::calculateForLabel()
+void CostFunctionCalculator::calculateCosts(
+    const thrust::device_vector<float> &distances)
+{
+  calculateForLabel(distances, 0, 500, 500);
+}
+
+void CostFunctionCalculator::calculateForLabel(
+    const thrust::device_vector<float> &distances, int labelId, float anchorX,
+    float anchorY)
 {
   CostEvaluator costEvaluator(width, height);
+  costEvaluator.anchorX = anchorX;
+  costEvaluator.anchorY = anchorY;
+  costEvaluator.distances = thrust::raw_pointer_cast(distances.data());
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;
@@ -63,5 +101,7 @@ void CostFunctionCalculator::calculateForLabel()
       thrust::counting_iterator<int>(0),
       thrust::counting_iterator<int>(0) + width * height, costEvaluator,
       initialCost, minimumCostOperator);
+
+  std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
 }
 
