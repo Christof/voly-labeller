@@ -20,6 +20,7 @@
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
+#include "./placement/cost_function_calculator.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -191,6 +192,9 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
+
+  CostFunctionCalculator calc(width, height);
+  calc.calculateCosts(distanceTransform.getResults());
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
