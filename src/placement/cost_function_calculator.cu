@@ -82,7 +82,7 @@ void CostFunctionCalculator::calculateCosts(
   calculateForLabel(distances, 0, 500, 500);
 }
 
-void CostFunctionCalculator::calculateForLabel(
+std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &distances, int labelId, float anchorX,
     float anchorY)
 {
@@ -103,5 +103,6 @@ void CostFunctionCalculator::calculateForLabel(
       initialCost, minimumCostOperator);
 
   std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
+  return std::make_tuple(cost.x, cost.y);
 }
 
