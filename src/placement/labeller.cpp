@@ -24,6 +24,8 @@ Labeller::update(const LabellerFrameData &frameData)
   if (!occupancySummedAreaTable.get())
     return result;
 
+  occupancySummedAreaTable->runKernel();
+
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   for (auto &label : labels->getLabels())
@@ -33,7 +35,9 @@ Labeller::update(const LabellerFrameData &frameData)
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
-    auto newPosition = costFunctionCalculator.calculateForLabel(label.id, x, y);
+    auto newPosition = costFunctionCalculator.calculateForLabel(
+        occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
+        label.size.y());
 
     float newX = (std::get<0>(newPosition) / width - 0.5f) * 2.0f;
     float newY = (std::get<1>(newPosition) / height - 0.5f) * 2.0f;

@@ -38,10 +38,26 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   int width;
   int height;
 
+  int halfLabelWidth;
+  int halfLabelHeight;
+
   float anchorX;
   float anchorY;
 
-  const float *distances;
+  const float *occupancy;
+
+  __device__ float occupancyForLabelArea(int x, int y) const
+  {
+    int startX = max(x - halfLabelWidth, 0);
+    int startY = max(y - halfLabelWidth, 0);
+    int endX = min(x + halfLabelWidth, width - 1);
+    int endY = min(y + halfLabelWidth, height - 1);
+
+    float sum =
+        occupancy[endY * width + endX] - occupancy[startY * width + startX];
+
+    return sum / (4 * halfLabelWidth * halfLabelHeight);
+  }
 
   __device__ EvalResult operator()(const int &index) const
   {
@@ -52,7 +68,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     float yDistance = y - anchorY;
     float distanceToAnchor = xDistance * xDistance + yDistance * yDistance;
 
-    float cost = distanceToAnchor; // + 10.0f * distances[index];
+    float cost = distanceToAnchor + 10.0f * occupancyForLabelArea(x, y);
     EvalResult result(x, y, cost);
 
     return result;
@@ -84,13 +100,15 @@ void CostFunctionCalculator::calculateCosts(
 }
 
 std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
-    int labelId, float anchorX,
-    float anchorY)
+    const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
+    float anchorX, float anchorY, int sizeX, int sizeY)
 {
   CostEvaluator costEvaluator(width, height);
   costEvaluator.anchorX = anchorX;
   costEvaluator.anchorY = anchorY;
-  // costEvaluator.distances = thrust::raw_pointer_cast(distances.data());
+  costEvaluator.occupancy = thrust::raw_pointer_cast(occupancySummedAreaTable.data());
+  costEvaluator.halfLabelWidth = sizeX / 2;
+  costEvaluator.halfLabelHeight = sizeY / 2;
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;

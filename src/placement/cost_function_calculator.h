@@ -18,8 +18,9 @@ class CostFunctionCalculator
   void resize(int width, int height);
 
   void calculateCosts(const thrust::device_vector<float> &distances);
-  std::tuple<float, float> calculateForLabel(int labelId, float anchorX,
-                                             float anchorY);
+  std::tuple<float, float> calculateForLabel(
+      const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
+      float anchorX, float anchorY, int sizeX, int sizeY);
 
  private:
   int width;
