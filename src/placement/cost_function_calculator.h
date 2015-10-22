@@ -13,12 +13,13 @@
 class CostFunctionCalculator
 {
  public:
-  CostFunctionCalculator(int width, int height);
+  CostFunctionCalculator() = default;
+
+  void resize(int width, int height);
 
   void calculateCosts(const thrust::device_vector<float> &distances);
-  std::tuple<float, float>
-  calculateForLabel(const thrust::device_vector<float> &distances, int labelId,
-                    float anchorX, float anchorY);
+  std::tuple<float, float> calculateForLabel(int labelId, float anchorX,
+                                             float anchorY);
 
  private:
   int width;

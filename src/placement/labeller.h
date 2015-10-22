@@ -6,8 +6,9 @@
 #include <memory>
 #include "../labelling/labels.h"
 #include "../labelling/labeller_frame_data.h"
+#include "./cost_function_calculator.h"
 
-class CudaTextureMapper;
+class CudaArrayProvider;
 
 namespace Placement
 {
@@ -22,13 +23,14 @@ class Labeller
  public:
   explicit Labeller(std::shared_ptr<Labels> labels);
 
-  void initialize(std::shared_ptr<CudaTextureMapper> occupancySummedAreaTable);
+  void initialize(std::shared_ptr<CudaArrayProvider> occupancySummedAreaTable);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
  private:
   std::shared_ptr<Labels> labels;
-  std::shared_ptr<CudaTextureMapper> occupancySummedAreaTable;
+  CostFunctionCalculator costFunctionCalculator;
+  std::shared_ptr<CudaArrayProvider> occupancySummedAreaTable;
 };
 
 }  // namespace Placement

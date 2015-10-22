@@ -52,7 +52,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     float yDistance = y - anchorY;
     float distanceToAnchor = xDistance * xDistance + yDistance * yDistance;
 
-    float cost = distanceToAnchor + 10.0f * distances[index];
+    float cost = distanceToAnchor; // + 10.0f * distances[index];
     EvalResult result(x, y, cost);
 
     return result;
@@ -71,25 +71,26 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>
   }
 };
 
-CostFunctionCalculator::CostFunctionCalculator(int width, int height)
-  : width(width), height(height)
+void CostFunctionCalculator::resize(int width, int height)
 {
+  this->width = width;
+  this->height = height;
 }
 
 void CostFunctionCalculator::calculateCosts(
     const thrust::device_vector<float> &distances)
 {
-  calculateForLabel(distances, 0, 500, 500);
+  // calculateForLabel(distances, 0, 500, 500);
 }
 
 std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
-    const thrust::device_vector<float> &distances, int labelId, float anchorX,
+    int labelId, float anchorX,
     float anchorY)
 {
   CostEvaluator costEvaluator(width, height);
   costEvaluator.anchorX = anchorX;
   costEvaluator.anchorY = anchorY;
-  costEvaluator.distances = thrust::raw_pointer_cast(distances.data());
+  // costEvaluator.distances = thrust::raw_pointer_cast(distances.data());
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;
