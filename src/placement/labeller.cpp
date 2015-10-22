@@ -28,16 +28,19 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
+  // TODO(SIR): iterate through labels specific order according to apollonius.
   for (auto &label : labels->getLabels())
   {
     auto anchor2D = frameData.project(label.anchorPosition);
-    // calc pixel coords
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
         label.size.y());
+
+    // TODO(SIR): update occupancy and recalculate SAT or incorporate labels
+    // somehow directly in occupancy calculation in CostFunctionCalculator.
 
     float newX = (std::get<0>(newPosition) / width - 0.5f) * 2.0f;
     float newY = (std::get<1>(newPosition) / height - 0.5f) * 2.0f;
