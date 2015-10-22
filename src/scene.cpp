@@ -15,7 +15,6 @@
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
-#include "./placement/summed_area_table.h"
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
@@ -164,7 +163,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
         CudaTextureMapper::createReadWriteDiscardMapper(
             occupancyTexture->getId(), width, height));
 
-    placementLabeller->initialize(distanceTransformTextureMapper);
+    placementLabeller->initialize(occupancyTextureMapper);
   }
 
   fbo->bindDepthTexture(GL_TEXTURE0);

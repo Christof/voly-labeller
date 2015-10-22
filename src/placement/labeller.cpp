@@ -1,6 +1,7 @@
 #include "./labeller.h"
 #include <Eigen/Geometry>
 #include "../utils/cuda_array_provider.h"
+#include "./summed_area_table.h"
 
 namespace Placement
 {
@@ -9,12 +10,11 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
 }
 
-void Labeller::initialize(
-    std::shared_ptr<CudaArrayProvider> occupancySummedAreaTable)
+void
+Labeller::initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper)
 {
-  this->occupancySummedAreaTable = occupancySummedAreaTable;
-  costFunctionCalculator.resize(occupancySummedAreaTable->getWidth(),
-                                occupancySummedAreaTable->getHeight());
+  occupancySummedAreaTable =
+      std::make_shared<SummedAreaTable>(occupancyTextureMapper);
 }
 
 std::map<int, Eigen::Vector3f>
