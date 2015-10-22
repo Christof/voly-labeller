@@ -24,10 +24,11 @@
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-             std::shared_ptr<Forces::Labeller> forcesLabeller)
+             std::shared_ptr<Forces::Labeller> forcesLabeller,
+             std::shared_ptr<Placement::Labeller> placementLabeller)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    frustumOptimizer(nodes)
+    placementLabeller(placementLabeller), frustumOptimizer(nodes)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, camera);
@@ -92,7 +93,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
+  /*
   auto newPositions = forcesLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+      */
+  auto newPositions = placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
   for (auto &labelNode : nodes->getLabelNodes())
@@ -159,6 +164,8 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
     occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteDiscardMapper(
             occupancyTexture->getId(), width, height));
+
+    placementLabeller->initialize(distanceTransformTextureMapper);
   }
 
   fbo->bindDepthTexture(GL_TEXTURE0);

@@ -17,6 +17,7 @@
 #include "./labelling/labels.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+#include "./placement/labeller.h"
 #include "./default_scene_creator.h"
 #include "./utils/cuda_helper.h"
 
@@ -105,9 +106,10 @@ int main(int argc, char **argv)
   auto nodes = std::make_shared<Nodes>();
   auto labels = std::make_shared<Labels>();
   auto forcesLabeller = std::make_shared<Forces::Labeller>(labels);
+  auto placementLabeller = std::make_shared<Placement::Labeller>(labels);
 
-  auto scene =
-      std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller);
+  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels,
+                                       forcesLabeller, placementLabeller);
 
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,

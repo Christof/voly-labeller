@@ -8,6 +8,7 @@
 #include "./camera.h"
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
+#include "./placement/labeller.h"
 #include "./labelling/labels.h"
 #include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
@@ -33,7 +34,8 @@ class Scene : public AbstractScene
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-        std::shared_ptr<Forces::Labeller> forcesLabeller);
+        std::shared_ptr<Forces::Labeller> forcesLabeller,
+        std::shared_ptr<Placement::Labeller> placementLabeller);
   ~Scene();
 
   virtual void initialize();
@@ -52,6 +54,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
+  std::shared_ptr<Placement::Labeller> placementLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::unique_ptr<Graphics::FrameBufferObject> fbo;
