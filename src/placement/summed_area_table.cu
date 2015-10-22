@@ -677,3 +677,8 @@ void SummedAreaTable::runKernel()
              compute_m_size, compute_n_size);
 }
 
+thrust::device_vector<float> &SummedAreaTable::getResults()
+{
+  return inout;
+}
+

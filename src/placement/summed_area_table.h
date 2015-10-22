@@ -27,6 +27,8 @@ class SummedAreaTable
 
   void runKernel();
 
+  thrust::device_vector<float> &getResults();
+
  private:
   std::shared_ptr<CudaArrayProvider> inputImage;
 
