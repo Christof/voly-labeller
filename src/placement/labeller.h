@@ -27,10 +27,15 @@ class Labeller
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
+  void resize(int width, int height);
+
  private:
   std::shared_ptr<Labels> labels;
   CostFunctionCalculator costFunctionCalculator;
   std::shared_ptr<CudaArrayProvider> occupancySummedAreaTable;
+
+  int width;
+  int height;
 };
 
 }  // namespace Placement

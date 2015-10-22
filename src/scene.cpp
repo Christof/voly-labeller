@@ -225,6 +225,8 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
+  placementLabeller->resize(width, height);
+
   shouldResize = true;
 
   forcesLabeller->resize(width, height);

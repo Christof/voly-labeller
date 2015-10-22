@@ -30,21 +30,13 @@ Labeller::update(const LabellerFrameData &frameData)
   {
     auto anchor2D = frameData.project(label.anchorPosition);
     // calc pixel coords
-    float x =
-        (anchor2D.x() * 0.5f + 0.5f) * occupancySummedAreaTable->getWidth();
-    float y =
-        (anchor2D.y() * 0.5f + 0.5f) * occupancySummedAreaTable->getHeight();
+    float x = (anchor2D.x() * 0.5f + 0.5f) * width;
+    float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
     auto newPosition = costFunctionCalculator.calculateForLabel(label.id, x, y);
 
-    float newX =
-        (std::get<0>(newPosition) / occupancySummedAreaTable->getWidth() -
-         0.5f) *
-        2.0f;
-    float newY =
-        (std::get<1>(newPosition) / occupancySummedAreaTable->getHeight() -
-         0.5f) *
-        2.0f;
+    float newX = (std::get<0>(newPosition) / width - 0.5f) * 2.0f;
+    float newY = (std::get<1>(newPosition) / height - 0.5f) * 2.0f;
     Eigen::Vector4f reprojected =
         inverseViewProjection * Eigen::Vector4f(newX, newY, anchor2D.z(), 1);
     reprojected /= reprojected.w();
@@ -53,6 +45,14 @@ Labeller::update(const LabellerFrameData &frameData)
   }
 
   return result;
+}
+
+void Labeller::resize(int width, int height)
+{
+  this->width = width;
+  this->height = height;
+
+  costFunctionCalculator.resize(width, height);
 }
 
 }  // namespace Placement
