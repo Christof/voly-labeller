@@ -46,6 +46,14 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
   const float *occupancy;
 
+  __device__ float lineLength(int x, int y)
+  {
+    float diffX = x - anchorX;
+    float diffY = y - anchorY;
+
+    return sqrt(diffX * diffX + diffY * diffY);
+  }
+
   __device__ float favorHorizontalOrVerticalLines(
       int x, int y) const
   {
@@ -79,7 +87,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float xDistance = x - anchorX;
     float yDistance = y - anchorY;
-    float distanceToAnchor = xDistance * xDistance + yDistance * yDistance;
+    float distanceToAnchor = lineLength(x, y);
 
     float cost = distanceToAnchor + 10.0f * occupancyForLabelArea(x, y) +
                  favorHorizontalOrVerticalLines(x, y);
