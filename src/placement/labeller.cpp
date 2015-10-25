@@ -1,5 +1,6 @@
 #include "./labeller.h"
 #include <Eigen/Geometry>
+#include <vector>
 #include "../utils/cuda_array_provider.h"
 #include "./summed_area_table.h"
 
@@ -17,6 +18,11 @@ Labeller::initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper)
       std::make_shared<SummedAreaTable>(occupancyTextureMapper);
 }
 
+void Labeller::setInsertionOrder(std::vector<int> ids)
+{
+  insertionOrder = ids;
+}
+
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {
@@ -29,8 +35,9 @@ Labeller::update(const LabellerFrameData &frameData)
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   // TODO(SIR): iterate through labels specific order according to apollonius.
-  for (auto &label : labels->getLabels())
+  for (auto id : insertionOrder)
   {
+    auto label = labels->getById(id);
     auto anchor2D = frameData.project(label.anchorPosition);
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
