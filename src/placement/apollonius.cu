@@ -183,6 +183,13 @@ thrust::device_vector<int> &Apollonius::getIds()
   return seedIds;
 }
 
+std::vector<int> Apollonius::getHostIds()
+{
+  thrust::host_vector<int> host = seedIds;
+
+  return std::vector<int>(host.begin(), host.end());
+}
+
 void Apollonius::resize()
 {
   if (computeVector.size() != static_cast<unsigned long>(pixelCount))
