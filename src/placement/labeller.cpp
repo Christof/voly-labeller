@@ -43,8 +43,8 @@ Labeller::update(const LabellerFrameData &frameData)
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
-        occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
-        label.size.y());
+        occupancySummedAreaTable->getResults(), label.id, x, y,
+        label.size.x() * width, label.size.y() * height);
 
     // TODO(SIR): update occupancy and recalculate SAT or incorporate labels
     // somehow directly in occupancy calculation in CostFunctionCalculator.
