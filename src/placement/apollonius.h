@@ -9,8 +9,6 @@
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
-#define MAX_LABELS 256
-
 /**
  * \brief Calculates the apollonius graph for the given input image,
  * seed values for labels and distances to determine the label insertion

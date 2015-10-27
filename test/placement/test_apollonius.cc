@@ -38,7 +38,7 @@ TEST(Test_Apollonius, Apollonius)
 
   auto insertionOrder = callApollonoius(image, distances);
 
-  ASSERT_EQ(256, insertionOrder.size());
+  ASSERT_EQ(1, insertionOrder.size());
   EXPECT_EQ(0, insertionOrder[0]);
 
   ASSERT_EQ(16, image.size());

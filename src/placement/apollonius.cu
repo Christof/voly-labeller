@@ -197,10 +197,10 @@ void Apollonius::resize()
     computeVector.resize(pixelCount, pixelCount);
   }
 
-  if (seedIds.size() != MAX_LABELS || seedIndices.size() != MAX_LABELS)
+  if (seedIds.size() != labelCount || seedIndices.size() != labelCount)
   {
-    seedIds.resize(MAX_LABELS, -1);
-    seedIndices.resize(MAX_LABELS, -1);
+    seedIds.resize(labelCount, -1);
+    seedIndices.resize(labelCount, -1);
   }
 }
 
