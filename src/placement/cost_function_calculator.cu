@@ -54,8 +54,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     return sqrt(diffX * diffX + diffY * diffY);
   }
 
-  __device__ float favorHorizontalOrVerticalLines(
-      int x, int y) const
+  __device__ float favorHorizontalOrVerticalLines(int x, int y) const
   {
     float diffX = x - anchorX;
     float diffY = y - anchorY;
@@ -129,7 +128,8 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   CostEvaluator costEvaluator(width, height);
   costEvaluator.anchorX = anchorX;
   costEvaluator.anchorY = anchorY;
-  costEvaluator.occupancy = thrust::raw_pointer_cast(occupancySummedAreaTable.data());
+  costEvaluator.occupancy =
+      thrust::raw_pointer_cast(occupancySummedAreaTable.data());
   costEvaluator.halfLabelWidth = sizeX / 2;
   costEvaluator.halfLabelHeight = sizeY / 2;
 
