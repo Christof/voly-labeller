@@ -69,15 +69,18 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
   __device__ float occupancyForLabelArea(int x, int y) const
   {
-    int startX = max(x - halfLabelWidth, 0);
-    int startY = max(y - halfLabelWidth, 0);
+    int startX = max(x - halfLabelWidth - 1, 0);
+    int startY = max(y - halfLabelWidth - 1, 0);
     int endX = min(x + halfLabelWidth, width - 1);
     int endY = min(y + halfLabelWidth, height - 1);
 
-    float sum =
-        occupancy[endY * width + endX] - occupancy[startY * width + startX];
+    float lowerRight = occupancy[endY * width + endX];
+    float lowerLeft = occupancy[endY * width + startX];
+    float upperLeft = occupancy[startY * width + startX];
+    float upperRight = occupancy[startY * width + endX];
+    float sum = lowerRight - lowerLeft - upperRight + upperLeft;
 
-    return sum / (4 * halfLabelWidth * halfLabelHeight);
+    return sum / ((endX - startX) * (endY - startY));
   }
 
   __device__ EvalResult operator()(const int &index) const
@@ -87,7 +90,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = distanceToAnchor + 10.0f * occupancyForLabelArea(x, y) +
+    float cost = distanceToAnchor + 1024.0f * occupancyForLabelArea(x, y) +
                  favorHorizontalOrVerticalLines(x, y);
     EvalResult result(x, y, cost);
 
