@@ -33,6 +33,8 @@ class Labeller
 
   void resize(int width, int height);
 
+  void cleanup();
+
  private:
   std::shared_ptr<Labels> labels;
   CostFunctionCalculator costFunctionCalculator;

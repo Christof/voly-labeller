@@ -74,6 +74,7 @@ void Scene::initialize()
 
 void Scene::cleanup()
 {
+  placementLabeller->cleanup();
   colorTextureMapper.reset();
   positionsTextureMapper.reset();
   occupancyTextureMapper.reset();

@@ -18,6 +18,11 @@ Labeller::initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper)
       std::make_shared<SummedAreaTable>(occupancyTextureMapper);
 }
 
+void Labeller::cleanup()
+{
+  occupancySummedAreaTable.reset();
+}
+
 void Labeller::setInsertionOrder(std::vector<int> ids)
 {
   insertionOrder = ids;
