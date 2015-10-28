@@ -37,4 +37,16 @@
   EXPECT_NEAR(expected(3, 2), actual(3, 2), delta);                            \
   EXPECT_NEAR(expected(3, 3), actual(3, 3), delta);
 
+template <class T>
+void printVectorAsMatrix(T vector, int width, int height)
+{
+  for (int i = 0; i < height; i++)
+  {
+    for (int j = 0; j < width; ++j)
+      std::cout << vector[i * width + j] << " ";
+
+    std::cout << std::endl;
+  }
+}
+
 #endif  // TEST_TEST_H_
