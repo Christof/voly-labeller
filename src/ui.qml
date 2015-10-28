@@ -6,8 +6,8 @@ Item {
   id: root
   x: 0
   y: 0
-  width: 1000
-  height: 1000
+  width: 1024
+  height: 1024
 
   function toggleVisibility() {
       root.visible = !root.visible;
