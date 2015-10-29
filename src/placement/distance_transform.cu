@@ -125,8 +125,8 @@ void DistanceTransform::run()
   prepareOutputSurface();
 
   dimBlock = dim3(32, 32, 1);
-  dimGrid = dim3(divUp(inputImage->getWidth(), dimBlock.x),
-               divUp(inputImage->getHeight(), dimBlock.y), 1);
+  dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
+                 divUp(outputImage->getHeight(), dimBlock.y), 1);
 
   runInitializeKernel();
   runStepsKernels();

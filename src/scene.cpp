@@ -67,8 +67,8 @@ void Scene::initialize()
   occupancyTexture =
       std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
   occupancyTexture->initialize(gl);
-  distanceTransformTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_RGBA32F);
+  distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
+      postProcessingTextureSize, postProcessingTextureSize, GL_RGBA32F);
   distanceTransformTexture->initialize(gl);
 }
 
@@ -157,9 +157,10 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
     positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
                                                 width, height));
+    int size = 512;
     distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteDiscardMapper(
-            distanceTransformTexture->getId(), width, height));
+            distanceTransformTexture->getId(), size, size));
     occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
         CudaTextureMapper::createReadWriteDiscardMapper(
             occupancyTexture->getId(), width, height));
@@ -191,9 +192,9 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
 
   auto seedBuffer = Apollonius::createSeedBufferFromLabels(
       labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
-      Eigen::Vector2i(width, height));
+      Eigen::Vector2i(postProcessingTextureSize, postProcessingTextureSize));
   Apollonius apollonius(distanceTransformTextureMapper, seedBuffer,
-             distanceTransform.getResults(), labels->count());
+                        distanceTransform.getResults(), labels->count());
   apollonius.run();
   placementLabeller->setInsertionOrder(apollonius.getHostIds());
   transformation =

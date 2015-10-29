@@ -76,6 +76,8 @@ class Scene : public AbstractScene
   void renderDebuggingViews(const RenderData &renderData);
   void doPick();
 
+  const int postProcessingTextureSize = 512;
+
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
   std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
