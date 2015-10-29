@@ -22,9 +22,9 @@ TEST(Test_Occupancy, Occupancy)
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_EQ(0.0f, result[0]);
-  EXPECT_EQ(1.0f, result[1]);
-  EXPECT_EQ(1.0f, result[2]);
-  EXPECT_EQ(0.0f, result[3]);
+  EXPECT_EQ(1.0f, result[0]);
+  EXPECT_EQ(0.0f, result[1]);
+  EXPECT_EQ(-0.5f, result[2]);
+  EXPECT_EQ(1.0f, result[3]);
 }
 

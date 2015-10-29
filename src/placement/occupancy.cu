@@ -11,7 +11,7 @@ __global__ void occupancyKernel(cudaTextureObject_t positions,
 
   float4 position = tex2D<float4>(positions, x + 0.5f, y + 0.5f);
 
-  float outputValue = position.z < 1.0f ? 1.0f : 0.0f;
+  float outputValue = position.z;
   surf2Dwrite(outputValue, output, x * sizeof(float), y);
 }
 
