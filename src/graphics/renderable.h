@@ -30,6 +30,8 @@ class Renderable
 
   virtual void render(Gl *gl, std::shared_ptr<Managers> managers,
                       const RenderData &renderData);
+  virtual void renderImmediately(Gl *gl, std::shared_ptr<Managers> managers,
+                                 const RenderData &renderData);
 
   ObjectData getObjectData();
 
