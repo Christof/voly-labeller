@@ -51,8 +51,15 @@ void LabelNode::render(Graphics::Gl *gl,
     }
   }
 
-  renderConnector(gl, managers, renderData);
   renderAnchor(gl, managers, renderData);
+}
+
+void
+LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
+                                   std::shared_ptr<Graphics::Managers> managers,
+                                   RenderData renderData)
+{
+  renderConnector(gl, managers, renderData);
   renderLabel(gl, managers, renderData);
 }
 
@@ -69,7 +76,7 @@ void LabelNode::renderConnector(Graphics::Gl *gl,
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
-  connector->render(gl, managers, renderData);
+  connector->renderImmediately(gl, managers, renderData);
 }
 
 void LabelNode::renderAnchor(Graphics::Gl *gl,
@@ -104,7 +111,7 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
       Eigen::Scaling(sizeWorld.x(), sizeWorld.y(), 1.0f));
 
   labelQuad.modelMatrix = labelTransform.matrix();
-  managers->getObjectManager()->renderLater(labelQuad);
+  managers->getObjectManager()->renderImmediately(labelQuad);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()
