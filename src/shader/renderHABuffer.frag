@@ -351,6 +351,10 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
+    if (position.w == -2 && nextFragment.color.w > alphaThresholdForDepth)
+    {
+      setPositionAndDepth(nextFragment.eyePos);
+    }
   }
 
   finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
