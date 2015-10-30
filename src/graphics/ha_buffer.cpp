@@ -138,6 +138,8 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   if (wireframe)
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+  gl->glDepthFunc(GL_ALWAYS);
+
   syncAndGetCounts();
 
   renderTimer.start();
@@ -179,6 +181,8 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   qCDebug(channel) << "Clear time" << clearTime << "ms";
   qCDebug(channel) << "Build time" << buildTime << "ms";
   qCDebug(channel) << "Render time" << renderTime << "ms";
+
+  gl->glDepthFunc(GL_LESS);
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
