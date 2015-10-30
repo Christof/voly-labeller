@@ -134,8 +134,11 @@ void Window::resizeOpenGL()
   if (!gl)
     return;
 
+  qCWarning(openGlChan) << "Resize not supported for now";
+  /*
   scene->resize(width(), height());
   gl->setSize(this->size());
+  */
 }
 
 void Window::update()
