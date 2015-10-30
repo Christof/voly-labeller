@@ -16,6 +16,7 @@ uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform vec3 sampleDistance;
+uniform float alphaThresholdForDepth = 0.1;
 
 uniform sampler3D volumeSampler;
 
@@ -232,7 +233,8 @@ void main()
     updateActiveObjects(objectId, activeObjects);
     activeObjectCount = bitCount(activeObjects);
 
-    if (nextFragmentReadStatus && objectId == 0 && position.w == -2)
+    if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth &&
+        position.w == -2)
     {
       setPositionAndDepth(currentFragment.eyePos);
     }
@@ -312,7 +314,7 @@ void main()
         fragmentColor =
             fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
-        if (fragmentColor.w > 0.1 && position.w == -2)
+        if (fragmentColor.w > alphaThresholdForDepth && position.w == -2)
         {
           setPositionAndDepth(vec4(startPos_eye, 1));
         }
