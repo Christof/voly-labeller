@@ -156,6 +156,16 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   return segmentTextureLength;
 }
 
+void setPositionAndDepth(vec4 positionInEyeSpace)
+{
+  vec4 ndcPos = projectionMatrix * positionInEyeSpace;
+  ndcPos = ndcPos / ndcPos.w;
+  float depth = ndcPos.z;
+  gl_FragDepth = depth;
+  position.xyz = ndcPos.xyz;
+  position.w = 1.0f;
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -224,12 +234,7 @@ void main()
 
     if (nextFragmentReadStatus && objectId == 0 && position.w == -2)
     {
-      vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
-      ndcPos = ndcPos / ndcPos.w;
-      float depth = ndcPos.z;
-      gl_FragDepth = depth;
-      position.xyz = ndcPos.xyz;
-      position.w = 1.0f;
+      setPositionAndDepth(currentFragment.eyePos);
     }
 
     // fetch next Fragment
@@ -309,13 +314,9 @@ void main()
 
         if (fragmentColor.w > 0.1 && position.w == -2)
         {
-          vec4 ndcPos = projectionMatrix * vec4(startPos_eye, 1);
-          ndcPos = ndcPos / ndcPos.w;
-          float depth = ndcPos.z;
-          gl_FragDepth = depth;
-          position.xyz = ndcPos.xyz;
-          position.w = 1.0f;
+          setPositionAndDepth(vec4(startPos_eye, 1));
         }
+
         // early ray termination
         if (fragmentColor.w > 0.999)
           break;
