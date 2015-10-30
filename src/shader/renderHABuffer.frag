@@ -216,7 +216,7 @@ void main()
     ndcPos = ndcPos / ndcPos.w;
     float depth = ndcPos.z;
     gl_FragDepth = depth;
-    position.xyz = ndcPos.xyz;// * 0.5f + vec3(0.5f, 0.5f, 0.5f);
+    position.xyz = ndcPos.xyz;
     position.w = 1.0f;
   }
   else
@@ -256,32 +256,16 @@ void main()
     // set up segment direction vector
     direction_eye = endPos_eye - segmentStartPos_eye;
 
-    // FIXME: do we need it?
-    // pos_proj = projectionMatrix*vec4(startPos_eye, 1.0f);
-    // pos_proj.z /= pos_proj.w;
-    // pos_proj += 1.0f;
-    // pos_proj /= 2.0f;
-
     if (activeObjectCount > 0)
     {
-      // float value = texture(volumeSampler, texCoord.xyz).r;
-      // fragmentColor.color.rgb = vec3(value);
-      // fragmentColor.color.rgb = vec3(textureStartPos.xyz);
-      // vec4 transferFunction = Texture(volumes[0].textureAddress,
-      //   vec2(textureStartPos.x, volumes[0].transferFunctionRow));
-      // fragmentColor = transferFunction;
       float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount, activeObjects,
         currentFragment.eyePos, nextFragment.eyePos);
       int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
       sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
       float stepFactor = 1.0 / float(sampleSteps);
 
-      // noise offset
       startPos_eye = segmentStartPos_eye;  // + noise offset;
 
-      // FIXME: check code
-      // textureStartPos = textureStartPos +
-      // noiseoffset*direction_eye*stepfactor;
       lastPos_eye = startPos_eye - direction_eye * stepFactor;
 
       // sample ray segment
@@ -333,12 +317,6 @@ void main()
         // prepare next segment
         lastPos_eye = startPos_eye;
         startPos_eye += stepFactor * direction_eye;
-
-        // FIXME: do we need it?
-        // pos_proj = gl_ProjectionMatrix*vec4(startPos_eye,1.0f);
-        // pos_proj.z /= pos_proj.w;
-        // pos_proj.z += 1.0f;
-        // pos_proj.z /=2.0f;
       }  // sampling steps
 
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
