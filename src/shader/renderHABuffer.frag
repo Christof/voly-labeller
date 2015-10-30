@@ -174,7 +174,8 @@ void main()
   uvec2 ij = uvec2(pos.xy);
   uint32_t pix = (ij.x + ij.y * u_ScreenSz);
 
-  gl_FragDepth = 0.0;
+  gl_FragDepth = 1.0;
+  position = vec4(-2, -2, 1, -2);
 
   uint maxAge = u_Counts[Saddr(ij)];
 
@@ -210,20 +211,6 @@ void main()
       ++age;
   }
 
-  if (nextFragmentReadStatus)
-  {
-    vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
-    ndcPos = ndcPos / ndcPos.w;
-    float depth = ndcPos.z;
-    gl_FragDepth = depth;
-    position.xyz = ndcPos.xyz;
-    position.w = 1.0f;
-  }
-  else
-  {
-    position = vec4(-2, -2, -2, -2);
-  }
-
   for (--age; age < maxAge; age++)  // all fragments
   {
     currentFragment = nextFragment;
@@ -234,6 +221,16 @@ void main()
     objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
     activeObjectCount = bitCount(activeObjects);
+
+    if (nextFragmentReadStatus && objectId == 0 && position.w == -2)
+    {
+      vec4 ndcPos = projectionMatrix * nextFragment.eyePos;
+      ndcPos = ndcPos / ndcPos.w;
+      float depth = ndcPos.z;
+      gl_FragDepth = depth;
+      position.xyz = ndcPos.xyz;
+      position.w = 1.0f;
+    }
 
     // fetch next Fragment
     nextFragmentReadStatus = false;
@@ -310,6 +307,15 @@ void main()
         fragmentColor =
             fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
+        if (fragmentColor.w > 0.1 && position.w == -2)
+        {
+          vec4 ndcPos = projectionMatrix * vec4(startPos_eye, 1);
+          ndcPos = ndcPos / ndcPos.w;
+          float depth = ndcPos.z;
+          gl_FragDepth = depth;
+          position.xyz = ndcPos.xyz;
+          position.w = 1.0f;
+        }
         // early ray termination
         if (fragmentColor.w > 0.999)
           break;
