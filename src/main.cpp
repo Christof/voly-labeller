@@ -106,8 +106,6 @@ int main(int argc, char **argv)
   auto labels = std::make_shared<Labels>();
   auto forcesLabeller = std::make_shared<Forces::Labeller>(labels);
 
-  DefaultSceneCreator sceneCreator(nodes, labels);
-  sceneCreator.create();
   auto scene =
       std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller);
 
@@ -138,6 +136,10 @@ int main(int argc, char **argv)
   LabelsModel labelsModel(labels, pickingController);
   window->rootContext()->setContextProperty("labels", &labelsModel);
   window->setSource(QUrl("qrc:ui.qml"));
+
+  forcesLabeller->resize(window->size().width(), window->size().height());
+  DefaultSceneCreator sceneCreator(nodes, labels);
+  sceneCreator.create();
 
   auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
   ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
