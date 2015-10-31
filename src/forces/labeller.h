@@ -32,6 +32,8 @@ class Labeller
   explicit Labeller(std::shared_ptr<Labels> labels);
   ~Labeller();
 
+  void resize(int width, int height);
+
   void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
@@ -51,6 +53,8 @@ class Labeller
   void enforceAnchorDepthForLabel(LabelState &label,
                                   const Eigen::Matrix4f &viewMatrix);
   void setLabel(Labels::Action action, const Label &label);
+
+  Eigen::Vector2f size;
 };
 }  // namespace Forces
 

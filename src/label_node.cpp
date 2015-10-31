@@ -6,6 +6,7 @@
 #include <Eigen/Geometry>
 #include "./graphics/texture_address.h"
 #include "./importer.h"
+#include "./math/eigen.h"
 
 LabelNode::LabelNode(Label label) : label(label)
 {
@@ -86,9 +87,21 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
                             std::shared_ptr<Graphics::Managers> managers,
                             RenderData renderData)
 {
+  Eigen::Vector4f anchorNDC = renderData.projectionMatrix *
+                              renderData.viewMatrix *
+                              toVector4f(label.anchorPosition);
+  anchorNDC /= anchorNDC.w();
+
+  Eigen::Vector2f sizeNDC =
+      label.size.cwiseQuotient(renderData.windowPixelSize);
+  Eigen::Vector4f sizeWorld =
+      renderData.projectionMatrix.inverse() *
+      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1);
+  sizeWorld /= sizeWorld.w();
+
   Eigen::Affine3f labelTransform(
       Eigen::Translation3f(labelPosition) *
-      Eigen::Scaling(label.size.x(), label.size.y(), 1.0f));
+      Eigen::Scaling(sizeWorld.x(), sizeWorld.y(), 1.0f));
 
   labelQuad.modelMatrix = labelTransform.matrix();
   managers->getObjectManager()->renderLater(labelQuad);

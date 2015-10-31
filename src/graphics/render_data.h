@@ -18,6 +18,7 @@ struct RenderData
   Eigen::Matrix4f viewMatrix;
   Eigen::Matrix4f modelMatrix;
   Eigen::Vector3f cameraPosition;
+  Eigen::Vector2f windowPixelSize;
 };
 
 #endif  // SRC_GRAPHICS_RENDER_DATA_H_

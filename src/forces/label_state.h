@@ -14,7 +14,8 @@ class Force;
  * \brief Encapsulates state for a label necessary for the simulation
  *
  * This consists of label and anchor positions in 2D and 3D, as well as
- * the label's size, text and its id.
+ * the label's size, text and its id. All 2D data is given in normalized
+ * device coordinates.
  *
  * It also stores the last force values for debugging purposes.
  */
