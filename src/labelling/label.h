@@ -23,8 +23,9 @@ struct Label
   }
 
   Label(int id, std::string text, Eigen::Vector3f anchorPosition,
-        Eigen::Vector2f size = Eigen::Vector2f(0.14f, 0.035f))
-    : id(id), text(text), anchorPosition(anchorPosition), size(size)
+        Eigen::Vector2i size = Eigen::Vector2i(128, 32))
+    : id(id), text(text), anchorPosition(anchorPosition),
+      size(size.cast<float>())
   {
   }
 

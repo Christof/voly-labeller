@@ -63,8 +63,8 @@
 					<z>1.999999955e-02</z>
 				</label.anchorPosition>
 				<label.size class_id="7" tracking_level="0" version="0">
-					<x>1.400000006e-01</x>
-					<y>3.500000015e-02</y>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
 		</px>
@@ -80,8 +80,8 @@
 					<z>-1.300000027e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.400000006e-01</x>
-					<y>3.500000015e-02</y>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
 		</px>
@@ -97,8 +97,8 @@
 					<z>5.799999833e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.400000006e-01</x>
-					<y>1.400000006e-01</y>
+					<x>1.280000000e+02</x>
+					<y>1.280000000e+02</y>
 				</label.size>
 			</label>
 		</px>
@@ -114,8 +114,8 @@
 					<z>1.410000026e-01</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.400000006e-01</x>
-					<y>3.500000015e-02</y>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
 		</px>

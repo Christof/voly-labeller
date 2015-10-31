@@ -43,7 +43,8 @@ void Labeller::setLabel(Labels::Action action, const Label &label)
   auto oldLabelState =
       std::find_if(labelStates.begin(), labelStates.end(), predicate);
 
-  LabelState labelState(label.id, label.text, label.anchorPosition, label.size);
+  Eigen::Vector2f sizeNDC = 2.0f * label.size.cwiseQuotient(size);
+  LabelState labelState(label.id, label.text, label.anchorPosition, sizeNDC);
   if (oldLabelState != labelStates.end() &&
       oldLabelState->anchorPosition == label.anchorPosition)
     labelState.labelPosition = oldLabelState->labelPosition;
