@@ -132,6 +132,7 @@ void Scene::render()
   renderData.viewMatrix = camera.getViewMatrix();
   renderData.cameraPosition = camera.getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
   haBuffer->clearAndPrepare(managers);
 
