@@ -28,6 +28,11 @@ Labeller::~Labeller()
   unsubscribeLabelChanges();
 }
 
+void Labeller::resize(int width, int height)
+{
+  size = Eigen::Vector2f(width, height);
+}
+
 void Labeller::setLabel(Labels::Action action, const Label &label)
 {
   auto predicate = [label](const LabelState labelState)

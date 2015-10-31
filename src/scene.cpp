@@ -214,6 +214,8 @@ void Scene::resize(int width, int height)
   this->height = height;
 
   shouldResize = true;
+
+  forcesLabeller->resize(width, height);
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)
