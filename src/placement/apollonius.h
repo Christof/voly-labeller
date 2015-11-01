@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include <memory>
 #include <vector>
+#include <set>
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
@@ -34,6 +35,8 @@ class Apollonius
 
   void run();
 
+  void extractUniqueBoundaryIndices();
+
   thrust::device_vector<int> &getIds();
   std::vector<int> getHostIds();
 
@@ -49,6 +52,8 @@ class Apollonius
   thrust::device_vector<int> computeVector;
   thrust::device_vector<int> seedIds;
   thrust::device_vector<int> seedIndices;
+  thrust::device_vector<int> orderedIndices;
+  std::set<int> extractedIndices;
   int labelCount;
 
   dim3 dimBlock;

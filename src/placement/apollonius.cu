@@ -1,6 +1,7 @@
 #include "./apollonius.h"
 #include <thrust/device_vector.h>
 #include <thrust/device_ptr.h>
+#include <thrust/unique.h>
 #include <vector>
 #include "../utils/cuda_helper.h"
 
@@ -151,6 +152,60 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
+__global__ void copy_border_index_kernel(int imageSize, int *source,
+                                         int *destination)
+{
+  const int index = blockIdx.x * blockDim.x + threadIdx.x;
+  const int maxindex = imageSize * imageSize - 1;
+  // FIXME: corner pixels are duplicated
+  if (index < imageSize)
+  {
+    // move right
+    destination[index] = source[index];
+    // move up
+    destination[imageSize + index] =
+        source[(imageSize - 1) + index * imageSize];
+    // move left
+    destination[imageSize * 2 + index] = source[maxindex - index];
+    // move down.
+    destination[imageSize * 3 + index] =
+        source[maxindex - imageSize + 1 - index * imageSize];
+
+    /*const int yp1 = index / imageSize;
+    const int xp1 = index - yp1*imageSize;
+    const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
+    const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
+    const int yp3 = (maxindex - index) / imageSize;
+    const int xp3 = (maxindex - index) - yp3*imageSize;
+    const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
+    const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
+    yp4*imageSize;
+    printf("%d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2, yp2, xp3,
+    yp3, xp4, yp4);*/
+
+    //__syncthreads();
+    /*if ((destination[index] == 0) || (destination[imageSize + index ] == 0) ||
+    (destination[imageSize*2 + index] == 0) || (destination[imageSize*3 + index]
+    == 0))
+    {
+      printf("buffer is 0: %d: %d %d %d %d \n", index, destination[index],
+    destination[imageSize + index], destination[imageSize*2 + index],
+    destination[imageSize*3 + index] );
+      const int yp1 = index / imageSize;
+      const int xp1 = index - yp1*imageSize;
+      const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
+      const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
+      const int yp3 = (maxindex - index) / imageSize;
+      const int xp3 = (maxindex - index) - yp3*imageSize;
+      const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
+      const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
+    yp4*imageSize;
+      printf("values: %d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2,
+    yp2, xp3, yp3, xp4, yp4);
+    }*/
+  }
+}
+
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
                        thrust::device_vector<float4> &seedBuffer,
                        thrust::device_vector<float> &distances, int labelCount)
@@ -259,5 +314,52 @@ Apollonius::createSeedBufferFromLabels(std::vector<Label> labels,
   }
 
   return result;
+}
+
+void Apollonius::extractUniqueBoundaryIndices()
+{
+  const uint computesize = 4 * imageSize;
+
+  if (orderedIndices.size() < computesize)
+  {
+    orderedIndices.resize(4 * computesize);
+  }
+
+  dim3 dimBlock(32, 1, 1);
+  dim3 dimGrid(divUp(imageSize, dimBlock.x), 1, 1);
+
+  int *voronoi_ptr = thrust::raw_pointer_cast(computeVector.data());
+  int *index_ptr = thrust::raw_pointer_cast(orderedIndices.data());
+
+  copy_border_index_kernel<<<dimGrid,dimBlock>>>(
+      imageSize, voronoi_ptr, index_ptr);
+
+  HANDLE_ERROR(cudaThreadSynchronize());
+  // thrust::host_vector<int> allindices = orderedIndices;
+  // std::cout << "before unique: " << allindices.size() << std::endl;
+  /*for (int i=0; i< allindices.size(); i++)
+  {
+    std::cout << allindices[i] << " ";
+  }
+  std::cout << std::endl;*/
+
+  // std::cerr<< "before unique";
+  thrust::device_vector<int>::iterator it_found =
+      thrust::unique(orderedIndices.begin(), orderedIndices.end());
+  thrust::host_vector<int> uniqueindices(orderedIndices.begin(), it_found);
+
+  // std::cout << "after unique:" << uniqueindices.size()  << " : " <<
+  // std::endl;
+  for (uint i = 0; i < uniqueindices.size(); i++)
+  {
+    // extractedIndices.insert(uniqueindices.begin(), uniqueindices.end());
+    const int insindex = uniqueindices[i];
+    if (insindex > 0)
+    {
+      extractedIndices.insert(insindex);
+    }
+  }
+  // std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
+  // std::cout << std::endl;
 }
 
