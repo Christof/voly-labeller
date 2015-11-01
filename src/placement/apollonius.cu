@@ -152,7 +152,7 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
-__global__ void copy_border_index_kernel(int imageSize, int *source,
+__global__ void copyBorderIndex(int imageSize, int *source,
                                          int *destination)
 {
   const int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -206,21 +206,21 @@ __global__ void copy_border_index_kernel(int imageSize, int *source,
   }
 }
 
-Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
+Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> outputImage,
                        thrust::device_vector<float4> &seedBuffer,
                        thrust::device_vector<float> &distances, int labelCount)
-  : inputImage(inputImage), seedBuffer(seedBuffer), distances(distances),
+  : outputImage(outputImage), seedBuffer(seedBuffer), distances(distances),
     labelCount(labelCount)
 {
-  imageSize = inputImage->getWidth();
+  imageSize = outputImage->getWidth();
   pixelCount = imageSize * imageSize;
 }
 
 void Apollonius::run()
 {
   resize();
-  inputImage->map();
-  auto resDesc = inputImage->getResourceDesc();
+  outputImage->map();
+  auto resDesc = outputImage->getResourceDesc();
   cudaCreateSurfaceObject(&outputSurface, &resDesc);
 
   dimBlock = dim3(32, 32, 1);
@@ -230,7 +230,7 @@ void Apollonius::run()
   runStepsKernels();
   runGatherKernel();
 
-  inputImage->unmap();
+  outputImage->unmap();
 }
 
 thrust::device_vector<int> &Apollonius::getIds()
@@ -331,8 +331,7 @@ void Apollonius::extractUniqueBoundaryIndices()
   int *voronoi_ptr = thrust::raw_pointer_cast(computeVector.data());
   int *index_ptr = thrust::raw_pointer_cast(orderedIndices.data());
 
-  copy_border_index_kernel<<<dimGrid,dimBlock>>>(
-      imageSize, voronoi_ptr, index_ptr);
+  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, voronoi_ptr, index_ptr);
 
   HANDLE_ERROR(cudaThreadSynchronize());
   // thrust::host_vector<int> allindices = orderedIndices;

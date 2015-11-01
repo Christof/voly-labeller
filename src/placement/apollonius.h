@@ -29,7 +29,7 @@
 class Apollonius
 {
  public:
-  Apollonius(std::shared_ptr<CudaArrayProvider> inputImage,
+  Apollonius(std::shared_ptr<CudaArrayProvider> outputImage,
              thrust::device_vector<float4> &seedBuffer,
              thrust::device_vector<float> &distances, int labelCount);
 
@@ -46,7 +46,7 @@ class Apollonius
                              Eigen::Vector2i size);
 
  private:
-  std::shared_ptr<CudaArrayProvider> inputImage;
+  std::shared_ptr<CudaArrayProvider> outputImage;
   thrust::device_vector<float4> &seedBuffer;
   thrust::device_vector<float> &distances;
   thrust::device_vector<int> computeVector;
