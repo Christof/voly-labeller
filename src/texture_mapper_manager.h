@@ -22,8 +22,7 @@ class TextureMapperManager
   TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
-  void
-  initialize(Graphics::Gl *gl);
+  void initialize(Graphics::Gl *gl);
 
   void resize(int widht, int height);
 
@@ -31,6 +30,9 @@ class TextureMapperManager
 
   void bindOccupancyTexture();
   void bindDistanceTransform();
+
+  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
 
   void cleanup();
 

@@ -52,6 +52,18 @@ void TextureMapperManager::bindDistanceTransform()
   distanceTransformTexture->bind();
 }
 
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getOccupancyTextureMapper()
+{
+  return occupancyTextureMapper;
+}
+
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getDistanceTransformTextureMapper()
+{
+  return distanceTransformTextureMapper;
+}
+
 void TextureMapperManager::cleanup()
 {
   occupancy.release();
