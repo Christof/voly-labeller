@@ -21,6 +21,7 @@
 class Nodes;
 class InvokeManager;
 class CameraControllers;
+class TextureMapperManager;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -57,7 +58,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Placement::Labeller> placementLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
-  std::unique_ptr<Graphics::FrameBufferObject> fbo;
+  std::shared_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
   FrustumOptimizer frustumOptimizer;
@@ -78,12 +79,7 @@ class Scene : public AbstractScene
 
   const int postProcessingTextureSize = 512;
 
-  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
-  std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
-  std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
-  std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
+  std::shared_ptr<TextureMapperManager> textureMapperManager;
 };
 
 #endif  // SRC_SCENE_H_

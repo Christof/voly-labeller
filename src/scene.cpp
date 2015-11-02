@@ -19,6 +19,7 @@
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
+#include "./texture_mapper_manager.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -31,9 +32,11 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, camera);
 
-  fbo = std::unique_ptr<Graphics::FrameBufferObject>(
-      new Graphics::FrameBufferObject());
+  fbo = std::make_shared<Graphics::FrameBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
+
+  textureMapperManager =
+      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
 }
 
 Scene::~Scene()
@@ -64,21 +67,14 @@ void Scene::initialize()
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
-  occupancyTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
-  occupancyTexture->initialize(gl);
-  distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
-      postProcessingTextureSize, postProcessingTextureSize, GL_RGBA32F);
-  distanceTransformTexture->initialize(gl);
+  textureMapperManager->resize(width, height);
+  textureMapperManager->initialize(gl, fbo);
 }
 
 void Scene::cleanup()
 {
   placementLabeller->cleanup();
-  colorTextureMapper.reset();
-  positionsTextureMapper.reset();
-  occupancyTextureMapper.reset();
-  distanceTransformTextureMapper.reset();
+  textureMapperManager->cleanup();
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -149,6 +145,7 @@ void Scene::render()
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
+  /*
   if (!colorTextureMapper.get())
   {
     colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
@@ -167,6 +164,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
 
     placementLabeller->initialize(occupancyTextureMapper);
   }
+  */
 
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
@@ -174,6 +172,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
+  /*
   Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
   occupancyTexture->bind();
   transformation =
@@ -202,6 +201,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
+  */
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
