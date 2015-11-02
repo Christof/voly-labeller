@@ -105,6 +105,16 @@ DistanceTransform::DistanceTransform(
   : inputImage(inputImage), outputImage(outputImage)
 
 {
+  prepareInputTexture();
+  prepareOutputSurface();
+}
+
+DistanceTransform::~DistanceTransform()
+{
+  if (inputTexture)
+    cudaDestroyTextureObject(inputTexture);
+  if (outputSurface)
+    cudaDestroySurfaceObject(outputSurface);
 }
 
 void DistanceTransform::resize()
@@ -121,9 +131,6 @@ void DistanceTransform::run()
 {
   resize();
 
-  prepareInputTexture();
-  prepareOutputSurface();
-
   dimBlock = dim3(32, 32, 1);
   dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
                  divUp(outputImage->getHeight(), dimBlock.y), 1);
@@ -131,11 +138,6 @@ void DistanceTransform::run()
   runInitializeKernel();
   runStepsKernels();
   runFinishKernel();
-
-  cudaDestroyTextureObject(inputTexture);
-  cudaDestroySurfaceObject(outputSurface);
-  inputImage->unmap();
-  outputImage->unmap();
 }
 
 thrust::device_vector<float> &DistanceTransform::getResults()
@@ -157,6 +159,8 @@ void DistanceTransform::prepareInputTexture()
   texDesc.normalizedCoords = 0;
 
   cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
+
+  inputImage->unmap();
 }
 
 void DistanceTransform::prepareOutputSurface()
@@ -165,6 +169,8 @@ void DistanceTransform::prepareOutputSurface()
   auto resDesc = outputImage->getResourceDesc();
 
   cudaCreateSurfaceObject(&outputSurface, &resDesc);
+
+  outputImage->unmap();
 }
 
 void DistanceTransform::runInitializeKernel()

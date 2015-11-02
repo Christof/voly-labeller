@@ -25,6 +25,7 @@ class DistanceTransform
  public:
   DistanceTransform(std::shared_ptr<CudaArrayProvider> inputImage,
                     std::shared_ptr<CudaArrayProvider> outputImage);
+  ~DistanceTransform();
 
   void run();
 
@@ -38,8 +39,8 @@ class DistanceTransform
   int pixelCount;
   dim3 dimBlock;
   dim3 dimGrid;
-  cudaTextureObject_t inputTexture;
-  cudaSurfaceObject_t outputSurface;
+  cudaTextureObject_t inputTexture = 0;
+  cudaSurfaceObject_t outputSurface = 0;
   void prepareInputTexture();
   void prepareOutputSurface();
   void resize();

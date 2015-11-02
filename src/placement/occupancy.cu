@@ -24,8 +24,10 @@ Occupancy::Occupancy(std::shared_ptr<CudaArrayProvider> positionProvider,
 
 Occupancy::~Occupancy()
 {
-  cudaDestroyTextureObject(positions);
-  cudaDestroySurfaceObject(output);
+  if (positions)
+    cudaDestroyTextureObject(positions);
+  if (output)
+    cudaDestroySurfaceObject(output);
 }
 
 void Occupancy::runKernel()
