@@ -19,11 +19,32 @@ Occupancy::Occupancy(std::shared_ptr<CudaArrayProvider> positionProvider,
                      std::shared_ptr<CudaArrayProvider> outputProvider)
   : positionProvider(positionProvider), outputProvider(outputProvider)
 {
+  createSurfaceObjects();
+}
+
+Occupancy::~Occupancy()
+{
+  cudaDestroyTextureObject(positions);
+  cudaDestroySurfaceObject(output);
 }
 
 void Occupancy::runKernel()
 {
+  dim3 dimBlock(32, 32, 1);
+  dim3 dimGrid(divUp(positionProvider->getWidth(), dimBlock.x),
+               divUp(positionProvider->getHeight(), dimBlock.y), 1);
+
+  occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
+      positionProvider->getWidth(), positionProvider->getHeight());
+  HANDLE_ERROR(cudaThreadSynchronize());
+
+}
+
+void Occupancy::createSurfaceObjects()
+{
   positionProvider->map();
+  outputProvider->map();
+
   auto resDesc = positionProvider->getResourceDesc();
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
@@ -35,20 +56,8 @@ void Occupancy::runKernel()
 
   cudaCreateTextureObject(&positions, &resDesc, &texDesc, NULL);
 
-  outputProvider->map();
   auto outputResDesc = outputProvider->getResourceDesc();
   cudaCreateSurfaceObject(&output, &outputResDesc);
-
-  dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(positionProvider->getWidth(), dimBlock.x),
-               divUp(positionProvider->getHeight(), dimBlock.y), 1);
-
-  occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
-      positionProvider->getWidth(), positionProvider->getHeight());
-  HANDLE_ERROR(cudaThreadSynchronize());
-
-  cudaDestroyTextureObject(positions);
-  cudaDestroySurfaceObject(output);
 
   positionProvider->unmap();
   outputProvider->unmap();
