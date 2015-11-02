@@ -1,4 +1,5 @@
 #include "./texture_mapper_manager.h"
+#include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
@@ -36,10 +37,9 @@ TextureMapperManager::update(std::shared_ptr<Graphics::FrameBufferObject> fbo)
   if (!colorTextureMapper.get())
     initializeMappers(fbo);
 
-  Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
-  DistanceTransform distanceTransform(occupancyTextureMapper,
-                                      distanceTransformTextureMapper);
-  distanceTransform.run();
+  occupancy->runKernel();
+
+  distanceTransform->run();
 }
 
 void TextureMapperManager::bindOccupancyTexture()
@@ -54,6 +54,9 @@ void TextureMapperManager::bindDistanceTransform()
 
 void TextureMapperManager::cleanup()
 {
+  occupancy.release();
+  distanceTransform.release();
+
   colorTextureMapper.reset();
   positionsTextureMapper.reset();
   occupancyTextureMapper.reset();
@@ -75,5 +78,9 @@ void TextureMapperManager::initializeMappers(
   occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(occupancyTexture->getId(),
                                                       width, height));
+  occupancy = std::make_unique<Occupancy>(positionsTextureMapper,
+                                          occupancyTextureMapper);
+  distanceTransform = std::make_unique<DistanceTransform>(
+      occupancyTextureMapper, distanceTransformTextureMapper);
 }
 

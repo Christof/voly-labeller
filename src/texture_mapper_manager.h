@@ -8,6 +8,8 @@
 #include "./graphics/gl.h"
 
 class CudaTextureMapper;
+class Occupancy;
+class DistanceTransform;
 
 /**
  * \brief
@@ -40,6 +42,8 @@ class TextureMapperManager
   std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
 
+  std::unique_ptr<Occupancy> occupancy;
+  std::unique_ptr<DistanceTransform> distanceTransform;
   int bufferSize;
   int width;
   int height;
