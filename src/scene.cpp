@@ -68,7 +68,7 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 
   textureMapperManager->resize(width, height);
-  textureMapperManager->initialize(gl, fbo);
+  textureMapperManager->initialize(gl);
 }
 
 void Scene::cleanup()
@@ -138,6 +138,8 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
+  textureMapperManager->update(fbo);
+
   renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
@@ -145,26 +147,6 @@ void Scene::render()
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-  /*
-  if (!colorTextureMapper.get())
-  {
-    colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
-                                                 width, height));
-    positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
-                                                width, height));
-    int size = 512;
-    distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            distanceTransformTexture->getId(), size, size));
-    occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            occupancyTexture->getId(), width, height));
-
-    placementLabeller->initialize(occupancyTextureMapper);
-  }
-  */
 
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
@@ -172,23 +154,19 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  /*
-  Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
-  occupancyTexture->bind();
+  textureMapperManager->bindOccupancyTexture();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  DistanceTransform distanceTransform(occupancyTextureMapper,
-                                      distanceTransformTextureMapper);
-  distanceTransform.run();
-  distanceTransformTexture->bind();
+  textureMapperManager->bindDistanceTransform();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
+  /*
   auto seedBuffer = Apollonius::createSeedBufferFromLabels(
       labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
       Eigen::Vector2i(postProcessingTextureSize, postProcessingTextureSize));
