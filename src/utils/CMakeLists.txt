@@ -12,6 +12,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/project_root.h.cmake ${CMAKE_CURRENT_
 set(SOURCES
   persister.h
   gradient_utils.cpp
+  image_persister.h
   )
 
 add_library(utils OBJECT ${SOURCES})
