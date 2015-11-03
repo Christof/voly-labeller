@@ -3,20 +3,25 @@
 
 CudaTextureMapper::CudaTextureMapper(unsigned int textureId, int width,
                                      int height, unsigned int flags)
-  : CudaArrayProvider(width, height), textureId(textureId)
+  : CudaArrayProvider(width, height), textureId(textureId), flags(flags)
 {
-  qInfo() << "map texture" << textureId;
-  HANDLE_ERROR(
-      cudaGraphicsGLRegisterImage(&resource, textureId, GL_TEXTURE_2D, flags));
 }
 
 CudaTextureMapper::~CudaTextureMapper()
 {
-  HANDLE_ERROR(cudaGraphicsUnregisterResource(resource));
+  if (resource)
+    HANDLE_ERROR(cudaGraphicsUnregisterResource(resource));
 }
 
 void CudaTextureMapper::map()
 {
+  if (!resource)
+  {
+    qInfo() << "map texture" << textureId;
+    HANDLE_ERROR(cudaGraphicsGLRegisterImage(&resource, textureId,
+                                             GL_TEXTURE_2D, flags));
+  }
+
   HANDLE_ERROR(cudaGraphicsMapResources(1, &resource));
   HANDLE_ERROR(cudaGraphicsSubResourceGetMappedArray(&array, resource, 0, 0));
   HANDLE_ERROR(cudaGetChannelDesc(&channelDesc, array));
