@@ -15,11 +15,14 @@ std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
   auto imageMapper = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       imageSize, imageSize, image, channelDesc);
 
+  cudaChannelFormatDesc channelDescDistances =
+      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  auto distancesMapper = std::make_shared<CudaArrayMapper<float>>(
+      imageSize, imageSize, distances, channelDescDistances);
   thrust::device_vector<float4> seedBuffer(labelCount, make_float4(0, 0, 0, 0));
   seedBuffer[0] = make_float4(0, 2, 1, 1);
-  thrust::device_vector<float> distanceVector(distances);
 
-  Apollonius apollonius(imageMapper, seedBuffer, distanceVector, labelCount);
+  Apollonius apollonius(distancesMapper, imageMapper, seedBuffer, labelCount);
   apollonius.run();
 
   image = imageMapper->copyDataFromGpu();

@@ -193,8 +193,9 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   auto seedBuffer = Apollonius::createSeedBufferFromLabels(
       labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
       Eigen::Vector2i(postProcessingTextureSize, postProcessingTextureSize));
-  Apollonius apollonius(distanceTransformTextureMapper, seedBuffer,
-                        distanceTransform.getResults(), labels->count());
+  Apollonius apollonius(distanceTransformTextureMapper,
+                        distanceTransformTextureMapper, seedBuffer,
+                        labels->count());
   apollonius.run();
   placementLabeller->setInsertionOrder(apollonius.getHostIds());
   transformation =

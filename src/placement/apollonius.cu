@@ -37,8 +37,8 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
   computePtr[index] = outIndex;
 }
 
-__global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
-                               int w, int h)
+__global__ void apolloniusStep(cudaTextureObject_t distances, int *data,
+                               unsigned int step, int w, int h)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -50,7 +50,9 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
   int currentNearest = data[index];
   int currentY = currentNearest / w;
   int currentX = currentNearest - currentY * w;
-  float curr_w = (currentNearest < w * h) ? occupancy[currentNearest] : 0.0f;
+  float curr_w = (currentNearest < w * h)
+                     ? tex2D<float>(distances, currentX + 0.5f, currentY + 0.5f)
+                     : 0.0f;
 
   float currentDistance =
       sqrtf(static_cast<float>((x - currentX) * (x - currentX) +
@@ -74,7 +76,9 @@ __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
       int newNearest = data[newindex];
       int newY = newNearest / w;
       int newX = newNearest - newY * w;
-      float newW = (newNearest < w * h) ? occupancy[newNearest] : 0.0f;
+      float newW = (newNearest < w * h)
+                       ? tex2D<float>(distances, newX + 0.5f, newY + 0.5f)
+                       : 0.0f;
       float newDistance = sqrtf(static_cast<float>((x - newX) * (x - newX) +
                                                    (y - newY) * (y - newY))) -
                           newW;
@@ -199,14 +203,30 @@ __global__ void copyBorderIndex(int imageSize, int *source,
   }
 }
 
-Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> outputImage,
+Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
+                       std::shared_ptr<CudaArrayProvider> outputImage,
                        thrust::device_vector<float4> &seedBuffer,
-                       thrust::device_vector<float> &distances, int labelCount)
-  : outputImage(outputImage), seedBuffer(seedBuffer), distances(distances),
-    labelCount(labelCount)
+                       int labelCount)
+  : distancesImage(distancesImage), outputImage(outputImage),
+    seedBuffer(seedBuffer), labelCount(labelCount)
 {
   imageSize = outputImage->getWidth();
   pixelCount = imageSize * imageSize;
+
+  distancesImage->map();
+  auto resDesc = distancesImage->getResourceDesc();
+
+  struct cudaTextureDesc texDesc;
+  memset(&texDesc, 0, sizeof(texDesc));
+  texDesc.addressMode[0] = cudaAddressModeWrap;
+  texDesc.addressMode[1] = cudaAddressModeWrap;
+  texDesc.filterMode = cudaFilterModeLinear;
+  texDesc.readMode = cudaReadModeElementType;
+  texDesc.normalizedCoords = 0;
+
+  cudaCreateTextureObject(&distancesTexture, &resDesc, &texDesc, NULL);
+
+  distancesImage->unmap();
 }
 
 void Apollonius::run()
@@ -267,14 +287,14 @@ void Apollonius::runSeedKernel()
 void Apollonius::runStepsKernels()
 {
   apolloniusStep<<<dimGrid, dimBlock>>>
-      (thrust::raw_pointer_cast(computeVector.data()),
-       thrust::raw_pointer_cast(distances.data()), 1, imageSize, imageSize);
+      (distancesTexture, thrust::raw_pointer_cast(computeVector.data()),
+       1, imageSize, imageSize);
 
   for (int k = (imageSize / 2); k > 0; k /= 2)
   {
     apolloniusStep<<<dimGrid, dimBlock>>>
-        (thrust::raw_pointer_cast(computeVector.data()),
-         thrust::raw_pointer_cast(distances.data()), k, imageSize, imageSize);
+        (distancesTexture, thrust::raw_pointer_cast(computeVector.data()),
+         k, imageSize, imageSize);
   }
   HANDLE_ERROR(cudaThreadSynchronize());
 }
