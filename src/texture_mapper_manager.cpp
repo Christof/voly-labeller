@@ -15,7 +15,8 @@ TextureMapperManager::~TextureMapperManager()
   cleanup();
 }
 
-void TextureMapperManager::initialize(Graphics::Gl *gl)
+void TextureMapperManager::initialize(
+    Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo)
 {
   occupancyTexture =
       std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
@@ -23,6 +24,8 @@ void TextureMapperManager::initialize(Graphics::Gl *gl)
   distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
       bufferSize, bufferSize, GL_RGBA32F);
   distanceTransformTexture->initialize(gl);
+
+  initializeMappers(fbo);
 }
 
 void TextureMapperManager::resize(int width, int height)
@@ -32,11 +35,8 @@ void TextureMapperManager::resize(int width, int height)
 }
 
 void
-TextureMapperManager::update(std::shared_ptr<Graphics::FrameBufferObject> fbo)
+TextureMapperManager::update()
 {
-  if (!colorTextureMapper.get())
-    initializeMappers(fbo);
-
   occupancy->runKernel();
 
   distanceTransform->run();

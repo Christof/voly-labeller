@@ -68,7 +68,7 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 
   textureMapperManager->resize(width, height);
-  textureMapperManager->initialize(gl);
+  textureMapperManager->initialize(gl, fbo);
 
   // TODO(SIR): initialize here
   /*
@@ -142,7 +142,7 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
-  textureMapperManager->update(fbo);
+  textureMapperManager->update();
 
   renderDebuggingViews(renderData);
 

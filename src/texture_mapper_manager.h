@@ -22,11 +22,12 @@ class TextureMapperManager
   TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
-  void initialize(Graphics::Gl *gl);
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::FrameBufferObject> fbo);
 
   void resize(int widht, int height);
 
-  void update(std::shared_ptr<Graphics::FrameBufferObject> fbo);
+  void update();
 
   void bindOccupancyTexture();
   void bindDistanceTransform();
