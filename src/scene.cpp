@@ -69,6 +69,12 @@ void Scene::initialize()
 
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl);
+
+  // TODO(SIR): initialize here
+  /*
+  placementLabeller->initialize(textureMapperManager->getOccupancyTextureMapper(),
+      textureMapperManager->getDistanceTransformTextureMapper());
+      */
 }
 
 void Scene::cleanup()
@@ -92,9 +98,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
       */
-  auto newPositions = placementLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-
+  auto newPositions = placementLabeller->getLastPlacementResult();
   for (auto &labelNode : nodes->getLabelNodes())
   {
     labelNode->labelPosition = newPositions[labelNode->label.id];
@@ -166,20 +170,16 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  /*
-  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
-      labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
-      Eigen::Vector2i(postProcessingTextureSize, postProcessingTextureSize));
-  Apollonius apollonius(distanceTransformTextureMapper,
-                        distanceTransformTextureMapper, seedBuffer,
-                        labels->count());
-  apollonius.run();
-  placementLabeller->setInsertionOrder(apollonius.getHostIds());
+  placementLabeller->initialize(
+      textureMapperManager->getOccupancyTextureMapper(),
+      textureMapperManager->getDistanceTransformTextureMapper());
+  placementLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
-  */
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,

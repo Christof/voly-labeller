@@ -11,6 +11,7 @@
 
 class SummedAreaTable;
 class CudaArrayProvider;
+class Apollonius;
 
 namespace Placement
 {
@@ -25,11 +26,14 @@ class Labeller
  public:
   explicit Labeller(std::shared_ptr<Labels> labels);
 
-  void initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper);
+  void initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+      std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper);
 
   void setInsertionOrder(std::vector<int> ids);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
+
+  std::map<int, Eigen::Vector3f> getLastPlacementResult();
 
   void resize(int width, int height);
 
@@ -38,11 +42,15 @@ class Labeller
  private:
   std::shared_ptr<Labels> labels;
   CostFunctionCalculator costFunctionCalculator;
+  std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
+  std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::vector<int> insertionOrder;
 
   int width;
   int height;
+
+  std::map<int, Eigen::Vector3f> newPositions;
 };
 
 }  // namespace Placement
