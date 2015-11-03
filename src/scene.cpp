@@ -70,11 +70,8 @@ void Scene::initialize()
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo);
 
-  // TODO(SIR): initialize here
-  /*
   placementLabeller->initialize(textureMapperManager->getOccupancyTextureMapper(),
       textureMapperManager->getDistanceTransformTextureMapper());
-      */
 }
 
 void Scene::cleanup()
@@ -170,9 +167,6 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  placementLabeller->initialize(
-      textureMapperManager->getOccupancyTextureMapper(),
-      textureMapperManager->getDistanceTransformTextureMapper());
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
