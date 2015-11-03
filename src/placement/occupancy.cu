@@ -19,7 +19,6 @@ Occupancy::Occupancy(std::shared_ptr<CudaArrayProvider> positionProvider,
                      std::shared_ptr<CudaArrayProvider> outputProvider)
   : positionProvider(positionProvider), outputProvider(outputProvider)
 {
-  createSurfaceObjects();
 }
 
 Occupancy::~Occupancy()
@@ -32,6 +31,9 @@ Occupancy::~Occupancy()
 
 void Occupancy::runKernel()
 {
+  if (!positions)
+    createSurfaceObjects();
+
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(positionProvider->getWidth(), dimBlock.x),
                divUp(positionProvider->getHeight(), dimBlock.y), 1);
