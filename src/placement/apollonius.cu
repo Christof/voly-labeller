@@ -15,7 +15,6 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
     return;
 
   int index = y * imageSize + x;
-  float4 outValue = make_float4(0.0f, 0.0f, 0.0f, 1.0f);
 
   // initialize to out of bounds
   int outIndex = (imageSize * 2) * (imageSize * 2) - 1;
@@ -29,11 +28,6 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
     if (seedValueInt.x > 0 && x == seedValueInt.y && y == seedValueInt.z &&
         (x != 0 || y != 0))
     {
-      outValue =
-          make_float4(seedValue.x / (labelCount + 1),
-                      seedValueInt.y / static_cast<float>(imageSize),
-                      seedValueInt.z / static_cast<float>(imageSize), 1.0f);
-
       outIndex = x + y * imageSize;
     }
     idPtr[i] = seedValueInt.x;
@@ -41,7 +35,6 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
   }
 
   computePtr[index] = outIndex;
-  surf2Dwrite(outValue, output, x * sizeof(float4), y);
 }
 
 __global__ void apolloniusStep(int *data, float *occupancy, unsigned int step,
