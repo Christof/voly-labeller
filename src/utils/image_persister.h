@@ -3,7 +3,9 @@
 #define SRC_UTILS_IMAGE_PERSISTER_H_
 
 #include <string>
+#include <vector>
 #include <Magick++.h>
+#include <Eigen/Core>
 
 /**
  * \brief Provides static functions to load and save images
@@ -19,6 +21,17 @@ class ImagePersister
     Magick::Image image(width, height, "RGBA", Magick::StorageType::FloatPixel,
                         data);
     image.write(filename);
+  }
+
+  static std::vector<Eigen::Vector4f> loadRGBA32F(std::string filename)
+  {
+    Magick::Image image(filename);
+    std::vector<Eigen::Vector4f> result(image.columns() * image.rows());
+
+    image.write(0, 0, image.columns(), image.rows(), "RGBA",
+                Magick::StorageType::FloatPixel, result.data());
+
+    return result;
   }
 };
 
