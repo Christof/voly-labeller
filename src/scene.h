@@ -36,7 +36,8 @@ class Scene : public AbstractScene
   Scene(std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
         std::shared_ptr<Forces::Labeller> forcesLabeller,
-        std::shared_ptr<Placement::Labeller> placementLabeller);
+        std::shared_ptr<Placement::Labeller> placementLabeller,
+        std::shared_ptr<TextureMapperManager> textureMapperManager);
   ~Scene();
 
   virtual void initialize();
@@ -76,8 +77,6 @@ class Scene : public AbstractScene
   int pickingLabelId;
   void renderDebuggingViews(const RenderData &renderData);
   void doPick();
-
-  const int postProcessingTextureSize = 512;
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
 };

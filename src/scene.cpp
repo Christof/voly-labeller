@@ -24,19 +24,18 @@
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> forcesLabeller,
-             std::shared_ptr<Placement::Labeller> placementLabeller)
+             std::shared_ptr<Placement::Labeller> placementLabeller,
+             std::shared_ptr<TextureMapperManager> textureMapperManager)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    placementLabeller(placementLabeller), frustumOptimizer(nodes)
+    placementLabeller(placementLabeller), frustumOptimizer(nodes),
+    textureMapperManager(textureMapperManager)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, camera);
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
-
-  textureMapperManager =
-      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
 }
 
 Scene::~Scene()
@@ -70,7 +69,8 @@ void Scene::initialize()
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo);
 
-  placementLabeller->initialize(textureMapperManager->getOccupancyTextureMapper(),
+  placementLabeller->initialize(
+      textureMapperManager->getOccupancyTextureMapper(),
       textureMapperManager->getDistanceTransformTextureMapper());
 }
 

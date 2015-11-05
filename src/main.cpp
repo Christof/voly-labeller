@@ -19,6 +19,7 @@
 #include "./forces_visualizer_node.h"
 #include "./placement/labeller.h"
 #include "./default_scene_creator.h"
+#include "./texture_mapper_manager.h"
 #include "./utils/cuda_helper.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
@@ -108,8 +109,13 @@ int main(int argc, char **argv)
   auto forcesLabeller = std::make_shared<Forces::Labeller>(labels);
   auto placementLabeller = std::make_shared<Placement::Labeller>(labels);
 
-  auto scene = std::make_shared<Scene>(invokeManager, nodes, labels,
-                                       forcesLabeller, placementLabeller);
+  const int postProcessingTextureSize = 512;
+  auto textureMapperManager =
+      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
+
+  auto scene =
+      std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
+                              placementLabeller, textureMapperManager);
 
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
