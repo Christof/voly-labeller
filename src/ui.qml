@@ -83,6 +83,19 @@ Item {
           onTriggered: labeller.toggleUpdatePositions();
         }
       }
+      Menu {
+        title: "Debug"
+        MenuItem {
+          text: "Save positions"
+          shortcut: "P"
+          onTriggered: bufferTextures.savePositions();
+        }
+        MenuItem {
+          text: "Save occupancy"
+          shortcut: "O"
+          onTriggered: bufferTextures.saveOccupancy();
+        }
+      }
     }
 
     FileDialog {

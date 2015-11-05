@@ -3,7 +3,6 @@
 #include <QStateMachine>
 #include <QDebug>
 #include <cuda_runtime.h>
-#include <memory>
 #include "./window.h"
 #include "./scene.h"
 #include "./nodes.h"
@@ -20,7 +19,9 @@
 #include "./placement/labeller.h"
 #include "./default_scene_creator.h"
 #include "./texture_mapper_manager.h"
+#include "./texture_mapper_manager_controller.h"
 #include "./utils/cuda_helper.h"
+#include "./utils/memory.h"
 
 void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
                                     Labels::Action action, const Label &label)
@@ -112,6 +113,8 @@ int main(int argc, char **argv)
   const int postProcessingTextureSize = 512;
   auto textureMapperManager =
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
+  auto textureMapperManagerController =
+      std::make_unique<TextureMapperManagerController>(textureMapperManager);
 
   auto scene =
       std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
@@ -125,6 +128,7 @@ int main(int argc, char **argv)
   window->setResizeMode(QQuickView::SizeRootObjectToView);
   window->rootContext()->setContextProperty("window", window.get());
   window->rootContext()->setContextProperty("nodes", nodes.get());
+  window->rootContext()->setContextProperty("bufferTextures", textureMapperManagerController.get());
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);

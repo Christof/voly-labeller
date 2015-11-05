@@ -37,6 +37,8 @@ class TextureMapperManager
 
   void cleanup();
 
+  void saveOccupancy();
+
  private:
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
   std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
@@ -50,6 +52,8 @@ class TextureMapperManager
   int bufferSize;
   int width;
   int height;
+
+  bool saveOccupancyInNextFrame = false;
 
   void initializeMappers(std::shared_ptr<Graphics::FrameBufferObject> fbo);
 };

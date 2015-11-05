@@ -75,6 +75,11 @@ void TextureMapperManager::cleanup()
   distanceTransformTextureMapper.reset();
 }
 
+void TextureMapperManager::saveOccupancy()
+{
+  saveOccupancyInNextFrame = true;
+}
+
 void TextureMapperManager::initializeMappers(
     std::shared_ptr<Graphics::FrameBufferObject> fbo)
 {
