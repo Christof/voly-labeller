@@ -4,6 +4,7 @@
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
+#include "./utils/image_persister.h"
 
 TextureMapperManager::TextureMapperManager(int bufferSize)
   : bufferSize(bufferSize)
@@ -38,6 +39,12 @@ void
 TextureMapperManager::update()
 {
   occupancy->runKernel();
+
+  if (saveOccupancyInNextFrame)
+  {
+    saveOccupancyInNextFrame = false;
+    occupancyTexture->save("occupancy.tga");
+  }
 
   distanceTransform->run();
 }
