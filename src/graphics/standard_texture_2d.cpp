@@ -45,14 +45,43 @@ unsigned int StandardTexture2d::getId()
 
 void StandardTexture2d::save(std::string filename)
 {
+  int componets = getComponentsPerPixel();
   int pixelCount = width * height;
-  std::vector<float> pixels(pixelCount, 1);
+  std::vector<float> pixels(pixelCount * componets);
 
-  bind();
-  gl->glReadPixels(0, 0, width, height, GL_RED, GL_FLOAT, pixels.data());
-  unbind();
+  unsigned int fboId = 0;
+  gl->glGenFramebuffers(1, &fboId);
+  gl->glBindFramebuffer(GL_FRAMEBUFFER, fboId);
+  gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                             GL_TEXTURE_2D, texture, 0);
 
-  ::ImagePersister::saveR32F(pixels.data(), width, height, filename);
+  if (format == GL_R32F)
+  {
+    gl->glReadPixels(0, 0, width, height, GL_RED, GL_FLOAT, pixels.data());
+    ::ImagePersister::saveR32F(pixels.data(), width, height, filename);
+  }
+  else if (format == GL_RGBA32F)
+  {
+    gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_FLOAT, pixels.data());
+    ::ImagePersister::saveRGBA32F(pixels.data(), width, height, filename);
+  }
+
+  gl->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  gl->glDeleteBuffers(1, &fboId);
+}
+
+int StandardTexture2d::getComponentsPerPixel()
+{
+  switch (format)
+  {
+  case GL_R32F:
+    return 1;
+  case GL_RGBA32F:
+    return 4;
+  default:
+    throw std::runtime_error("Format '" + std::to_string(format) +
+                             "' not implemented");
+  }
 }
 
 }  // namespace Graphics

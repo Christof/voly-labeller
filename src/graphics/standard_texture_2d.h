@@ -37,6 +37,8 @@ class StandardTexture2d
   unsigned int format;
 
   Gl *gl;
+
+  int getComponentsPerPixel();
 };
 
 }  // namespace Graphics
