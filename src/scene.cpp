@@ -53,6 +53,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
   positionQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
+  distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/distanceTransform.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -63,6 +65,7 @@ void Scene::initialize()
   haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
+  distanceTransformQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
@@ -166,7 +169,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(quad, transformation.matrix());
+  renderQuad(distanceTransformQuad, transformation.matrix());
 
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
