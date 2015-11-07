@@ -17,18 +17,22 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 
 void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
-    std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper)
+    std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
+    std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper)
 {
   qCInfo(plChan) << "Initialize";
   if (!occupancySummedAreaTable.get())
     occupancySummedAreaTable =
         std::make_shared<SummedAreaTable>(occupancyTextureMapper);
+
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
+  this->apolloniusTextureMapper = apolloniusTextureMapper;
 }
 
 void Labeller::cleanup()
 {
   occupancySummedAreaTable.reset();
+  apolloniusTextureMapper.reset();
 }
 
 void Labeller::setInsertionOrder(std::vector<int> ids)
@@ -48,7 +52,7 @@ Labeller::update(const LabellerFrameData &frameData)
       Eigen::Vector2i(distanceTransformTextureMapper->getWidth(),
                       distanceTransformTextureMapper->getHeight()));
   Apollonius apollonius(distanceTransformTextureMapper,
-                        distanceTransformTextureMapper, seedBuffer,
+                        apolloniusTextureMapper, seedBuffer,
                         labels->count());
   apollonius.run();
   setInsertionOrder(apollonius.getHostIds());

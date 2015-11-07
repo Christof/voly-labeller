@@ -26,8 +26,10 @@ class Labeller
  public:
   explicit Labeller(std::shared_ptr<Labels> labels);
 
-  void initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
-      std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper);
+  void
+  initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+             std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
+             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper);
 
   void setInsertionOrder(std::vector<int> ids);
 
@@ -45,6 +47,7 @@ class Labeller
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
+  std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
   std::vector<int> insertionOrder;
 
   int width;

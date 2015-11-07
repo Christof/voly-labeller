@@ -71,7 +71,8 @@ void Scene::initialize()
 
   placementLabeller->initialize(
       textureMapperManager->getOccupancyTextureMapper(),
-      textureMapperManager->getDistanceTransformTextureMapper());
+      textureMapperManager->getDistanceTransformTextureMapper(),
+      textureMapperManager->getApolloniusTextureMapper());
 }
 
 void Scene::cleanup()
@@ -170,6 +171,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
+  textureMapperManager->bindApollonius();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
