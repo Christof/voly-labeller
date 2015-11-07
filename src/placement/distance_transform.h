@@ -10,10 +10,7 @@
  * \brief Calculates for each pixel distance to nearest pixel with 
  * value >= 0.99f
  *
- * The input image must be of type float and the output image of
- * type float4, which is only for debugging purposes. The result
- * can be retrieved with #getResults which returns a vector
- * of the distances.
+ * The input and output image must be of type float.
  *
  * It is based on Rong, G., & Tan, T. (2006). Jump flooding in GPU with
  * applications to Voronoi diagram and distance transform. In Studies in Logical

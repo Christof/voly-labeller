@@ -93,10 +93,7 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
 
   result[index] = distf;
 
-  // write to texture for debugging
-  float grayTone = 16.0f * distf / width;
-  float4 color = make_float4(grayTone, grayTone, grayTone, 1.0f);
-  surf2Dwrite(color, output, x * sizeof(float4), y);
+  surf2Dwrite(distf, output, x * sizeof(float), y);
 }
 
 DistanceTransform::DistanceTransform(
@@ -193,6 +190,9 @@ void DistanceTransform::runInitializeKernel()
 
 void DistanceTransform::runStepsKernels()
 {
+  dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
+                 divUp(outputImage->getHeight(), dimBlock.y), 1);
+
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
   distanceTransformStep<<<dimGrid, dimBlock>>>(
       computePtr, 1, outputImage->getWidth(), outputImage->getHeight());

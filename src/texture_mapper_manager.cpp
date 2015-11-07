@@ -22,8 +22,9 @@ void TextureMapperManager::initialize(
   occupancyTexture =
       std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
   occupancyTexture->initialize(gl);
+
   distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
-      bufferSize, bufferSize, GL_RGBA32F);
+      bufferSize, bufferSize, GL_R32F);
   distanceTransformTexture->initialize(gl);
 
   initializeMappers(fbo);
