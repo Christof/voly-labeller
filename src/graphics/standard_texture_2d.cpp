@@ -1,5 +1,7 @@
 #include "./standard_texture_2d.h"
+#include <string>
 #include "./gl.h"
+#include "../utils/image_persister.h"
 
 namespace Graphics
 {
@@ -39,6 +41,18 @@ void StandardTexture2d::unbind()
 unsigned int StandardTexture2d::getId()
 {
   return texture;
+}
+
+void StandardTexture2d::save(std::string filename)
+{
+  int pixelCount = width * height;
+  std::vector<float> pixels(pixelCount, 1);
+
+  bind();
+  gl->glReadPixels(0, 0, width, height, GL_RED, GL_FLOAT, pixels.data());
+  unbind();
+
+  ::ImagePersister::saveR32F(pixels.data(), width, height, filename);
 }
 
 }  // namespace Graphics

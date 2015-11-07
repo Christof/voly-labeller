@@ -2,6 +2,8 @@
 
 #define SRC_GRAPHICS_STANDARD_TEXTURE_2D_H_
 
+#include <string>
+
 namespace Graphics
 {
 
@@ -24,6 +26,8 @@ class StandardTexture2d
   void unbind();
 
   unsigned int getId();
+
+  void save(std::string filename);
 
  private:
   unsigned int texture;
