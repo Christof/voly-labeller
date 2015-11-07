@@ -23,6 +23,14 @@ class ImagePersister
     image.write(filename);
   }
 
+  static void saveR32F(float *data, int width, int height, std::string filename)
+  {
+    Magick::InitializeMagick("");
+    Magick::Image image(width, height, "R", Magick::StorageType::FloatPixel,
+                        data);
+    image.write(filename);
+  }
+
   static std::vector<Eigen::Vector4f> loadRGBA32F(std::string filename)
   {
     Magick::Image image(filename);
