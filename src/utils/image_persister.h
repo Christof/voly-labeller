@@ -41,6 +41,17 @@ class ImagePersister
 
     return result;
   }
+
+  static std::vector<float> loadR32F(std::string filename)
+  {
+    Magick::Image image(filename);
+    std::vector<float> result(image.columns() * image.rows());
+
+    image.write(0, 0, image.columns(), image.rows(), "R",
+                Magick::StorageType::FloatPixel, result.data());
+
+    return result;
+  }
 };
 
 #endif  // SRC_UTILS_IMAGE_PERSISTER_H_
