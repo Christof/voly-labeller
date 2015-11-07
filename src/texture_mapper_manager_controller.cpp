@@ -16,3 +16,12 @@ void TextureMapperManagerController::savePositions()
   //textureMapperManager->savePositions();
 }
 
+void TextureMapperManagerController::saveDistanceTransform()
+{
+  textureMapperManager->saveDistanceTransform();
+}
+
+void TextureMapperManagerController::saveApollonius()
+{
+  textureMapperManager->saveApollonius();
+}

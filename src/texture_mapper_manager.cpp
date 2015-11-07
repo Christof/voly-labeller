@@ -51,6 +51,18 @@ void TextureMapperManager::update()
   }
 
   distanceTransform->run();
+
+  if (saveDistanceTransformInNextFrame)
+  {
+    saveDistanceTransformInNextFrame = false;
+    distanceTransformTexture->save("distanceTransform.tga");
+  }
+
+  if (saveApolloniusInNextFrame)
+  {
+    saveApolloniusInNextFrame = false;
+    apolloniusTexture->save("apollonius.tga");
+  }
 }
 
 void TextureMapperManager::bindOccupancyTexture()
@@ -101,6 +113,16 @@ void TextureMapperManager::cleanup()
 void TextureMapperManager::saveOccupancy()
 {
   saveOccupancyInNextFrame = true;
+}
+
+void TextureMapperManager::saveDistanceTransform()
+{
+  saveDistanceTransformInNextFrame = true;
+}
+
+void TextureMapperManager::saveApollonius()
+{
+  saveApolloniusInNextFrame = true;
 }
 
 void TextureMapperManager::initializeMappers(

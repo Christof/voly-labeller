@@ -21,6 +21,8 @@ class TextureMapperManagerController : public QObject
  public slots:
   void saveOccupancy();
   void savePositions();
+  void saveDistanceTransform();
+  void saveApollonius();
 
  private:
   std::shared_ptr<TextureMapperManager> textureMapperManager;

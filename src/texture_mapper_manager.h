@@ -40,6 +40,8 @@ class TextureMapperManager
   void cleanup();
 
   void saveOccupancy();
+  void saveDistanceTransform();
+  void saveApollonius();
 
  private:
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
@@ -58,6 +60,8 @@ class TextureMapperManager
   int height;
 
   bool saveOccupancyInNextFrame = false;
+  bool saveDistanceTransformInNextFrame = false;
+  bool saveApolloniusInNextFrame = false;
 
   void initializeMappers(std::shared_ptr<Graphics::FrameBufferObject> fbo);
 };

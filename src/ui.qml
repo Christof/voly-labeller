@@ -86,14 +86,19 @@ Item {
       Menu {
         title: "Debug"
         MenuItem {
-          text: "Save positions"
-          shortcut: "P"
-          onTriggered: bufferTextures.savePositions();
-        }
-        MenuItem {
           text: "Save occupancy"
           shortcut: "O"
           onTriggered: bufferTextures.saveOccupancy();
+        }
+        MenuItem {
+          text: "Save distance transform"
+          shortcut: "I"
+          onTriggered: bufferTextures.saveDistanceTransform();
+        }
+        MenuItem {
+          text: "Save apollonius"
+          shortcut: "P"
+          onTriggered: bufferTextures.saveApollonius();
         }
       }
     }
