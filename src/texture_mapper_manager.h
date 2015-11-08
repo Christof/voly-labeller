@@ -19,7 +19,7 @@ class DistanceTransform;
 class TextureMapperManager
 {
  public:
-  TextureMapperManager(int bufferSize);
+  explicit TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
   void initialize(Graphics::Gl *gl,

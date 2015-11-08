@@ -2,8 +2,8 @@
 
 #define SRC_TEXTURE_MAPPER_MANAGER_CONTROLLER_H_
 
-#include <memory>
 #include <QObject>
+#include <memory>
 #include "./texture_mapper_manager.h"
 
 /**

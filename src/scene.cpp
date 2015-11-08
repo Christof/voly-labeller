@@ -152,7 +152,6 @@ void Scene::render()
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *

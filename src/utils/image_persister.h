@@ -2,10 +2,10 @@
 
 #define SRC_UTILS_IMAGE_PERSISTER_H_
 
+#include <Eigen/Core>
 #include <string>
 #include <vector>
 #include <Magick++.h>
-#include <Eigen/Core>
 
 /**
  * \brief Provides static functions to load and save images

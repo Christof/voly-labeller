@@ -1,7 +1,8 @@
 #include "./texture_mapper_manager_controller.h"
 #include <iostream>
 
-TextureMapperManagerController::TextureMapperManagerController(      std::shared_ptr<TextureMapperManager> textureMapperManager)
+TextureMapperManagerController::TextureMapperManagerController(
+    std::shared_ptr<TextureMapperManager> textureMapperManager)
   : textureMapperManager(textureMapperManager)
 {
 }
@@ -13,7 +14,7 @@ void TextureMapperManagerController::saveOccupancy()
 
 void TextureMapperManagerController::savePositions()
 {
-  //textureMapperManager->savePositions();
+  // textureMapperManager->savePositions();
 }
 
 void TextureMapperManagerController::saveDistanceTransform()

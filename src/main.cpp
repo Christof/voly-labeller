@@ -128,7 +128,8 @@ int main(int argc, char **argv)
   window->setResizeMode(QQuickView::SizeRootObjectToView);
   window->rootContext()->setContextProperty("window", window.get());
   window->rootContext()->setContextProperty("nodes", nodes.get());
-  window->rootContext()->setContextProperty("bufferTextures", textureMapperManagerController.get());
+  window->rootContext()->setContextProperty(
+      "bufferTextures", textureMapperManagerController.get());
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);

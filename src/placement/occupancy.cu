@@ -40,8 +40,8 @@ void Occupancy::runKernel()
 
   occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
       positionProvider->getWidth(), positionProvider->getHeight());
-  HANDLE_ERROR(cudaThreadSynchronize());
 
+  HANDLE_ERROR(cudaThreadSynchronize());
 }
 
 void Occupancy::createSurfaceObjects()

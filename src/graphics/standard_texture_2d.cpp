@@ -1,5 +1,6 @@
 #include "./standard_texture_2d.h"
 #include <string>
+#include <vector>
 #include "./gl.h"
 #include "../utils/image_persister.h"
 
