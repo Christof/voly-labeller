@@ -3,9 +3,12 @@
 #include <memory>
 #include <Eigen/Core>
 #include "../cuda_array_mapper.h"
+#include "../../src/utils/image_persister.h"
+#include "../../src/utils/path_helper.h"
 
 std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
-                                 std::vector<float> distances);
+                                 std::vector<float> distances, int imageSize,
+                                 std::vector<Eigen::Vector4i> labelsSeed);
 
 TEST(Test_Apollonius, Apollonius)
 {
@@ -36,7 +39,9 @@ TEST(Test_Apollonius, Apollonius)
   distances[9] = 1.0f;
   distances[10] = 1.0f;
 
-  auto insertionOrder = callApollonoius(image, distances);
+  std::vector<Eigen::Vector4i> labelsSeed = { Eigen::Vector4i(0, 2, 1, 1) };
+
+  auto insertionOrder = callApollonoius(image, distances, 4, labelsSeed);
 
   ASSERT_EQ(1, insertionOrder.size());
   EXPECT_EQ(0, insertionOrder[0]);

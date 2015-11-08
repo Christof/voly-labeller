@@ -6,12 +6,12 @@
 #include "../cuda_array_mapper.h"
 
 std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
-                     std::vector<float> distances)
+                                 std::vector<float> distances, int imageSize,
+                                 std::vector<Eigen::Vector4i> labelsSeed)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-  int labelCount = 1;
-  int imageSize = 4;
+  int labelCount = labelsSeed.size();
   auto imageMapper = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       imageSize, imageSize, image, channelDesc);
 
@@ -20,7 +20,9 @@ std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
   auto distancesMapper = std::make_shared<CudaArrayMapper<float>>(
       imageSize, imageSize, distances, channelDescDistances);
   thrust::device_vector<float4> seedBuffer(labelCount, make_float4(0, 0, 0, 0));
-  seedBuffer[0] = make_float4(0, 2, 1, 1);
+  for (size_t i = 0; i < labelCount; ++i)
+    seedBuffer[i] = make_float4(labelsSeed[i].x(), labelsSeed[i].y(),
+                                labelsSeed[i].z(), labelsSeed[i].w());
 
   Apollonius apollonius(distancesMapper, imageMapper, seedBuffer, labelCount);
   apollonius.run();
