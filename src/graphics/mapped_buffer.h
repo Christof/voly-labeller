@@ -9,7 +9,7 @@ namespace Graphics
 {
 
 /**
- * \brief Shader buffer mapped to a given number of elements of type \T
+ * \brief Shader buffer mapped to a given number of elements of type \b T
  */
 template <typename T> class MappedBuffer
 {

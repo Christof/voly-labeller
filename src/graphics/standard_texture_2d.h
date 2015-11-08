@@ -10,9 +10,10 @@ namespace Graphics
 class Gl;
 
 /**
- * \brief
+ * \brief Encapsulates a plain old OpenGL texture
  *
- *
+ * This classes is inteded for use with textures which are used
+ * for post processing. Otherwise the bindless textures should be used.
  */
 class StandardTexture2d
 {
