@@ -19,8 +19,8 @@ TextureMapperManager::~TextureMapperManager()
 void TextureMapperManager::initialize(
     Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo)
 {
-  occupancyTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
+  occupancyTexture = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
   occupancyTexture->initialize(gl);
 
   distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
@@ -142,7 +142,7 @@ void TextureMapperManager::initializeMappers(
 
   occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(occupancyTexture->getId(),
-                                                      width, height));
+                                                      bufferSize, bufferSize));
 
   apolloniusTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
