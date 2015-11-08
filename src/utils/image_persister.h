@@ -3,6 +3,7 @@
 #define SRC_UTILS_IMAGE_PERSISTER_H_
 
 #include <Eigen/Core>
+#include <boost/filesystem.hpp>
 #include <string>
 #include <vector>
 #include <Magick++.h>
@@ -33,6 +34,9 @@ class ImagePersister
 
   static std::vector<Eigen::Vector4f> loadRGBA32F(std::string filename)
   {
+    if (!boost::filesystem::exists(filename))
+      throw std::invalid_argument("Image '" + filename + "' doesn't exist.");
+
     Magick::Image image(filename);
     std::vector<Eigen::Vector4f> result(image.columns() * image.rows());
 
@@ -44,6 +48,9 @@ class ImagePersister
 
   static std::vector<float> loadR32F(std::string filename)
   {
+    if (!boost::filesystem::exists(filename))
+      throw std::invalid_argument("Image '" + filename + "' doesn't exist.");
+
     Magick::Image image(filename);
     std::vector<float> result(image.columns() * image.rows());
 
