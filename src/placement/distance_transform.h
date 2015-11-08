@@ -10,10 +10,7 @@
  * \brief Calculates for each pixel distance to nearest pixel with 
  * value >= 0.99f
  *
- * The input image must be of type float and the output image of
- * type float4, which is only for debugging purposes. The result
- * can be retrieved with #getResults which returns a vector
- * of the distances.
+ * The input and output image must be of type float.
  *
  * It is based on Rong, G., & Tan, T. (2006). Jump flooding in GPU with
  * applications to Voronoi diagram and distance transform. In Studies in Logical
@@ -25,6 +22,7 @@ class DistanceTransform
  public:
   DistanceTransform(std::shared_ptr<CudaArrayProvider> inputImage,
                     std::shared_ptr<CudaArrayProvider> outputImage);
+  ~DistanceTransform();
 
   void run();
 
@@ -38,8 +36,8 @@ class DistanceTransform
   int pixelCount;
   dim3 dimBlock;
   dim3 dimGrid;
-  cudaTextureObject_t inputTexture;
-  cudaSurfaceObject_t outputSurface;
+  cudaTextureObject_t inputTexture = 0;
+  cudaSurfaceObject_t outputSurface = 0;
   void prepareInputTexture();
   void prepareOutputSurface();
   void resize();

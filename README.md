@@ -52,6 +52,7 @@ make
 - ITK 4.7
 - CUDA 7.0
 - Thrust 1.8
+- Magick++ 8:6.7.7.10-6 (libmagick++-dev)
 
 ## Testing
 - GTest

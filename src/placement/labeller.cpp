@@ -1,26 +1,38 @@
 #include "./labeller.h"
 #include <Eigen/Geometry>
 #include <vector>
+#include <QLoggingCategory>
 #include "../utils/cuda_array_provider.h"
 #include "./summed_area_table.h"
+#include "./apollonius.h"
 
 namespace Placement
 {
+
+QLoggingCategory plChan("Placement.Labeller");
 
 Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
 }
 
-void
-Labeller::initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper)
+void Labeller::initialize(
+    std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+    std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
+    std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper)
 {
-  occupancySummedAreaTable =
-      std::make_shared<SummedAreaTable>(occupancyTextureMapper);
+  qCInfo(plChan) << "Initialize";
+  if (!occupancySummedAreaTable.get())
+    occupancySummedAreaTable =
+        std::make_shared<SummedAreaTable>(occupancyTextureMapper);
+
+  this->distanceTransformTextureMapper = distanceTransformTextureMapper;
+  this->apolloniusTextureMapper = apolloniusTextureMapper;
 }
 
 void Labeller::cleanup()
 {
   occupancySummedAreaTable.reset();
+  apolloniusTextureMapper.reset();
 }
 
 void Labeller::setInsertionOrder(std::vector<int> ids)
@@ -31,9 +43,19 @@ void Labeller::setInsertionOrder(std::vector<int> ids)
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {
-  std::map<int, Eigen::Vector3f> result;
+  newPositions.clear();
   if (!occupancySummedAreaTable.get())
-    return result;
+    return newPositions;
+
+  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
+      labels->getLabels(), frameData.viewProjection,
+      Eigen::Vector2i(distanceTransformTextureMapper->getWidth(),
+                      distanceTransformTextureMapper->getHeight()));
+  Apollonius apollonius(distanceTransformTextureMapper,
+                        apolloniusTextureMapper, seedBuffer,
+                        labels->count());
+  apollonius.run();
+  setInsertionOrder(apollonius.getHostIds());
 
   occupancySummedAreaTable->runKernel();
 
@@ -60,10 +82,10 @@ Labeller::update(const LabellerFrameData &frameData)
         inverseViewProjection * Eigen::Vector4f(newX, newY, anchor2D.z(), 1);
     reprojected /= reprojected.w();
 
-    result[label.id] = toVector3f(reprojected);
+    newPositions[label.id] = toVector3f(reprojected);
   }
 
-  return result;
+  return newPositions;
 }
 
 void Labeller::resize(int width, int height)
@@ -72,6 +94,11 @@ void Labeller::resize(int width, int height)
   this->height = height;
 
   costFunctionCalculator.resize(width, height);
+}
+
+std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
+{
+  return newPositions;
 }
 
 }  // namespace Placement

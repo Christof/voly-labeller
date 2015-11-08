@@ -93,10 +93,7 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
 
   result[index] = distf;
 
-  // write to texture for debugging
-  float grayTone = 16.0f * distf / width;
-  float4 color = make_float4(grayTone, grayTone, grayTone, 1.0f);
-  surf2Dwrite(color, output, x * sizeof(float4), y);
+  surf2Dwrite(distf, output, x * sizeof(float), y);
 }
 
 DistanceTransform::DistanceTransform(
@@ -105,6 +102,16 @@ DistanceTransform::DistanceTransform(
   : inputImage(inputImage), outputImage(outputImage)
 
 {
+  prepareInputTexture();
+  prepareOutputSurface();
+}
+
+DistanceTransform::~DistanceTransform()
+{
+  if (inputTexture)
+    cudaDestroyTextureObject(inputTexture);
+  if (outputSurface)
+    cudaDestroySurfaceObject(outputSurface);
 }
 
 void DistanceTransform::resize()
@@ -121,9 +128,6 @@ void DistanceTransform::run()
 {
   resize();
 
-  prepareInputTexture();
-  prepareOutputSurface();
-
   dimBlock = dim3(32, 32, 1);
   dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
                  divUp(outputImage->getHeight(), dimBlock.y), 1);
@@ -131,11 +135,6 @@ void DistanceTransform::run()
   runInitializeKernel();
   runStepsKernels();
   runFinishKernel();
-
-  cudaDestroyTextureObject(inputTexture);
-  cudaDestroySurfaceObject(outputSurface);
-  inputImage->unmap();
-  outputImage->unmap();
 }
 
 thrust::device_vector<float> &DistanceTransform::getResults()
@@ -157,6 +156,8 @@ void DistanceTransform::prepareInputTexture()
   texDesc.normalizedCoords = 0;
 
   cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
+
+  inputImage->unmap();
 }
 
 void DistanceTransform::prepareOutputSurface()
@@ -165,6 +166,8 @@ void DistanceTransform::prepareOutputSurface()
   auto resDesc = outputImage->getResourceDesc();
 
   cudaCreateSurfaceObject(&outputSurface, &resDesc);
+
+  outputImage->unmap();
 }
 
 void DistanceTransform::runInitializeKernel()
@@ -187,6 +190,9 @@ void DistanceTransform::runInitializeKernel()
 
 void DistanceTransform::runStepsKernels()
 {
+  dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
+                 divUp(outputImage->getHeight(), dimBlock.y), 1);
+
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
   distanceTransformStep<<<dimGrid, dimBlock>>>(
       computePtr, 1, outputImage->getWidth(), outputImage->getHeight());

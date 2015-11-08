@@ -19,20 +19,22 @@
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
+#include "./texture_mapper_manager.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> forcesLabeller,
-             std::shared_ptr<Placement::Labeller> placementLabeller)
+             std::shared_ptr<Placement::Labeller> placementLabeller,
+             std::shared_ptr<TextureMapperManager> textureMapperManager)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    placementLabeller(placementLabeller), frustumOptimizer(nodes)
+    placementLabeller(placementLabeller), frustumOptimizer(nodes),
+    textureMapperManager(textureMapperManager)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, camera);
 
-  fbo = std::unique_ptr<Graphics::FrameBufferObject>(
-      new Graphics::FrameBufferObject());
+  fbo = std::make_shared<Graphics::FrameBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }
 
@@ -51,6 +53,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
   positionQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
+  distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/distanceTransform.frag");
 
   fbo->initialize(gl, width, height);
   haBuffer =
@@ -61,24 +65,23 @@ void Scene::initialize()
   haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
+  distanceTransformQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
-  occupancyTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
-  occupancyTexture->initialize(gl);
-  distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
-      postProcessingTextureSize, postProcessingTextureSize, GL_RGBA32F);
-  distanceTransformTexture->initialize(gl);
+  textureMapperManager->resize(width, height);
+  textureMapperManager->initialize(gl, fbo);
+
+  placementLabeller->initialize(
+      textureMapperManager->getOccupancyTextureMapper(),
+      textureMapperManager->getDistanceTransformTextureMapper(),
+      textureMapperManager->getApolloniusTextureMapper());
 }
 
 void Scene::cleanup()
 {
   placementLabeller->cleanup();
-  colorTextureMapper.reset();
-  positionsTextureMapper.reset();
-  occupancyTextureMapper.reset();
-  distanceTransformTextureMapper.reset();
+  textureMapperManager->cleanup();
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
@@ -96,9 +99,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
       */
-  auto newPositions = placementLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-
+  auto newPositions = placementLabeller->getLastPlacementResult();
   for (auto &labelNode : nodes->getLabelNodes())
   {
     labelNode->labelPosition = newPositions[labelNode->label.id];
@@ -142,6 +143,8 @@ void Scene::render()
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
 
+  textureMapperManager->update();
+
   renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
@@ -149,55 +152,28 @@ void Scene::render()
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-  if (!colorTextureMapper.get())
-  {
-    colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
-                                                 width, height));
-    positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
-                                                width, height));
-    int size = 512;
-    distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            distanceTransformTexture->getId(), size, size));
-    occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            occupancyTexture->getId(), width, height));
-
-    placementLabeller->initialize(occupancyTextureMapper);
-  }
-
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
-  occupancyTexture->bind();
+  textureMapperManager->bindOccupancyTexture();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  DistanceTransform distanceTransform(occupancyTextureMapper,
-                                      distanceTransformTextureMapper);
-  distanceTransform.run();
-  distanceTransformTexture->bind();
+  textureMapperManager->bindDistanceTransform();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(quad, transformation.matrix());
+  renderQuad(distanceTransformQuad, transformation.matrix());
 
-  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
-      labels->getLabels(), renderData.projectionMatrix * renderData.viewMatrix,
-      Eigen::Vector2i(postProcessingTextureSize, postProcessingTextureSize));
-  Apollonius apollonius(distanceTransformTextureMapper,
-                        distanceTransformTextureMapper, seedBuffer,
-                        labels->count());
-  apollonius.run();
-  placementLabeller->setInsertionOrder(apollonius.getHostIds());
+  placementLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
+  textureMapperManager->bindApollonius();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));

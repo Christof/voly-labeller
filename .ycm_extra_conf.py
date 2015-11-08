@@ -97,6 +97,8 @@ flags = [
 '/usr/local/cuda/include/',
 '-isystem',
 '/usr/include/thrust',
+'-isystem',
+'/usr/include/ImageMagick/',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
