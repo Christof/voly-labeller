@@ -71,6 +71,16 @@ void StandardTexture2d::save(std::string filename)
   gl->glDeleteBuffers(1, &fboId);
 }
 
+int StandardTexture2d::getWidth()
+{
+  return width;
+}
+
+int StandardTexture2d::getHeight()
+{
+  return height;
+}
+
 int StandardTexture2d::getComponentsPerPixel()
 {
   switch (format)

@@ -30,6 +30,9 @@ class StandardTexture2d
 
   void save(std::string filename);
 
+  int getWidth();
+  int getHeight();
+
  private:
   unsigned int texture;
 
