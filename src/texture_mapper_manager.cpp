@@ -47,7 +47,7 @@ void TextureMapperManager::update()
   if (saveOccupancyInNextFrame)
   {
     saveOccupancyInNextFrame = false;
-    occupancyTexture->save("occupancy.tga");
+    occupancyTexture->save("occupancy.tiff");
   }
 
   distanceTransform->run();
@@ -55,13 +55,13 @@ void TextureMapperManager::update()
   if (saveDistanceTransformInNextFrame)
   {
     saveDistanceTransformInNextFrame = false;
-    distanceTransformTexture->save("distanceTransform.tga");
+    distanceTransformTexture->save("distanceTransform.tiff");
   }
 
   if (saveApolloniusInNextFrame)
   {
     saveApolloniusInNextFrame = false;
-    apolloniusTexture->save("apollonius.tga");
+    apolloniusTexture->save("apollonius.tiff");
   }
 }
 
