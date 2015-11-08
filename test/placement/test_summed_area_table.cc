@@ -24,9 +24,6 @@ TEST(Test_SummedAreaTable, SummedAreaTable)
 
   ASSERT_LE(32 * 32, result.size());
 
-  std::cout << "result: " << std::endl;
-  printVectorAsMatrix(result, 32, 32);
-
   EXPECT_EQ(1, result[0]);
   EXPECT_EQ(3, result[1]);
   EXPECT_EQ(6, result[2]);
