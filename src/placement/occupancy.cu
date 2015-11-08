@@ -2,14 +2,16 @@
 #include "../utils/cuda_helper.h"
 
 __global__ void occupancyKernel(cudaTextureObject_t positions,
-    cudaSurfaceObject_t output, int width, int height)
+                                cudaSurfaceObject_t output, int width,
+                                int height, float widthScale, float heightScale)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= width || y >= height)
     return;
 
-  float4 position = tex2D<float4>(positions, x + 0.5f, y + 0.5f);
+  float4 position =
+      tex2D<float4>(positions, x * widthScale + 0.5f, y * heightScale + 0.5f);
 
   float outputValue = position.z;
   surf2Dwrite(outputValue, output, x * sizeof(float), y);
@@ -34,12 +36,18 @@ void Occupancy::runKernel()
   if (!positions)
     createSurfaceObjects();
 
+  float outputWidth = outputProvider->getWidth();
+  float outputHeight = outputProvider->getHeight();
+
   dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(positionProvider->getWidth(), dimBlock.x),
-               divUp(positionProvider->getHeight(), dimBlock.y), 1);
+  dim3 dimGrid(divUp(outputWidth, dimBlock.x),
+               divUp(outputHeight, dimBlock.y), 1);
+
+  float widthScale = positionProvider->getWidth() / outputWidth;
+  float heightScale = positionProvider->getHeight() / outputHeight;
 
   occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
-      positionProvider->getWidth(), positionProvider->getHeight());
+      outputWidth, outputHeight, widthScale, heightScale);
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }
