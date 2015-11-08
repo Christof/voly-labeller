@@ -7,7 +7,7 @@
 #include "./texture_mapper_manager.h"
 
 /**
- * \brief
+ * \brief Provides an interface to the TextureMapperManager for the UI
  *
  *
  */

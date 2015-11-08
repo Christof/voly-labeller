@@ -12,9 +12,10 @@ class Occupancy;
 class DistanceTransform;
 
 /**
- * \brief
+ * \brief Container for all CudaTextureMapper%s and corresponding textures
  *
- *
+ * It also provides methods to save a texture to the filesystem as well
+ * as methods to bind the textures to render them for debugging purposes.
  */
 class TextureMapperManager
 {
@@ -48,7 +49,8 @@ class TextureMapperManager
   std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
-  std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;;
+  std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
+  ;
   std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
   std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
