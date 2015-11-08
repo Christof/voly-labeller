@@ -3,44 +3,7 @@
 #include "../cuda_array_mapper.h"
 #include "../../src/placement/summed_area_table.h"
 
-TEST(Test_SummedAreaTable, SATWithoutClass)
-{
-  std::vector<float> input = { 1, 2, 3, 4 };
-  thrust::host_vector<float> result = algSAT(input.data(), 2, 2);
-
-  ASSERT_LE(4, result.size());
-
-  EXPECT_EQ(1, result[0]);
-  EXPECT_EQ(3, result[1]);
-  EXPECT_EQ(4, result[2]);
-  EXPECT_EQ(10, result[3]);
-}
-
-TEST(Test_SummedAreaTable, SAT)
-{
-  std::vector<float> input = { 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8 };
-  cudaChannelFormatDesc channelDesc =
-      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto inputImageProvider =
-      std::make_shared<CudaArrayMapper<float>>(4, 4, input, channelDesc);
-
-  SummedAreaTable table(inputImageProvider);
-  table.runKernel();
-  thrust::host_vector<float> result = table.getResults();
-
-  ASSERT_LE(16, result.size());
-
-  EXPECT_EQ(1, result[0]);
-  EXPECT_EQ(3, result[1]);
-  EXPECT_EQ(6, result[2]);
-  EXPECT_EQ(10, result[3]);
-  EXPECT_EQ(6, result[4]);
-  EXPECT_EQ(14, result[5]);
-  EXPECT_EQ(24, result[6]);
-  EXPECT_EQ(36, result[7]);
-}
-
-TEST(Test_SummedAreaTable, SATLarger)
+TEST(Test_SummedAreaTable, SummedAreaTable)
 {
   std::vector<float> input(32 * 32, 0);
   for (int i = 0; i < 4; ++i)
@@ -74,54 +37,5 @@ TEST(Test_SummedAreaTable, SATLarger)
   EXPECT_EQ(14, result[33]);
   EXPECT_EQ(24, result[34]);
   EXPECT_EQ(36, result[35]);
-}
-
-TEST(Test_SummedAreaTable, SATLarger2)
-{
-  std::vector<float> input(33 * 33, 0);
-  for (int i = 0; i < 4; ++i)
-  {
-    input[i] = i + 1;
-    input[i + 33] = i + 5;
-    input[i + 66] = i + 1;
-    input[i + 99] = i + 5;
-  }
-  cudaChannelFormatDesc channelDesc =
-      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto inputImageProvider =
-      std::make_shared<CudaArrayMapper<float>>(33, 33, input, channelDesc);
-
-  for (int i = 0; i < 33; i++)
-  {
-    for (int j = 0; j < 33; ++j)
-      std::cout << input[i * 33 + j] << " ";
-
-    std::cout << std::endl;
-  }
-
-  SummedAreaTable table(inputImageProvider);
-  table.runKernel();
-  thrust::host_vector<float> result = table.getResults();
-
-  ASSERT_LE(33 * 33, result.size());
-
-  std::cout << "result: " << std::endl;
-  for (int i = 0; i < 64; i++)
-  {
-    for (int j = 0; j < 64; ++j)
-      std::cout << result[i * 64 + j] << " ";
-
-    std::cout << std::endl;
-  }
-  EXPECT_EQ(1, result[0]);
-  EXPECT_EQ(3, result[1]);
-  EXPECT_EQ(6, result[2]);
-  EXPECT_EQ(10, result[3]);
-  EXPECT_EQ(10, result[4]);
-  EXPECT_EQ(10, result[31]);
-  EXPECT_EQ(6, result[33]);
-  EXPECT_EQ(14, result[34]);
-  EXPECT_EQ(24, result[35]);
-  EXPECT_EQ(36, result[36]);
 }
 
