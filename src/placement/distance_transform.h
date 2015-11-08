@@ -12,6 +12,9 @@
  *
  * The input and output image must be of type float.
  *
+ * The result is normalized to the range [0, 1]. To get the distance in pixel
+ * the result has to be multiplied by \f$\sqrt{width^2 + height^2}\f$.
+ *
  * It is based on Rong, G., & Tan, T. (2006). Jump flooding in GPU with
  * applications to Voronoi diagram and distance transform. In Studies in Logical
  * Theory, American Philosophical Quarterly Monograph 2, 109–116.

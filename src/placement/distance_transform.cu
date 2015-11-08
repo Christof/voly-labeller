@@ -89,11 +89,11 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
   int tx = voronoival - ty * width;
 
   float sqdist = ((tx - x) * (tx - x) + (ty - y) * (ty - y));
-  float distf = sqrtf(sqdist);
+  float resultValue = sqdist / (width * width + height * height);
 
-  result[index] = distf;
+  result[index] = resultValue;
 
-  surf2Dwrite(distf, output, x * sizeof(float), y);
+  surf2Dwrite(resultValue, output, x * sizeof(float), y);
 }
 
 DistanceTransform::DistanceTransform(

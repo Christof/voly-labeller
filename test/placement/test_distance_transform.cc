@@ -45,13 +45,13 @@ TEST(Test_DistanceTransform, DistanceTransform)
   EXPECT_NEAR(0.0f, resultVector[3], 1e-4f);
 
   EXPECT_NEAR(0.0f, resultVector[4], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[5], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[6], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, resultVector[5], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, resultVector[6], 1e-4f);
   EXPECT_NEAR(0.0f, resultVector[7], 1e-4f);
 
   EXPECT_NEAR(0.0f, resultVector[8], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[9], 1e-4f);
-  EXPECT_NEAR(1.0f, resultVector[10], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, resultVector[9], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, resultVector[10], 1e-4f);
   EXPECT_NEAR(0.0f, resultVector[11], 1e-4f);
 
   EXPECT_NEAR(0.0f, resultVector[12], 1e-4f);
@@ -65,13 +65,13 @@ TEST(Test_DistanceTransform, DistanceTransform)
   EXPECT_NEAR(0.0f, image[3], 1e-4f);
 
   EXPECT_NEAR(0.0f, image[4], 1e-4f);
-  EXPECT_NEAR(1.0f, image[5], 1e-4f);
-  EXPECT_NEAR(1.0f, image[6], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, image[5], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, image[6], 1e-4f);
   EXPECT_NEAR(0.0f, image[7], 1e-4f);
 
   EXPECT_NEAR(0.0f, image[8], 1e-4f);
-  EXPECT_NEAR(1.0f, image[9], 1e-4f);
-  EXPECT_NEAR(1.0f, image[10], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, image[9], 1e-4f);
+  EXPECT_NEAR(1.0f / 32, image[10], 1e-4f);
   EXPECT_NEAR(0.0f, image[11], 1e-4f);
 
   EXPECT_NEAR(0.0f, image[12], 1e-4f);
@@ -79,3 +79,4 @@ TEST(Test_DistanceTransform, DistanceTransform)
   EXPECT_NEAR(0.0f, image[14], 1e-4f);
   EXPECT_NEAR(0.0f, image[15], 1e-4f);
 }
+
