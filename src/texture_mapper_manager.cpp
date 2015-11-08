@@ -138,15 +138,19 @@ void TextureMapperManager::initializeMappers(
 
   distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
-          distanceTransformTexture->getId(), bufferSize, bufferSize));
+          distanceTransformTexture->getId(),
+          distanceTransformTexture->getWidth(),
+          distanceTransformTexture->getHeight()));
 
   occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteDiscardMapper(occupancyTexture->getId(),
-                                                      bufferSize, bufferSize));
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          occupancyTexture->getId(), occupancyTexture->getWidth(),
+          occupancyTexture->getHeight()));
 
   apolloniusTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
-          apolloniusTexture->getId(), bufferSize, bufferSize));
+          apolloniusTexture->getId(), apolloniusTexture->getWidth(),
+          apolloniusTexture->getHeight()));
 
   occupancy = std::make_unique<Occupancy>(positionsTextureMapper,
                                           occupancyTextureMapper);
