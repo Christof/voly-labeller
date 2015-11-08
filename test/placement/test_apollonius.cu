@@ -7,7 +7,7 @@
 
 std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
                                  std::vector<float> distances, int imageSize,
-                                 std::vector<Eigen::Vector4i> labelsSeed)
+                                 std::vector<Eigen::Vector4f> labelsSeed)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
@@ -19,6 +19,7 @@ std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   auto distancesMapper = std::make_shared<CudaArrayMapper<float>>(
       imageSize, imageSize, distances, channelDescDistances);
+
   thrust::device_vector<float4> seedBuffer(labelCount, make_float4(0, 0, 0, 0));
   for (size_t i = 0; i < labelCount; ++i)
     seedBuffer[i] = make_float4(labelsSeed[i].x(), labelsSeed[i].y(),
