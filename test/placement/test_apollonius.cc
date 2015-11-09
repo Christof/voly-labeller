@@ -9,21 +9,31 @@
 #include "../../src/placement/apollonius.h"
 #include "../../src/utils/cuda_helper.h"
 
+std::shared_ptr<CudaArrayMapper<Eigen::Vector4f>>
+createCudaArrayMapper(int width, int height, std::vector<Eigen::Vector4f> data)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  return std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(width, height, data,
+                                                            channelDesc);
+}
+
+std::shared_ptr<CudaArrayMapper<float>>
+createCudaArrayMapper(int width, int height, std::vector<float> data)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  return std::make_shared<CudaArrayMapper<float>>(width, height, data,
+                                                  channelDesc);
+}
+
 std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
                                  std::vector<float> distances, int imageSize,
                                  std::vector<Eigen::Vector4f> labelsSeed)
 {
-  cudaChannelFormatDesc channelDesc =
-      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
   int labelCount = labelsSeed.size();
-  auto imageMapper = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
-      imageSize, imageSize, image, channelDesc);
-
-  cudaChannelFormatDesc channelDescDistances =
-      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto distancesMapper = std::make_shared<CudaArrayMapper<float>>(
-      imageSize, imageSize, distances, channelDescDistances);
-
+  auto imageMapper = createCudaArrayMapper(imageSize, imageSize, image);
+  auto distancesMapper = createCudaArrayMapper(imageSize, imageSize, distances);
 
   Apollonius apollonius(distancesMapper, imageMapper, labelsSeed, labelCount);
   apollonius.run();
