@@ -159,8 +159,16 @@ TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
     Eigen::Vector4f(3, 282.681, 267.453, 1),
     Eigen::Vector4f(4, 210.064, 311.382, 1),
   };
-  auto insertionOrder =
-      callApollonoius(outputImage, distances, imageSize, labelsSeed);
+
+  auto imageMapper = createCudaArrayMapper(imageSize, imageSize, outputImage);
+  auto distancesMapper = createCudaArrayMapper(imageSize, imageSize, distances);
+
+  Apollonius apollonius(distancesMapper, imageMapper, labelsSeed, labelsSeed.size());
+  apollonius.run();
+
+  outputImage = imageMapper->copyDataFromGpu();
+
+  imageMapper->unmap();
 
   auto expected = ImagePersister::loadRGBA32F(absolutePathOfProjectRelativePath(
       std::string("assets/tests/apolloniusPeeling.tiff")));
