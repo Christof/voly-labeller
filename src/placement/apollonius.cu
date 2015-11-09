@@ -205,11 +205,15 @@ __global__ void copyBorderIndex(int imageSize, int *source,
 
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
                        std::shared_ptr<CudaArrayProvider> outputImage,
-                       thrust::device_vector<float4> &seedBuffer,
+                       std::vector<Eigen::Vector4f> labelPositions,
                        int labelCount)
   : distancesImage(distancesImage), outputImage(outputImage),
-    seedBuffer(seedBuffer), labelCount(labelCount)
+    labelCount(labelCount), seedBuffer(labelCount)
 {
+  for (size_t i = 0; i < seedBuffer.size(); ++i)
+    seedBuffer[i] = make_float4(labelPositions[i].x(), labelPositions[i].y(),
+                                labelPositions[i].z(), labelPositions[i].w());
+
   imageSize = outputImage->getWidth();
   pixelCount = imageSize * imageSize;
 

@@ -47,13 +47,22 @@ Labeller::update(const LabellerFrameData &frameData)
   if (!occupancySummedAreaTable.get())
     return newPositions;
 
-  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
-      labels->getLabels(), frameData.viewProjection,
-      Eigen::Vector2i(distanceTransformTextureMapper->getWidth(),
-                      distanceTransformTextureMapper->getHeight()));
-  Apollonius apollonius(distanceTransformTextureMapper,
-                        apolloniusTextureMapper, seedBuffer,
-                        labels->count());
+  Eigen::Vector2i size(distanceTransformTextureMapper->getWidth(),
+                       distanceTransformTextureMapper->getHeight());
+  std::vector<Eigen::Vector4f> labelsSeed;
+  for (auto &label : labels->getLabels())
+  {
+    Eigen::Vector4f pos =
+        frameData.viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
+                                                   label.anchorPosition.y(),
+                                                   label.anchorPosition.z(), 1);
+    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
+    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
+    labelsSeed.push_back(Eigen::Vector4f(label.id, x, y, 1));
+  }
+
+  Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
+                        labelsSeed, labels->count());
   apollonius.run();
   setInsertionOrder(apollonius.getHostIds());
 

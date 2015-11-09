@@ -20,12 +20,8 @@ std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
   auto distancesMapper = std::make_shared<CudaArrayMapper<float>>(
       imageSize, imageSize, distances, channelDescDistances);
 
-  thrust::device_vector<float4> seedBuffer(labelCount, make_float4(0, 0, 0, 0));
-  for (size_t i = 0; i < labelCount; ++i)
-    seedBuffer[i] = make_float4(labelsSeed[i].x(), labelsSeed[i].y(),
-                                labelsSeed[i].z(), labelsSeed[i].w());
 
-  Apollonius apollonius(distancesMapper, imageMapper, seedBuffer, labelCount);
+  Apollonius apollonius(distancesMapper, imageMapper, labelsSeed, labelCount);
   apollonius.run();
 
   image = imageMapper->copyDataFromGpu();
