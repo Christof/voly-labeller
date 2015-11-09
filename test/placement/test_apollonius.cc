@@ -145,3 +145,40 @@ TEST(Test_Apollonius, ApolloniusWithRealData)
   EXPECT_LE(diffCount, 10);
 }
 
+TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
+{
+  auto distances = ImagePersister::loadR32F(absolutePathOfProjectRelativePath(
+      std::string("assets/tests/distanceTransformPeeling.tiff")));
+  int imageSize = sqrt(distances.size());
+
+  auto outputImage = std::vector<Eigen::Vector4f>(distances.size());
+
+  std::vector<Eigen::Vector4f> labelsSeed = {
+    Eigen::Vector4f(1, 278.221, 352.606, 1),
+    Eigen::Vector4f(2, 321.543, 223.339, 1),
+    Eigen::Vector4f(3, 282.681, 267.453, 1),
+    Eigen::Vector4f(4, 210.064, 311.382, 1),
+  };
+  auto insertionOrder =
+      callApollonoius(outputImage, distances, imageSize, labelsSeed);
+
+  auto expected = ImagePersister::loadRGBA32F(absolutePathOfProjectRelativePath(
+      std::string("assets/tests/apolloniusPeeling.tiff")));
+
+  ImagePersister::saveRGBA32F(outputImage.data(), imageSize, imageSize,
+                              "ApolloniusWithRealDataOutputPeeling.tiff");
+
+  int diffCount = 0;
+  for (unsigned int i = 0; i < outputImage.size(); ++i)
+  {
+    if ((expected[i] - outputImage[i]).norm() > 1e-4f)
+    {
+      std::cout << "expected for index " << i << ": " << expected[i]
+                << " but was: " << outputImage[i] << std::endl;
+      diffCount++;
+    }
+  }
+
+  EXPECT_LE(diffCount, 10);
+}
+
