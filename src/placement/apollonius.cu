@@ -104,8 +104,7 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     return;
 
   int index = y * imageSize + x;
-  float4 color;
-  int labelId = 100;
+  int labelId = -1;
   int labelIndex = nearestIndex[index];
 
   for (int i = 0; i < labelCount; i++)
@@ -117,6 +116,7 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     }
   }
 
+  float4 color;
   switch (labelId)
   {
   case 0:
@@ -325,10 +325,11 @@ void Apollonius::extractUniqueBoundaryIndices()
   dim3 dimBlock(32, 1, 1);
   dim3 dimGrid(divUp(imageSize, dimBlock.x), 1, 1);
 
-  int *voronoi_ptr = thrust::raw_pointer_cast(computeVector.data());
-  int *index_ptr = thrust::raw_pointer_cast(orderedIndices.data());
+  int *computePtr = thrust::raw_pointer_cast(computeVector.data());
+  int *orderedIndicesPtr = thrust::raw_pointer_cast(orderedIndices.data());
 
-  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, voronoi_ptr, index_ptr);
+  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, computePtr,
+      orderedIndicesPtr);
 
   HANDLE_ERROR(cudaThreadSynchronize());
   // thrust::host_vector<int> allindices = orderedIndices;
