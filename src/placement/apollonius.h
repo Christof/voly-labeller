@@ -40,11 +40,6 @@ class Apollonius
   thrust::device_vector<int> &getIds();
   std::vector<int> getHostIds();
 
-  static thrust::device_vector<float4>
-  createSeedBufferFromLabels(std::vector<Label> labels,
-                             Eigen::Matrix4f viewProjection,
-                             Eigen::Vector2i size);
-
  private:
   std::shared_ptr<CudaArrayProvider> outputImage;
   std::shared_ptr<CudaArrayProvider> distancesImage;

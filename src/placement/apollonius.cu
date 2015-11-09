@@ -313,26 +313,6 @@ void Apollonius::runGatherKernel()
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
-thrust::device_vector<float4>
-Apollonius::createSeedBufferFromLabels(std::vector<Label> labels,
-                                       Eigen::Matrix4f viewProjection,
-                                       Eigen::Vector2i size)
-{
-  thrust::host_vector<float4> result;
-  for (auto &label : labels)
-  {
-    Eigen::Vector4f pos =
-        viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
-                                         label.anchorPosition.y(),
-                                         label.anchorPosition.z(), 1);
-    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
-    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
-    result.push_back(make_float4(label.id, x, y, 1));
-  }
-
-  return result;
-}
-
 void Apollonius::extractUniqueBoundaryIndices()
 {
   const uint computesize = 4 * imageSize;
