@@ -170,34 +170,14 @@ TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
   ImagePersister::saveRGBA32F(outputImage.data(), imageSize, imageSize,
                               "ApolloniusWithRealDataOutputPeeling.tiff");
 
-  apollonius.calculateOrdering();
-
-  outputImage = imageMapper->copyDataFromGpu();
+  auto order = apollonius.calculateOrdering();
 
   imageMapper->unmap();
 
-  auto expected = ImagePersister::loadRGBA32F(absolutePathOfProjectRelativePath(
-      std::string("assets/tests/apolloniusPeeling.tiff")));
-
-  std::cout << "insertion order" << std::endl;
-  for(auto labelId : apollonius.insertionOrder)
-  {
-    std::cout << labelId << ", ";
-  }
-
-  /*
-  int diffCount = 0;
-  for (unsigned int i = 0; i < outputImage.size(); ++i)
-  {
-    if ((expected[i] - outputImage[i]).norm() > 1e-4f)
-    {
-      std::cout << "expected for index " << i << ": " << expected[i]
-                << " but was: " << outputImage[i] << std::endl;
-      diffCount++;
-    }
-  }
-
-  EXPECT_LE(diffCount, 10);
-  */
+  ASSERT_EQ(4, order.size());
+  EXPECT_EQ(3, order[0]);
+  EXPECT_EQ(1, order[1]);
+  EXPECT_EQ(2, order[2]);
+  EXPECT_EQ(4, order[3]);
 }
 
