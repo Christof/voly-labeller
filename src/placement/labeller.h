@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <memory>
 #include <vector>
+#include <map>
 #include "../labelling/labels.h"
 #include "../labelling/labeller_frame_data.h"
 #include "./cost_function_calculator.h"

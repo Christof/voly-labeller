@@ -16,6 +16,7 @@ class CostFunctionCalculator
   CostFunctionCalculator() = default;
 
   void resize(int width, int height);
+  void setTextureSize(int width, int height);
 
   void calculateCosts(const thrust::device_vector<float> &distances);
   std::tuple<float, float> calculateForLabel(
@@ -25,6 +26,9 @@ class CostFunctionCalculator
  private:
   int width;
   int height;
+
+  int textureWidth;
+  int textureHeight;
 };
 
 #endif  // SRC_PLACEMENT_COST_FUNCTION_CALCULATOR_H_

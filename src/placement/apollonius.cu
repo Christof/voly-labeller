@@ -30,6 +30,7 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
     {
       outIndex = x + y * imageSize;
     }
+
     idPtr[i] = seedValueInt.x;
     indicesPtr[i] = seedValueInt.y + seedValueInt.z * imageSize;
   }
@@ -104,8 +105,7 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     return;
 
   int index = y * imageSize + x;
-  float4 color;
-  int labelId = 100;
+  int labelId = -1;
   int labelIndex = nearestIndex[index];
 
   for (int i = 0; i < labelCount; i++)
@@ -117,6 +117,7 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     }
   }
 
+  float4 color;
   switch (labelId)
   {
   case 0:
@@ -149,68 +150,49 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
-__global__ void copyBorderIndex(int imageSize, int *source,
-                                         int *destination)
+__global__ void copyBorderIndex(int imageSize, int *source, int *destination)
 {
   const int index = blockIdx.x * blockDim.x + threadIdx.x;
-  const int maxindex = imageSize * imageSize - 1;
+  const int maxIndex = imageSize * imageSize - 1;
+
   // FIXME: corner pixels are duplicated
-  if (index < imageSize)
-  {
-    // move right
-    destination[index] = source[index];
-    // move up
-    destination[imageSize + index] =
-        source[(imageSize - 1) + index * imageSize];
-    // move left
-    destination[imageSize * 2 + index] = source[maxindex - index];
-    // move down.
-    destination[imageSize * 3 + index] =
-        source[maxindex - imageSize + 1 - index * imageSize];
+  if (index >= imageSize)
+    return;
 
-    /*const int yp1 = index / imageSize;
-    const int xp1 = index - yp1*imageSize;
-    const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
-    const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
-    const int yp3 = (maxindex - index) / imageSize;
-    const int xp3 = (maxindex - index) - yp3*imageSize;
-    const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
-    const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
-    yp4*imageSize;
-    printf("%d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2, yp2, xp3,
-    yp3, xp4, yp4);*/
+  // upper border from left to right
+  destination[index] = source[index];
 
-    //__syncthreads();
-    /*if ((destination[index] == 0) || (destination[imageSize + index ] == 0) ||
-    (destination[imageSize*2 + index] == 0) || (destination[imageSize*3 + index]
-    == 0))
-    {
-      printf("buffer is 0: %d: %d %d %d %d \n", index, destination[index],
-    destination[imageSize + index], destination[imageSize*2 + index],
-    destination[imageSize*3 + index] );
-      const int yp1 = index / imageSize;
-      const int xp1 = index - yp1*imageSize;
-      const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
-      const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
-      const int yp3 = (maxindex - index) / imageSize;
-      const int xp3 = (maxindex - index) - yp3*imageSize;
-      const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
-      const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
-    yp4*imageSize;
-      printf("values: %d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2,
-    yp2, xp3, yp3, xp4, yp4);
-    }*/
-  }
+  // right border from top to bottom
+  destination[imageSize + index] =
+      source[(imageSize - 1) + index * imageSize];
+
+  // bottom border from right to left
+  destination[imageSize * 2 + index] = source[maxIndex - index];
+
+  // left border from bottom to top
+  destination[imageSize * 3 + index] =
+      source[maxIndex - imageSize + 1 - index * imageSize];
 }
 
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
                        std::shared_ptr<CudaArrayProvider> outputImage,
-                       thrust::device_vector<float4> &seedBuffer,
+                       std::vector<Eigen::Vector4f> labelPositions,
                        int labelCount)
   : distancesImage(distancesImage), outputImage(outputImage),
-    seedBuffer(seedBuffer), labelCount(labelCount)
+    labelCount(labelCount), seedBuffer(labelCount)
 {
   imageSize = outputImage->getWidth();
+
+  for (size_t i = 0; i < seedBuffer.size(); ++i)
+  {
+    auto labelPosition = labelPositions[i];
+    seedBuffer[i] = make_float4(labelPosition.x(), labelPosition.y(),
+                                labelPosition.z(), labelPosition.w());
+    int index = static_cast<int>(labelPosition.y()) +
+                static_cast<int>(labelPosition.z()) * imageSize;
+    pixelIndexToLabelId[index] = labelPosition.x();
+  }
+
   pixelCount = imageSize * imageSize;
 
   distancesImage->map();
@@ -251,11 +233,23 @@ thrust::device_vector<int> &Apollonius::getIds()
   return seedIds;
 }
 
-std::vector<int> Apollonius::getHostIds()
+std::vector<int> Apollonius::calculateOrdering()
 {
-  thrust::host_vector<int> host = seedIds;
+  extractUniqueBoundaryIndices();
+  updateLabelSeeds();
 
-  return std::vector<int>(host.begin(), host.end());
+  size_t iterationCount = 0;
+  size_t labelCount = pixelIndexToLabelId.size();
+  while (extractedIndices.size() < labelCount && iterationCount < labelCount)
+  {
+    run();
+    extractUniqueBoundaryIndices();
+    updateLabelSeeds();
+
+    ++iterationCount;
+  }
+
+  return std::vector<int>(insertionOrder.begin(), insertionOrder.end());
 }
 
 void Apollonius::resize()
@@ -309,69 +303,62 @@ void Apollonius::runGatherKernel()
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
-thrust::device_vector<float4>
-Apollonius::createSeedBufferFromLabels(std::vector<Label> labels,
-                                       Eigen::Matrix4f viewProjection,
-                                       Eigen::Vector2i size)
-{
-  thrust::host_vector<float4> result;
-  for (auto &label : labels)
-  {
-    Eigen::Vector4f pos =
-        viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
-                                         label.anchorPosition.y(),
-                                         label.anchorPosition.z(), 1);
-    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
-    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
-    result.push_back(make_float4(label.id, x, y, 1));
-  }
-
-  return result;
-}
-
 void Apollonius::extractUniqueBoundaryIndices()
 {
-  const uint computesize = 4 * imageSize;
+  const unsigned int borderSize = 4 * imageSize;
 
-  if (orderedIndices.size() < computesize)
+  if (orderedIndices.size() < borderSize)
   {
-    orderedIndices.resize(4 * computesize);
+    orderedIndices.resize(borderSize);
   }
 
   dim3 dimBlock(32, 1, 1);
   dim3 dimGrid(divUp(imageSize, dimBlock.x), 1, 1);
 
-  int *voronoi_ptr = thrust::raw_pointer_cast(computeVector.data());
-  int *index_ptr = thrust::raw_pointer_cast(orderedIndices.data());
+  int *computePtr = thrust::raw_pointer_cast(computeVector.data());
+  int *orderedIndicesPtr = thrust::raw_pointer_cast(orderedIndices.data());
 
-  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, voronoi_ptr, index_ptr);
+  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, computePtr,
+      orderedIndicesPtr);
 
   HANDLE_ERROR(cudaThreadSynchronize());
-  // thrust::host_vector<int> allindices = orderedIndices;
-  // std::cout << "before unique: " << allindices.size() << std::endl;
-  /*for (int i=0; i< allindices.size(); i++)
-  {
-    std::cout << allindices[i] << " ";
-  }
-  std::cout << std::endl;*/
 
-  // std::cerr<< "before unique";
   thrust::device_vector<int>::iterator it_found =
       thrust::unique(orderedIndices.begin(), orderedIndices.end());
-  thrust::host_vector<int> uniqueindices(orderedIndices.begin(), it_found);
+  thrust::host_vector<int> uniqueIndices(orderedIndices.begin(), it_found);
 
-  // std::cout << "after unique:" << uniqueindices.size()  << " : " <<
-  // std::endl;
-  for (uint i = 0; i < uniqueindices.size(); i++)
+  for (unsigned int i = 0; i < uniqueIndices.size(); i++)
   {
-    // extractedIndices.insert(uniqueindices.begin(), uniqueindices.end());
-    const int insindex = uniqueindices[i];
-    if (insindex > 0)
+    const int uniqueIndex = uniqueIndices[i];
+    if (uniqueIndex > 0)
     {
-      extractedIndices.insert(insindex);
+      if (extractedIndices.insert(uniqueIndex).second)
+      {
+        insertionOrder.push_front(pixelIndexToLabelId[uniqueIndex]);
+      }
     }
   }
-  // std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
-  // std::cout << std::endl;
+}
+
+void Apollonius::updateLabelSeeds()
+{
+  thrust::host_vector<float4> labelsSeed = seedBuffer;
+  for (size_t index = 0; index < labelsSeed.size(); ++index)
+  {
+    float4 seed = labelsSeed[index];
+    const uint cindex =
+        static_cast<int>(seed.y) + static_cast<int>(seed.z) * imageSize;
+
+    if (extractedIndices.find(cindex) != extractedIndices.end())
+    {
+      if (seed.x > 0)
+      {
+        seed.x = -seed.x;
+        labelsSeed[index] = seed;
+      }
+    }
+  }
+
+  seedBuffer = labelsSeed;
 }
 

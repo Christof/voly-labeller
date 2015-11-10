@@ -1,7 +1,8 @@
 #include "./labeller.h"
 #include <Eigen/Geometry>
-#include <vector>
 #include <QLoggingCategory>
+#include <vector>
+#include <map>
 #include "../utils/cuda_array_provider.h"
 #include "./summed_area_table.h"
 #include "./apollonius.h"
@@ -27,6 +28,9 @@ void Labeller::initialize(
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
+
+  costFunctionCalculator.setTextureSize(occupancyTextureMapper->getWidth(),
+                                        occupancyTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()
@@ -47,15 +51,24 @@ Labeller::update(const LabellerFrameData &frameData)
   if (!occupancySummedAreaTable.get())
     return newPositions;
 
-  auto seedBuffer = Apollonius::createSeedBufferFromLabels(
-      labels->getLabels(), frameData.viewProjection,
-      Eigen::Vector2i(distanceTransformTextureMapper->getWidth(),
-                      distanceTransformTextureMapper->getHeight()));
-  Apollonius apollonius(distanceTransformTextureMapper,
-                        apolloniusTextureMapper, seedBuffer,
-                        labels->count());
+  Eigen::Vector2i size(distanceTransformTextureMapper->getWidth(),
+                       distanceTransformTextureMapper->getHeight());
+  std::vector<Eigen::Vector4f> labelsSeed;
+  for (auto &label : labels->getLabels())
+  {
+    Eigen::Vector4f pos =
+        frameData.viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
+                                                   label.anchorPosition.y(),
+                                                   label.anchorPosition.z(), 1);
+    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
+    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
+    labelsSeed.push_back(Eigen::Vector4f(label.id, x, y, 1));
+  }
+
+  Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
+                        labelsSeed, labels->count());
   apollonius.run();
-  setInsertionOrder(apollonius.getHostIds());
+  setInsertionOrder(apollonius.calculateOrdering());
 
   occupancySummedAreaTable->runKernel();
 
@@ -68,6 +81,8 @@ Labeller::update(const LabellerFrameData &frameData)
     auto anchor2D = frameData.project(label.anchorPosition);
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
+
+    std::cout << "x " << int(x) << " y " << int(y) << std::endl;
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y,

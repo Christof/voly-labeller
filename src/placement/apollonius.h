@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include <map>
+#include <deque>
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
@@ -31,29 +33,24 @@ class Apollonius
  public:
   Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
              std::shared_ptr<CudaArrayProvider> outputImage,
-             thrust::device_vector<float4> &seedBuffer, int labelCount);
+             std::vector<Eigen::Vector4f> labelPositions, int labelCount);
 
   void run();
 
-  void extractUniqueBoundaryIndices();
+  std::vector<int> calculateOrdering();
 
   thrust::device_vector<int> &getIds();
-  std::vector<int> getHostIds();
 
-  static thrust::device_vector<float4>
-  createSeedBufferFromLabels(std::vector<Label> labels,
-                             Eigen::Matrix4f viewProjection,
-                             Eigen::Vector2i size);
+  std::deque<int> insertionOrder;
 
  private:
   std::shared_ptr<CudaArrayProvider> outputImage;
   std::shared_ptr<CudaArrayProvider> distancesImage;
-  thrust::device_vector<float4> &seedBuffer;
+  thrust::device_vector<float4> seedBuffer;
   thrust::device_vector<int> computeVector;
   thrust::device_vector<int> seedIds;
   thrust::device_vector<int> seedIndices;
   thrust::device_vector<int> orderedIndices;
-  std::set<int> extractedIndices;
   int labelCount;
 
   dim3 dimBlock;
@@ -61,6 +58,13 @@ class Apollonius
 
   int imageSize;
   int pixelCount;
+
+  std::set<int> extractedIndices;
+  // <pixel index, label index>
+  std::map<int, int> pixelIndexToLabelId;
+
+  void extractUniqueBoundaryIndices();
+  void updateLabelSeeds();
 
   cudaSurfaceObject_t outputSurface;
   cudaTextureObject_t distancesTexture;

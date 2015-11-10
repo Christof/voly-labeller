@@ -50,7 +50,7 @@ class TextureMapperManager
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
   std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
-  ;
+
   std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
   std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
