@@ -30,6 +30,7 @@ __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
     {
       outIndex = x + y * imageSize;
     }
+
     idPtr[i] = seedValueInt.x;
     indicesPtr[i] = seedValueInt.y + seedValueInt.z * imageSize;
   }
@@ -149,58 +150,61 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 
-__global__ void copyBorderIndex(int imageSize, int *source,
-                                         int *destination)
+__global__ void copyBorderIndex(int imageSize, int *source, int *destination)
 {
   const int index = blockIdx.x * blockDim.x + threadIdx.x;
-  const int maxindex = imageSize * imageSize - 1;
-  // FIXME: corner pixels are duplicated
-  if (index < imageSize)
-  {
-    // move right
-    destination[index] = source[index];
-    // move up
-    destination[imageSize + index] =
-        source[(imageSize - 1) + index * imageSize];
-    // move left
-    destination[imageSize * 2 + index] = source[maxindex - index];
-    // move down.
-    destination[imageSize * 3 + index] =
-        source[maxindex - imageSize + 1 - index * imageSize];
+  const int maxIndex = imageSize * imageSize - 1;
 
-    /*const int yp1 = index / imageSize;
+  // FIXME: corner pixels are duplicated
+  if (index >= imageSize)
+    return;
+
+  // upper border from left to right
+  destination[index] = source[index];
+
+  // right border from top to bottom
+  destination[imageSize + index] =
+      source[(imageSize - 1) + index * imageSize];
+
+  // bottom border from right to left
+  destination[imageSize * 2 + index] = source[maxIndex - index];
+
+  // left border from bottom to top
+  destination[imageSize * 3 + index] =
+      source[maxIndex - imageSize + 1 - index * imageSize];
+
+  /*const int yp1 = index / imageSize;
+  const int xp1 = index - yp1*imageSize;
+  const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
+  const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
+  const int yp3 = (maxIndex - index) / imageSize;
+  const int xp3 = (maxIndex - index) - yp3*imageSize;
+  const int yp4 = (maxIndex - imageSize + 1 - index*imageSize) / imageSize;
+  const int xp4 = (maxIndex - imageSize + 1 - index*imageSize) -
+  yp4*imageSize;
+  printf("%d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2, yp2, xp3,
+  yp3, xp4, yp4);*/
+
+  //__syncthreads();
+  /*if ((destination[index] == 0) || (destination[imageSize + index ] == 0) ||
+  (destination[imageSize*2 + index] == 0) || (destination[imageSize*3 + index]
+  == 0))
+  {
+    printf("buffer is 0: %d: %d %d %d %d \n", index, destination[index],
+  destination[imageSize + index], destination[imageSize*2 + index],
+  destination[imageSize*3 + index] );
+    const int yp1 = index / imageSize;
     const int xp1 = index - yp1*imageSize;
     const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
     const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
-    const int yp3 = (maxindex - index) / imageSize;
-    const int xp3 = (maxindex - index) - yp3*imageSize;
-    const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
-    const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
-    yp4*imageSize;
-    printf("%d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2, yp2, xp3,
-    yp3, xp4, yp4);*/
-
-    //__syncthreads();
-    /*if ((destination[index] == 0) || (destination[imageSize + index ] == 0) ||
-    (destination[imageSize*2 + index] == 0) || (destination[imageSize*3 + index]
-    == 0))
-    {
-      printf("buffer is 0: %d: %d %d %d %d \n", index, destination[index],
-    destination[imageSize + index], destination[imageSize*2 + index],
-    destination[imageSize*3 + index] );
-      const int yp1 = index / imageSize;
-      const int xp1 = index - yp1*imageSize;
-      const int yp2 = ((imageSize-1) + index*imageSize) / imageSize;
-      const int xp2 = ((imageSize-1) + index*imageSize) - yp2*imageSize;
-      const int yp3 = (maxindex - index) / imageSize;
-      const int xp3 = (maxindex - index) - yp3*imageSize;
-      const int yp4 = (maxindex - imageSize + 1 - index*imageSize) / imageSize;
-      const int xp4 = (maxindex - imageSize + 1 - index*imageSize) -
-    yp4*imageSize;
-      printf("values: %d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2,
-    yp2, xp3, yp3, xp4, yp4);
-    }*/
-  }
+    const int yp3 = (maxIndex - index) / imageSize;
+    const int xp3 = (maxIndex - index) - yp3*imageSize;
+    const int yp4 = (maxIndex - imageSize + 1 - index*imageSize) / imageSize;
+    const int xp4 = (maxIndex - imageSize + 1 - index*imageSize) -
+  yp4*imageSize;
+    printf("values: %d: %d %d, %d %d, %d %d, %d %d\n", index, xp1, yp1, xp2,
+  yp2, xp3, yp3, xp4, yp4);
+  }*/
 }
 
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
