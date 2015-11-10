@@ -233,11 +233,23 @@ thrust::device_vector<int> &Apollonius::getIds()
   return seedIds;
 }
 
-std::vector<int> Apollonius::getHostIds()
+std::vector<int> Apollonius::calculateOrdering()
 {
-  thrust::host_vector<int> host = seedIds;
+  extractUniqueBoundaryIndices();
+  updateLabelSeeds();
 
-  return std::vector<int>(host.begin(), host.end());
+  size_t iterationCount = 0;
+  size_t labelCount = pixelIndexToLabelId.size();
+  while (extractedIndices.size() < labelCount && iterationCount < labelCount)
+  {
+    run();
+    extractUniqueBoundaryIndices();
+    updateLabelSeeds();
+
+    ++iterationCount;
+  }
+
+  return std::vector<int>(insertionOrder.begin(), insertionOrder.end());
 }
 
 void Apollonius::resize()
@@ -293,11 +305,11 @@ void Apollonius::runGatherKernel()
 
 void Apollonius::extractUniqueBoundaryIndices()
 {
-  const uint computesize = 4 * imageSize;
+  const unsigned int borderSize = 4 * imageSize;
 
-  if (orderedIndices.size() < computesize)
+  if (orderedIndices.size() < borderSize)
   {
-    orderedIndices.resize(4 * computesize);
+    orderedIndices.resize(borderSize);
   }
 
   dim3 dimBlock(32, 1, 1);
@@ -326,27 +338,9 @@ void Apollonius::extractUniqueBoundaryIndices()
       }
     }
   }
-  std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
 }
 
-void Apollonius::calculateOrdering()
-{
-  extractUniqueBoundaryIndices();
-  updateInputCuda();
-
-  size_t iterationCount = 0;
-  size_t labelCount = pixelIndexToLabelId.size();
-  while (extractedIndices.size() < labelCount && iterationCount < labelCount)
-  {
-    run();
-    extractUniqueBoundaryIndices();
-    updateInputCuda();
-
-    ++iterationCount;
-  }
-}
-
-void Apollonius::updateInputCuda()
+void Apollonius::updateLabelSeeds()
 {
   thrust::host_vector<float4> labelsSeed = seedBuffer;
   for (size_t index = 0; index < labelsSeed.size(); ++index)

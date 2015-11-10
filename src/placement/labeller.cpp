@@ -64,7 +64,7 @@ Labeller::update(const LabellerFrameData &frameData)
   Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
                         labelsSeed, labels->count());
   apollonius.run();
-  setInsertionOrder(apollonius.getHostIds());
+  setInsertionOrder(apollonius.calculateOrdering());
 
   occupancySummedAreaTable->runKernel();
 

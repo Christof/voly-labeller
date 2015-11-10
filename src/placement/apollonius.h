@@ -37,10 +37,9 @@ class Apollonius
 
   void run();
 
-  void calculateOrdering();
+  std::vector<int> calculateOrdering();
 
   thrust::device_vector<int> &getIds();
-  std::vector<int> getHostIds();
 
   std::deque<int> insertionOrder;
 
@@ -65,7 +64,7 @@ class Apollonius
   std::map<int, int> pixelIndexToLabelId;
 
   void extractUniqueBoundaryIndices();
-  void updateInputCuda();
+  void updateLabelSeeds();
 
   cudaSurfaceObject_t outputSurface;
   cudaTextureObject_t distancesTexture;
