@@ -374,6 +374,19 @@ void Apollonius::extractUniqueBoundaryIndices()
 
 void Apollonius::calculateOrdering()
 {
+  extractUniqueBoundaryIndices();
+  updateInputCuda();
+
+  size_t iterationCount = 0;
+  size_t labelCount = pixelIndexToLabelId.size();
+  while (extractedIndices.size() < labelCount && iterationCount < labelCount)
+  {
+    run();
+    extractUniqueBoundaryIndices();
+    updateInputCuda();
+
+    ++iterationCount;
+  }
 }
 
 void Apollonius::updateInputCuda()

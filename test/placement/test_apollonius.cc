@@ -170,23 +170,7 @@ TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
   ImagePersister::saveRGBA32F(outputImage.data(), imageSize, imageSize,
                               "ApolloniusWithRealDataOutputPeeling.tiff");
 
-  apollonius.extractUniqueBoundaryIndices();
-  apollonius.updateInputCuda();
-
-  size_t iterationCount = 0;
-  size_t labelCount = labelsSeed.size();
-  while (apollonius.vlk_map.size() < labelCount && iterationCount < labelCount)
-  {
-    apollonius.run();
-    outputImage = imageMapper->copyDataFromGpu();
-    ImagePersister::saveRGBA32F(outputImage.data(), imageSize, imageSize,
-                                "ApolloniusWithRealDataOutputPeeling" +
-                                    std::to_string(iterationCount) + ".tiff");
-    apollonius.extractUniqueBoundaryIndices();
-    apollonius.updateInputCuda();
-
-    ++iterationCount;
-  }
+  apollonius.calculateOrdering();
 
   outputImage = imageMapper->copyDataFromGpu();
 
@@ -195,10 +179,10 @@ TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
   auto expected = ImagePersister::loadRGBA32F(absolutePathOfProjectRelativePath(
       std::string("assets/tests/apolloniusPeeling.tiff")));
 
-  std::cout << "vlk_map" << std::endl;
-  for(auto pair : apollonius.vlk_map)
+  std::cout << "insertion order" << std::endl;
+  for(auto labelId : apollonius.insertionOrder)
   {
-    std::cout << "\t image index: " << pair.first << " insertion index: " << pair.second << std::endl;
+    std::cout << labelId << ", ";
   }
 
   /*

@@ -37,18 +37,10 @@ class Apollonius
 
   void run();
 
-  void extractUniqueBoundaryIndices();
-  void updateInputCuda();
-
   void calculateOrdering();
 
   thrust::device_vector<int> &getIds();
   std::vector<int> getHostIds();
-
-
-  std::set<int> extractedIndices;
-  // <pixel index, label index>
-  std::map<int, int> pixelIndexToLabelId;
 
   std::deque<int> insertionOrder;
 
@@ -67,6 +59,13 @@ class Apollonius
 
   int imageSize;
   int pixelCount;
+
+  std::set<int> extractedIndices;
+  // <pixel index, label index>
+  std::map<int, int> pixelIndexToLabelId;
+
+  void extractUniqueBoundaryIndices();
+  void updateInputCuda();
 
   cudaSurfaceObject_t outputSurface;
   cudaTextureObject_t distancesTexture;
