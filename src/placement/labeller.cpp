@@ -78,6 +78,8 @@ Labeller::update(const LabellerFrameData &frameData)
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
+    std::cout << "x " << int(x) << " y " << int(y) << std::endl;
+
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y,
         label.size.x() * width, label.size.y() * height);

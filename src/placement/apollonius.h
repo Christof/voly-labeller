@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include <map>
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
@@ -36,10 +37,17 @@ class Apollonius
   void run();
 
   void extractUniqueBoundaryIndices();
+  void updateInputCuda();
+
+  void calculateOrdering();
 
   thrust::device_vector<int> &getIds();
   std::vector<int> getHostIds();
 
+
+  std::set<int> extractedIndices;
+  // <pixel index, label index>
+  std::map<int, int> vlk_map;
  private:
   std::shared_ptr<CudaArrayProvider> outputImage;
   std::shared_ptr<CudaArrayProvider> distancesImage;
@@ -48,7 +56,6 @@ class Apollonius
   thrust::device_vector<int> seedIds;
   thrust::device_vector<int> seedIndices;
   thrust::device_vector<int> orderedIndices;
-  std::set<int> extractedIndices;
   int labelCount;
 
   dim3 dimBlock;

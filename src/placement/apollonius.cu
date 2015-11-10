@@ -347,20 +347,55 @@ void Apollonius::extractUniqueBoundaryIndices()
   // std::cerr<< "before unique";
   thrust::device_vector<int>::iterator it_found =
       thrust::unique(orderedIndices.begin(), orderedIndices.end());
-  thrust::host_vector<int> uniqueindices(orderedIndices.begin(), it_found);
+  thrust::host_vector<int> uniqueIndices(orderedIndices.begin(), it_found);
 
-  // std::cout << "after unique:" << uniqueindices.size()  << " : " <<
-  // std::endl;
-  for (uint i = 0; i < uniqueindices.size(); i++)
+  for (unsigned int i = 0; i < uniqueIndices.size(); i++)
   {
-    // extractedIndices.insert(uniqueindices.begin(), uniqueindices.end());
-    const int insindex = uniqueindices[i];
-    if (insindex > 0)
+    const int uniqueIndex = uniqueIndices[i];
+    if (uniqueIndex > 0)
     {
-      extractedIndices.insert(insindex);
+      std::cout << "Extracted index: " << uniqueIndex << std::endl;
+      extractedIndices.insert(uniqueIndex);
     }
   }
-  // std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
-  // std::cout << std::endl;
+  std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
+}
+
+void Apollonius::calculateOrdering()
+{
+}
+
+void Apollonius::updateInputCuda()
+{
+  thrust::host_vector<float4> labelsSeed = seedBuffer;
+  for (size_t index = 0; index < labelsSeed.size(); ++index)
+  {
+    float4 seed = labelsSeed[index];
+    const uint cindex = int(seed.y) + int(seed.z) * imageSize;
+    std::cout << "map[" << index << "]: " << int(seed.x)
+              << " extractedIndices.size: " << extractedIndices.size()
+              << std::endl;
+
+    if (extractedIndices.find(cindex) != extractedIndices.end())
+    {
+      std::cout << "new index:" << index << " labelId: " << int(seed.x)
+                << " index " << cindex << std::endl;
+      if (seed.x > 0)
+      {
+        seed.x = -seed.x;
+        labelsSeed[index] = seed;
+      }
+      vlk_map[cindex] = index;  // qMakePair(it->first, xindex));
+    }
+    else
+    {
+      std::cout << "keeping " << cindex << std::endl;
+    }
+
+    std::cout << "new seed: " << seed.x << "|" << seed.y << "|" << seed.z
+              << std::endl;
+  }
+
+  seedBuffer = labelsSeed;
 }
 
