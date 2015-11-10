@@ -27,6 +27,9 @@ void Labeller::initialize(
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
+
+  costFunctionCalculator.setTextureSize(occupancyTextureMapper->getWidth(),
+                                        occupancyTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()

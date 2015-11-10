@@ -115,6 +115,12 @@ void CostFunctionCalculator::resize(int width, int height)
   this->height = height;
 }
 
+void CostFunctionCalculator::setTextureSize(int width, int height)
+{
+  textureWidth = width;
+  textureHeight = height;
+}
+
 void CostFunctionCalculator::calculateCosts(
     const thrust::device_vector<float> &distances)
 {
@@ -125,13 +131,18 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
     float anchorX, float anchorY, int sizeX, int sizeY)
 {
-  CostEvaluator costEvaluator(width, height);
-  costEvaluator.anchorX = anchorX;
-  costEvaluator.anchorY = anchorY;
+  assert(textureWidth * textureHeight == occupancySummedAreaTable.size());
+
+  float widthFactor = static_cast<float>(textureWidth) / width;
+  float heightFactor = static_cast<float>(textureHeight) / height;
+
+  CostEvaluator costEvaluator(textureWidth, textureHeight);
+  costEvaluator.anchorX = anchorX * widthFactor;
+  costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =
       thrust::raw_pointer_cast(occupancySummedAreaTable.data());
-  costEvaluator.halfLabelWidth = sizeX / 2;
-  costEvaluator.halfLabelHeight = sizeY / 2;
+  costEvaluator.halfLabelWidth = sizeX * 0.5f * widthFactor;
+  costEvaluator.halfLabelHeight = sizeY * 0.5f * heightFactor;
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;
@@ -141,8 +152,8 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
 
   EvalResult cost = thrust::transform_reduce(
       thrust::counting_iterator<int>(0),
-      thrust::counting_iterator<int>(0) + width * height, costEvaluator,
-      initialCost, minimumCostOperator);
+      thrust::counting_iterator<int>(0) + textureWidth * textureHeight,
+      costEvaluator, initialCost, minimumCostOperator);
 
   std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
   return std::make_tuple(cost.x, cost.y);
