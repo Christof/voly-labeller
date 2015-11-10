@@ -214,11 +214,19 @@ Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
   : distancesImage(distancesImage), outputImage(outputImage),
     labelCount(labelCount), seedBuffer(labelCount)
 {
-  for (size_t i = 0; i < seedBuffer.size(); ++i)
-    seedBuffer[i] = make_float4(labelPositions[i].x(), labelPositions[i].y(),
-                                labelPositions[i].z(), labelPositions[i].w());
-
   imageSize = outputImage->getWidth();
+
+  for (size_t i = 0; i < seedBuffer.size(); ++i)
+  {
+    auto labelPosition = labelPositions[i];
+    seedBuffer[i] = make_float4(labelPosition.x(), labelPosition.y(),
+                                labelPosition.z(), labelPosition.w());
+    int index = static_cast<int>(labelPosition.y()) +
+                static_cast<int>(labelPosition.z()) * imageSize;
+    std::cout << index << " -> " << labelPosition.x() << std::endl;
+    pixelIndexToLabelId[index] = labelPosition.x();
+  }
+
   pixelCount = imageSize * imageSize;
 
   distancesImage->map();
@@ -354,8 +362,11 @@ void Apollonius::extractUniqueBoundaryIndices()
     const int uniqueIndex = uniqueIndices[i];
     if (uniqueIndex > 0)
     {
-      std::cout << "Extracted index: " << uniqueIndex << std::endl;
-      extractedIndices.insert(uniqueIndex);
+      if (extractedIndices.insert(uniqueIndex).second)
+      {
+        std::cout << "Extracted index: " << uniqueIndex << std::endl;
+        insertionOrder.push_front(pixelIndexToLabelId[uniqueIndex]);
+      }
     }
   }
   std::cout << "extracted indices:" << extractedIndices.size() << std::endl;
@@ -378,20 +389,14 @@ void Apollonius::updateInputCuda()
 
     if (extractedIndices.find(cindex) != extractedIndices.end())
     {
-      std::cout << "new index:" << index << " labelId: " << int(seed.x)
+      std::cout << "update index:" << index << " labelId: " << int(seed.x)
                 << " index " << cindex << std::endl;
       if (seed.x > 0)
       {
         seed.x = -seed.x;
         labelsSeed[index] = seed;
       }
-      vlk_map[cindex] = index;  // qMakePair(it->first, xindex));
     }
-    else
-    {
-      std::cout << "keeping " << cindex << std::endl;
-    }
-
     std::cout << "new seed: " << seed.x << "|" << seed.y << "|" << seed.z
               << std::endl;
   }

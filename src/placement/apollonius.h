@@ -8,6 +8,7 @@
 #include <vector>
 #include <set>
 #include <map>
+#include <deque>
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
@@ -47,7 +48,10 @@ class Apollonius
 
   std::set<int> extractedIndices;
   // <pixel index, label index>
-  std::map<int, int> vlk_map;
+  std::map<int, int> pixelIndexToLabelId;
+
+  std::deque<int> insertionOrder;
+
  private:
   std::shared_ptr<CudaArrayProvider> outputImage;
   std::shared_ptr<CudaArrayProvider> distancesImage;
