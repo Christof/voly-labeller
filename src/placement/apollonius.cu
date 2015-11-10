@@ -346,7 +346,8 @@ void Apollonius::updateLabelSeeds()
   for (size_t index = 0; index < labelsSeed.size(); ++index)
   {
     float4 seed = labelsSeed[index];
-    const uint cindex = int(seed.y) + int(seed.z) * imageSize;
+    const uint cindex =
+        static_cast<int>(seed.y) + static_cast<int>(seed.z) * imageSize;
 
     if (extractedIndices.find(cindex) != extractedIndices.end())
     {

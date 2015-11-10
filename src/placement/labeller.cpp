@@ -1,7 +1,8 @@
 #include "./labeller.h"
 #include <Eigen/Geometry>
-#include <vector>
 #include <QLoggingCategory>
+#include <vector>
+#include <map>
 #include "../utils/cuda_array_provider.h"
 #include "./summed_area_table.h"
 #include "./apollonius.h"

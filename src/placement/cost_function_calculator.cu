@@ -1,6 +1,7 @@
 #include "./cost_function_calculator.h"
 #include <thrust/transform_reduce.h>
 #include <limits>
+#include <tuple>
 
 struct EvalResult
 {
