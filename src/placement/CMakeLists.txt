@@ -11,6 +11,7 @@ set(SOURCES
   apollonius.cu
   occupancy.cu
   cost_function_calculator.cu
+  occupancy_updater.cu
   labeller.cpp
   cuda_texture_mapper.cpp
   )
