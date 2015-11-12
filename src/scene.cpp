@@ -148,6 +148,8 @@ void Scene::render()
   renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
+
+  nodes->renderLabels(gl, managers, renderData);
 }
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
