@@ -13,6 +13,7 @@
 class SummedAreaTable;
 class CudaArrayProvider;
 class Apollonius;
+class OccupancyUpdater;
 
 namespace Placement
 {
@@ -47,6 +48,7 @@ class Labeller
   CostFunctionCalculator costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
+  std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
   std::vector<int> insertionOrder;

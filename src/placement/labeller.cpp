@@ -6,6 +6,7 @@
 #include "../utils/cuda_array_provider.h"
 #include "./summed_area_table.h"
 #include "./apollonius.h"
+#include "./occupancy_updater.h"
 
 namespace Placement
 {
@@ -25,6 +26,7 @@ void Labeller::initialize(
   if (!occupancySummedAreaTable.get())
     occupancySummedAreaTable =
         std::make_shared<SummedAreaTable>(occupancyTextureMapper);
+  occupancyUpdater = std::make_shared<OccupancyUpdater>(occupancyTextureMapper);
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
@@ -37,6 +39,7 @@ void Labeller::cleanup()
 {
   occupancySummedAreaTable.reset();
   apolloniusTextureMapper.reset();
+  occupancyUpdater.reset();
 }
 
 void Labeller::setInsertionOrder(std::vector<int> ids)
@@ -70,13 +73,13 @@ Labeller::update(const LabellerFrameData &frameData)
   apollonius.run();
   setInsertionOrder(apollonius.calculateOrdering());
 
-  occupancySummedAreaTable->runKernel();
-
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   // TODO(SIR): iterate through labels specific order according to apollonius.
   for (auto id : insertionOrder)
   {
+    occupancySummedAreaTable->runKernel();
+
     auto label = labels->getById(id);
     auto anchor2D = frameData.project(label.anchorPosition);
     float x = (anchor2D.x() * 0.5f + 0.5f) * width;
@@ -88,8 +91,9 @@ Labeller::update(const LabellerFrameData &frameData)
         occupancySummedAreaTable->getResults(), label.id, x, y,
         label.size.x() * width, label.size.y() * height);
 
-    // TODO(SIR): update occupancy and recalculate SAT or incorporate labels
-    // somehow directly in occupancy calculation in CostFunctionCalculator.
+    occupancyUpdater->addLabel(std::get<0>(newPosition),
+                               std::get<1>(newPosition), label.size.x(),
+                               label.size.y());
 
     float newX = (std::get<0>(newPosition) / width - 0.5f) * 2.0f;
     float newY = (std::get<1>(newPosition) / height - 0.5f) * 2.0f;
