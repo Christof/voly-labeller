@@ -136,8 +136,11 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     auto *transform = &matrices[counter];
     auto modelMatrix = objectData.modelMatrix;
+
+    // encode objectId into modelMatrix
     int objectId = objectData.getId();
     modelMatrix(3, 0) = *reinterpret_cast<float *>(&objectId);
+
     memcpy(transform, modelMatrix.data(), sizeof(float[16]));
 
     if (objectData.hasCustomBuffer())
