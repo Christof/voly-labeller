@@ -56,17 +56,8 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Vector2i size(distanceTransformTextureMapper->getWidth(),
                        distanceTransformTextureMapper->getHeight());
-  std::vector<Eigen::Vector4f> labelsSeed;
-  for (auto &label : labels->getLabels())
-  {
-    Eigen::Vector4f pos =
-        frameData.viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
-                                                   label.anchorPosition.y(),
-                                                   label.anchorPosition.z(), 1);
-    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
-    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
-    labelsSeed.push_back(Eigen::Vector4f(label.id, x, y, 1));
-  }
+  std::vector<Eigen::Vector4f> labelsSeed =
+      createLabelSeeds(size, frameData.viewProjection);
 
   Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
                         labelsSeed, labels->count());
@@ -88,8 +79,8 @@ Labeller::update(const LabellerFrameData &frameData)
     std::cout << "x " << int(x) << " y " << int(y) << std::endl;
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
-        occupancySummedAreaTable->getResults(), label.id, x, y,
-        label.size.x(), label.size.y());
+        occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
+        label.size.y());
 
     occupancyUpdater->addLabel(std::get<0>(newPosition),
                                std::get<1>(newPosition), label.size.x(),
@@ -118,6 +109,24 @@ void Labeller::resize(int width, int height)
 std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
 {
   return newPositions;
+}
+
+std::vector<Eigen::Vector4f>
+Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
+{
+  std::vector<Eigen::Vector4f> result;
+  for (auto &label : labels->getLabels())
+  {
+    Eigen::Vector4f pos =
+        viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
+                                         label.anchorPosition.y(),
+                                         label.anchorPosition.z(), 1);
+    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
+    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
+    result.push_back(Eigen::Vector4f(label.id, x, y, 1));
+  }
+
+  return result;
 }
 
 }  // namespace Placement
