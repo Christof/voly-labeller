@@ -17,8 +17,9 @@ LabelNode::LabelNode(Label label) : label(label)
   quad = std::make_shared<Graphics::Quad>(":/shader/label.vert",
                                           ":/shader/textureImmediate.frag");
 
-  connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
-                                                    Eigen::Vector3f(1, 0, 0));
+  connector = std::make_shared<Graphics::Connector>(
+      ":/shader/pass.vert", ":/shader/colorImmediate.frag",
+      Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 

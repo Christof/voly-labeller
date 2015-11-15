@@ -14,6 +14,7 @@
         <file>shader/texture.frag</file>
         <file>shader/pass.vert</file>
         <file>shader/color.frag</file>
+        <file>shader/colorImmediate.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/positionRenderTarget.frag</file>
         <file>shader/cube.geom</file>
