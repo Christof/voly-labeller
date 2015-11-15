@@ -95,8 +95,8 @@ Labeller::update(const LabellerFrameData &frameData)
                                std::get<1>(newPosition), label.size.x(),
                                label.size.y());
 
-    float newX = (std::get<0>(newPosition) / width - 0.5f) * 2.0f;
-    float newY = (std::get<1>(newPosition) / height - 0.5f) * 2.0f;
+    float newX = (std::get<0>(newPosition) / size.x() - 0.5f) * 2.0f;
+    float newY = (std::get<1>(newPosition) / size.y() - 0.5f) * 2.0f;
     Eigen::Vector4f reprojected =
         inverseViewProjection * Eigen::Vector4f(newX, newY, anchor2D.z(), 1);
     reprojected /= reprojected.w();
