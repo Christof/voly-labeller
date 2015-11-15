@@ -21,7 +21,7 @@ class CostFunctionCalculator
   void calculateCosts(const thrust::device_vector<float> &distances);
   std::tuple<float, float> calculateForLabel(
       const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
-      float anchorX, float anchorY, int sizeX, int sizeY);
+      float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel);
 
  private:
   int width;
