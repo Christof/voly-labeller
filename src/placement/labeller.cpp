@@ -89,7 +89,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y,
-        label.size.x() * width, label.size.y() * height);
+        label.size.x() * size.x() / width, label.size.y() * size.y() / height);
 
     occupancyUpdater->addLabel(std::get<0>(newPosition),
                                std::get<1>(newPosition), label.size.x(),
