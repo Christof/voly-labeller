@@ -1,11 +1,32 @@
 #include "../test.h"
 #include <cuda_runtime_api.h>
 #include <memory>
+#include <vector>
+#include "../../src/placement/distance_transform.h"
+#include "../../src/utils/cuda_helper.h"
 #include "../cuda_array_mapper.h"
 
 std::vector<float> callDistanceTransform(
-    std::shared_ptr<CudaArrayMapper<float>> depthImageProvider,
-    std::vector<float> &resultVector);
+    std::shared_ptr<CudaArrayMapper<float>> occupancyImageProvider)
+{
+  cudaChannelFormatDesc outputChannelDesc =
+      cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+  int pixelCount =
+      occupancyImageProvider->getWidth() * occupancyImageProvider->getHeight();
+  std::vector<float> resultImage(pixelCount);
+  auto output = std::make_shared<CudaArrayMapper<float>>(
+      occupancyImageProvider->getWidth(), occupancyImageProvider->getHeight(),
+      resultImage, outputChannelDesc);
+
+  DistanceTransform distanceTransform(occupancyImageProvider, output);
+  distanceTransform.run();
+
+  resultImage = output->copyDataFromGpu();
+
+  output->unmap();
+
+  return resultImage;
+}
 
 TEST(Test_DistanceTransform, DistanceTransform)
 {
@@ -35,29 +56,7 @@ TEST(Test_DistanceTransform, DistanceTransform)
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   auto occupancyImageProvider =
       std::make_shared<CudaArrayMapper<float>>(4, 4, occupancyImage, channelDesc);
-  std::vector<float> resultVector;
-  auto image = callDistanceTransform(occupancyImageProvider, resultVector);
-
-  EXPECT_EQ(16, resultVector.size());
-  EXPECT_NEAR(0.0f, resultVector[0], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[1], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[2], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[3], 1e-4f);
-
-  EXPECT_NEAR(0.0f, resultVector[4], 1e-4f);
-  EXPECT_NEAR(1.0f / 32, resultVector[5], 1e-4f);
-  EXPECT_NEAR(1.0f / 32, resultVector[6], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[7], 1e-4f);
-
-  EXPECT_NEAR(0.0f, resultVector[8], 1e-4f);
-  EXPECT_NEAR(1.0f / 32, resultVector[9], 1e-4f);
-  EXPECT_NEAR(1.0f / 32, resultVector[10], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[11], 1e-4f);
-
-  EXPECT_NEAR(0.0f, resultVector[12], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[13], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[14], 1e-4f);
-  EXPECT_NEAR(0.0f, resultVector[15], 1e-4f);
+  auto image = callDistanceTransform(occupancyImageProvider);
 
   EXPECT_NEAR(0.0f, image[0], 1e-4f);
   EXPECT_NEAR(0.0f, image[1], 1e-4f);
