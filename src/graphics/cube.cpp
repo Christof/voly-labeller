@@ -46,7 +46,7 @@ ObjectData Cube::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                                 0, 2, 4, 0, 4, 6, 1, 7, 5, 1, 5, 3 };
 
   int shaderProgramId =
-      shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      shaderManager->addShader(":/shader/pass.vert", ":/shader/color.frag");
   return objectManager->addObject(positions, normals, colors, texCoords,
                                   indices, shaderProgramId);
 }

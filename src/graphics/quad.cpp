@@ -16,7 +16,7 @@ Quad::Quad(std::string vertexShaderFilename, std::string fragmentShaderFilename)
 {
 }
 
-Quad::Quad() : Quad(":/shader/pass.vert", ":/shader/test.frag")
+Quad::Quad() : Quad(":/shader/pass.vert", ":/shader/color.frag")
 {
 }
 

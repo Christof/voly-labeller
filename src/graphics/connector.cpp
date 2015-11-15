@@ -46,7 +46,7 @@ Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
 
   int shaderProgramId =
-      shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      shaderManager->addShader(":/shader/pass.vert", ":/shader/color.frag");
   return objectManager->addObject(positions, normals, colors, texCoords,
                                   indices, shaderProgramId, GL_LINES);
 }

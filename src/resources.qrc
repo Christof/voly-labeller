@@ -13,7 +13,7 @@
         <file>shader/buildHABuffer.hglsl</file>
         <file>shader/texture.frag</file>
         <file>shader/pass.vert</file>
-        <file>shader/test.frag</file>
+        <file>shader/color.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/positionRenderTarget.frag</file>
         <file>shader/cube.geom</file>
