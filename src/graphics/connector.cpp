@@ -7,13 +7,25 @@
 namespace Graphics
 {
 
+Connector::Connector(std::string vertexShaderFilename,
+                     std::string fragmentShaderFilename, Eigen::Vector3f anchor,
+                     Eigen::Vector3f label)
+  : Connector(std::vector<Eigen::Vector3f>{ anchor, label },
+              vertexShaderFilename, fragmentShaderFilename)
+{
+}
+
 Connector::Connector(Eigen::Vector3f anchor, Eigen::Vector3f label)
   : Connector(std::vector<Eigen::Vector3f>{ anchor, label })
 {
 }
 
-Connector::Connector(std::vector<Eigen::Vector3f> points)
-  : color(1, 0, 0, 1), points(points)
+Connector::Connector(std::vector<Eigen::Vector3f> points,
+                     std::string vertexShaderFilename,
+                     std::string fragmentShaderFilename)
+  : color(1, 0, 0, 1), points(points),
+    vertexShaderFilename(vertexShaderFilename),
+    fragmentShaderFilename(fragmentShaderFilename)
 {
 }
 
@@ -46,7 +58,7 @@ Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
 
   int shaderProgramId =
-      shaderManager->addShader(":/shader/pass.vert", ":/shader/test.frag");
+      shaderManager->addShader(vertexShaderFilename, fragmentShaderFilename);
   return objectManager->addObject(positions, normals, colors, texCoords,
                                   indices, shaderProgramId, GL_LINES);
 }

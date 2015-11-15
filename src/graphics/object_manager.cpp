@@ -83,7 +83,7 @@ void ObjectManager::render(const RenderData &renderData)
     qCDebug(omChan) << "Render objects with shader" << shaderObjectPair.first
                     << "with" << shaderObjectPair.second.size() << "objects";
 
-    shaderManager->bind(shaderObjectPair.first, renderData);
+    shaderManager->bindForHABuffer(shaderObjectPair.first, renderData);
 
     std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
     for (auto &object : shaderObjectPair.second)

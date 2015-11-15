@@ -35,6 +35,7 @@ class ShaderManager
   int addShader(std::string vertexShaderPath, std::string geometryShaderPath,
                 std::string fragmentShaderPath);
   void bind(int id, const RenderData &renderData);
+  void bindForHABuffer(int id, const RenderData &renderData);
   std::shared_ptr<ShaderProgram> getShader(int id);
 
  private:
