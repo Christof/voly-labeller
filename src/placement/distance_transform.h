@@ -8,7 +8,7 @@
 
 /**
  * \brief Calculates for each pixel distance to nearest pixel with 
- * value >= 0.99f
+ * value == 0.0f
  *
  * The input and output image must be of type float.
  *

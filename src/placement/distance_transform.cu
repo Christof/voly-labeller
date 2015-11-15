@@ -6,9 +6,8 @@
 /**
  * \brief Initializes the distance transform
  *
- * The value from the inputTexture is read. If it is larger than or equel to
- * 0.99 the data value is set to the index. Otherwise it is set to the given
- * outlier value.
+ * The value from the inputTexture is read. If it is equal to 0 the data value
+ * is set to the index. Otherwise it is set to the given outlier value.
  */
 __global__ void initializeForDistanceTransform(cudaTextureObject_t input,
                                                int width, int height,
@@ -24,7 +23,7 @@ __global__ void initializeForDistanceTransform(cudaTextureObject_t input,
 
   float pixelValue = tex2D<float>(input, x * xscale + 0.5f, y * yscale + 0.5f);
 
-  data[index] = pixelValue >= 0.99f ? index : outlierValue;
+  data[index] = pixelValue == 0.0f ? index : outlierValue;
 }
 
 __global__ void distanceTransformStep(int *data, unsigned int step, int width,

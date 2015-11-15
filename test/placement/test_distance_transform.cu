@@ -5,19 +5,19 @@
 #include "../cuda_array_mapper.h"
 
 std::vector<float> callDistanceTransform(
-    std::shared_ptr<CudaArrayMapper<float>> depthImageProvider,
+    std::shared_ptr<CudaArrayMapper<float>> occupancyImageProvider,
     std::vector<float> &result)
 {
   cudaChannelFormatDesc outputChannelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   int pixelCount =
-      depthImageProvider->getWidth() * depthImageProvider->getHeight();
+      occupancyImageProvider->getWidth() * occupancyImageProvider->getHeight();
   std::vector<float> resultImage(pixelCount);
   auto output = std::make_shared<CudaArrayMapper<float>>(
-      depthImageProvider->getWidth(), depthImageProvider->getHeight(),
+      occupancyImageProvider->getWidth(), occupancyImageProvider->getHeight(),
       resultImage, outputChannelDesc);
 
-  DistanceTransform distanceTransform(depthImageProvider, output);
+  DistanceTransform distanceTransform(occupancyImageProvider, output);
   distanceTransform.run();
 
   thrust::host_vector<float> resultHost = distanceTransform.getResults();

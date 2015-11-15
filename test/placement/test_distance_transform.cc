@@ -9,34 +9,34 @@ std::vector<float> callDistanceTransform(
 
 TEST(Test_DistanceTransform, DistanceTransform)
 {
-  std::vector<float> depthImage;
+  std::vector<float> occupancyImage;
 
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
 
-  depthImage.push_back(1.0f);
-  depthImage.push_back(0.0f);
-  depthImage.push_back(0.0f);
-  depthImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(1.0f);
+  occupancyImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
 
-  depthImage.push_back(1.0f);
-  depthImage.push_back(0.0f);
-  depthImage.push_back(0.0f);
-  depthImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(1.0f);
+  occupancyImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
 
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
-  depthImage.push_back(1.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
+  occupancyImage.push_back(0.0f);
 
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto depthImageProvider =
-      std::make_shared<CudaArrayMapper<float>>(4, 4, depthImage, channelDesc);
+  auto occupancyImageProvider =
+      std::make_shared<CudaArrayMapper<float>>(4, 4, occupancyImage, channelDesc);
   std::vector<float> resultVector;
-  auto image = callDistanceTransform(depthImageProvider, resultVector);
+  auto image = callDistanceTransform(occupancyImageProvider, resultVector);
 
   EXPECT_EQ(16, resultVector.size());
   EXPECT_NEAR(0.0f, resultVector[0], 1e-4f);
