@@ -78,7 +78,11 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     float lowerLeft = occupancy[endY * width + startX];
     float upperLeft = occupancy[startY * width + startX];
     float upperRight = occupancy[startY * width + endX];
-    float sum = lowerRight - lowerLeft - upperRight + upperLeft;
+    float sum = lowerRight + upperLeft - lowerLeft - upperRight;
+
+    // this can be the case through inaccuracies
+    if (sum < 0.0f)
+      return 0.0f;
 
     return sum / ((endX - startX) * (endY - startY));
   }
