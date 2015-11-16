@@ -77,14 +77,17 @@ Labeller::update(const LabellerFrameData &frameData)
     float y = (anchor2D.y() * 0.5f + 0.5f) * height;
 
     std::cout << "x " << int(x) << " y " << int(y) << std::endl;
+    Eigen::Vector2i labelSizeForBuffer =
+        label.size.cast<int>().cwiseProduct(size)
+            .cwiseQuotient(Eigen::Vector2i(width, height));
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
         label.size.y());
 
     occupancyUpdater->addLabel(std::get<0>(newPosition),
-                               std::get<1>(newPosition), label.size.x(),
-                               label.size.y());
+                               std::get<1>(newPosition), labelSizeForBuffer.x(),
+                               labelSizeForBuffer.y());
 
     float newX = (std::get<0>(newPosition) / size.x() - 0.5f) * 2.0f;
     float newY = (std::get<1>(newPosition) / size.y() - 0.5f) * 2.0f;
