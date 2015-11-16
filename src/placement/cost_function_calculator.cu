@@ -94,8 +94,8 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = distanceToAnchor + 1024.0f * occupancyForLabelArea(x, y) +
-                 favorHorizontalOrVerticalLines(x, y);
+    float cost = occupancyForLabelArea(x, y) + 1e-3f * distanceToAnchor +
+                 1e-1f * favorHorizontalOrVerticalLines(x, y);
     EvalResult result(x, y, cost);
 
     return result;
