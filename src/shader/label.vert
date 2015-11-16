@@ -26,7 +26,9 @@ void main()
       cameraRight * pos.x * size.x +
       cameraUp * pos.y * size.y;
 
-  gl_Position = viewProjectionMatrix * vec4(position, 1.0f);
+  vec4 vertexPos = viewProjectionMatrix * vec4(position, 1.0f);
+  vertexPos.z -= 0.01f;
+  gl_Position = vertexPos;
   vertexTexCoord = texCoord;
   vertexDrawId = drawId;
 }
