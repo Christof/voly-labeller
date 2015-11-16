@@ -357,6 +357,9 @@ void main()
     }
   }
 
+  if (position.w == -2)
+    position.w = 1;
+
   finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
 
   o_PixColor = blend(finalColor, vec4(backgroundColor, 1.0));
