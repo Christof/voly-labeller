@@ -30,11 +30,22 @@ Makefile*
 
 *.autosave
 
-#QtCtreator Qml
+# QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
 
 .ycm_extra_conf.pyc
 
+# Ignore some folders
 /assets
 /doc
+/CppDependOut
+
+# Project files
+*.cdproj
+*.proj
+*.sl
+.cproject
+.project
+CMakeLists.txt.user
+
