@@ -58,6 +58,7 @@ set(SOURCES
   src/labels_model.cpp
   src/volume_reader.cpp
   src/default_scene_creator.cpp
+  src/constraint_buffer.cpp
   src/graphics/gl.cpp
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
