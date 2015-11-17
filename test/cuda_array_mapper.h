@@ -51,7 +51,7 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
   std::vector<ElementType> copyDataFromGpu()
   {
     std::vector<ElementType> result(width * height);
-    assert(width * height == result.size());
+    assert(width * height == static_cast<int>(result.size()));
     HANDLE_ERROR(cudaMemcpyFromArray(result.data(), array, 0, 0,
                                      sizeof(ElementType) * width * height,
                                      cudaMemcpyDeviceToHost));
