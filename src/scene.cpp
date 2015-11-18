@@ -59,7 +59,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/distanceTransform.frag");
 
   fbo->initialize(gl, width, height);
-  constraintBuffer->initialize(gl, width, height);
+  constraintBuffer->initialize(gl, textureMapperManager->getBufferSize(),
+                               textureMapperManager->getBufferSize());
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
@@ -148,9 +149,17 @@ void Scene::render()
 
   textureMapperManager->update();
 
+  constraintBuffer->bind();
+  glAssert(gl->glViewport(0, 0, textureMapperManager->getBufferSize(),
+                          textureMapperManager->getBufferSize()));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT));
+
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
+  constraintBuffer->unbind();
+
+  glAssert(gl->glViewport(0, 0, width, height));
   renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
