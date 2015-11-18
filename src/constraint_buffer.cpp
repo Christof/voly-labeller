@@ -51,7 +51,7 @@ unsigned int ConstraintBuffer::getRenderTextureId()
 
 void ConstraintBuffer::resizeAndSetColorAttachment(int width, int height)
 {
-  resizeTexture(renderTexture, width, height, GL_RGBA, GL_RGBA8,
+  resizeTexture(renderTexture, width, height, GL_RED, GL_R8,
                 GL_UNSIGNED_BYTE);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, renderTexture, 0));
