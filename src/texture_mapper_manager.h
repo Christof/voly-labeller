@@ -44,6 +44,8 @@ class TextureMapperManager
   void saveDistanceTransform();
   void saveApollonius();
 
+  int getBufferSize();
+
  private:
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
   std::shared_ptr<CudaTextureMapper> positionsTextureMapper;

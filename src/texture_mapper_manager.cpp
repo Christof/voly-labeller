@@ -125,6 +125,11 @@ void TextureMapperManager::saveApollonius()
   saveApolloniusInNextFrame = true;
 }
 
+int TextureMapperManager::getBufferSize()
+{
+  return bufferSize;
+}
+
 void TextureMapperManager::initializeMappers(
     std::shared_ptr<Graphics::FrameBufferObject> fbo)
 {
