@@ -20,6 +20,7 @@
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
+#include "./constraint_buffer.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -35,6 +36,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
       std::make_shared<CameraControllers>(invokeManager, camera);
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
+  constraintBuffer = std::make_shared<ConstraintBuffer>();
   managers = std::make_shared<Graphics::Managers>();
 }
 
@@ -57,6 +59,7 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/distanceTransform.frag");
 
   fbo->initialize(gl, width, height);
+  constraintBuffer->initialize(gl, width, height);
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
@@ -179,6 +182,12 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   textureMapperManager->bindApollonius();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
+
+  constraintBuffer->bindTexture(GL_TEXTURE0);
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 }
