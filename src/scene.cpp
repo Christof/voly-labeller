@@ -21,6 +21,7 @@
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer.h"
+#include "./placement/constraint_updater.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -156,6 +157,12 @@ void Scene::render()
 
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
+  ConstraintUpdater constraintUpdate(gl, managers->getShaderManager(),
+                                     textureMapperManager->getBufferSize(),
+                                     textureMapperManager->getBufferSize());
+  constraintUpdate.addLabel(Eigen::Vector2i(0, 0), Eigen::Vector2i(0, 0),
+                            Eigen::Vector2i(0, 0), Eigen::Vector2i(0, 0));
 
   constraintBuffer->unbind();
 
