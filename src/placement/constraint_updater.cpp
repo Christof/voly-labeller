@@ -7,7 +7,7 @@ ConstraintUpdater::ConstraintUpdater(
     int width, int height)
   : gl(gl), shaderManager(shaderManager), width(width), height(height)
 {
-  shaderId = shaderManager->addShader(":/shader/pass.vert",
+  shaderId = shaderManager->addShader(":/shader/constraint.vert",
                                       ":/shader/colorImmediate.frag");
 }
 
