@@ -93,6 +93,8 @@ set(SOURCES
   src/graphics/volume_manager.cpp
   src/graphics/managers.cpp
   src/graphics/standard_texture_2d.cpp
+  src/graphics/vertex_buffer.h
+  src/graphics/vertex_array.cpp
   src/ui.qml
   ${RESOURCES})
 
