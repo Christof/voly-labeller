@@ -30,6 +30,7 @@ class ConstraintUpdater
   int height;
 
   int shaderId;
+  Eigen::Matrix4f pixelToNDC;
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
