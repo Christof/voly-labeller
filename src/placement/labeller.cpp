@@ -7,6 +7,7 @@
 #include "./summed_area_table.h"
 #include "./apollonius.h"
 #include "./occupancy_updater.h"
+#include "./constraint_updater.h"
 
 namespace Placement
 {
@@ -20,7 +21,8 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-    std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper)
+    std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
+    std::shared_ptr<ConstraintUpdater> constraintUpdater)
 {
   qCInfo(plChan) << "Initialize";
   if (!occupancySummedAreaTable.get())
@@ -30,6 +32,7 @@ void Labeller::initialize(
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
+  this->constraintUpdater = constraintUpdater;
 
   costFunctionCalculator.setTextureSize(occupancyTextureMapper->getWidth(),
                                         occupancyTextureMapper->getHeight());
@@ -67,8 +70,9 @@ Labeller::update(const LabellerFrameData &frameData)
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   // TODO(SIR): iterate through labels specific order according to apollonius.
-  for (auto id : insertionOrder)
+  for (size_t i = 0; i < insertionOrder.size(); ++i)
   {
+    int id = insertionOrder[i];
     occupancySummedAreaTable->runKernel();
 
     auto label = labels->getById(id);
@@ -78,21 +82,35 @@ Labeller::update(const LabellerFrameData &frameData)
 
     std::cout << "x " << int(x) << " y " << int(y) << std::endl;
     Eigen::Vector2i labelSizeForBuffer =
-        label.size.cast<int>().cwiseProduct(size)
-            .cwiseQuotient(Eigen::Vector2i(width, height));
+        label.size.cast<int>().cwiseProduct(size).cwiseQuotient(
+            Eigen::Vector2i(width, height));
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
         label.size.y());
 
-    occupancyUpdater->addLabel(std::get<0>(newPosition),
-                               std::get<1>(newPosition), labelSizeForBuffer.x(),
-                               labelSizeForBuffer.y());
+    float newXPosition = std::get<0>(newPosition);
+    float newYPosition = std::get<1>(newPosition);
 
-    float newX = (std::get<0>(newPosition) / size.x() - 0.5f) * 2.0f;
-    float newY = (std::get<1>(newPosition) / size.y() - 0.5f) * 2.0f;
+    occupancyUpdater->addLabel(newXPosition, newYPosition,
+                               labelSizeForBuffer.x(), labelSizeForBuffer.y());
+
+    if (i + 1 < insertionOrder.size())
+    {
+      int nextId = insertionOrder[i + 1];
+      auto nextLabel = labels->getById(nextId);
+      auto nextAnchor2D = frameData.project(nextLabel.anchorPosition);
+      constraintUpdater->addLabel(
+          nextAnchor2D.head<2>().cast<int>(), nextLabel.size.cast<int>(),
+          anchor2D.head<2>().cast<int>(),
+          Eigen::Vector2i(newXPosition, newYPosition), label.size.cast<int>());
+    }
+
+    float newXNDC = (newXPosition / size.x() - 0.5f) * 2.0f;
+    float newYNDC = (newYPosition / size.y() - 0.5f) * 2.0f;
     Eigen::Vector4f reprojected =
-        inverseViewProjection * Eigen::Vector4f(newX, newY, anchor2D.z(), 1);
+        inverseViewProjection *
+        Eigen::Vector4f(newXNDC, newYNDC, anchor2D.z(), 1);
     reprojected /= reprojected.w();
 
     newPositions[label.id] = toVector3f(reprojected);

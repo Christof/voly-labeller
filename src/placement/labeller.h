@@ -14,6 +14,7 @@ class SummedAreaTable;
 class CudaArrayProvider;
 class Apollonius;
 class OccupancyUpdater;
+class ConstraintUpdater;
 
 namespace Placement
 {
@@ -31,7 +32,8 @@ class Labeller
   void
   initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper);
+             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
+             std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
   void setInsertionOrder(std::vector<int> ids);
 
@@ -51,6 +53,7 @@ class Labeller
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
+  std::shared_ptr<ConstraintUpdater> constraintUpdater;
   std::vector<int> insertionOrder;
 
   int width;

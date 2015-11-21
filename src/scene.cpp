@@ -77,10 +77,14 @@ void Scene::initialize()
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo);
 
+  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+      gl, managers->getShaderManager(), textureMapperManager->getBufferSize(),
+      textureMapperManager->getBufferSize());
+
   placementLabeller->initialize(
       textureMapperManager->getOccupancyTextureMapper(),
       textureMapperManager->getDistanceTransformTextureMapper(),
-      textureMapperManager->getApolloniusTextureMapper());
+      textureMapperManager->getApolloniusTextureMapper(), constraintUpdater);
 }
 
 void Scene::cleanup()
@@ -158,12 +162,6 @@ void Scene::render()
 
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-
-  ConstraintUpdater constraintUpdate(gl, managers->getShaderManager(),
-                                     textureMapperManager->getBufferSize(),
-                                     textureMapperManager->getBufferSize());
-  constraintUpdate.addLabel(Eigen::Vector2i(0, 0), Eigen::Vector2i(0, 0),
-                            Eigen::Vector2i(0, 0), Eigen::Vector2i(0, 0));
 
   constraintBuffer->unbind();
 
