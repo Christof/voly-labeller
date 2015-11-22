@@ -52,9 +52,23 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   newLabelDilation.outer().push_back(
       point(-labelSize.x() - border, 0.0f + border));
 
-  std::vector<float> positions = { 128, 128, 0, 384, 128, 0, 384, 384, 0 };
+  std::vector<float> positions;
+  if (oldLabel.outer().size() > 0)
+  {
+    auto point = oldLabel.outer()[0];
+    positions.push_back(point.get<0>());
+    positions.push_back(height - point.get<1>());
+    positions.push_back(0.0f);
+  }
+  for (auto point : oldLabel.outer())
+  {
+    positions.push_back(point.get<0>());
+    positions.push_back(height - point.get<1>());
+    positions.push_back(0.0f);
+  }
+
   Graphics::VertexArray *vertexArray =
-      new Graphics::VertexArray(gl, GL_TRIANGLES);
+      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN);
   vertexArray->addStream(positions);
 
   RenderData renderData;
@@ -64,3 +78,4 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 }
+
