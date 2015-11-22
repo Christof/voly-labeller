@@ -2,6 +2,7 @@
 #include <Eigen/Geometry>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
+#include <vector>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
 

@@ -40,8 +40,8 @@ void Occupancy::runKernel()
   float outputHeight = outputProvider->getHeight();
 
   dim3 dimBlock(32, 32, 1);
-  dim3 dimGrid(divUp(outputWidth, dimBlock.x),
-               divUp(outputHeight, dimBlock.y), 1);
+  dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
+               1);
 
   float widthScale = positionProvider->getWidth() / outputWidth;
   float heightScale = positionProvider->getHeight() / outputHeight;

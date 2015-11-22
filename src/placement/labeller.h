@@ -61,7 +61,8 @@ class Labeller
 
   std::map<int, Eigen::Vector3f> newPositions;
 
-  std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection);
+  std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
+                                                Eigen::Matrix4f viewProjection);
 };
 
 }  // namespace Placement

@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <string>
 #include "./render_data.h"
 #include "./renderable.h"
 #include "./object_manager.h"
