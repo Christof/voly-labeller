@@ -12,3 +12,8 @@ void SceneController::toggleBufferViews()
   scene->enableBufferDebuggingViews(showBufferDebuggingViews);
 }
 
+void SceneController::toggleConstraintOverlay()
+{
+  showConstraintOverlay = !showConstraintOverlay;
+  scene->enableConstraingOverlay(showConstraintOverlay);
+}

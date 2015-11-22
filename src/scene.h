@@ -50,6 +50,7 @@ class Scene : public AbstractScene
   void pick(int id, Eigen::Vector2f position);
 
   void enableBufferDebuggingViews(bool enable);
+  void enableConstraingOverlay(bool enable);
 
  private:
   Camera camera;
@@ -74,6 +75,7 @@ class Scene : public AbstractScene
   int height;
   bool shouldResize = false;
   bool showBufferDebuggingViews = false;
+  bool showConstraintOverlay = false;
 
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);

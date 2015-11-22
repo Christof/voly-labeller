@@ -75,6 +75,11 @@ Item {
           onTriggered: scene.toggleBufferViews();
         }
         MenuItem {
+          text: "Toggle constraint overlay"
+          shortcut: "F6"
+          onTriggered: scene.toggleConstraintOverlay();
+        }
+        MenuItem {
           text: "Toggle fullscreen"
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();

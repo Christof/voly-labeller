@@ -169,6 +169,13 @@ void Scene::render()
   constraintBuffer->unbind();
 
   glAssert(gl->glViewport(0, 0, width, height));
+
+  if (showConstraintOverlay)
+  {
+    constraintBuffer->bindTexture(GL_TEXTURE0);
+    renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
+  }
+
   if (showBufferDebuggingViews)
     renderDebuggingViews(renderData);
 
@@ -208,8 +215,6 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
-
-  renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
@@ -284,5 +289,10 @@ void Scene::doPick()
 void Scene::enableBufferDebuggingViews(bool enable)
 {
   showBufferDebuggingViews = enable;
+}
+
+void Scene::enableConstraingOverlay(bool enable)
+{
+  showConstraintOverlay = enable;
 }
 

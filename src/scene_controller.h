@@ -20,11 +20,13 @@ class SceneController : public QObject
 
  public slots:
   void toggleBufferViews();
+  void toggleConstraintOverlay();
 
  private:
   std::shared_ptr<Scene> scene;
 
   bool showBufferDebuggingViews = false;
+  bool showConstraintOverlay = false;
 };
 
 #endif  // SRC_SCENE_CONTROLLER_H_
