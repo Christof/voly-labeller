@@ -61,8 +61,17 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   newLabelDilation.outer().push_back(
       Eigen::Vector2i(-labelSize.x() - border, 0.0f + border));
 
+  polygon oldLabelExtruded(oldLabel);
+  for (auto point : oldLabel.outer())
+  {
+    Eigen::Vector2i p = anchorPosition + 1000 * (point - anchorPosition);
+    oldLabelExtruded.outer().push_back(p);
+  }
 
-  drawPolygon(oldLabel.outer());
+  polygon oldLabelExtrudedConvexHull;
+  bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
+
+  drawPolygon(oldLabelExtrudedConvexHull.outer());
 }
 
 void ConstraintUpdater::drawPolygon(std::vector<Eigen::Vector2i> polygon)
