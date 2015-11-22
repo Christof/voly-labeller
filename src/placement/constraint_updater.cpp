@@ -62,15 +62,20 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
       Eigen::Vector2i(-labelSize.x() - border, 0.0f + border));
 
 
+  drawPolygon(oldLabel.outer());
+}
+
+void ConstraintUpdater::drawPolygon(std::vector<Eigen::Vector2i> polygon)
+{
   std::vector<float> positions;
-  if (oldLabel.outer().size() > 0)
+  if (polygon.size() > 0)
   {
-    auto point = oldLabel.outer()[0];
+    auto point = polygon[0];
     positions.push_back(point.x());
     positions.push_back(height - point.y());
     positions.push_back(0.0f);
   }
-  for (auto point : oldLabel.outer())
+  for (auto point : polygon)
   {
     positions.push_back(point.x());
     positions.push_back(height - point.y());
