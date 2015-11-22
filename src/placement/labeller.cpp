@@ -100,10 +100,13 @@ Labeller::update(const LabellerFrameData &frameData)
       int nextId = insertionOrder[i + 1];
       auto nextLabel = labels->getById(nextId);
       auto nextAnchor2D = frameData.project(nextLabel.anchorPosition);
+      Eigen::Vector2i nextLabelSizeForBuffer =
+          nextLabel.size.cast<int>().cwiseProduct(size).cwiseQuotient(
+              Eigen::Vector2i(width, height));
       constraintUpdater->addLabel(
-          nextAnchor2D.head<2>().cast<int>(), nextLabel.size.cast<int>(),
+          nextAnchor2D.head<2>().cast<int>(), nextLabelSizeForBuffer,
           anchor2D.head<2>().cast<int>(),
-          Eigen::Vector2i(newXPosition, newYPosition), label.size.cast<int>());
+          Eigen::Vector2i(newXPosition, newYPosition), labelSizeForBuffer);
     }
 
     float newXNDC = (newXPosition / size.x() - 0.5f) * 2.0f;
