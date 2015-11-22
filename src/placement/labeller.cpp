@@ -57,10 +57,10 @@ Labeller::update(const LabellerFrameData &frameData)
   if (!occupancySummedAreaTable.get())
     return newPositions;
 
-  Eigen::Vector2i size(distanceTransformTextureMapper->getWidth(),
-                       distanceTransformTextureMapper->getHeight());
+  Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
+                             distanceTransformTextureMapper->getHeight());
   std::vector<Eigen::Vector4f> labelsSeed =
-      createLabelSeeds(size, frameData.viewProjection);
+      createLabelSeeds(bufferSize, frameData.viewProjection);
 
   Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
                         labelsSeed, labels->count());
@@ -82,7 +82,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
     std::cout << "x " << int(x) << " y " << int(y) << std::endl;
     Eigen::Vector2i labelSizeForBuffer =
-        label.size.cast<int>().cwiseProduct(size).cwiseQuotient(
+        label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(
             Eigen::Vector2i(width, height));
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
@@ -99,18 +99,20 @@ Labeller::update(const LabellerFrameData &frameData)
     {
       int nextId = insertionOrder[i + 1];
       auto nextLabel = labels->getById(nextId);
-      auto nextAnchor2D = frameData.project(nextLabel.anchorPosition);
+      Eigen::Vector2i nextAnchor2D =
+          toPixel(frameData.project(nextLabel.anchorPosition), bufferSize)
+              .cast<int>();
       Eigen::Vector2i nextLabelSizeForBuffer =
-          nextLabel.size.cast<int>().cwiseProduct(size).cwiseQuotient(
+          nextLabel.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(
               Eigen::Vector2i(width, height));
       constraintUpdater->addLabel(
-          nextAnchor2D.head<2>().cast<int>(), nextLabelSizeForBuffer,
-          anchor2D.head<2>().cast<int>(),
+          nextAnchor2D.cast<int>(), nextLabelSizeForBuffer,
+          toPixel(anchor2D, bufferSize).cast<int>(),
           Eigen::Vector2i(newXPosition, newYPosition), labelSizeForBuffer);
     }
 
-    float newXNDC = (newXPosition / size.x() - 0.5f) * 2.0f;
-    float newYNDC = (newYPosition / size.y() - 0.5f) * 2.0f;
+    float newXNDC = (newXPosition / bufferSize.x() - 0.5f) * 2.0f;
+    float newYNDC = (newYPosition / bufferSize.y() - 0.5f) * 2.0f;
     Eigen::Vector4f reprojected =
         inverseViewProjection *
         Eigen::Vector4f(newXNDC, newYNDC, anchor2D.z(), 1);
@@ -151,6 +153,15 @@ Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
   }
 
   return result;
+}
+
+Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
+{
+  const Eigen::Vector2f half(0.5f, 0.5f);
+
+  auto zeroToOne = ndc.head<2>().cwiseProduct(half) + half;
+
+  return zeroToOne.cwiseProduct(size.cast<float>());
 }
 
 }  // namespace Placement

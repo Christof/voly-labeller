@@ -63,6 +63,7 @@ class Labeller
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
+  Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
 };
 
 }  // namespace Placement
