@@ -58,6 +58,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
   distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/distanceTransform.frag");
+  transparentQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
   constraintBuffer->initialize(gl, textureMapperManager->getBufferSize(),
@@ -71,6 +73,7 @@ void Scene::initialize()
   quad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
   distanceTransformQuad->initialize(gl, managers);
+  transparentQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
@@ -204,6 +207,8 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
+
+  renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,

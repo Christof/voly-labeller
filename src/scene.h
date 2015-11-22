@@ -61,6 +61,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
+  std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
   std::shared_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<ConstraintBuffer> constraintBuffer;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
