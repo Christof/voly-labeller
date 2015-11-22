@@ -2,13 +2,17 @@
 #include <Eigen/Geometry>
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
+#include <boost/geometry/geometries/register/point.hpp>
 #include <vector>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
 
 namespace bg = boost::geometry;
-typedef bg::model::point<float, 2, bg::cs::cartesian> point;
-typedef bg::model::polygon<point, false, true> polygon;  // ccw, closed polygon
+
+BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
+
+// ccw, open polygon
+typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
@@ -33,37 +37,43 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   Eigen::Vector2i halfSize = lastLabelSize / 2;
 
   polygon oldLabel;
-  oldLabel.outer().push_back(point(lastLabelPosition.x() - halfSize.x(),
-                                   lastLabelPosition.y() - halfSize.y()));
-  oldLabel.outer().push_back(point(lastLabelPosition.x() + halfSize.x(),
-                                   lastLabelPosition.y() - halfSize.y()));
-  oldLabel.outer().push_back(point(lastLabelPosition.x() + halfSize.x(),
-                                   lastLabelPosition.y() + halfSize.y()));
-  oldLabel.outer().push_back(point(lastLabelPosition.x() - halfSize.x(),
-                                   lastLabelPosition.y() + halfSize.y()));
+  oldLabel.outer().push_back(
+      Eigen::Vector2i(lastLabelPosition.x() - halfSize.x(),
+                      lastLabelPosition.y() - halfSize.y()));
+  oldLabel.outer().push_back(
+      Eigen::Vector2i(lastLabelPosition.x() + halfSize.x(),
+                      lastLabelPosition.y() - halfSize.y()));
+  oldLabel.outer().push_back(
+      Eigen::Vector2i(lastLabelPosition.x() + halfSize.x(),
+                      lastLabelPosition.y() + halfSize.y()));
+  oldLabel.outer().push_back(
+      Eigen::Vector2i(lastLabelPosition.x() - halfSize.x(),
+                      lastLabelPosition.y() + halfSize.y()));
 
   int border = 2;
   polygon newLabelDilation;
   newLabelDilation.outer().push_back(
-      point(-labelSize.x() - border, -labelSize.y() - border));
+      Eigen::Vector2i(-labelSize.x() - border, -labelSize.y() - border));
   newLabelDilation.outer().push_back(
-      point(0.0f + border, -labelSize.y() - border));
-  newLabelDilation.outer().push_back(point(0.0f + border, 0.0f + border));
+      Eigen::Vector2i(0.0f + border, -labelSize.y() - border));
   newLabelDilation.outer().push_back(
-      point(-labelSize.x() - border, 0.0f + border));
+      Eigen::Vector2i(0.0f + border, 0.0f + border));
+  newLabelDilation.outer().push_back(
+      Eigen::Vector2i(-labelSize.x() - border, 0.0f + border));
+
 
   std::vector<float> positions;
   if (oldLabel.outer().size() > 0)
   {
     auto point = oldLabel.outer()[0];
-    positions.push_back(point.get<0>());
-    positions.push_back(height - point.get<1>());
+    positions.push_back(point.x());
+    positions.push_back(height - point.y());
     positions.push_back(0.0f);
   }
   for (auto point : oldLabel.outer())
   {
-    positions.push_back(point.get<0>());
-    positions.push_back(height - point.get<1>());
+    positions.push_back(point.x());
+    positions.push_back(height - point.y());
     positions.push_back(0.0f);
   }
 
