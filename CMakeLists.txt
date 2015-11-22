@@ -43,6 +43,7 @@ set(SOURCES
   src/nodes.cpp
   src/abstract_scene.h
   src/scene.cpp
+  src/scene_controller.cpp
   src/texture_mapper_manager.cpp
   src/texture_mapper_manager_controller.cpp
   src/frustum_optimizer.cpp

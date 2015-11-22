@@ -49,6 +49,8 @@ class Scene : public AbstractScene
 
   void pick(int id, Eigen::Vector2f position);
 
+  void enableBufferDebuggingViews(bool enable);
+
  private:
   Camera camera;
   std::shared_ptr<CameraControllers> cameraControllers;
@@ -71,6 +73,7 @@ class Scene : public AbstractScene
   int width;
   int height;
   bool shouldResize = false;
+  bool showBufferDebuggingViews = false;
 
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);

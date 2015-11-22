@@ -169,7 +169,8 @@ void Scene::render()
   constraintBuffer->unbind();
 
   glAssert(gl->glViewport(0, 0, width, height));
-  renderDebuggingViews(renderData);
+  if (showBufferDebuggingViews)
+    renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 
@@ -278,5 +279,10 @@ void Scene::doPick()
   label.anchorPosition = toVector3f(positionWorld);
 
   labels->update(label);
+}
+
+void Scene::enableBufferDebuggingViews(bool enable)
+{
+  showBufferDebuggingViews = enable;
 }
 
