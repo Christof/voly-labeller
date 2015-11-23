@@ -34,21 +34,22 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
                                  Eigen::Vector2i lastLabelSize)
 {
-  Eigen::Vector2i halfSize = lastLabelSize / 2;
+  // directly include label size to circumvent dilation
+  Eigen::Vector2i size = lastLabelSize / 2 + labelSize / 2;
 
   polygon oldLabel;
   oldLabel.outer().push_back(
-      Eigen::Vector2i(lastLabelPosition.x() - halfSize.x(),
-                      lastLabelPosition.y() - halfSize.y()));
+      Eigen::Vector2i(lastLabelPosition.x() - size.x(),
+                      lastLabelPosition.y() - size.y()));
   oldLabel.outer().push_back(
-      Eigen::Vector2i(lastLabelPosition.x() + halfSize.x(),
-                      lastLabelPosition.y() - halfSize.y()));
+      Eigen::Vector2i(lastLabelPosition.x() + size.x(),
+                      lastLabelPosition.y() - size.y()));
   oldLabel.outer().push_back(
-      Eigen::Vector2i(lastLabelPosition.x() + halfSize.x(),
-                      lastLabelPosition.y() + halfSize.y()));
+      Eigen::Vector2i(lastLabelPosition.x() + size.x(),
+                      lastLabelPosition.y() + size.y()));
   oldLabel.outer().push_back(
-      Eigen::Vector2i(lastLabelPosition.x() - halfSize.x(),
-                      lastLabelPosition.y() + halfSize.y()));
+      Eigen::Vector2i(lastLabelPosition.x() - size.x(),
+                      lastLabelPosition.y() + size.y()));
 
   int border = 2;
   polygon newLabelDilation;
