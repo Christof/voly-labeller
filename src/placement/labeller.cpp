@@ -69,7 +69,10 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
-  // TODO(SIR): iterate through labels specific order according to apollonius.
+  std::map<int, Eigen::Vector2i> labelSizesForBuffer;
+  std::map<int, Eigen::Vector2i> anchors2DForBuffer;
+  std::map<int, Eigen::Vector2i> labelPositionsForBuffer;
+
   for (size_t i = 0; i < insertionOrder.size(); ++i)
   {
     int id = insertionOrder[i];
@@ -84,6 +87,21 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(
             Eigen::Vector2i(width, height));
+    labelSizesForBuffer[id] = labelSizeForBuffer;
+
+    Eigen::Vector2i anchor2DForBuffer =
+        toPixel(anchor2D, bufferSize).cast<int>();
+    anchors2DForBuffer[id] = anchor2DForBuffer;
+
+    if (i == 3)
+    for (size_t insertedLabelIndex = 0; insertedLabelIndex < i;
+         ++insertedLabelIndex)
+    {
+      int oldId = insertionOrder[insertedLabelIndex];
+      constraintUpdater->addLabel(
+          anchor2DForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
+          labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
+    }
 
     auto newPosition = costFunctionCalculator.calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
@@ -92,24 +110,10 @@ Labeller::update(const LabellerFrameData &frameData)
     float newXPosition = std::get<0>(newPosition);
     float newYPosition = std::get<1>(newPosition);
 
+    labelPositionsForBuffer[id] = Eigen::Vector2i(newXPosition, newYPosition);
+
     occupancyUpdater->addLabel(newXPosition, newYPosition,
                                labelSizeForBuffer.x(), labelSizeForBuffer.y());
-
-    if (i + 1 < insertionOrder.size())
-    {
-      int nextId = insertionOrder[i + 1];
-      auto nextLabel = labels->getById(nextId);
-      Eigen::Vector2i nextAnchor2D =
-          toPixel(frameData.project(nextLabel.anchorPosition), bufferSize)
-              .cast<int>();
-      Eigen::Vector2i nextLabelSizeForBuffer =
-          nextLabel.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(
-              Eigen::Vector2i(width, height));
-      constraintUpdater->addLabel(
-          nextAnchor2D.cast<int>(), nextLabelSizeForBuffer,
-          toPixel(anchor2D, bufferSize).cast<int>(),
-          Eigen::Vector2i(newXPosition, newYPosition), labelSizeForBuffer);
-    }
 
     float newXNDC = (newXPosition / bufferSize.x() - 0.5f) * 2.0f;
     float newYNDC = (newYPosition / bufferSize.y() - 0.5f) * 2.0f;
