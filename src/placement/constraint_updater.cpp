@@ -13,6 +13,7 @@ BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 
 // ccw, open polygon
 typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
+typedef bg::model::multi_polygon<polygon> mpolygon;
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
@@ -51,10 +52,10 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 {
   // directly include label size to circumvent dilation
   int border = 2;
-  Eigen::Vector2i size =
-      lastLabelSize / 2 + labelSize / 2 + Eigen::Vector2i(border, border);
+  Eigen::Vector2i size = labelSize / 2 + Eigen::Vector2i(border, border);
 
-  polygon oldLabel = createBoxPolygon(lastLabelPosition, size);
+  polygon oldLabel =
+      createBoxPolygon(lastLabelPosition, size + lastLabelSize / 2);
 
   polygon oldLabelExtruded(oldLabel);
   for (auto point : oldLabel.outer())
@@ -62,11 +63,25 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
     Eigen::Vector2i p = anchorPosition + 1000 * (point - anchorPosition);
     oldLabelExtruded.outer().push_back(p);
   }
-
   polygon oldLabelExtrudedConvexHull;
   bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
-
   drawPolygon(oldLabelExtrudedConvexHull.outer());
+
+  polygon aroundOldAnchor = createBoxPolygon(lastAnchorPosition, size);
+  polygon aroundOldLabelCenter = createBoxPolygon(lastLabelPosition, size);
+  mpolygon aroundCombined({ aroundOldAnchor, aroundOldLabelCenter });
+  polygon aroundCombinedConvex;
+  bg::convex_hull(aroundCombined, aroundCombinedConvex);
+
+  polygon connectorPolygon(aroundCombinedConvex);
+  for (auto point : aroundCombinedConvex.outer())
+  {
+    Eigen::Vector2i dir = point - anchorPosition;
+    connectorPolygon.outer().push_back(anchorPosition + 1000 * dir);
+  }
+  polygon connectorPolygonConvex;
+  bg::convex_hull(connectorPolygon, connectorPolygonConvex);
+  drawPolygon(connectorPolygonConvex.outer());
 }
 
 void ConstraintUpdater::drawPolygon(std::vector<Eigen::Vector2i> polygon)
