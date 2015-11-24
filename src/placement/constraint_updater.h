@@ -23,6 +23,8 @@ class ConstraintUpdater
                 Eigen::Vector2i lastLabelPosition,
                 Eigen::Vector2i lastLabelSize);
 
+  void clear();
+
  private:
   Graphics::Gl *gl;
   std::shared_ptr<Graphics::ShaderManager> shaderManager;

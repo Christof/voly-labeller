@@ -84,6 +84,13 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   drawPolygon(connectorPolygonConvex.outer());
 }
 
+void ConstraintUpdater::clear()
+{
+  gl->glViewport(0, 0, width, height);
+  gl->glClearColor(0, 0, 0, 0);
+  gl->glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void ConstraintUpdater::drawPolygon(std::vector<Eigen::Vector2i> polygon)
 {
   std::vector<float> positions;
