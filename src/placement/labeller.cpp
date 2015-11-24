@@ -93,7 +93,7 @@ Labeller::update(const LabellerFrameData &frameData)
         toPixel(anchor2D, bufferSize).cast<int>();
     anchors2DForBuffer[id] = anchor2DForBuffer;
 
-    if (i == 3)
+    constraintUpdater->clear();
     for (size_t insertedLabelIndex = 0; insertedLabelIndex < i;
          ++insertedLabelIndex)
     {

@@ -158,10 +158,6 @@ void Scene::render()
   textureMapperManager->update();
 
   constraintBuffer->bind();
-  glAssert(gl->glViewport(0, 0, textureMapperManager->getBufferSize(),
-                          textureMapperManager->getBufferSize()));
-  gl->glClearColor(0, 0, 0, 0);
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT));
 
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
