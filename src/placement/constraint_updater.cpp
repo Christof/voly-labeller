@@ -50,12 +50,10 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
                                  Eigen::Vector2i lastLabelSize)
 {
-  // directly include label size to circumvent dilation
-  int border = 2;
-  Eigen::Vector2i size = labelSize / 2 + Eigen::Vector2i(border, border);
+  // int border = 2;
+  // Eigen::Vector2i size = labelSize / 2;
 
-  polygon oldLabel =
-      createBoxPolygon(lastLabelPosition, size + lastLabelSize / 2);
+  polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
   polygon oldLabelExtruded(oldLabel);
   for (auto point : oldLabel.outer())
@@ -63,25 +61,23 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
     Eigen::Vector2i p = anchorPosition + 1000 * (point - anchorPosition);
     oldLabelExtruded.outer().push_back(p);
   }
+
   polygon oldLabelExtrudedConvexHull;
   bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
   drawPolygon(oldLabelExtrudedConvexHull.outer());
 
-  polygon aroundOldAnchor = createBoxPolygon(lastAnchorPosition, size);
-  polygon aroundOldLabelCenter = createBoxPolygon(lastLabelPosition, size);
-  mpolygon aroundCombined({ aroundOldAnchor, aroundOldLabelCenter });
-  polygon aroundCombinedConvex;
-  bg::convex_hull(aroundCombined, aroundCombinedConvex);
+  polygon connectorPolygon;
+  connectorPolygon.outer().push_back(lastAnchorPosition);
+  Eigen::Vector2i throughLastAnchor =
+      anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
+  connectorPolygon.outer().push_back(throughLastAnchor);
 
-  polygon connectorPolygon(aroundCombinedConvex);
-  for (auto point : aroundCombinedConvex.outer())
-  {
-    Eigen::Vector2i dir = point - anchorPosition;
-    connectorPolygon.outer().push_back(anchorPosition + 1000 * dir);
-  }
-  polygon connectorPolygonConvex;
-  bg::convex_hull(connectorPolygon, connectorPolygonConvex);
-  drawPolygon(connectorPolygonConvex.outer());
+  Eigen::Vector2i throughLastLabel =
+      anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
+  connectorPolygon.outer().push_back(throughLastLabel);
+  connectorPolygon.outer().push_back(lastLabelPosition);
+
+  drawPolygon(connectorPolygon.outer());
 }
 
 void ConstraintUpdater::clear()
