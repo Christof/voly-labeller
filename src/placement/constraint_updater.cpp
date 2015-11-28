@@ -129,6 +129,16 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
       dilated, newLabelSet, oldLabelSet);
 
+  std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
+  dilated.get(polys);
+  std::vector<boost::polygon::point_data<int>> points(polys[0].begin(), polys[0].end());
+  std::vector<Eigen::Vector2i> ps;
+  for (auto &p : points)
+  {
+    ps.push_back(Eigen::Vector2i(p.x(), p.y()));
+  }
+  drawPolygon(ps);
+
   polygon connectorPolygon;
   connectorPolygon.outer().push_back(lastAnchorPosition);
   Eigen::Vector2i throughLastAnchor =
