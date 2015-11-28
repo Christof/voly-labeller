@@ -3,6 +3,7 @@
 #include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
+#include <boost/polygon/polygon.hpp>
 #include <vector>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
@@ -14,6 +15,49 @@ BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 // ccw, open polygon
 typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
 typedef bg::model::multi_polygon<polygon> mpolygon;
+
+namespace boost
+{
+namespace polygon
+{
+template <> struct geometry_concept<Eigen::Vector2i>
+{
+  typedef point_concept type;
+};
+
+// Then we specialize the gtl point traits for our point type
+template <> struct point_traits<Eigen::Vector2i>
+{
+  typedef int coordinate_type;
+
+  static inline coordinate_type get(const Eigen::Vector2i &point,
+                                    orientation_2d orient)
+  {
+    if (orient == HORIZONTAL)
+      return point.x();
+    return point.y();
+  }
+};
+
+template <> struct point_mutable_traits<Eigen::Vector2i>
+{
+  typedef int coordinate_type;
+
+  static inline void set(Eigen::Vector2i &point, orientation_2d orient,
+                         int value)
+  {
+    if (orient == HORIZONTAL)
+      point.x() = value;
+    else
+      point.y() = value;
+  }
+  static inline Eigen::Vector2i construct(int x_value, int y_value)
+  {
+    return Eigen::Vector2i(x_value, y_value);
+  }
+};
+}
+}
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
@@ -64,7 +108,26 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 
   polygon oldLabelExtrudedConvexHull;
   bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
-  drawPolygon(oldLabelExtrudedConvexHull.outer());
+  // drawPolygon(oldLabelExtrudedConvexHull.outer());
+  //
+  polygon newLabel = createBoxPolygon(Eigen::Vector2i(0, 0), labelSize / 2);
+
+  boost::polygon::polygon_with_holes_data<int> newLabelPoly;
+  boost::polygon::set_points(newLabelPoly, newLabel.outer().begin(),
+                             newLabel.outer().end());
+  boost::polygon::polygon_set_data<int> newLabelSet;
+  newLabelSet.insert(newLabelPoly);
+
+  boost::polygon::polygon_with_holes_data<int> oldLabelPoly;
+  boost::polygon::set_points(oldLabelPoly,
+                             oldLabelExtrudedConvexHull.outer().begin(),
+                             oldLabelExtrudedConvexHull.outer().end());
+  boost::polygon::polygon_set_data<int> oldLabelSet;
+  oldLabelSet.insert(oldLabelPoly);
+
+  boost::polygon::polygon_set_data<int> dilated;
+  boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
+      dilated, newLabelSet, oldLabelSet);
 
   polygon connectorPolygon;
   connectorPolygon.outer().push_back(lastAnchorPosition);
