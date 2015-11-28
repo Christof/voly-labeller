@@ -44,6 +44,28 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
+boost::polygon::polygon_with_holes_data<int> minkowskiSum(const polygon &a,
+                                                           const polygon &b)
+{
+  boost::polygon::polygon_with_holes_data<int> aPoly;
+  boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
+
+  boost::polygon::polygon_with_holes_data<int> bPoly;
+  boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
+
+  boost::polygon::polygon_set_data<int> dilated;
+  boost::polygon::detail::minkowski_offset<int>::convolve_two_point_sequences(
+      dilated, boost::polygon::begin_points(aPoly),
+      boost::polygon::end_points(aPoly), boost::polygon::begin_points(bPoly),
+      boost::polygon::end_points(bPoly));
+
+  std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
+  dilated.get(polys);
+  assert(polys.size() == 1);
+
+  return polys[0];
+}
+
 void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i labelSize,
                                  Eigen::Vector2i lastAnchorPosition,
@@ -67,31 +89,11 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 
   polygon newLabel = createBoxPolygon(Eigen::Vector2i(0, 0), labelSize / 2);
 
-  boost::polygon::polygon_with_holes_data<int> newLabelPoly;
-  boost::polygon::set_points(newLabelPoly, newLabel.outer().begin(),
-                             newLabel.outer().end());
-
-  boost::polygon::polygon_with_holes_data<int> oldLabelPoly;
-  boost::polygon::set_points(oldLabelPoly,
-                             oldLabelExtrudedConvexHull.outer().begin(),
-                             oldLabelExtrudedConvexHull.outer().end());
-
-  boost::polygon::polygon_set_data<int> dilated;
-  boost::polygon::detail::minkowski_offset<int>::convolve_two_point_sequences(
-      dilated, boost::polygon::begin_points(newLabelPoly),
-      boost::polygon::end_points(newLabelPoly),
-      boost::polygon::begin_points(oldLabelPoly),
-      boost::polygon::end_points(oldLabelPoly));
-
-  std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
-  dilated.get(polys);
-  assert(polys.size() == 1);
-  for (size_t i = 0; i < polys.size(); ++i)
-  {
-    std::vector<boost::polygon::point_data<int>> points(polys[i].begin(),
-                                                        polys[i].end());
-    drawPolygon(points);
-  }
+  auto dilatedOldLabelExtruded =
+      minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
+  std::vector<boost::polygon::point_data<int>> points(
+      dilatedOldLabelExtruded.begin(), dilatedOldLabelExtruded.end());
+  drawPolygon(points);
   drawPolygon(oldLabelExtrudedConvexHull.outer());
 
   polygon connectorPolygon;
