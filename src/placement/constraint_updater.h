@@ -34,7 +34,8 @@ class ConstraintUpdater
   int shaderId;
   Eigen::Matrix4f pixelToNDC;
 
-  void drawPolygon(std::vector<Eigen::Vector2i> polygon);
+  template <class T>
+  void drawPolygon(std::vector<T> polygon);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
