@@ -115,19 +115,18 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   boost::polygon::polygon_with_holes_data<int> newLabelPoly;
   boost::polygon::set_points(newLabelPoly, newLabel.outer().begin(),
                              newLabel.outer().end());
-  boost::polygon::polygon_set_data<int> newLabelSet;
-  newLabelSet.insert(newLabelPoly);
 
   boost::polygon::polygon_with_holes_data<int> oldLabelPoly;
   boost::polygon::set_points(oldLabelPoly,
                              oldLabelExtrudedConvexHull.outer().begin(),
                              oldLabelExtrudedConvexHull.outer().end());
-  boost::polygon::polygon_set_data<int> oldLabelSet;
-  oldLabelSet.insert(oldLabelPoly);
 
   boost::polygon::polygon_set_data<int> dilated;
-  boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
-      dilated, newLabelSet, oldLabelSet);
+  boost::polygon::detail::minkowski_offset<int>::convolve_two_point_sequences(
+      dilated, boost::polygon::begin_points(newLabelPoly),
+      boost::polygon::end_points(newLabelPoly),
+      boost::polygon::begin_points(oldLabelPoly),
+      boost::polygon::end_points(oldLabelPoly));
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
