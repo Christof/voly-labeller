@@ -107,6 +107,11 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   connectorPolygon.outer().push_back(throughLastLabel);
   connectorPolygon.outer().push_back(lastLabelPosition);
 
+  auto dilatedConnector =
+      minkowskiSum(connectorPolygon, newLabel);
+  std::vector<boost::polygon::point_data<int>> pointsConnector(
+      dilatedConnector.begin(), dilatedConnector.end());
+  drawPolygon(pointsConnector);
   drawPolygon(connectorPolygon.outer());
 }
 
