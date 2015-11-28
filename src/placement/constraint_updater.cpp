@@ -108,8 +108,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 
   polygon oldLabelExtrudedConvexHull;
   bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
-  // drawPolygon(oldLabelExtrudedConvexHull.outer());
-  //
+
   polygon newLabel = createBoxPolygon(Eigen::Vector2i(0, 0), labelSize / 2);
 
   boost::polygon::polygon_with_holes_data<int> newLabelPoly;
@@ -130,9 +129,14 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
-  std::vector<boost::polygon::point_data<int>> points(polys[0].begin(),
-                                                      polys[0].end());
-  drawPolygon(points);
+  assert(polys.size() == 1);
+  for (size_t i = 0; i < polys.size(); ++i)
+  {
+    std::vector<boost::polygon::point_data<int>> points(polys[i].begin(),
+                                                        polys[i].end());
+    drawPolygon(points);
+  }
+  drawPolygon(oldLabelExtrudedConvexHull.outer());
 
   polygon connectorPolygon;
   connectorPolygon.outer().push_back(lastAnchorPosition);
