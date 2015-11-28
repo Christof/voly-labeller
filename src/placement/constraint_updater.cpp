@@ -7,57 +7,13 @@
 #include <vector>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
+BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
+#include "./boost_polygon_concepts.h"
 
 namespace bg = boost::geometry;
 
-BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
-
 // ccw, open polygon
 typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
-typedef bg::model::multi_polygon<polygon> mpolygon;
-
-namespace boost
-{
-namespace polygon
-{
-template <> struct geometry_concept<Eigen::Vector2i>
-{
-  typedef point_concept type;
-};
-
-// Then we specialize the gtl point traits for our point type
-template <> struct point_traits<Eigen::Vector2i>
-{
-  typedef int coordinate_type;
-
-  static inline coordinate_type get(const Eigen::Vector2i &point,
-                                    orientation_2d orient)
-  {
-    if (orient == HORIZONTAL)
-      return point.x();
-    return point.y();
-  }
-};
-
-template <> struct point_mutable_traits<Eigen::Vector2i>
-{
-  typedef int coordinate_type;
-
-  static inline void set(Eigen::Vector2i &point, orientation_2d orient,
-                         int value)
-  {
-    if (orient == HORIZONTAL)
-      point.x() = value;
-    else
-      point.y() = value;
-  }
-  static inline Eigen::Vector2i construct(int x_value, int y_value)
-  {
-    return Eigen::Vector2i(x_value, y_value);
-  }
-};
-}
-}
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
