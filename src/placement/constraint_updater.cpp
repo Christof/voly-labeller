@@ -45,7 +45,7 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
 }
 
 boost::polygon::polygon_with_holes_data<int> minkowskiSum(const polygon &a,
-                                                           const polygon &b)
+                                                          const polygon &b)
 {
   boost::polygon::polygon_with_holes_data<int> aPoly;
   boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
@@ -72,8 +72,6 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
                                  Eigen::Vector2i lastLabelSize)
 {
-  // int border = 2;
-  // Eigen::Vector2i size = labelSize / 2;
 
   polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
@@ -87,7 +85,9 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   polygon oldLabelExtrudedConvexHull;
   bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
 
-  polygon newLabel = createBoxPolygon(Eigen::Vector2i(0, 0), labelSize / 2);
+  int border = 2;
+  polygon newLabel = createBoxPolygon(
+      Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
   auto dilatedOldLabelExtruded =
       minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
@@ -107,8 +107,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   connectorPolygon.outer().push_back(throughLastLabel);
   connectorPolygon.outer().push_back(lastLabelPosition);
 
-  auto dilatedConnector =
-      minkowskiSum(connectorPolygon, newLabel);
+  auto dilatedConnector = minkowskiSum(connectorPolygon, newLabel);
   std::vector<boost::polygon::point_data<int>> pointsConnector(
       dilatedConnector.begin(), dilatedConnector.end());
   drawPolygon(pointsConnector);
