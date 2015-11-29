@@ -78,7 +78,7 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 
   textureMapperManager->resize(width, height);
-  textureMapperManager->initialize(gl, fbo);
+  textureMapperManager->initialize(gl, fbo, constraintBuffer);
 
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
       gl, managers->getShaderManager(), textureMapperManager->getBufferSize(),
