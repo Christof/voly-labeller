@@ -54,10 +54,12 @@ boost::polygon::polygon_with_holes_data<int> minkowskiSum(const polygon &a,
   boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
 
   boost::polygon::polygon_set_data<int> dilated;
-  boost::polygon::detail::minkowski_offset<int>::convolve_two_point_sequences(
-      dilated, boost::polygon::begin_points(aPoly),
-      boost::polygon::end_points(aPoly), boost::polygon::begin_points(bPoly),
-      boost::polygon::end_points(bPoly));
+  boost::polygon::polygon_set_data<int> aPolys;
+  aPolys.insert(aPoly);
+  boost::polygon::polygon_set_data<int> bPolys;
+  bPolys.insert(bPoly);
+  boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
+      dilated, aPolys, bPolys);
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
