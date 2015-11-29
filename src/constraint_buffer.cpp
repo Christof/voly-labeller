@@ -8,6 +8,8 @@ ConstraintBuffer::~ConstraintBuffer()
 void ConstraintBuffer::initialize(Graphics::Gl *gl, int width, int height)
 {
   this->gl = gl;
+  this->width = width;
+  this->height = height;
 
   glAssert(gl->glGenFramebuffers(1, &framebuffer));
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
@@ -47,6 +49,16 @@ void ConstraintBuffer::bindTexture(unsigned int textureUnit)
 unsigned int ConstraintBuffer::getRenderTextureId()
 {
   return renderTexture;
+}
+
+int ConstraintBuffer::getWidth()
+{
+  return width;
+}
+
+int ConstraintBuffer::getHeight()
+{
+  return height;
 }
 
 void ConstraintBuffer::resizeAndSetColorAttachment(int width, int height)

@@ -23,10 +23,15 @@ class ConstraintBuffer
   void bindTexture(unsigned int textureUnit);
   unsigned int getRenderTextureId();
 
+  int getWidth();
+  int getHeight();
+
  private:
   Graphics::Gl *gl;
   unsigned int framebuffer = 0;
   unsigned int renderTexture = 0;
+  int width;
+  int height;
 
   void resizeAndSetColorAttachment(int width, int height);
   void resizeTexture(int texture, int width, int height, unsigned int component,
