@@ -44,8 +44,8 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
-boost::polygon::polygon_with_holes_data<int> minkowskiSum(const polygon &a,
-                                                          const polygon &b)
+std::vector<boost::polygon::polygon_with_holes_data<int>>
+minkowskiSum(const polygon &a, const polygon &b)
 {
   boost::polygon::polygon_with_holes_data<int> aPoly;
   boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
@@ -63,9 +63,8 @@ boost::polygon::polygon_with_holes_data<int> minkowskiSum(const polygon &a,
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
-  assert(polys.size() == 1);
 
-  return polys[0];
+  return polys;
 }
 
 void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
@@ -93,10 +92,11 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
 
   auto dilatedOldLabelExtruded =
       minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
-  std::vector<boost::polygon::point_data<int>> points(
-      dilatedOldLabelExtruded.begin(), dilatedOldLabelExtruded.end());
-  drawPolygon(points);
-  drawPolygon(oldLabelExtrudedConvexHull.outer());
+  for (auto &p : dilatedOldLabelExtruded)
+  {
+    std::vector<boost::polygon::point_data<int>> points(p.begin(), p.end());
+    drawPolygon(points);
+  }
 
   polygon connectorPolygon;
   connectorPolygon.outer().push_back(lastAnchorPosition);
@@ -110,10 +110,12 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   connectorPolygon.outer().push_back(lastLabelPosition);
 
   auto dilatedConnector = minkowskiSum(connectorPolygon, newLabel);
-  std::vector<boost::polygon::point_data<int>> pointsConnector(
-      dilatedConnector.begin(), dilatedConnector.end());
-  drawPolygon(pointsConnector);
-  drawPolygon(connectorPolygon.outer());
+  for (auto &p : dilatedConnector)
+  {
+    std::vector<boost::polygon::point_data<int>> pointsConnector(p.begin(),
+                                                                 p.end());
+    drawPolygon(pointsConnector);
+  }
 }
 
 void ConstraintUpdater::clear()
