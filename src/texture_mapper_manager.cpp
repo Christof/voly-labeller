@@ -100,6 +100,12 @@ TextureMapperManager::getApolloniusTextureMapper()
   return apolloniusTextureMapper;
 }
 
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getConstraintTextureMapper()
+{
+  return constraintTextureMapper;
+}
+
 void TextureMapperManager::cleanup()
 {
   occupancy.release();
@@ -110,6 +116,7 @@ void TextureMapperManager::cleanup()
   occupancyTextureMapper.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
+  constraintTextureMapper.reset();
 }
 
 void TextureMapperManager::saveOccupancy()

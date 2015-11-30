@@ -39,6 +39,7 @@ class TextureMapperManager
   std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
   std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
 
   void cleanup();
 
