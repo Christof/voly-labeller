@@ -87,7 +87,8 @@ void Scene::initialize()
   placementLabeller->initialize(
       textureMapperManager->getOccupancyTextureMapper(),
       textureMapperManager->getDistanceTransformTextureMapper(),
-      textureMapperManager->getApolloniusTextureMapper(), constraintUpdater);
+      textureMapperManager->getApolloniusTextureMapper(),
+      textureMapperManager->getConstraintTextureMapper(), constraintUpdater);
 }
 
 void Scene::cleanup()

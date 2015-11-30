@@ -114,6 +114,18 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>
   }
 };
 
+CostFunctionCalculator::CostFunctionCalculator(
+    std::shared_ptr<CudaArrayProvider> constraintImage)
+  : constraintImage(constraintImage)
+{
+}
+
+CostFunctionCalculator::~CostFunctionCalculator()
+{
+  if (constraints)
+    cudaDestroyTextureObject(constraints);
+}
+
 void CostFunctionCalculator::resize(int width, int height)
 {
   this->width = width;
@@ -136,6 +148,9 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
 {
+  if (!constraints)
+    createTextureObject();
+
   assert(textureWidth * textureHeight == occupancySummedAreaTable.size());
 
   float widthFactor = static_cast<float>(textureWidth) / width;
@@ -162,5 +177,23 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
 
   std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
   return std::make_tuple(cost.x, cost.y);
+}
+
+void CostFunctionCalculator::createTextureObject()
+{
+  constraintImage->map();
+
+  auto resDesc = constraintImage->getResourceDesc();
+  struct cudaTextureDesc texDesc;
+  memset(&texDesc, 0, sizeof(texDesc));
+  texDesc.addressMode[0] = cudaAddressModeWrap;
+  texDesc.addressMode[1] = cudaAddressModeWrap;
+  texDesc.filterMode = cudaFilterModePoint;
+  texDesc.readMode = cudaReadModeElementType;
+  texDesc.normalizedCoords = 0;
+
+  cudaCreateTextureObject(&constraints, &resDesc, &texDesc, NULL);
+
+  constraintImage->unmap();
 }
 

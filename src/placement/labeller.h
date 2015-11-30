@@ -33,6 +33,7 @@ class Labeller
   initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
+             std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
              std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
   void setInsertionOrder(std::vector<int> ids);
@@ -47,7 +48,7 @@ class Labeller
 
  private:
   std::shared_ptr<Labels> labels;
-  CostFunctionCalculator costFunctionCalculator;
+  std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;

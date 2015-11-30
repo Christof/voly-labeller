@@ -8,6 +8,7 @@
 #include "./apollonius.h"
 #include "./occupancy_updater.h"
 #include "./constraint_updater.h"
+#include "../utils/memory.h"
 
 namespace Placement
 {
@@ -22,6 +23,7 @@ void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
+    std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
     std::shared_ptr<ConstraintUpdater> constraintUpdater)
 {
   qCInfo(plChan) << "Initialize";
@@ -34,8 +36,11 @@ void Labeller::initialize(
   this->apolloniusTextureMapper = apolloniusTextureMapper;
   this->constraintUpdater = constraintUpdater;
 
-  costFunctionCalculator.setTextureSize(occupancyTextureMapper->getWidth(),
-                                        occupancyTextureMapper->getHeight());
+  costFunctionCalculator =
+      std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
+  costFunctionCalculator->resize(width, height);
+  costFunctionCalculator->setTextureSize(occupancyTextureMapper->getWidth(),
+                                         occupancyTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()
@@ -43,6 +48,7 @@ void Labeller::cleanup()
   occupancySummedAreaTable.reset();
   apolloniusTextureMapper.reset();
   occupancyUpdater.reset();
+  costFunctionCalculator.reset();
 }
 
 void Labeller::setInsertionOrder(std::vector<int> ids)
@@ -103,7 +109,7 @@ Labeller::update(const LabellerFrameData &frameData)
           labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
     }
 
-    auto newPosition = costFunctionCalculator.calculateForLabel(
+    auto newPosition = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
         label.size.y());
 
@@ -133,7 +139,8 @@ void Labeller::resize(int width, int height)
   this->width = width;
   this->height = height;
 
-  costFunctionCalculator.resize(width, height);
+  if (costFunctionCalculator.get())
+    costFunctionCalculator->resize(width, height);
 }
 
 std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
