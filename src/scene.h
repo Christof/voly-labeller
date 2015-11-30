@@ -77,6 +77,7 @@ class Scene : public AbstractScene
   bool showBufferDebuggingViews = false;
   bool showConstraintOverlay = false;
 
+  void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
@@ -85,6 +86,7 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void renderDebuggingViews(const RenderData &renderData);
+  RenderData createRenderData();
   void doPick();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;

@@ -130,28 +130,9 @@ void Scene::render()
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  fbo->bind();
-  glAssert(gl->glViewport(0, 0, width, height));
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+  RenderData renderData = createRenderData();
 
-  RenderData renderData;
-  renderData.projectionMatrix = camera.getProjectionMatrix();
-  renderData.viewMatrix = camera.getViewMatrix();
-  renderData.cameraPosition = camera.getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.windowPixelSize = Eigen::Vector2f(width, height);
-
-  haBuffer->clearAndPrepare(managers);
-
-  nodes->render(gl, managers, renderData);
-
-  managers->getObjectManager()->render(renderData);
-
-  haBuffer->render(managers, renderData);
-
-  // doPick();
-
-  fbo->unbind();
+  renderNodesWithHABufferIntoFBO(renderData);
 
   glAssert(gl->glDisable(GL_DEPTH_TEST));
   renderScreenQuad();
@@ -179,6 +160,25 @@ void Scene::render()
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 
   nodes->renderLabels(gl, managers, renderData);
+}
+
+void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
+{
+  fbo->bind();
+  glAssert(gl->glViewport(0, 0, width, height));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+  haBuffer->clearAndPrepare(managers);
+
+  nodes->render(gl, managers, renderData);
+
+  managers->getObjectManager()->render(renderData);
+
+  haBuffer->render(managers, renderData);
+
+  // doPick();
+
+  fbo->unbind();
 }
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
@@ -244,6 +244,18 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 
   forcesLabeller->resize(width, height);
+}
+
+RenderData Scene::createRenderData()
+{
+  RenderData renderData;
+  renderData.projectionMatrix = camera.getProjectionMatrix();
+  renderData.viewMatrix = camera.getViewMatrix();
+  renderData.cameraPosition = camera.getPosition();
+  renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  renderData.windowPixelSize = Eigen::Vector2f(width, height);
+
+  return renderData;
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)
