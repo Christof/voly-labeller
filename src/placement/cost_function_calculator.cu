@@ -45,7 +45,10 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   float anchorX;
   float anchorY;
 
+  cudaTextureObject_t constraints;
   const float *occupancy;
+
+  const float constraintViolationCost = 1e100f;
 
   __device__ float lineLength(int x, int y) const
   {
@@ -91,6 +94,14 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   {
     int x = index % width;
     int y = index / width;
+
+    unsigned char constraintValue =
+        tex2D<unsigned char>(constraints, x + 0.5f, y + 0.5f);
+    if (constraintValue)
+    {
+      EvalResult result(x, y, constraintViolationCost);
+      return result;
+    }
 
     float distanceToAnchor = lineLength(x, y);
 
@@ -161,6 +172,7 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =
       thrust::raw_pointer_cast(occupancySummedAreaTable.data());
+  costEvaluator.constraints = constraints;
   costEvaluator.halfLabelWidth = labelWidthInPixel * 0.5f * widthFactor;
   costEvaluator.halfLabelHeight = labelHeightInPixel * 0.5f * heightFactor;
 
