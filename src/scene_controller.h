@@ -16,7 +16,7 @@ class SceneController : public QObject
 {
   Q_OBJECT
  public:
-  SceneController(std::shared_ptr<Scene> scene);
+  explicit SceneController(std::shared_ptr<Scene> scene);
 
  public slots:
   void toggleBufferViews();

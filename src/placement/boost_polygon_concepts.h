@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <boost/polygon/polygon.hpp>
 #include <boost/geometry.hpp>
+#include <vector>
 
 typedef boost::geometry::model::polygon<Eigen::Vector2i, false, false> poly;
 
@@ -48,12 +49,7 @@ template <> struct point_mutable_traits<Eigen::Vector2i>
     return Eigen::Vector2i(x_value, y_value);
   }
 };
-}
-}
-namespace boost
-{
-namespace polygon
-{
+
 // first register CPolygon as a polygon_concept type
 template <> struct geometry_concept<poly>
 {
@@ -102,7 +98,7 @@ template <> struct polygon_mutable_traits<poly>
     return t;
   }
 };
-}
-}
+}  // namespace polygon
+}  // namespace boost
 
 #endif  // SRC_PLACEMENT_BOOST_POLYGON_CONCEPTS_H_

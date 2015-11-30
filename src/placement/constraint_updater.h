@@ -3,6 +3,7 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
+#include <vector>
 #include "../graphics/gl.h"
 #include "../graphics/shader_manager.h"
 

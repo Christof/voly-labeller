@@ -73,7 +73,6 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
                                  Eigen::Vector2i lastLabelSize)
 {
-
   polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
   polygon oldLabelExtruded(oldLabel);
