@@ -144,3 +144,10 @@ add_custom_target(cov-open xdg-open ./coverage-output/index.html)
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
 add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
 
+# Profiling
+set(executable "./${PROJECT_NAME}")
+set(profile profile_${PROJECT_NAME})
+add_custom_target(profile_${PROJECT_NAME}
+  COMMAND LD_PRELOAD=/usr/local/lib/libprofiler.so CPUPROFILE=${profile} ${executable} \${PARAMS} && pprof ${executable} ${profile} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+add_custom_target(callgrind_${PROJECT_NAME}
+  COMMAND pprof --callgrind ${executable} ${profile} > ${profile}.callgrind && kcachegrind ${profile}.callgrind WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
