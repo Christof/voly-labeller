@@ -44,6 +44,101 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
+typedef boost::polygon::point_data<int> point;
+typedef boost::polygon::polygon_set_data<int> polygon_set;
+typedef boost::polygon::polygon_with_holes_data<int> ppolygon;
+typedef std::pair<point, point> edge;
+
+static void convolve_two_segments(std::vector<point> &figure, const edge &a,
+                                  const edge &b)
+{
+  figure.clear();
+  figure.push_back(point(a.first));
+  figure.push_back(point(a.first));
+  figure.push_back(point(a.second));
+  figure.push_back(point(a.second));
+  convolve(figure[0], b.second);
+  convolve(figure[1], b.first);
+  convolve(figure[2], b.first);
+  convolve(figure[3], b.second);
+}
+
+template <typename itrT1, typename itrT2>
+static void convolve_two_point_sequences(polygon_set &result, itrT1 ab,
+                                         itrT1 ae, itrT2 bb, itrT2 be)
+{
+  if (ab == ae || bb == be)
+    return;
+  point prev_a = *ab;
+  std::vector<point> vec;
+  ppolygon poly;
+  ++ab;
+  for (; ab != ae; ++ab)
+  {
+    point prev_b = *bb;
+    itrT2 tmpb = bb;
+    ++tmpb;
+    for (; tmpb != be; ++tmpb)
+    {
+      convolve_two_segments(vec, std::make_pair(prev_b, *tmpb),
+                            std::make_pair(prev_a, *ab));
+      set_points(poly, vec.begin(), vec.end());
+      result.insert(poly);
+      prev_b = *tmpb;
+    }
+    prev_a = *ab;
+  }
+}
+
+template <typename itrT>
+static void
+convolve_point_sequence_with_polygons(polygon_set &result, itrT b, itrT e,
+                                      const std::vector<ppolygon> &polygons)
+{
+  for (std::size_t i = 0; i < polygons.size(); ++i)
+  {
+    convolve_two_point_sequences(result, b, e, begin_points(polygons[i]),
+                                 end_points(polygons[i]));
+    for (typename boost::polygon::polygon_with_holes_traits<
+             ppolygon>::iterator_holes_type itrh = begin_holes(polygons[i]);
+         itrh != end_holes(polygons[i]); ++itrh)
+    {
+      convolve_two_point_sequences(result, b, e, begin_points(*itrh),
+                                   end_points(*itrh));
+    }
+  }
+}
+
+static void convolve_two_polygon_sets(polygon_set &result, const polygon_set &a,
+                                      const polygon_set &b)
+{
+  result.clear();
+  std::vector<ppolygon> a_polygons;
+  std::vector<ppolygon> b_polygons;
+  a.get(a_polygons);
+  b.get(b_polygons);
+  for (std::size_t ai = 0; ai < a_polygons.size(); ++ai)
+  {
+    convolve_point_sequence_with_polygons(result, begin_points(a_polygons[ai]),
+                                          end_points(a_polygons[ai]),
+                                          b_polygons);
+    for (typename boost::polygon::polygon_with_holes_traits<
+             ppolygon>::iterator_holes_type itrh = begin_holes(a_polygons[ai]);
+         itrh != end_holes(a_polygons[ai]); ++itrh)
+    {
+      convolve_point_sequence_with_polygons(result, begin_points(*itrh),
+                                            end_points(*itrh), b_polygons);
+    }
+    for (std::size_t bi = 0; bi < b_polygons.size(); ++bi)
+    {
+      ppolygon tmp_poly = a_polygons[ai];
+      result.insert(convolve(tmp_poly, *(begin_points(b_polygons[bi]))));
+      tmp_poly = b_polygons[bi];
+      result.insert(convolve(tmp_poly, *(begin_points(a_polygons[ai]))));
+    }
+  }
+}
+
 std::vector<boost::polygon::polygon_with_holes_data<int>>
 minkowskiSum(const polygon &a, const polygon &b)
 {
@@ -58,8 +153,7 @@ minkowskiSum(const polygon &a, const polygon &b)
   aPolys.insert(aPoly);
   boost::polygon::polygon_set_data<int> bPolys;
   bPolys.insert(bPoly);
-  boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
-      dilated, aPolys, bPolys);
+  convolve_two_polygon_sets(dilated, aPolys, bPolys);
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
