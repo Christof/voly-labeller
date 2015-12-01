@@ -97,13 +97,6 @@ static void convolve_point_sequence_with_polygon(polygon_set &result, itrT b,
 {
   convolve_two_point_sequences(result, b, e, begin_points(polygon),
                                end_points(polygon));
-  for (typename boost::polygon::polygon_with_holes_traits<
-           ppolygon>::iterator_holes_type itrh = begin_holes(polygon);
-       itrh != end_holes(polygon); ++itrh)
-  {
-    convolve_two_point_sequences(result, b, e, begin_points(*itrh),
-                                 end_points(*itrh));
-  }
 }
 
 static void convolve_two_polygons(polygon_set &result, const ppolygon &a,
@@ -112,13 +105,6 @@ static void convolve_two_polygons(polygon_set &result, const ppolygon &a,
   result.clear();
   convolve_point_sequence_with_polygon(result, begin_points(a), end_points(a),
                                        b);
-  for (typename boost::polygon::polygon_with_holes_traits<
-           ppolygon>::iterator_holes_type itrh = begin_holes(a);
-       itrh != end_holes(a); ++itrh)
-  {
-    convolve_point_sequence_with_polygon(result, begin_points(*itrh),
-                                         end_points(*itrh), b);
-  }
   ppolygon tmp_poly = a;
   result.insert(convolve(tmp_poly, *(begin_points(b))));
   tmp_poly = b;
