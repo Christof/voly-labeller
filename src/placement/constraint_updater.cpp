@@ -194,18 +194,16 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
     auto point = polygon[0];
     positions.push_back(point.x());
     positions.push_back(height - point.y());
-    positions.push_back(0.0f);
   }
   for (auto point : polygon)
   {
     positions.push_back(point.x());
     positions.push_back(height - point.y());
-    positions.push_back(0.0f);
   }
 
   Graphics::VertexArray *vertexArray =
-      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN);
-  vertexArray->addStream(positions);
+      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
+  vertexArray->addStream(positions, 2);
 
   RenderData renderData;
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
