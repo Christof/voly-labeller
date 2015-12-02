@@ -49,29 +49,38 @@ typedef boost::polygon::polygon_set_data<int> polygon_set;
 typedef boost::polygon::polygon_with_holes_data<int> ppolygon;
 typedef std::pair<point, point> edge;
 
-static void convolve_two_segments(std::vector<point> &figure, const edge &a,
-                                  const edge &b)
+void ConstraintUpdater::convolveTwoSegements(const edge &a, const edge &b)
 {
-  figure.clear();
-  figure.push_back(point(a.first));
-  figure.push_back(point(a.first));
-  figure.push_back(point(a.second));
-  figure.push_back(point(a.second));
-  convolve(figure[0], b.second);
-  convolve(figure[1], b.first);
-  convolve(figure[2], b.first);
-  convolve(figure[3], b.second);
+  point p = a.first;
+  convolve(p, b.second);
+  positions.push_back(p.x());
+  positions.push_back(height - p.y());
+  positions.push_back(p.x());
+  positions.push_back(height - p.y());
+
+  p = a.first;
+  convolve(p, b.first);
+  positions.push_back(p.x());
+  positions.push_back(height - p.y());
+
+  p = a.second;
+  convolve(p, b.first);
+  positions.push_back(p.x());
+  positions.push_back(height - p.y());
+
+  p = a.second;
+  convolve(p, b.second);
+  positions.push_back(p.x());
+  positions.push_back(height - p.y());
 }
 
 template <typename itrT1, typename itrT2>
-static void convolve_two_point_sequences(polygon_set &result, itrT1 ab,
-                                         itrT1 ae, itrT2 bb, itrT2 be)
+void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
+                                                  itrT2 be)
 {
   if (ab == ae || bb == be)
     return;
   point prev_a = *ab;
-  std::vector<point> vec;
-  ppolygon poly;
   ++ab;
   for (; ab != ae; ++ab)
   {
@@ -80,31 +89,22 @@ static void convolve_two_point_sequences(polygon_set &result, itrT1 ab,
     ++tmpb;
     for (; tmpb != be; ++tmpb)
     {
-      convolve_two_segments(vec, std::make_pair(prev_b, *tmpb),
-                            std::make_pair(prev_a, *ab));
-      set_points(poly, vec.begin(), vec.end());
-      result.insert(poly);
+      convolveTwoSegements(std::make_pair(prev_b, *tmpb),
+                           std::make_pair(prev_a, *ab));
       prev_b = *tmpb;
     }
     prev_a = *ab;
   }
 }
 
-template <typename itrT>
-static void convolve_point_sequence_with_polygon(polygon_set &result, itrT b,
-                                                 itrT e,
-                                                 const ppolygon &polygon)
-{
-  convolve_two_point_sequences(result, b, e, begin_points(polygon),
-                               end_points(polygon));
-}
-
-static void convolve_two_polygons(polygon_set &result, const ppolygon &a,
-                                  const ppolygon &b)
+template <typename polygon_set, typename ppolygon>
+void ConstraintUpdater::convolveTwoPolygons(polygon_set &result,
+                                            const ppolygon &a,
+                                            const ppolygon &b)
 {
   result.clear();
-  convolve_point_sequence_with_polygon(result, begin_points(a), end_points(a),
-                                       b);
+  convolveTwoPointSequences(begin_points(a), end_points(a), begin_points(b),
+                            end_points(b));
   ppolygon tmp_poly = a;
   result.insert(convolve(tmp_poly, *(begin_points(b))));
   tmp_poly = b;
@@ -112,7 +112,7 @@ static void convolve_two_polygons(polygon_set &result, const ppolygon &a,
 }
 
 std::vector<boost::polygon::polygon_with_holes_data<int>>
-minkowskiSum(const polygon &a, const polygon &b)
+ConstraintUpdater::minkowskiSum(const polygon &a, const polygon &b)
 {
   boost::polygon::polygon_with_holes_data<int> aPoly;
   boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
@@ -121,7 +121,7 @@ minkowskiSum(const polygon &a, const polygon &b)
   boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
 
   boost::polygon::polygon_set_data<int> dilated;
-  convolve_two_polygons(dilated, aPoly, bPoly);
+  convolveTwoPolygons(dilated, aPoly, bPoly);
 
   std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
   dilated.get(polys);
@@ -151,6 +151,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   polygon newLabel = createBoxPolygon(
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
+  positions.clear();
   auto dilatedOldLabelExtruded =
       minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
   for (auto &p : dilatedOldLabelExtruded)
@@ -177,6 +178,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
                                                                  p.end());
     drawPolygon(pointsConnector);
   }
+  drawElementVector(positions);
 }
 
 void ConstraintUpdater::clear()
