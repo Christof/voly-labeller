@@ -50,11 +50,9 @@ class ConstraintUpdater
   void convolveTwoSegements(const edge &a, const edge &b);
   template <typename itrT1, typename itrT2>
   void convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb, itrT2 be);
-  template <typename polygon_set, typename ppolygon>
-  void convolveTwoPolygons(polygon_set &result, const ppolygon &a,
-                           const ppolygon &b);
-  std::vector<boost::polygon::polygon_with_holes_data<int>>
-  minkowskiSum(const polygon &a, const polygon &b);
+  void convolveTwoPolygons(const ppolygon &a, const ppolygon &b);
+  void minkowskiSum(const polygon &a, const polygon &b);
+  void addPolygonToPositions(const ppolygon &polygon);
 
   template <class T> void drawPolygon(std::vector<T> polygon);
 
