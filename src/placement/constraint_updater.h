@@ -37,6 +37,8 @@ class ConstraintUpdater
 
   template <class T>
   void drawPolygon(std::vector<T> polygon);
+
+  void drawElementVector(std::vector<float> positions);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_

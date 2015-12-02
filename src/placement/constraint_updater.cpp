@@ -201,6 +201,11 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
     positions.push_back(height - point.y());
   }
 
+  drawElementVector(positions);
+}
+
+void ConstraintUpdater::drawElementVector(std::vector<float> positions)
+{
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
   vertexArray->addStream(positions, 2);
