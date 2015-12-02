@@ -1,16 +1,13 @@
 #include "./constraint_updater.h"
 #include <Eigen/Geometry>
-#include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
-#include <boost/polygon/polygon.hpp>
 #include <vector>
+#include <utility>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
-
-namespace bg = boost::geometry;
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
@@ -142,7 +139,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   }
 
   polygon oldLabelExtrudedConvexHull;
-  bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
+  boost::geometry::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
 
   int border = 2;
   polygon newLabel = createBoxPolygon(

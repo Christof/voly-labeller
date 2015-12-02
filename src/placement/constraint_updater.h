@@ -3,12 +3,12 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
-#include <vector>
-#include "../graphics/gl.h"
-#include "../graphics/shader_manager.h"
-
 #include <boost/polygon/polygon.hpp>
 #include <boost/geometry.hpp>
+#include <vector>
+#include <utility>
+#include "../graphics/gl.h"
+#include "../graphics/shader_manager.h"
 
 // ccw, closed polygon
 typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> polygon;
@@ -16,6 +16,7 @@ typedef boost::polygon::point_data<int> point;
 typedef boost::polygon::polygon_set_data<int> polygon_set;
 typedef boost::polygon::polygon_with_holes_data<int> ppolygon;
 typedef std::pair<point, point> edge;
+
 /**
  * \brief
  *
