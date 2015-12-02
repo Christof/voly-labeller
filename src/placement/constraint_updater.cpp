@@ -12,9 +12,6 @@ BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 
 namespace bg = boost::geometry;
 
-// ccw, open polygon
-typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
-
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
     int width, int height)
