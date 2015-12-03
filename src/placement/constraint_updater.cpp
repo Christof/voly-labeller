@@ -38,11 +38,6 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
-typedef boost::polygon::point_data<int> point;
-typedef boost::polygon::polygon_set_data<int> polygon_set;
-typedef boost::polygon::polygon_with_holes_data<int> ppolygon;
-typedef std::pair<point, point> edge;
-
 void ConstraintUpdater::convolveTwoSegements(const edge &a, const edge &b)
 {
   point p = a.first;
@@ -118,10 +113,10 @@ void ConstraintUpdater::addPolygonToPositions(const ppolygon &polygon)
 
 void ConstraintUpdater::minkowskiSum(const polygon &a, const polygon &b)
 {
-  boost::polygon::polygon_with_holes_data<int> aPoly;
+  ppolygon aPoly;
   boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
 
-  boost::polygon::polygon_with_holes_data<int> bPoly;
+  ppolygon bPoly;
   boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
 
   convolveTwoPolygons(aPoly, bPoly);

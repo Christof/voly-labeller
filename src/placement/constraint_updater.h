@@ -14,7 +14,7 @@
 typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> polygon;
 typedef boost::polygon::point_data<int> point;
 typedef boost::polygon::polygon_set_data<int> polygon_set;
-typedef boost::polygon::polygon_with_holes_data<int> ppolygon;
+typedef boost::polygon::polygon_data<int> ppolygon;
 typedef std::pair<point, point> edge;
 
 /**
