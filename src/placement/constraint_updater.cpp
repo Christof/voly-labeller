@@ -3,6 +3,7 @@
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
 #include <vector>
+#include <cmath>
 #include <utility>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
@@ -98,16 +99,42 @@ void ConstraintUpdater::convolveTwoPolygons(const ppolygon &a,
   addPolygonToPositions(convolve(tmp_poly, *(begin_points(a))));
 }
 
+bool hasSmallerAngle(float dir1X, float dir1Y, float dir2X, float dir2Y)
+{
+  float angle1 = std::atan2(dir1Y, dir1X);
+  float angle2 = std::atan2(dir2Y, dir2X);
+
+  return angle1 <= angle2;
+}
+
 void ConstraintUpdater::addPolygonToPositions(const ppolygon &polygon)
 {
-  std::vector<boost::polygon::point_data<int>> p(polygon.begin(), polygon.end());
-  auto iteratorBegin = p.begin();
-  positions.push_back(iteratorBegin->x());
-  positions.push_back(height - iteratorBegin->y());
-  for (auto iterator = iteratorBegin; iterator != p.end(); ++iterator)
+  auto iteratorBegin = polygon.begin();
+  float referenceX = iteratorBegin->x();
+  positions.push_back(referenceX);
+  float referenceY = iteratorBegin->y();
+  positions.push_back(height - referenceY);
+  positions.push_back(referenceX);
+  positions.push_back(height - referenceY);
+
+  std::list<std::pair<float, float>> temp;
+  for (auto iterator = ++iteratorBegin; iterator != polygon.end(); ++iterator)
   {
-    positions.push_back(iterator->x());
-    positions.push_back(height - iterator->y());
+    float diffX = iterator->x() - referenceX;
+    float diffY = iterator->y() - referenceY;
+    auto inner = temp.begin();
+    while (inner != temp.end() &&
+           hasSmallerAngle(inner->first - referenceX,
+                           inner->second - referenceY, diffX, diffY))
+      ++inner;
+
+    temp.insert(inner, 1, std::make_pair(iterator->x(), iterator->y()));
+  }
+
+  for (auto iterator = temp.cbegin(); iterator != temp.cend(); ++iterator)
+  {
+    positions.push_back(iterator->first);
+    positions.push_back(height - iterator->second);
   }
 }
 
