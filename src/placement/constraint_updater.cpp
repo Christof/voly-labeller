@@ -175,15 +175,35 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
 
   polygon connectorPolygon;
-  connectorPolygon.outer().push_back(lastAnchorPosition);
   Eigen::Vector2i throughLastAnchor =
       anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
-  connectorPolygon.outer().push_back(throughLastAnchor);
-
   Eigen::Vector2i throughLastLabel =
       anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
-  connectorPolygon.outer().push_back(throughLastLabel);
-  connectorPolygon.outer().push_back(lastLabelPosition);
+
+  // z component of cross product between
+  // (throughLastAnchor - lastAnchorPosition) x
+  // (throughLastLabel - lastAnchorPosition)
+  Eigen::Vector2f a =
+      (throughLastAnchor - lastAnchorPosition).cast<float>().normalized();
+  Eigen::Vector2f b =
+      (throughLastLabel - lastAnchorPosition).cast<float>().normalized();
+
+  float z = a.x() * b.y() - a.y() * b.x();
+
+  if (z < 0)
+  {
+    connectorPolygon.outer().push_back(lastAnchorPosition);
+    connectorPolygon.outer().push_back(throughLastAnchor);
+    connectorPolygon.outer().push_back(throughLastLabel);
+    connectorPolygon.outer().push_back(lastLabelPosition);
+  }
+  else
+  {
+    connectorPolygon.outer().push_back(lastLabelPosition);
+    connectorPolygon.outer().push_back(throughLastLabel);
+    connectorPolygon.outer().push_back(throughLastAnchor);
+    connectorPolygon.outer().push_back(lastAnchorPosition);
+  }
 
   minkowskiSum(connectorPolygon, newLabel);
 
