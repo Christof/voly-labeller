@@ -1,19 +1,14 @@
 #include "./constraint_updater.h"
 #include <Eigen/Geometry>
-#include <boost/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
-#include <boost/polygon/polygon.hpp>
 #include <vector>
+#include <cmath>
+#include <utility>
 #include "../graphics/vertex_array.h"
 #include "../graphics/render_data.h"
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
-
-namespace bg = boost::geometry;
-
-// ccw, open polygon
-typedef bg::model::polygon<Eigen::Vector2i, false, false> polygon;
 
 ConstraintUpdater::ConstraintUpdater(
     Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
@@ -44,27 +39,110 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
-std::vector<boost::polygon::polygon_with_holes_data<int>>
-minkowskiSum(const polygon &a, const polygon &b)
+template <typename edge>
+void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a,
+                                             const edge &b)
 {
-  boost::polygon::polygon_with_holes_data<int> aPoly;
-  boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
+  auto p = a.first;
+  boost::polygon::convolve(p, b.second);
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
-  boost::polygon::polygon_with_holes_data<int> bPoly;
-  boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
+  p = a.first;
+  boost::polygon::convolve(p, b.first);
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
-  boost::polygon::polygon_set_data<int> dilated;
-  boost::polygon::polygon_set_data<int> aPolys;
-  aPolys.insert(aPoly);
-  boost::polygon::polygon_set_data<int> bPolys;
-  bPolys.insert(bPoly);
-  boost::polygon::detail::minkowski_offset<int>::convolve_two_polygon_sets(
-      dilated, aPolys, bPolys);
+  p = a.second;
+  boost::polygon::convolve(p, b.first);
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
-  std::vector<boost::polygon::polygon_with_holes_data<int>> polys;
-  dilated.get(polys);
+  p = a.second;
+  boost::polygon::convolve(p, b.second);
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
+}
 
-  return polys;
+template <typename itrT1, typename itrT2>
+void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
+                                                  itrT2 be)
+{
+  if (ab == ae || bb == be)
+    return;
+
+  polygon poly;
+  auto prev_a = *ab;
+  ++ab;
+  for (; ab != ae; ++ab)
+  {
+    auto prev_b = *bb;
+    itrT2 tmpb = bb;
+    ++tmpb;
+    for (; tmpb != be; ++tmpb)
+    {
+      convolveTwoSegements(poly, std::make_pair(prev_b, *tmpb),
+                           std::make_pair(prev_a, *ab));
+      prev_b = *tmpb;
+    }
+    prev_a = *ab;
+  }
+
+  polygon convexHull;
+  boost::geometry::convex_hull(poly, convexHull);
+  drawPolygon(convexHull.outer());
+}
+
+template <typename Polygon>
+void ConstraintUpdater::convolveTwoPolygons(const Polygon &a, const Polygon &b)
+{
+  convolveTwoPointSequences(
+      boost::polygon::begin_points(a), boost::polygon::end_points(a),
+      boost::polygon::begin_points(b), boost::polygon::end_points(b));
+
+  Polygon tmp_poly = a;
+  addPolygonToPositions(
+      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(b))));
+  tmp_poly = b;
+  addPolygonToPositions(
+      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(a))));
+}
+
+bool hasSmallerAngle(float dir1X, float dir1Y, float dir2X, float dir2Y)
+{
+  float angle1 = std::atan2(dir1Y, dir1X);
+  float angle2 = std::atan2(dir2Y, dir2X);
+
+  return angle1 <= angle2;
+}
+
+template <typename Polygon>
+void ConstraintUpdater::addPolygonToPositions(const Polygon &polygon)
+{
+  auto iteratorBegin = boost::polygon::begin_points(polygon);
+  float referenceX = iteratorBegin->x();
+  positions.push_back(referenceX);
+  float referenceY = iteratorBegin->y();
+  positions.push_back(height - referenceY);
+  positions.push_back(referenceX);
+  positions.push_back(height - referenceY);
+
+  std::list<std::pair<float, float>> temp;
+  for (auto iterator = ++iteratorBegin;
+       iterator != boost::polygon::end_points(polygon); ++iterator)
+  {
+    float diffX = iterator->x() - referenceX;
+    float diffY = iterator->y() - referenceY;
+    auto inner = temp.begin();
+    while (inner != temp.end() &&
+           hasSmallerAngle(inner->first - referenceX,
+                           inner->second - referenceY, diffX, diffY))
+      ++inner;
+
+    temp.insert(inner, 1, std::make_pair(iterator->x(), iterator->y()));
+  }
+
+  for (auto iterator = temp.cbegin(); iterator != temp.cend(); ++iterator)
+  {
+    positions.push_back(iterator->first);
+    positions.push_back(height - iterator->second);
+  }
 }
 
 void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
@@ -83,38 +161,29 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   }
 
   polygon oldLabelExtrudedConvexHull;
-  bg::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
+  boost::geometry::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
 
   int border = 2;
   polygon newLabel = createBoxPolygon(
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
-  auto dilatedOldLabelExtruded =
-      minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
-  for (auto &p : dilatedOldLabelExtruded)
-  {
-    std::vector<boost::polygon::point_data<int>> points(p.begin(), p.end());
-    drawPolygon(points);
-  }
+  positions.clear();
+  convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
 
   polygon connectorPolygon;
-  connectorPolygon.outer().push_back(lastAnchorPosition);
   Eigen::Vector2i throughLastAnchor =
       anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
-  connectorPolygon.outer().push_back(throughLastAnchor);
-
   Eigen::Vector2i throughLastLabel =
       anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
+
+  connectorPolygon.outer().push_back(lastAnchorPosition);
+  connectorPolygon.outer().push_back(throughLastAnchor);
   connectorPolygon.outer().push_back(throughLastLabel);
   connectorPolygon.outer().push_back(lastLabelPosition);
 
-  auto dilatedConnector = minkowskiSum(connectorPolygon, newLabel);
-  for (auto &p : dilatedConnector)
-  {
-    std::vector<boost::polygon::point_data<int>> pointsConnector(p.begin(),
-                                                                 p.end());
-    drawPolygon(pointsConnector);
-  }
+  convolveTwoPolygons(connectorPolygon, newLabel);
+
+  drawElementVector(positions);
 }
 
 void ConstraintUpdater::clear()
@@ -132,18 +201,21 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
     auto point = polygon[0];
     positions.push_back(point.x());
     positions.push_back(height - point.y());
-    positions.push_back(0.0f);
   }
   for (auto point : polygon)
   {
     positions.push_back(point.x());
     positions.push_back(height - point.y());
-    positions.push_back(0.0f);
   }
 
+  drawElementVector(positions);
+}
+
+void ConstraintUpdater::drawElementVector(std::vector<float> positions)
+{
   Graphics::VertexArray *vertexArray =
-      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN);
-  vertexArray->addStream(positions);
+      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
+  vertexArray->addStream(positions, 2);
 
   RenderData renderData;
   renderData.modelMatrix = Eigen::Matrix4f::Identity();

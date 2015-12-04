@@ -50,7 +50,7 @@ list(APPEND LIBRARIES
   Qt5::Xml
 )
 
-find_package(Boost 1.59.0 COMPONENTS date_time filesystem system serialization REQUIRED)
+find_package(Boost 1.59.0 COMPONENTS date_time timer filesystem system serialization REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Boost_LIBRARIES})
 

@@ -4,8 +4,10 @@
 namespace Graphics
 {
 
-VertexArray::VertexArray(Gl *gl, GLenum primitiveMode)
-  : gl(gl), primitiveMode(primitiveMode)
+VertexArray::VertexArray(Gl *gl, GLenum primitiveMode,
+                         int positionElementsCount)
+  : gl(gl), primitiveMode(primitiveMode),
+    positionElementsCount(positionElementsCount)
 {
   gl->glGenVertexArrays(1, &vertexArrayId);
 }
@@ -37,7 +39,8 @@ void VertexArray::draw()
   }
 
   if (data.size() > 0)
-    gl->glDrawArrays(primitiveMode, 0, data[0]->getSize() / 3);
+    gl->glDrawArrays(primitiveMode, 0,
+                     data[0]->getSize() / positionElementsCount);
 
   for (unsigned int cnt = 0; cnt < data.size(); cnt++)
     gl->glDisableVertexAttribArray(cnt);

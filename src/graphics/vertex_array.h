@@ -22,7 +22,7 @@ namespace Graphics
 class VertexArray
 {
  public:
-  VertexArray(Gl *gl, GLenum primitiveMode);
+  VertexArray(Gl *gl, GLenum primitiveMode, int positionElementsCount = 3);
   ~VertexArray();
 
   /**
@@ -41,6 +41,7 @@ class VertexArray
   std::vector<VertexBuffer *> data;
   GLenum primitiveMode;
   GLuint vertexArrayId;
+  int positionElementsCount;
 };
 
 }  // namespace Graphics
