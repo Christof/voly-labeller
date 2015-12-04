@@ -39,7 +39,8 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
-void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a, const edge &b)
+void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a,
+                                             const edge &b)
 {
   point p = a.first;
   convolve(p, b.second);
@@ -180,30 +181,10 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   Eigen::Vector2i throughLastLabel =
       anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
 
-  // z component of cross product between
-  // (throughLastAnchor - lastAnchorPosition) x
-  // (throughLastLabel - lastAnchorPosition)
-  Eigen::Vector2f a =
-      (throughLastAnchor - lastAnchorPosition).cast<float>().normalized();
-  Eigen::Vector2f b =
-      (throughLastLabel - lastAnchorPosition).cast<float>().normalized();
-
-  float z = a.x() * b.y() - a.y() * b.x();
-
-  if (z < 0)
-  {
-    connectorPolygon.outer().push_back(lastAnchorPosition);
-    connectorPolygon.outer().push_back(throughLastAnchor);
-    connectorPolygon.outer().push_back(throughLastLabel);
-    connectorPolygon.outer().push_back(lastLabelPosition);
-  }
-  else
-  {
-    connectorPolygon.outer().push_back(lastLabelPosition);
-    connectorPolygon.outer().push_back(throughLastLabel);
-    connectorPolygon.outer().push_back(throughLastAnchor);
-    connectorPolygon.outer().push_back(lastAnchorPosition);
-  }
+  connectorPolygon.outer().push_back(lastAnchorPosition);
+  connectorPolygon.outer().push_back(throughLastAnchor);
+  connectorPolygon.outer().push_back(throughLastLabel);
+  connectorPolygon.outer().push_back(lastLabelPosition);
 
   minkowskiSum(connectorPolygon, newLabel);
 
