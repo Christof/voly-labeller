@@ -39,29 +39,23 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
-void ConstraintUpdater::convolveTwoSegements(const edge &a, const edge &b)
+void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a, const edge &b)
 {
   point p = a.first;
   convolve(p, b.second);
-  positions.push_back(p.x());
-  positions.push_back(height - p.y());
-  positions.push_back(p.x());
-  positions.push_back(height - p.y());
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.first;
   convolve(p, b.first);
-  positions.push_back(p.x());
-  positions.push_back(height - p.y());
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.second;
   convolve(p, b.first);
-  positions.push_back(p.x());
-  positions.push_back(height - p.y());
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.second;
   convolve(p, b.second);
-  positions.push_back(p.x());
-  positions.push_back(height - p.y());
+  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 }
 
 template <typename itrT1, typename itrT2>
@@ -70,6 +64,8 @@ void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
 {
   if (ab == ae || bb == be)
     return;
+
+  polygon poly;
   point prev_a = *ab;
   ++ab;
   for (; ab != ae; ++ab)
@@ -79,12 +75,16 @@ void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
     ++tmpb;
     for (; tmpb != be; ++tmpb)
     {
-      convolveTwoSegements(std::make_pair(prev_b, *tmpb),
+      convolveTwoSegements(poly, std::make_pair(prev_b, *tmpb),
                            std::make_pair(prev_a, *ab));
       prev_b = *tmpb;
     }
     prev_a = *ab;
   }
+
+  polygon convexHull;
+  boost::geometry::convex_hull(poly, convexHull);
+  drawPolygon(convexHull.outer());
 }
 
 void ConstraintUpdater::convolveTwoPolygons(const ppolygon &a,

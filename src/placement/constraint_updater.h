@@ -47,7 +47,7 @@ class ConstraintUpdater
 
   std::vector<float> positions;
 
-  void convolveTwoSegements(const edge &a, const edge &b);
+  void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
   template <typename itrT1, typename itrT2>
   void convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb, itrT2 be);
   void convolveTwoPolygons(const ppolygon &a, const ppolygon &b);
