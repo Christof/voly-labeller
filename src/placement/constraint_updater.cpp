@@ -39,23 +39,24 @@ polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
   return p;
 }
 
+template <typename edge>
 void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a,
                                              const edge &b)
 {
-  point p = a.first;
-  convolve(p, b.second);
+  auto p = a.first;
+  boost::polygon::convolve(p, b.second);
   polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.first;
-  convolve(p, b.first);
+  boost::polygon::convolve(p, b.first);
   polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.second;
-  convolve(p, b.first);
+  boost::polygon::convolve(p, b.first);
   polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 
   p = a.second;
-  convolve(p, b.second);
+  boost::polygon::convolve(p, b.second);
   polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
 }
 
@@ -67,11 +68,11 @@ void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
     return;
 
   polygon poly;
-  point prev_a = *ab;
+  auto prev_a = *ab;
   ++ab;
   for (; ab != ae; ++ab)
   {
-    point prev_b = *bb;
+    auto prev_b = *bb;
     itrT2 tmpb = bb;
     ++tmpb;
     for (; tmpb != be; ++tmpb)
@@ -88,16 +89,19 @@ void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
   drawPolygon(convexHull.outer());
 }
 
-void ConstraintUpdater::convolveTwoPolygons(const ppolygon &a,
-                                            const ppolygon &b)
+template <typename Polygon>
+void ConstraintUpdater::convolveTwoPolygons(const Polygon &a, const Polygon &b)
 {
-  convolveTwoPointSequences(begin_points(a), end_points(a), begin_points(b),
-                            end_points(b));
+  convolveTwoPointSequences(
+      boost::polygon::begin_points(a), boost::polygon::end_points(a),
+      boost::polygon::begin_points(b), boost::polygon::end_points(b));
 
-  ppolygon tmp_poly = a;
-  addPolygonToPositions(convolve(tmp_poly, *(begin_points(b))));
+  Polygon tmp_poly = a;
+  addPolygonToPositions(
+      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(b))));
   tmp_poly = b;
-  addPolygonToPositions(convolve(tmp_poly, *(begin_points(a))));
+  addPolygonToPositions(
+      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(a))));
 }
 
 bool hasSmallerAngle(float dir1X, float dir1Y, float dir2X, float dir2Y)
@@ -108,9 +112,10 @@ bool hasSmallerAngle(float dir1X, float dir1Y, float dir2X, float dir2Y)
   return angle1 <= angle2;
 }
 
-void ConstraintUpdater::addPolygonToPositions(const ppolygon &polygon)
+template <typename Polygon>
+void ConstraintUpdater::addPolygonToPositions(const Polygon &polygon)
 {
-  auto iteratorBegin = polygon.begin();
+  auto iteratorBegin = boost::polygon::begin_points(polygon);
   float referenceX = iteratorBegin->x();
   positions.push_back(referenceX);
   float referenceY = iteratorBegin->y();
@@ -119,7 +124,8 @@ void ConstraintUpdater::addPolygonToPositions(const ppolygon &polygon)
   positions.push_back(height - referenceY);
 
   std::list<std::pair<float, float>> temp;
-  for (auto iterator = ++iteratorBegin; iterator != polygon.end(); ++iterator)
+  for (auto iterator = ++iteratorBegin;
+       iterator != boost::polygon::end_points(polygon); ++iterator)
   {
     float diffX = iterator->x() - referenceX;
     float diffY = iterator->y() - referenceY;
@@ -137,17 +143,6 @@ void ConstraintUpdater::addPolygonToPositions(const ppolygon &polygon)
     positions.push_back(iterator->first);
     positions.push_back(height - iterator->second);
   }
-}
-
-void ConstraintUpdater::minkowskiSum(const polygon &a, const polygon &b)
-{
-  ppolygon aPoly;
-  boost::polygon::set_points(aPoly, a.outer().begin(), a.outer().end());
-
-  ppolygon bPoly;
-  boost::polygon::set_points(bPoly, b.outer().begin(), b.outer().end());
-
-  convolveTwoPolygons(aPoly, bPoly);
 }
 
 void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
@@ -173,7 +168,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
   positions.clear();
-  minkowskiSum(oldLabelExtrudedConvexHull, newLabel);
+  convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
 
   polygon connectorPolygon;
   Eigen::Vector2i throughLastAnchor =
@@ -186,7 +181,7 @@ void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
   connectorPolygon.outer().push_back(throughLastLabel);
   connectorPolygon.outer().push_back(lastLabelPosition);
 
-  minkowskiSum(connectorPolygon, newLabel);
+  convolveTwoPolygons(connectorPolygon, newLabel);
 
   drawElementVector(positions);
 }

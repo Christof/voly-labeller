@@ -7,7 +7,7 @@
 #include <boost/geometry.hpp>
 #include <vector>
 
-typedef boost::geometry::model::polygon<Eigen::Vector2i, false, false> poly;
+typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> poly;
 
 namespace boost
 {
