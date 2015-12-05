@@ -6,6 +6,9 @@
 #include <tuple>
 #include "../utils/cuda_array_provider.h"
 
+namespace Placement
+{
+
 /**
  * \brief
  *
@@ -40,4 +43,5 @@ class CostFunctionCalculator
   void createTextureObject();
 };
 
+}  // namespace Placement
 #endif  // SRC_PLACEMENT_COST_FUNCTION_CALCULATOR_H_
