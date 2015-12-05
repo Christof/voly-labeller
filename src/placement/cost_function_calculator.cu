@@ -125,31 +125,34 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>
   }
 };
 
-Placement::CostFunctionCalculator::CostFunctionCalculator(
+namespace Placement
+{
+
+CostFunctionCalculator::CostFunctionCalculator(
     std::shared_ptr<CudaArrayProvider> constraintImage)
   : constraintImage(constraintImage)
 {
 }
 
-Placement::CostFunctionCalculator::~CostFunctionCalculator()
+CostFunctionCalculator::~CostFunctionCalculator()
 {
   if (constraints)
     cudaDestroyTextureObject(constraints);
 }
 
-void Placement::CostFunctionCalculator::resize(int width, int height)
+void CostFunctionCalculator::resize(int width, int height)
 {
   this->width = width;
   this->height = height;
 }
 
-void Placement::CostFunctionCalculator::setTextureSize(int width, int height)
+void CostFunctionCalculator::setTextureSize(int width, int height)
 {
   textureWidth = width;
   textureHeight = height;
 }
 
-std::tuple<float, float> Placement::CostFunctionCalculator::calculateForLabel(
+std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
 {
@@ -185,7 +188,7 @@ std::tuple<float, float> Placement::CostFunctionCalculator::calculateForLabel(
   return std::make_tuple(cost.x, cost.y);
 }
 
-void Placement::CostFunctionCalculator::createTextureObject()
+void CostFunctionCalculator::createTextureObject()
 {
   constraintImage->map();
 
@@ -203,3 +206,4 @@ void Placement::CostFunctionCalculator::createTextureObject()
   constraintImage->unmap();
 }
 
+}  // namespace Placement
