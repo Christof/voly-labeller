@@ -38,7 +38,7 @@ void Labeller::initialize(
 
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
-  costFunctionCalculator->resize(width, height);
+  costFunctionCalculator->resize(size.x(), size.y());
   costFunctionCalculator->setTextureSize(occupancyTextureMapper->getWidth(),
                                          occupancyTextureMapper->getHeight());
 }
@@ -87,13 +87,12 @@ Labeller::update(const LabellerFrameData &frameData)
 
     auto label = labels->getById(id);
     auto anchor2D = frameData.project(label.anchorPosition);
-    float x = (anchor2D.x() * 0.5f + 0.5f) * width;
-    float y = (anchor2D.y() * 0.5f + 0.5f) * height;
+    Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
 
-    std::cout << "x " << int(x) << " y " << int(y) << std::endl;
+    std::cout << "x " << int(anchorPixels.x()) << " y " << int(anchorPixels.y())
+              << std::endl;
     Eigen::Vector2i labelSizeForBuffer =
-        label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(
-            Eigen::Vector2i(width, height));
+        label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
     labelSizesForBuffer[id] = labelSizeForBuffer;
 
     Eigen::Vector2i anchor2DForBuffer =
@@ -111,7 +110,8 @@ Labeller::update(const LabellerFrameData &frameData)
     }
 
     auto newPosition = costFunctionCalculator->calculateForLabel(
-        occupancySummedAreaTable->getResults(), label.id, x, y, label.size.x(),
+        occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
+        anchorPixels.y(), label.size.x(),
         label.size.y());
 
     float newXPosition = std::get<0>(newPosition);
@@ -138,8 +138,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
 void Labeller::resize(int width, int height)
 {
-  this->width = width;
-  this->height = height;
+  size = Eigen::Vector2i(width, height);
 
   if (costFunctionCalculator.get())
     costFunctionCalculator->resize(width, height);

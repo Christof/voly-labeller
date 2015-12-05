@@ -57,8 +57,7 @@ class Labeller
   std::shared_ptr<ConstraintUpdater> constraintUpdater;
   std::vector<int> insertionOrder;
 
-  int width;
-  int height;
+  Eigen::Vector2i size;
 
   std::map<int, Eigen::Vector3f> newPositions;
 
