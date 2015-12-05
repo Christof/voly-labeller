@@ -149,12 +149,6 @@ void Placement::CostFunctionCalculator::setTextureSize(int width, int height)
   textureHeight = height;
 }
 
-void Placement::CostFunctionCalculator::calculateCosts(
-    const thrust::device_vector<float> &distances)
-{
-  // calculateForLabel(distances, 0, 500, 500);
-}
-
 std::tuple<float, float> Placement::CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
