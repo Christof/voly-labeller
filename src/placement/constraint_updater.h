@@ -18,9 +18,23 @@ typedef boost::polygon::polygon_data<int> ppolygon;
 typedef std::pair<point, point> edge;
 
 /**
- * \brief
+ * \brief Updates the constraint buffer by drawing occupied regions for already
+ * placed labels
+ *
+ * Each placed label makes two regions unusable for future labels:
+ * - A dilated shadow region which is created by using a virtual light position
+ *   at the anchor point of the next placed label and using already placed
+ *   label boxes as shadow casters.
+ * - A dilated shadow region which is also created by using a virtual light
+ *   position at the anchor point and using the line between an already placed
+ *   label's anchor and the label box center.
+ * The dilation size is determined by the new label size and a border.
  *
  *
+ * For each newly placed label the already bound ConstraintBufferObject must
+ * be cleared by calling #clear.
+ * Afterwards #drawConstraintRegionFor must be called for each already placed
+ * label.
  */
 class ConstraintUpdater
 {
