@@ -24,6 +24,8 @@
         <file>shader/bindlessTexture.hglsl</file>
         <file>shader/distanceTransform.frag</file>
         <file>shader/textureImmediate.frag</file>
+        <file>shader/constraint.vert</file>
+        <file>shader/transparentOverlay.frag</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

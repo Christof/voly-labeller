@@ -14,6 +14,7 @@ class SummedAreaTable;
 class CudaArrayProvider;
 class Apollonius;
 class OccupancyUpdater;
+class ConstraintUpdater;
 
 namespace Placement
 {
@@ -31,7 +32,9 @@ class Labeller
   void
   initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper);
+             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
+             std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
+             std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
   void setInsertionOrder(std::vector<int> ids);
 
@@ -45,20 +48,22 @@ class Labeller
 
  private:
   std::shared_ptr<Labels> labels;
-  CostFunctionCalculator costFunctionCalculator;
+  std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
+  std::shared_ptr<ConstraintUpdater> constraintUpdater;
   std::vector<int> insertionOrder;
 
-  int width;
-  int height;
+  Eigen::Vector2i size;
 
   std::map<int, Eigen::Vector3f> newPositions;
 
-  std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection);
+  std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
+                                                Eigen::Matrix4f viewProjection);
+  Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
 };
 
 }  // namespace Placement

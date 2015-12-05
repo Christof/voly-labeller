@@ -4,6 +4,7 @@
 
 #include <thrust/device_vector.h>
 #include <tuple>
+#include "../utils/cuda_array_provider.h"
 
 /**
  * \brief
@@ -13,7 +14,9 @@
 class CostFunctionCalculator
 {
  public:
-  CostFunctionCalculator() = default;
+  explicit CostFunctionCalculator(
+      std::shared_ptr<CudaArrayProvider> constraintImage);
+  ~CostFunctionCalculator();
 
   void resize(int width, int height);
   void setTextureSize(int width, int height);
@@ -21,7 +24,8 @@ class CostFunctionCalculator
   void calculateCosts(const thrust::device_vector<float> &distances);
   std::tuple<float, float> calculateForLabel(
       const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
-      float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel);
+      float anchorX, float anchorY, int labelWidthInPixel,
+      int labelHeightInPixel);
 
  private:
   int width;
@@ -29,6 +33,11 @@ class CostFunctionCalculator
 
   int textureWidth;
   int textureHeight;
+
+  std::shared_ptr<CudaArrayProvider> constraintImage;
+  cudaTextureObject_t constraints = 0;
+
+  void createTextureObject();
 };
 
 #endif  // SRC_PLACEMENT_COST_FUNCTION_CALCULATOR_H_

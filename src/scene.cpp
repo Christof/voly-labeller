@@ -20,6 +20,8 @@
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
+#include "./constraint_buffer_object.h"
+#include "./placement/constraint_updater.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -35,6 +37,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
       std::make_shared<CameraControllers>(invokeManager, camera);
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
+  constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }
 
@@ -55,8 +58,12 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
   distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/distanceTransform.frag");
+  transparentQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
+  constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
+                               textureMapperManager->getBufferSize());
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
@@ -66,16 +73,22 @@ void Scene::initialize()
   quad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
   distanceTransformQuad->initialize(gl, managers);
+  transparentQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
   textureMapperManager->resize(width, height);
-  textureMapperManager->initialize(gl, fbo);
+  textureMapperManager->initialize(gl, fbo, constraintBufferObject);
+
+  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+      gl, managers->getShaderManager(), textureMapperManager->getBufferSize(),
+      textureMapperManager->getBufferSize());
 
   placementLabeller->initialize(
       textureMapperManager->getOccupancyTextureMapper(),
       textureMapperManager->getDistanceTransformTextureMapper(),
-      textureMapperManager->getApolloniusTextureMapper());
+      textureMapperManager->getApolloniusTextureMapper(),
+      textureMapperManager->getConstraintTextureMapper(), constraintUpdater);
 }
 
 void Scene::cleanup()
@@ -117,16 +130,43 @@ void Scene::render()
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+  RenderData renderData = createRenderData();
+
+  renderNodesWithHABufferIntoFBO(renderData);
+
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  renderScreenQuad();
+
+  textureMapperManager->update();
+
+  constraintBufferObject->bind();
+
+  placementLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
+  constraintBufferObject->unbind();
+
+  glAssert(gl->glViewport(0, 0, width, height));
+
+  if (showConstraintOverlay)
+  {
+    constraintBufferObject->bindTexture(GL_TEXTURE0);
+    renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
+  }
+
+  if (showBufferDebuggingViews)
+    renderDebuggingViews(renderData);
+
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
+
+  nodes->renderLabels(gl, managers, renderData);
+}
+
+void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
+{
   fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-  RenderData renderData;
-  renderData.projectionMatrix = camera.getProjectionMatrix();
-  renderData.viewMatrix = camera.getViewMatrix();
-  renderData.cameraPosition = camera.getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
   haBuffer->clearAndPrepare(managers);
 
@@ -139,17 +179,6 @@ void Scene::render()
   // doPick();
 
   fbo->unbind();
-
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  renderScreenQuad();
-
-  textureMapperManager->update();
-
-  renderDebuggingViews(renderData);
-
-  glAssert(gl->glEnable(GL_DEPTH_TEST));
-
-  nodes->renderLabels(gl, managers, renderData);
 }
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
@@ -159,10 +188,6 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
-
-
-  placementLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
   textureMapperManager->bindOccupancyTexture();
   transformation =
@@ -179,6 +204,12 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   textureMapperManager->bindApollonius();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
+
+  constraintBufferObject->bindTexture(GL_TEXTURE0);
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 }
@@ -213,6 +244,18 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 
   forcesLabeller->resize(width, height);
+}
+
+RenderData Scene::createRenderData()
+{
+  RenderData renderData;
+  renderData.projectionMatrix = camera.getProjectionMatrix();
+  renderData.viewMatrix = camera.getViewMatrix();
+  renderData.cameraPosition = camera.getPosition();
+  renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  renderData.windowPixelSize = Eigen::Vector2f(width, height);
+
+  return renderData;
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)
@@ -250,5 +293,15 @@ void Scene::doPick()
   label.anchorPosition = toVector3f(positionWorld);
 
   labels->update(label);
+}
+
+void Scene::enableBufferDebuggingViews(bool enable)
+{
+  showBufferDebuggingViews = enable;
+}
+
+void Scene::enableConstraingOverlay(bool enable)
+{
+  showConstraintOverlay = enable;
 }
 

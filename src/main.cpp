@@ -5,6 +5,7 @@
 #include <cuda_runtime.h>
 #include "./window.h"
 #include "./scene.h"
+#include "./scene_controller.h"
 #include "./nodes.h"
 #include "./label_node.h"
 #include "./input/invoke_manager.h"
@@ -119,6 +120,7 @@ int main(int argc, char **argv)
   auto scene =
       std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
                               placementLabeller, textureMapperManager);
+  SceneController sceneController(scene);
 
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
@@ -130,6 +132,8 @@ int main(int argc, char **argv)
   window->rootContext()->setContextProperty("nodes", nodes.get());
   window->rootContext()->setContextProperty(
       "bufferTextures", textureMapperManagerController.get());
+  window->rootContext()->setContextProperty(
+      "scene", &sceneController);
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);

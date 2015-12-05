@@ -14,7 +14,7 @@
 class OccupancyUpdater
 {
  public:
-  OccupancyUpdater(std::shared_ptr<CudaArrayProvider> occupancy);
+  explicit OccupancyUpdater(std::shared_ptr<CudaArrayProvider> occupancy);
   virtual ~OccupancyUpdater();
 
   void addLabel(int x, int y, int width, int height);

@@ -22,6 +22,7 @@ class Nodes;
 class InvokeManager;
 class CameraControllers;
 class TextureMapperManager;
+class ConstraintBufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -48,6 +49,9 @@ class Scene : public AbstractScene
 
   void pick(int id, Eigen::Vector2f position);
 
+  void enableBufferDebuggingViews(bool enable);
+  void enableConstraingOverlay(bool enable);
+
  private:
   Camera camera;
   std::shared_ptr<CameraControllers> cameraControllers;
@@ -60,7 +64,9 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
+  std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
   std::shared_ptr<Graphics::FrameBufferObject> fbo;
+  std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
   FrustumOptimizer frustumOptimizer;
@@ -68,7 +74,10 @@ class Scene : public AbstractScene
   int width;
   int height;
   bool shouldResize = false;
+  bool showBufferDebuggingViews = false;
+  bool showConstraintOverlay = false;
 
+  void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
@@ -77,6 +86,7 @@ class Scene : public AbstractScene
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
   void renderDebuggingViews(const RenderData &renderData);
+  RenderData createRenderData();
   void doPick();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
