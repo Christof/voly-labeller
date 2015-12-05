@@ -12,6 +12,9 @@
 #include "../utils/cuda_array_provider.h"
 #include "../labelling/label.h"
 
+namespace Placement
+{
+
 /**
  * \brief Calculates the apollonius graph for the given input image,
  * seed values for labels and distances to determine the label insertion
@@ -75,4 +78,5 @@ class Apollonius
   void runGatherKernel();
 };
 
+}  // namespace Placement
 #endif  // SRC_PLACEMENT_APOLLONIUS_H_

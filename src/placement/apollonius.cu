@@ -174,6 +174,9 @@ __global__ void copyBorderIndex(int imageSize, int *source, int *destination)
       source[maxIndex - imageSize + 1 - index * imageSize];
 }
 
+namespace Placement
+{
+
 Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
                        std::shared_ptr<CudaArrayProvider> outputImage,
                        std::vector<Eigen::Vector4f> labelPositions,
@@ -362,3 +365,4 @@ void Apollonius::updateLabelSeeds()
   seedBuffer = labelsSeed;
 }
 
+}  // namespace Placement

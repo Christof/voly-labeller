@@ -35,7 +35,8 @@ std::vector<int> callApollonoius(std::vector<Eigen::Vector4f> &image,
   auto imageMapper = createCudaArrayMapper(imageSize, imageSize, image);
   auto distancesMapper = createCudaArrayMapper(imageSize, imageSize, distances);
 
-  Apollonius apollonius(distancesMapper, imageMapper, labelsSeed, labelCount);
+  Placement::Apollonius apollonius(distancesMapper, imageMapper, labelsSeed,
+                                   labelCount);
   apollonius.run();
 
   image = imageMapper->copyDataFromGpu();
@@ -163,8 +164,8 @@ TEST(Test_Apollonius, ApolloniusWithRealDataPeeling)
   auto imageMapper = createCudaArrayMapper(imageSize, imageSize, outputImage);
   auto distancesMapper = createCudaArrayMapper(imageSize, imageSize, distances);
 
-  Apollonius apollonius(distancesMapper, imageMapper, labelsSeed,
-                        labelsSeed.size());
+  Placement::Apollonius apollonius(distancesMapper, imageMapper, labelsSeed,
+                                   labelsSeed.size());
   apollonius.run();
   outputImage = imageMapper->copyDataFromGpu();
   ImagePersister::saveRGBA32F(outputImage.data(), imageSize, imageSize,
