@@ -10,7 +10,7 @@
 class CudaTextureMapper;
 class Occupancy;
 class DistanceTransform;
-class ConstraintBuffer;
+class ConstraintBufferObject;
 
 /**
  * \brief Container for all CudaTextureMapper%s and corresponding textures
@@ -24,9 +24,9 @@ class TextureMapperManager
   explicit TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
-  void initialize(Graphics::Gl *gl,
-                  std::shared_ptr<Graphics::FrameBufferObject> fbo,
-                  std::shared_ptr<ConstraintBuffer> constraintBuffer);
+  void
+  initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
+             std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
 
   void resize(int widht, int height);
 
@@ -71,8 +71,9 @@ class TextureMapperManager
   bool saveDistanceTransformInNextFrame = false;
   bool saveApolloniusInNextFrame = false;
 
-  void initializeMappers(std::shared_ptr<Graphics::FrameBufferObject> fbo,
-                         std::shared_ptr<ConstraintBuffer> constraintBuffer);
+  void initializeMappers(
+      std::shared_ptr<Graphics::FrameBufferObject> fbo,
+      std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

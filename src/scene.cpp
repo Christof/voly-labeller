@@ -20,7 +20,7 @@
 #include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
-#include "./constraint_buffer.h"
+#include "./constraint_buffer_object.h"
 #include "./placement/constraint_updater.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
@@ -37,7 +37,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
       std::make_shared<CameraControllers>(invokeManager, camera);
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
-  constraintBuffer = std::make_shared<ConstraintBuffer>();
+  constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }
 
@@ -62,7 +62,7 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
-  constraintBuffer->initialize(gl, textureMapperManager->getBufferSize(),
+  constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
                                textureMapperManager->getBufferSize());
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
@@ -78,7 +78,7 @@ void Scene::initialize()
   managers->getTextureManager()->initialize(gl, true, 8);
 
   textureMapperManager->resize(width, height);
-  textureMapperManager->initialize(gl, fbo, constraintBuffer);
+  textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
       gl, managers->getShaderManager(), textureMapperManager->getBufferSize(),
@@ -139,18 +139,18 @@ void Scene::render()
 
   textureMapperManager->update();
 
-  constraintBuffer->bind();
+  constraintBufferObject->bind();
 
   placementLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
 
-  constraintBuffer->unbind();
+  constraintBufferObject->unbind();
 
   glAssert(gl->glViewport(0, 0, width, height));
 
   if (showConstraintOverlay)
   {
-    constraintBuffer->bindTexture(GL_TEXTURE0);
+    constraintBufferObject->bindTexture(GL_TEXTURE0);
     renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
   }
 
@@ -207,7 +207,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  constraintBuffer->bindTexture(GL_TEXTURE0);
+  constraintBufferObject->bindTexture(GL_TEXTURE0);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));

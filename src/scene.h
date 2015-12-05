@@ -22,7 +22,7 @@ class Nodes;
 class InvokeManager;
 class CameraControllers;
 class TextureMapperManager;
-class ConstraintBuffer;
+class ConstraintBufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -66,7 +66,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
   std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
   std::shared_ptr<Graphics::FrameBufferObject> fbo;
-  std::shared_ptr<ConstraintBuffer> constraintBuffer;
+  std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
   FrustumOptimizer frustumOptimizer;

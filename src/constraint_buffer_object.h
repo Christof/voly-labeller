@@ -1,6 +1,6 @@
-#ifndef SRC_CONSTRAINT_BUFFER_H_
+#ifndef SRC_CONSTRAINT_BUFFER_OBJECT_H_
 
-#define SRC_CONSTRAINT_BUFFER_H_
+#define SRC_CONSTRAINT_BUFFER_OBJECT_H_
 
 #include "./graphics/gl.h"
 
@@ -8,20 +8,20 @@
  * \brief Frame buffer for constraints
  *
  * It only contains a color attachment of type unsigned byte.
- * ConstraintBuffer::initialize must be called once, and
- * ConstraintBuffer::resize if the window is resized (mind that it must be
+ * ConstraintBufferObject::initialize must be called once, and
+ * ConstraintBufferObject::resize if the window is resized (mind that it must be
  * called from the rendering thread).
  *
  * The draw into the frame buffer call FrameBufferObject::bind. After drawing
  * call FrameBufferObject::unbind.
  *
- * Using ConstraintBuffer::bindTexture binds the color texture.
+ * Using ConstraintBufferObject::bindTexture binds the color texture.
  */
-class ConstraintBuffer
+class ConstraintBufferObject
 {
  public:
-  ConstraintBuffer() = default;
-  virtual ~ConstraintBuffer();
+  ConstraintBufferObject() = default;
+  virtual ~ConstraintBufferObject();
 
   void initialize(Graphics::Gl *gl, int width, int height);
 
@@ -46,4 +46,4 @@ class ConstraintBuffer
                      unsigned int format, unsigned int type);
 };
 
-#endif  // SRC_CONSTRAINT_BUFFER_H_
+#endif  // SRC_CONSTRAINT_BUFFER_OBJECT_H_
