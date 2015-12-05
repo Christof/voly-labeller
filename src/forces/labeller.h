@@ -24,7 +24,7 @@ namespace Forces
  * \brief Facade for force simulation, which provides methods to add
  * labels
  *
- * It stores all forces and runs the simulation when Labeller::Update is called.
+ * It stores all forces and runs the simulation when Labeller::update is called.
  */
 class Labeller
 {

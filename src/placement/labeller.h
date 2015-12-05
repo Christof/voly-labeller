@@ -16,13 +16,18 @@ class Apollonius;
 class OccupancyUpdater;
 class ConstraintUpdater;
 
+/**
+ * \brief Contains classes for label placement using a global minimization of a
+ * cost function
+ *
+ */
 namespace Placement
 {
 
 /**
- * \brief
+ * \brief Places labels according to an energy minimization of a cost function
  *
- *
+ * The label positions are updated and retrieved with #update.
  */
 class Labeller
 {
