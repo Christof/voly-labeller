@@ -79,10 +79,11 @@ Labeller::update(const LabellerFrameData &frameData)
   std::map<int, Eigen::Vector2i> anchors2DForBuffer;
   std::map<int, Eigen::Vector2i> labelPositionsForBuffer;
 
+  occupancySummedAreaTable->runKernel();
+
   for (size_t i = 0; i < insertionOrder.size(); ++i)
   {
     int id = insertionOrder[i];
-    occupancySummedAreaTable->runKernel();
 
     auto label = labels->getById(id);
     auto anchor2D = frameData.project(label.anchorPosition);
@@ -118,8 +119,9 @@ Labeller::update(const LabellerFrameData &frameData)
 
     labelPositionsForBuffer[id] = Eigen::Vector2i(newXPosition, newYPosition);
 
-    occupancyUpdater->addLabel(newXPosition, newYPosition,
-                               labelSizeForBuffer.x(), labelSizeForBuffer.y());
+    // occupancyUpdater->addLabel(newXPosition, newYPosition,
+    //                            labelSizeForBuffer.x(),
+    //                            labelSizeForBuffer.y());
 
     float newXNDC = (newXPosition / bufferSize.x() - 0.5f) * 2.0f;
     float newYNDC = (newYPosition / bufferSize.y() - 0.5f) * 2.0f;
