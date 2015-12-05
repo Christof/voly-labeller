@@ -8,8 +8,7 @@
 class Scene;
 
 /**
- * \brief
- *
+ * \brief Wrapper around Scene to provide access to its settings for the UI
  *
  */
 class SceneController : public QObject
