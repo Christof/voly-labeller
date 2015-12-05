@@ -5,15 +5,14 @@
 #include "./graphics/gl.h"
 
 /**
- * \brief Frame buffer for constraints
+ * \brief Frame buffer for constraints mask
  *
  * It only contains a color attachment of type unsigned byte.
- * ConstraintBufferObject::initialize must be called once, and
- * ConstraintBufferObject::resize if the window is resized (mind that it must be
- * called from the rendering thread).
+ * ConstraintBufferObject::initialize must be called once before using the
+ * buffer.
  *
- * The draw into the frame buffer call FrameBufferObject::bind. After drawing
- * call FrameBufferObject::unbind.
+ * To draw into the frame buffer call ConstraintBufferObject::bind. After drawing
+ * call ConstraintBufferObject::unbind.
  *
  * Using ConstraintBufferObject::bindTexture binds the color texture.
  */

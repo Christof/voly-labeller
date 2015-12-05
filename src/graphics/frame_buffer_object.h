@@ -17,7 +17,7 @@ class Gl;
  * FrameBufferObject::resize if the window is resized (mind that it must be
  * called from the rendering thread).
  *
- * The draw into the frame buffer call FrameBufferObject::bind. After drawing
+ * To draw into the frame buffer call FrameBufferObject::bind. After drawing
  * call FrameBufferObject::unbind.
  *
  * Using FrameBufferObject::bindColorTexture or
