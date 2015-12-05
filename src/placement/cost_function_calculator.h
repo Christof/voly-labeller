@@ -10,9 +10,20 @@ namespace Placement
 {
 
 /**
- * \brief
+ * \brief Calculates cost function for each pixel and returns minimum with
+ * corresponding position
  *
+ * The cost function consists of the following terms:
+ * - occupancy of the area under the label (determined using the summed area
+ *   table of the occupancy)
+ * - distance between the label position to the anchor
+ * - how aligned the connector line would be the horizontal or vertical axis
+ * - distance between the old and new label position
  *
+ * The cost function has an early out if the corresponding pixel violates the
+ * constraints.
+ *
+ * #resize and #setTextureSize must be called before the costs can be evaluated.
  */
 class CostFunctionCalculator
 {
