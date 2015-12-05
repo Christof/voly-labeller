@@ -104,7 +104,7 @@ Labeller::update(const LabellerFrameData &frameData)
          ++insertedLabelIndex)
     {
       int oldId = insertionOrder[insertedLabelIndex];
-      constraintUpdater->addLabel(
+      constraintUpdater->drawConstraintRegionFor(
           anchor2DForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
           labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
     }

@@ -146,11 +146,10 @@ void ConstraintUpdater::addPolygonToPositions(const Polygon &polygon)
   }
 }
 
-void ConstraintUpdater::addLabel(Eigen::Vector2i anchorPosition,
-                                 Eigen::Vector2i labelSize,
-                                 Eigen::Vector2i lastAnchorPosition,
-                                 Eigen::Vector2i lastLabelPosition,
-                                 Eigen::Vector2i lastLabelSize)
+void ConstraintUpdater::drawConstraintRegionFor(
+    Eigen::Vector2i anchorPosition, Eigen::Vector2i labelSize,
+    Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
+    Eigen::Vector2i lastLabelSize)
 {
   polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 

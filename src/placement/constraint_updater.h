@@ -29,10 +29,11 @@ class ConstraintUpdater
                     std::shared_ptr<Graphics::ShaderManager> shaderManager,
                     int width, int height);
 
-  void addLabel(Eigen::Vector2i anchorPosition, Eigen::Vector2i labelSize,
-                Eigen::Vector2i lastAnchorPosition,
-                Eigen::Vector2i lastLabelPosition,
-                Eigen::Vector2i lastLabelSize);
+  void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
+                               Eigen::Vector2i labelSize,
+                               Eigen::Vector2i lastAnchorPosition,
+                               Eigen::Vector2i lastLabelPosition,
+                               Eigen::Vector2i lastLabelSize);
 
   void clear();
 
