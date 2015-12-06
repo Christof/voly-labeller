@@ -18,7 +18,8 @@ std::vector<float> callDistanceTransform(
       occupancyImageProvider->getWidth(), occupancyImageProvider->getHeight(),
       resultImage, outputChannelDesc);
 
-  DistanceTransform distanceTransform(occupancyImageProvider, output);
+  Placement::DistanceTransform distanceTransform(occupancyImageProvider,
+                                                 output);
   distanceTransform.run();
 
   resultImage = output->copyDataFromGpu();
@@ -54,8 +55,8 @@ TEST(Test_DistanceTransform, DistanceTransform)
 
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto occupancyImageProvider =
-      std::make_shared<CudaArrayMapper<float>>(4, 4, occupancyImage, channelDesc);
+  auto occupancyImageProvider = std::make_shared<CudaArrayMapper<float>>(
+      4, 4, occupancyImage, channelDesc);
   auto image = callDistanceTransform(occupancyImageProvider);
 
   EXPECT_NEAR(0.0f, image[0], 1e-4f);

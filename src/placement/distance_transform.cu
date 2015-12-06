@@ -95,6 +95,9 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
   surf2Dwrite(resultValue, output, x * sizeof(float), y);
 }
 
+namespace Placement
+{
+
 DistanceTransform::DistanceTransform(
     std::shared_ptr<CudaArrayProvider> inputImage,
     std::shared_ptr<CudaArrayProvider> outputImage)
@@ -217,3 +220,4 @@ void DistanceTransform::runFinishKernel()
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
+}  // namespace Placement

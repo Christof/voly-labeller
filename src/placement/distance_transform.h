@@ -6,6 +6,9 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
+namespace Placement
+{
+
 /**
  * \brief Calculates for each pixel distance to nearest pixel with 
  * value == 0.0f
@@ -49,4 +52,5 @@ class DistanceTransform
   void runFinishKernel();
 };
 
+}  // namespace Placement
 #endif  // SRC_PLACEMENT_DISTANCE_TRANSFORM_H_

@@ -176,7 +176,7 @@ void TextureMapperManager::initializeMappers(
   occupancy = std::make_unique<Occupancy>(positionsTextureMapper,
                                           occupancyTextureMapper);
 
-  distanceTransform = std::make_unique<DistanceTransform>(
+  distanceTransform = std::make_unique<Placement::DistanceTransform>(
       occupancyTextureMapper, distanceTransformTextureMapper);
 }
 
