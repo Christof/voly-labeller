@@ -33,25 +33,7 @@ void LabelNode::render(Graphics::Gl *gl,
 {
   if (textureId == -1 || textureText != label.text)
   {
-    quad->initialize(gl, managers);
-    connector->initialize(gl, managers);
-
-    auto image = renderLabelTextToQImage();
-    auto textureManager = managers->getTextureManager();
-    textureId = textureManager->addTexture(image);
-    delete image;
-
-    if (!labelQuad.isInitialized())
-    {
-      labelQuad = quad->getObjectData();
-      labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
-                                [textureManager, this](void *insertionPoint)
-                                {
-        auto textureAddress = textureManager->getAddressFor(textureId);
-        std::memcpy(insertionPoint, &textureAddress,
-                    sizeof(Graphics::TextureAddress));
-      });
-    }
+    initialize(gl, managers);
   }
 
   renderAnchor(gl, managers, renderData);
@@ -62,8 +44,37 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    std::shared_ptr<Graphics::Managers> managers,
                                    RenderData renderData)
 {
+  if (textureId == -1 || textureText != label.text)
+  {
+    initialize(gl, managers);
+  }
+
   renderConnector(gl, managers, renderData);
   renderLabel(gl, managers, renderData);
+}
+
+void LabelNode::initialize(Graphics::Gl *gl,
+                           std::shared_ptr<Graphics::Managers> managers)
+{
+  quad->initialize(gl, managers);
+  connector->initialize(gl, managers);
+
+  auto image = renderLabelTextToQImage();
+  auto textureManager = managers->getTextureManager();
+  textureId = textureManager->addTexture(image);
+  delete image;
+
+  if (!labelQuad.isInitialized())
+  {
+    labelQuad = quad->getObjectData();
+    labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
+                              [textureManager, this](void *insertionPoint)
+                              {
+      auto textureAddress = textureManager->getAddressFor(textureId);
+      std::memcpy(insertionPoint, &textureAddress,
+                  sizeof(Graphics::TextureAddress));
+    });
+  }
 }
 
 void LabelNode::renderConnector(Graphics::Gl *gl,
