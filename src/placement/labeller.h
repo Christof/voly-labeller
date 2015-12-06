@@ -63,6 +63,7 @@ class Labeller
   Eigen::Vector2i bufferSize;
 
   std::map<int, Eigen::Vector2f> newPositions;
+  std::map<int, Eigen::Vector2f> oldPositions;
   float costSum;
 
   Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);

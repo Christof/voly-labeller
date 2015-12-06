@@ -57,6 +57,9 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   float anchorX;
   float anchorY;
 
+  int oldPositionX;
+  int oldPositionY;
+
   cudaTextureObject_t constraints;
   const float *integralCosts;
 
@@ -64,6 +67,14 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   {
     float diffX = x - anchorX;
     float diffY = y - anchorY;
+
+    return sqrt(diffX * diffX + diffY * diffY);
+  }
+
+  __device__ float distanceToOldPosition(int x, int y) const
+  {
+    float diffX = x - oldPositionX;
+    float diffY = y - oldPositionY;
 
     return sqrt(diffX * diffX + diffY * diffY);
   }
@@ -124,11 +135,11 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
                  weights.anchorConstraint * anchorConstraint +
                  weights.integralCosts * integralCostsForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
+                 1e-3f * distanceToOldPosition(x, y) +
                  weights.favorHorizontalOrVerticalLines *
                      favorHorizontalOrVerticalLines(x, y);
 
     EvalResult result(x, y, cost);
-
     return result;
   }
 };
@@ -168,7 +179,8 @@ void CostFunctionCalculator::setTextureSize(int width, int height)
 
 CostFunctionResult CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &integralCosts, int labelId,
-    float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
+    float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel,
+    int oldPositionX, int oldPositionY)
 {
   createTextureObject();
 
@@ -188,6 +200,8 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
       static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
   costEvaluator.halfLabelHeight =
       static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
+  costEvaluator.oldPositionX = oldPositionX;
+  costEvaluator.oldPositionY = oldPositionY;
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;

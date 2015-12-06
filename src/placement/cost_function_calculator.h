@@ -69,7 +69,7 @@ class CostFunctionCalculator
   CostFunctionResult calculateForLabel(
       const thrust::device_vector<float> &integralCosts, int labelId,
       float anchorX, float anchorY, int labelWidthInPixel,
-      int labelHeightInPixel);
+      int labelHeightInPixel, int oldPositionX, int oldPositionY);
 
   CostFunctionWeights weights;
 

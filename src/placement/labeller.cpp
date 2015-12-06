@@ -51,12 +51,21 @@ void Labeller::cleanup()
   costFunctionCalculator.reset();
 }
 
+Eigen::Vector2f getDefaultPositionFor(const Label &label,
+                                      const Eigen::Matrix4f &viewProjection)
+{
+  Eigen::Vector3f labelPosition3d = 1.3f * label.anchorPosition.normalized();
+
+  return project(viewProjection, labelPosition3d).head<2>();
+}
+
 std::map<int, Eigen::Vector2f>
 Labeller::update(const LabellerFrameData &frameData)
 {
   if (labels->count() == 0)
     return std::map<int, Eigen::Vector2f>();
 
+  oldPositions = newPositions;
   newPositions.clear();
   if (!integralCosts.get())
     return newPositions;
@@ -92,9 +101,15 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
+    Eigen::Vector2f oldPositionNDC =
+        oldPositions.count(label.id)
+            ? oldPositions.at(label.id)
+            : getDefaultPositionFor(label, frameData.viewProjection);
+
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(), label.size.y());
+        anchorPixels.y(), label.size.x(), label.size.y(), oldPositionNDC.x(),
+        oldPositionNDC.y());
 
     constraintUpdater->setPosition(label.id, result.position);
     costSum += result.cost;
