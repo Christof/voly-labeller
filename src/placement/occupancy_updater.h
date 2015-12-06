@@ -10,8 +10,7 @@ namespace Placement
 {
 
 /**
- * \brief
- *
+ * \brief Updates the occupancy by drawing a placed label
  *
  */
 class OccupancyUpdater
