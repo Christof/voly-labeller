@@ -6,6 +6,9 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
+namespace Placement
+{
+
 /**
  * \brief
  *
@@ -25,5 +28,7 @@ class OccupancyUpdater
 
   void createSurface();
 };
+
+}  // namespace Placement
 
 #endif  // SRC_PLACEMENT_OCCUPANCY_UPDATER_H_

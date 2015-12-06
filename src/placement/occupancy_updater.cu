@@ -2,17 +2,6 @@
 #include <memory>
 #include "../utils/cuda_helper.h"
 
-OccupancyUpdater::OccupancyUpdater(std::shared_ptr<CudaArrayProvider> occupancy)
-  : occupancy(occupancy)
-{
-}
-
-OccupancyUpdater::~OccupancyUpdater()
-{
-  if (surface)
-    cudaDestroySurfaceObject(surface);
-}
-
 __global__ void addLabelOccupancy(cudaSurfaceObject_t surface, int left,
                                   int top, int width, int height)
 {
@@ -22,6 +11,20 @@ __global__ void addLabelOccupancy(cudaSurfaceObject_t surface, int left,
     return;
 
   surf2Dwrite(1.0f, surface, (left + x) * sizeof(float), top + y);
+}
+
+namespace Placement
+{
+
+OccupancyUpdater::OccupancyUpdater(std::shared_ptr<CudaArrayProvider> occupancy)
+  : occupancy(occupancy)
+{
+}
+
+OccupancyUpdater::~OccupancyUpdater()
+{
+  if (surface)
+    cudaDestroySurfaceObject(surface);
 }
 
 void OccupancyUpdater::addLabel(int x, int y, int width, int height)
@@ -74,3 +77,4 @@ void OccupancyUpdater::createSurface()
   occupancy->unmap();
 }
 
+}  // namespace Placement

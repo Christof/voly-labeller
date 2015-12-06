@@ -12,8 +12,6 @@
 
 class SummedAreaTable;
 class CudaArrayProvider;
-class Apollonius;
-class OccupancyUpdater;
 class ConstraintUpdater;
 
 /**
@@ -23,6 +21,9 @@ class ConstraintUpdater;
  */
 namespace Placement
 {
+
+class Apollonius;
+class OccupancyUpdater;
 
 /**
  * \brief Places labels according to an energy minimization of a cost function

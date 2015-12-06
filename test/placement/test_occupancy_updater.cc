@@ -9,7 +9,7 @@ TEST(Test_OccupancyUpdater, AddLabelInTheMiddle)
   auto occupancy = std::make_shared<CudaArrayMapper<float>>(
       4, 4, std::vector<float>(16), cudaCreateChannelDesc<float>());
 
-  OccupancyUpdater occupancyUpdater(occupancy);
+  Placement::OccupancyUpdater occupancyUpdater(occupancy);
   int labelX = 2;
   int labelY = 2;
   int labelWidth = 2;
@@ -45,7 +45,7 @@ TEST(Test_OccupancyUpdater, AddLabelInUpperLeftCorner)
   auto occupancy = std::make_shared<CudaArrayMapper<float>>(
       4, 4, std::vector<float>(16), cudaCreateChannelDesc<float>());
 
-  OccupancyUpdater occupancyUpdater(occupancy);
+  Placement::OccupancyUpdater occupancyUpdater(occupancy);
   int labelX = 0;
   int labelY = 0;
   int labelWidth = 2;
@@ -81,7 +81,7 @@ TEST(Test_OccupancyUpdater, AddLabelInLowerRightCorner)
   auto occupancy = std::make_shared<CudaArrayMapper<float>>(
       4, 4, std::vector<float>(16), cudaCreateChannelDesc<float>());
 
-  OccupancyUpdater occupancyUpdater(occupancy);
+  Placement::OccupancyUpdater occupancyUpdater(occupancy);
   int labelX = 3;
   int labelY = 3;
   int labelWidth = 2;
