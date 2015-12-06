@@ -409,35 +409,6 @@ __global__ void algSAT_stage4(const int c_width, const int c_height,
   }
 }
 
-/*
-__host__
-void prepare_algSAT(const int width
-    dvector<float>& d_inout,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const float *h_in,
-    const int& w,
-    const int& h ) {
-
-  algs.width = w;
-  algs.height = h;
-
-  if( w % 32 > 0 ) algs.width += (32 - (w % 32));
-  if( h % 32 > 0 ) algs.height += (32 - (h % 32));
-
-  calc_alg_setup( algs, algs.width, algs.height );
-  up_alg_setup( algs );
-
-  d_inout.copy_from( h_in, w, h, algs.width, algs.height );
-
-  d_ybar.resize( algs.n_size * algs.width );
-  d_vhat.resize( algs.m_size * algs.height );
-  d_ysum.resize( algs.m_size * algs.n_size );
-
-}
-*/
-
 __global__ void sat_init_kernel(int image_size, float xscale, float yscale,
                                 float *thrustptr)
 {
@@ -539,89 +510,6 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
 
   callStages(inout, ybar, vhat, ysum, computeWidth, computeHeight,
              compute_m_size, compute_n_size);
-}
-
-/*
-__host__
-void algSAT( dvector<float>& d_out,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const dvector<float>& d_in,
-    const alg_setup& algs ) {
-
-  const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-  const dim3 cg_img( algs.m_size, algs.n_size );
-  const dim3 cg_ybar( nWm, 1 );
-  const dim3 cg_vhat( 1, nHm );
-
-  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_in, d_ybar, d_vhat );
-
-  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
-
-  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
-
-  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_out, d_in, d_ybar, d_vhat );
-
-}
-
-__host__
-void algSAT( dvector<float>& d_inout,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const alg_setup& algs ) {
-
-  const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-  const dim3 cg_img( algs.m_size, algs.n_size );
-  const dim3 cg_ybar( nWm, 1 );
-  const dim3 cg_vhat( 1, nHm );
-
-  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
-
-  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
-
-  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
-
-  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
-
-}
-*/
-
-thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
-{
-  int computeWidth = w;
-  int computeHeight = w;
-  if (computeWidth % 32 > 0)
-    computeWidth += (32 - (computeWidth % 32));
-  if (computeHeight % 32 > 0)
-    computeHeight += (32 - (computeHeight % 32));
-  int compute_m_size = (computeWidth + WS - 1) / WS;
-  int compute_n_size = (computeHeight + WS - 1) / WS;
-
-  // alg_setup algs;
-  thrust::device_vector<float> inout(h_inout, h_inout + w * h);
-  thrust::device_vector<float> ybar;
-  thrust::device_vector<float> vhat;
-  thrust::device_vector<float> ysum;
-
-  // prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
-  resizeIfNecessary(inout, computeWidth * computeHeight);
-  resizeIfNecessary(ybar, compute_n_size * computeWidth);
-  resizeIfNecessary(vhat, compute_m_size * computeHeight);
-  resizeIfNecessary(ysum, compute_m_size * compute_n_size);
-
-  callStages(inout, ybar, vhat, ysum, computeWidth, computeHeight,
-             compute_m_size, compute_n_size);
-
-  cudaDeviceSynchronize();
-  // algSAT(d_out, d_ybar, d_vhat, d_ysum, algs);
-
-  // thrust::host_vector<float> result = inout;
-  // thrust::host_vector<float> result(w * h);
-  // thrust::copy(inout.begin(), inout.end(), result.begin());
-
-  return inout;
 }
 
 namespace Placement
