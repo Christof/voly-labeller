@@ -7,8 +7,6 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
-thrust::host_vector<float> algSAT(float *h_inout, int w, int h);
-
 /**
  * \brief Calculates the summed area table of a given float image
  *
