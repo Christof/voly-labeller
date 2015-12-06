@@ -624,6 +624,9 @@ thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
   return inout;
 }
 
+namespace Placement
+{
+
 SummedAreaTable::SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage)
   : inputImage(inputImage)
 {
@@ -684,3 +687,4 @@ thrust::device_vector<float> &SummedAreaTable::getResults()
   return inout;
 }
 
+}  // namespace Placement

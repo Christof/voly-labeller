@@ -18,7 +18,7 @@ TEST(Test_SummedAreaTable, SummedAreaTable)
   auto inputImageProvider =
       std::make_shared<CudaArrayMapper<float>>(32, 32, input, channelDesc);
 
-  SummedAreaTable table(inputImageProvider);
+  Placement::SummedAreaTable table(inputImageProvider);
   table.runKernel();
   thrust::host_vector<float> result = table.getResults();
 

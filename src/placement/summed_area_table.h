@@ -7,6 +7,9 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
+namespace Placement
+{
+
 /**
  * \brief Calculates the summed area table of a given float image
  *
@@ -35,5 +38,7 @@ class SummedAreaTable
   thrust::device_vector<float> vhat;
   thrust::device_vector<float> ysum;
 };
+
+}  // namespace Placement
 
 #endif  // SRC_PLACEMENT_SUMMED_AREA_TABLE_H_

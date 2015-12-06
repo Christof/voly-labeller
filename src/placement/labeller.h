@@ -10,7 +10,6 @@
 #include "../labelling/labeller_frame_data.h"
 #include "./cost_function_calculator.h"
 
-class SummedAreaTable;
 class CudaArrayProvider;
 class ConstraintUpdater;
 
@@ -24,6 +23,7 @@ namespace Placement
 
 class Apollonius;
 class OccupancyUpdater;
+class SummedAreaTable;
 
 /**
  * \brief Places labels according to an energy minimization of a cost function
