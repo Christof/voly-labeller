@@ -643,8 +643,6 @@ void SummedAreaTable::runKernel()
   int compute_m_size = (computeWidth + WS - 1) / WS;
   int compute_n_size = (computeHeight + WS - 1) / WS;
 
-  std::cout << computeWidth << "/" << computeHeight << std::endl;
-
   // set data structure sizes
   resizeIfNecessary(inout, computeWidth * computeHeight);
   resizeIfNecessary(ybar, compute_n_size * computeWidth);
