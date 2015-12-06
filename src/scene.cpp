@@ -181,7 +181,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   haBuffer->render(managers, renderData);
 
-  // doPick();
+  doPick();
 
   fbo->unbind();
 }
