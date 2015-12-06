@@ -17,6 +17,9 @@ __global__ void occupancyKernel(cudaTextureObject_t positions,
   surf2Dwrite(outputValue, output, x * sizeof(float), y);
 }
 
+namespace Placement
+{
+
 Occupancy::Occupancy(std::shared_ptr<CudaArrayProvider> positionProvider,
                      std::shared_ptr<CudaArrayProvider> outputProvider)
   : positionProvider(positionProvider), outputProvider(outputProvider)
@@ -75,3 +78,4 @@ void Occupancy::createSurfaceObjects()
   outputProvider->unmap();
 }
 
+}  // namespace Placement

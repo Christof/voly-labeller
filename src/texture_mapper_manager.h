@@ -8,9 +8,9 @@
 #include "./graphics/gl.h"
 
 class CudaTextureMapper;
-class Occupancy;
 namespace Placement
 {
+class Occupancy;
 class DistanceTransform;
 }
 class ConstraintBufferObject;
@@ -64,7 +64,7 @@ class TextureMapperManager
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
   std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
 
-  std::unique_ptr<Occupancy> occupancy;
+  std::unique_ptr<Placement::Occupancy> occupancy;
   std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
   int width;

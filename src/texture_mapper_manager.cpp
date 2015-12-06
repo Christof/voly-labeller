@@ -173,8 +173,8 @@ void TextureMapperManager::initializeMappers(
           constraintBufferObject->getWidth(),
           constraintBufferObject->getHeight()));
 
-  occupancy = std::make_unique<Occupancy>(positionsTextureMapper,
-                                          occupancyTextureMapper);
+  occupancy = std::make_unique<Placement::Occupancy>(positionsTextureMapper,
+                                                     occupancyTextureMapper);
 
   distanceTransform = std::make_unique<Placement::DistanceTransform>(
       occupancyTextureMapper, distanceTransformTextureMapper);

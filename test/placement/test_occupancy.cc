@@ -17,7 +17,7 @@ TEST(Test_Occupancy, Occupancy)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Occupancy(positionsProvider, outputProvider).runKernel();
+  Placement::Occupancy(positionsProvider, outputProvider).runKernel();
 
   auto result = outputProvider->copyDataFromGpu();
 

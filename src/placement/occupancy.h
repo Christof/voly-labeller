@@ -6,6 +6,9 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
+namespace Placement
+{
+
 /**
  * \brief Calculates occupancy from the given positions
  *
@@ -30,5 +33,7 @@ class Occupancy
 
   void createSurfaceObjects();
 };
+
+}  // namespace Placement
 
 #endif  // SRC_PLACEMENT_OCCUPANCY_H_
