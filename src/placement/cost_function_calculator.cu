@@ -136,8 +136,6 @@ CostFunctionCalculator::CostFunctionCalculator(
 
 CostFunctionCalculator::~CostFunctionCalculator()
 {
-  if (constraints)
-    cudaDestroyTextureObject(constraints);
 }
 
 void CostFunctionCalculator::resize(int width, int height)
@@ -156,8 +154,7 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
 {
-  if (!constraints)
-    createTextureObject();
+  createTextureObject();
 
   assert(textureWidth * textureHeight == occupancySummedAreaTable.size());
 
@@ -184,7 +181,10 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
       thrust::counting_iterator<int>(0) + textureWidth * textureHeight,
       costEvaluator, initialCost, minimumCostOperator);
 
-  std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
+  // std::cout << cost.x << "/" << cost.y << ": " << cost.cost << std::endl;
+
+  cudaDestroyTextureObject(constraints);
+
   return std::make_tuple(cost.x, cost.y);
 }
 
