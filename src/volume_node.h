@@ -20,7 +20,7 @@ class VolumeReader;
 class VolumeNode : public Node, public Graphics::Volume
 {
  public:
-  explicit VolumeNode(std::string volumePath, std::string transferFunctionPath);
+  VolumeNode(std::string volumePath, std::string transferFunctionPath);
   virtual ~VolumeNode();
 
   virtual void render(Graphics::Gl *gl,
