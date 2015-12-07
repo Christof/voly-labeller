@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_VOLUME_H_
 
 #include <Eigen/Core>
+#include <functional>
 #include "./volume_data.h"
 
 namespace Graphics
@@ -15,9 +16,22 @@ namespace Graphics
 class Volume
 {
  public:
+  ~Volume()
+  {
+    if (removeFromVolumes)
+      removeFromVolumes();
+  }
   virtual VolumeData getVolumeData() = 0;
-  virtual float* getData() = 0;
+  virtual float *getData() = 0;
   virtual Eigen::Vector3i getDataSize() = 0;
+
+  void setRemoveFromVolumesFunction(std::function<void()> removeFromVolumes)
+  {
+    this->removeFromVolumes = removeFromVolumes;
+  }
+
+ protected:
+  std::function<void()> removeFromVolumes;
 };
 }  // namespace Graphics
 

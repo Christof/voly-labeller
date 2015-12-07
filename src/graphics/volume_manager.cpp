@@ -57,6 +57,11 @@ int VolumeManager::addVolume(Volume *volume, Gl *gl)
   qCInfo(vmChan) << "addVolume";
 
   volumes[nextVolumeId] = volume;
+  int volumeToDelete = nextVolumeId;
+  volume->setRemoveFromVolumesFunction([volumeToDelete, this]()
+                                       {
+                                         removeVolume(volumeToDelete);
+                                       });
 
   updateStorage(gl);
 
