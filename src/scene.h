@@ -9,7 +9,6 @@
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./placement/labeller.h"
-#include "./labelling/labels.h"
 #include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
@@ -17,12 +16,14 @@
 #include "./placement/cuda_texture_mapper.h"
 #include "./graphics/managers.h"
 #include "./graphics/standard_texture_2d.h"
+#include "./picker.h"
 
 class Nodes;
 class InvokeManager;
 class CameraControllers;
 class TextureMapperManager;
 class ConstraintBufferObject;
+class Labels;
 
 /**
  * \brief Default implementation of AbstractScene
