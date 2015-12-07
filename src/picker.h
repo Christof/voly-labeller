@@ -10,9 +10,12 @@
 class Labels;
 
 /**
- * \brief
+ * \brief Performs picking in the depth buffer and updates label anchor position
  *
+ * To trigger the picking #pick must be called. Every frame #doPick must be
+ * invoked, which performs the picking if #pick was called previously.
  *
+ * After instantiation and on every size change #resize must be called.
  */
 class Picker
 {
