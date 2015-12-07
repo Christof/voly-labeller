@@ -42,12 +42,11 @@ void VolumeManager::updateStorage(Gl *gl)
   float zero = 0.0f;
   gl->glClearTexImage(texture, 0, GL_RED, GL_FLOAT, &zero);
 
-  int id = 1;
   int voxelZOffset = 0;
   for (auto volumePair : volumes)
   {
     auto volume = volumePair.second;
-    add3dTexture(id++, volume->getDataSize(), volume->getData(), voxelZOffset);
+    add3dTexture(volumePair.first, volume->getDataSize(), volume->getData(), voxelZOffset);
     voxelZOffset += volume->getDataSize().z() + zPadding;
   }
 }
@@ -75,13 +74,18 @@ void VolumeManager::removeVolume(int id)
 
 void VolumeManager::fillCustomBuffer(ObjectData &objectData)
 {
-  int size = sizeof(VolumeData) * volumes.size();
+  int size = sizeof(VolumeData) * (nextVolumeId - 1);
   std::vector<VolumeData> data;
-  for (auto volumePair : volumes)
+  for (int i = 1; i < nextVolumeId; ++i)
   {
-    auto volumeData = volumePair.second->getVolumeData();
-    volumeData.objectToDatasetMatrix =
-        objectToDatasetMatrices[volumeData.volumeId];
+    VolumeData volumeData;
+    if (volumes.count(i))
+    {
+      volumeData = volumes[i]->getVolumeData();
+      volumeData.objectToDatasetMatrix =
+          objectToDatasetMatrices[volumeData.volumeId];
+    }
+
     data.push_back(volumeData);
   }
 
