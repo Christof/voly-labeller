@@ -54,6 +54,7 @@ set(SOURCES
   src/camera_move_controller.cpp
   src/camera_controllers.cpp
   src/picking_controller.cpp
+  src/picker.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   src/labels_model.cpp

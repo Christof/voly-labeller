@@ -2,8 +2,8 @@
 
 #define SRC_SCENE_H_
 
-#include <memory>
 #include <functional>
+#include "./utils/memory.h"
 #include "./abstract_scene.h"
 #include "./camera.h"
 #include "./frustum_optimizer.h"
@@ -70,6 +70,7 @@ class Scene : public AbstractScene
   std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
+  std::unique_ptr<Picker> picker;
   FrustumOptimizer frustumOptimizer;
 
   int width;
@@ -83,12 +84,8 @@ class Scene : public AbstractScene
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
 
-  bool performPicking;
-  Eigen::Vector2f pickingPosition;
-  int pickingLabelId;
   void renderDebuggingViews(const RenderData &renderData);
   RenderData createRenderData();
-  void doPick();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
 };
