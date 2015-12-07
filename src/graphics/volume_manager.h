@@ -24,6 +24,7 @@ class VolumeManager
 
   void updateStorage(Gl *gl);
   int addVolume(Volume *volume, Gl *gl);
+  void removeVolume(int id);
   void fillCustomBuffer(ObjectData &objectData);
   Eigen::Vector3i getVolumeAtlasSize() const;
 

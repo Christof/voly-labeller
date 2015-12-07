@@ -63,6 +63,11 @@ int VolumeManager::addVolume(Volume *volume, Gl *gl)
   return nextVolumeId++;
 }
 
+void VolumeManager::removeVolume(int id)
+{
+  volumes.erase(volumes.find(id));
+}
+
 void VolumeManager::fillCustomBuffer(ObjectData &objectData)
 {
   int size = sizeof(VolumeData) * volumes.size();
