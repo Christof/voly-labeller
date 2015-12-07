@@ -125,6 +125,7 @@ void Nodes::saveSceneTo(std::string filename)
 void Nodes::clear()
 {
   nodes.clear();
+  obbNodes.clear();
 }
 
 void Nodes::toggleBoundingVolumes()
