@@ -2,7 +2,6 @@
 #include <QLoggingCategory>
 #include <Eigen/Geometry>
 #include <algorithm>
-#include <vector>
 #include "../eigen_qdebug.h"
 #include "./gl.h"
 
@@ -22,14 +21,15 @@ void VolumeManager::updateStorage(Gl *gl)
   if (volumes.size() == 0)
     return;
 
-  for (size_t i = 0; i < volumes.size(); ++i)
+  for (auto iterator = volumes.cbegin(); iterator != volumes.cend();)
   {
-    auto volumeSize = volumes[i]->getDataSize();
+    auto volumeSize = iterator->second->getDataSize();
     volumeAtlasSize.z() += volumeSize.z();
     volumeAtlasSize.x() = std::max(volumeSize.x(), volumeAtlasSize.x());
     volumeAtlasSize.y() = std::max(volumeSize.y(), volumeAtlasSize.y());
 
-    if (i != volumes.size() - 1)
+    ++iterator;
+    if (iterator != volumes.cend())
       volumeAtlasSize.z() += zPadding;
   }
   qCInfo(vmChan) << "volumeAtlasSize" << volumeAtlasSize;
@@ -44,8 +44,9 @@ void VolumeManager::updateStorage(Gl *gl)
 
   int id = 1;
   int voxelZOffset = 0;
-  for (auto volume : volumes)
+  for (auto volumePair : volumes)
   {
+    auto volume = volumePair.second;
     add3dTexture(id++, volume->getDataSize(), volume->getData(), voxelZOffset);
     voxelZOffset += volume->getDataSize().z() + zPadding;
   }
@@ -55,7 +56,7 @@ int VolumeManager::addVolume(Volume *volume, Gl *gl)
 {
   qCInfo(vmChan) << "addVolume";
 
-  volumes.push_back(volume);
+  volumes[nextVolumeId] = volume;
 
   updateStorage(gl);
 
@@ -66,9 +67,9 @@ void VolumeManager::fillCustomBuffer(ObjectData &objectData)
 {
   int size = sizeof(VolumeData) * volumes.size();
   std::vector<VolumeData> data;
-  for (auto volume : volumes)
+  for (auto volumePair : volumes)
   {
-    auto volumeData = volume->getVolumeData();
+    auto volumeData = volumePair.second->getVolumeData();
     volumeData.objectToDatasetMatrix =
         objectToDatasetMatrices[volumeData.volumeId];
     data.push_back(volumeData);
