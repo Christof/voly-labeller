@@ -33,8 +33,6 @@ void DefaultSceneCreator::create()
   // nodes->addSceneNodesFrom("config/scene.xml");
   for (auto &node : sceneNodes)
     nodes->addNode(node);
-
-  addLabelsFromLabelNodes();
 }
 
 void DefaultSceneCreator::addMeshNodesTo(
@@ -67,12 +65,6 @@ void DefaultSceneCreator::addLabelNodesTo(
 
   auto label4 = Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f));
   sceneNodes.push_back(std::make_shared<LabelNode>(label4));
-}
-
-void DefaultSceneCreator::addLabelsFromLabelNodes()
-{
-  for (auto &labelNode : nodes->getLabelNodes())
-    labels->add(labelNode->label);
 }
 
 void DefaultSceneCreator::addMultiVolumeNodesTo(
