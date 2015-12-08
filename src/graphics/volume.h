@@ -3,8 +3,9 @@
 #define SRC_GRAPHICS_VOLUME_H_
 
 #include <Eigen/Core>
-#include <functional>
+#include <memory>
 #include "./volume_data.h"
+#include "./volume_manager.h"
 
 namespace Graphics
 {
@@ -18,21 +19,25 @@ class Volume
  public:
   ~Volume()
   {
-    if (removeFromVolumes)
-      removeFromVolumes();
-  }
+    if (volumeId > 0 && volumeManager)
+      volumeManager->removeVolume(volumeId);
+  };
+
+  void initialize(int volumeId, Graphics::VolumeManager *volumeManager)
+  {
+    this->volumeId = volumeId;
+    this->volumeManager = volumeManager;
+  };
+
   virtual VolumeData getVolumeData() = 0;
   virtual float *getData() = 0;
   virtual Eigen::Vector3i getDataSize() = 0;
 
-  void setRemoveFromVolumesFunction(std::function<void()> removeFromVolumes)
-  {
-    this->removeFromVolumes = removeFromVolumes;
-  }
-
  protected:
-  std::function<void()> removeFromVolumes;
+  int volumeId = -1;
+  Graphics::VolumeManager *volumeManager = nullptr;
 };
+
 }  // namespace Graphics
 
 #endif  // SRC_GRAPHICS_VOLUME_H_

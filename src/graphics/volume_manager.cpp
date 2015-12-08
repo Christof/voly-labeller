@@ -5,6 +5,7 @@
 #include <vector>
 #include "../eigen_qdebug.h"
 #include "./gl.h"
+#include "./volume.h"
 
 namespace Graphics
 {
@@ -58,11 +59,7 @@ int VolumeManager::addVolume(Volume *volume, Gl *gl)
   qCInfo(vmChan) << "addVolume";
 
   volumes[nextVolumeId] = volume;
-  int volumeToDelete = nextVolumeId;
-  volume->setRemoveFromVolumesFunction([volumeToDelete, this]()
-                                       {
-                                         removeVolume(volumeToDelete);
-                                       });
+  volume->initialize(nextVolumeId, this);
 
   updateStorage(gl);
 

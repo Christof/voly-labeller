@@ -4,13 +4,13 @@
 
 #include <Eigen/Core>
 #include <map>
-#include "./volume.h"
 #include "./object_data.h"
 
 namespace Graphics
 {
 
 class Gl;
+class Volume;
 
 /**
  * \brief Creates and manages a texture atlas for volumes
