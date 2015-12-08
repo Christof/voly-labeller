@@ -87,24 +87,24 @@ Labeller::update(const LabellerFrameData &frameData)
 
     updateConstraints(i, anchorForBuffer, labelSizeForBuffer);
 
-    auto newPosition = costFunctionCalculator->calculateForLabel(
+    auto newPos = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
         anchorPixels.y(), label.size.x(), label.size.y());
 
-    float newXPosition = std::get<0>(newPosition);
-    float newYPosition = std::get<1>(newPosition);
-
-    labelPositionsForBuffer[id] = Eigen::Vector2i(newXPosition, newYPosition);
+    Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
+    labelPositionsForBuffer[id] = newPosition;
 
     // occupancyUpdater->addLabel(newXPosition, newYPosition,
     //                            labelSizeForBuffer.x(),
     //                            labelSizeForBuffer.y());
 
-    float newXNDC = (newXPosition / bufferSize.x() - 0.5f) * 2.0f;
-    float newYNDC = (newYPosition / bufferSize.y() - 0.5f) * 2.0f;
+    Eigen::Vector2f newNDC =
+        2.0f *
+            newPosition.cast<float>().cwiseQuotient(bufferSize.cast<float>()) -
+        Eigen::Vector2f(1.0f, 1.0f);
     Eigen::Vector4f reprojected =
         inverseViewProjection *
-        Eigen::Vector4f(newXNDC, newYNDC, anchor2D.z(), 1);
+        Eigen::Vector4f(newNDC.x(), newNDC.y(), anchor2D.z(), 1);
     reprojected /= reprojected.w();
 
     newPositions[label.id] = toVector3f(reprojected);
