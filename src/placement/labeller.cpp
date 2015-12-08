@@ -87,15 +87,14 @@ Labeller::update(const LabellerFrameData &frameData)
 
     auto label = labels->getById(id);
     auto anchor2D = frameData.project(label.anchorPosition);
-    Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
 
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
     labelSizesForBuffer[id] = labelSizeForBuffer;
 
-    Eigen::Vector2i anchor2DForBuffer =
-        toPixel(anchor2D, bufferSize).cast<int>();
-    anchors2DForBuffer[id] = anchor2DForBuffer;
+    Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
+    Eigen::Vector2i anchorForBuffer = anchorPixels.cast<int>();
+    anchors2DForBuffer[id] = anchorForBuffer;
 
     constraintUpdater->clear();
     for (size_t insertedLabelIndex = 0; insertedLabelIndex < i;
@@ -103,14 +102,13 @@ Labeller::update(const LabellerFrameData &frameData)
     {
       int oldId = insertionOrder[insertedLabelIndex];
       constraintUpdater->drawConstraintRegionFor(
-          anchor2DForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
+          anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
           labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
     }
 
     auto newPosition = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(),
-        label.size.y());
+        anchorPixels.y(), label.size.x(), label.size.y());
 
     float newXPosition = std::get<0>(newPosition);
     float newYPosition = std::get<1>(newPosition);
