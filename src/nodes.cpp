@@ -37,7 +37,7 @@ void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
 
-  emit nodesChanged();
+  emit nodesChanged(node);
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)
