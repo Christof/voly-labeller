@@ -60,13 +60,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
                              distanceTransformTextureMapper->getHeight());
-  std::vector<Eigen::Vector4f> labelsSeed =
-      createLabelSeeds(bufferSize, frameData.viewProjection);
-
-  Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
-                        labelsSeed, labels->count());
-  apollonius.run();
-  insertionOrder = apollonius.calculateOrdering();
+  insertionOrder = calculateInsertionOrder(frameData, bufferSize);
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
@@ -148,6 +142,19 @@ Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
   }
 
   return result;
+}
+
+std::vector<int>
+Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
+                                  Eigen::Vector2i bufferSize)
+{
+  std::vector<Eigen::Vector4f> labelsSeed =
+      createLabelSeeds(bufferSize, frameData.viewProjection);
+
+  Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
+                        labelsSeed, labels->count());
+  apollonius.run();
+  return apollonius.calculateOrdering();
 }
 
 void Labeller::updateConstraints(size_t currentLabelIndex,

@@ -71,6 +71,8 @@ class Labeller
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
+  std::vector<int> calculateInsertionOrder(const LabellerFrameData &frameData,
+                                           Eigen::Vector2i bufferSize);
   void updateConstraints(size_t currentLabelIndex,
                          Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
