@@ -98,16 +98,8 @@ Labeller::update(const LabellerFrameData &frameData)
     //                            labelSizeForBuffer.x(),
     //                            labelSizeForBuffer.y());
 
-    Eigen::Vector2f newNDC =
-        2.0f *
-            newPosition.cast<float>().cwiseQuotient(bufferSize.cast<float>()) -
-        Eigen::Vector2f(1.0f, 1.0f);
-    Eigen::Vector4f reprojected =
-        inverseViewProjection *
-        Eigen::Vector4f(newNDC.x(), newNDC.y(), anchor2D.z(), 1);
-    reprojected /= reprojected.w();
-
-    newPositions[label.id] = toVector3f(reprojected);
+    newPositions[label.id] = reprojectTo3d(newPosition, anchor2D.z(),
+                                           bufferSize, inverseViewProjection);
   }
 
   return newPositions;
@@ -170,6 +162,22 @@ void Labeller::updateConstraints(size_t currentLabelIndex,
         anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
         labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
   }
+}
+
+Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,
+                                        float anchorZValue,
+                                        Eigen::Vector2i bufferSize,
+                                        Eigen::Matrix4f inverseViewProjection)
+{
+  Eigen::Vector2f newNDC2d =
+      2.0f * newPosition.cast<float>().cwiseQuotient(bufferSize.cast<float>()) -
+      Eigen::Vector2f(1.0f, 1.0f);
+
+  Eigen::Vector4f newNDC(newNDC2d.x(), newNDC2d.y(), anchorZValue, 1);
+  Eigen::Vector4f reprojected = inverseViewProjection * newNDC;
+  reprojected /= reprojected.w();
+
+  return toVector3f(reprojected);
 }
 
 Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)

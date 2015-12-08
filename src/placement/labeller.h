@@ -76,6 +76,9 @@ class Labeller
   void updateConstraints(size_t currentLabelIndex,
                          Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
+  Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
+                                Eigen::Vector2i bufferSize,
+                                Eigen::Matrix4f inverseViewProjection);
   Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
 };
 
