@@ -42,8 +42,6 @@ class Labeller
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
              std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
-  void setInsertionOrder(std::vector<int> ids);
-
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
   std::map<int, Eigen::Vector3f> getLastPlacementResult();

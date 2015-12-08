@@ -51,11 +51,6 @@ void Labeller::cleanup()
   costFunctionCalculator.reset();
 }
 
-void Labeller::setInsertionOrder(std::vector<int> ids)
-{
-  insertionOrder = ids;
-}
-
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {
@@ -71,7 +66,7 @@ Labeller::update(const LabellerFrameData &frameData)
   Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
                         labelsSeed, labels->count());
   apollonius.run();
-  setInsertionOrder(apollonius.calculateOrdering());
+  insertionOrder = apollonius.calculateOrdering();
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
