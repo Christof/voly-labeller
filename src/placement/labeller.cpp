@@ -96,15 +96,7 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2i anchorForBuffer = anchorPixels.cast<int>();
     anchors2DForBuffer[id] = anchorForBuffer;
 
-    constraintUpdater->clear();
-    for (size_t insertedLabelIndex = 0; insertedLabelIndex < i;
-         ++insertedLabelIndex)
-    {
-      int oldId = insertionOrder[insertedLabelIndex];
-      constraintUpdater->drawConstraintRegionFor(
-          anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
-          labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
-    }
+    updateConstraints(i, anchorForBuffer, labelSizeForBuffer);
 
     auto newPosition = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
@@ -161,6 +153,21 @@ Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
   }
 
   return result;
+}
+
+void Labeller::updateConstraints(size_t currentLabelIndex,
+                                 Eigen::Vector2i anchorForBuffer,
+                                 Eigen::Vector2i labelSizeForBuffer)
+{
+  constraintUpdater->clear();
+  for (size_t insertedLabelIndex = 0; insertedLabelIndex < currentLabelIndex;
+       ++insertedLabelIndex)
+  {
+    int oldId = insertionOrder[insertedLabelIndex];
+    constraintUpdater->drawConstraintRegionFor(
+        anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
+        labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
+  }
 }
 
 Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)

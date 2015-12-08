@@ -73,6 +73,9 @@ class Labeller
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
+  void updateConstraints(size_t currentLabelIndex,
+                         Eigen::Vector2i anchorForBuffer,
+                         Eigen::Vector2i labelSizeForBuffer);
   Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
 };
 
