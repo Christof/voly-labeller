@@ -75,9 +75,9 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
-  std::map<int, Eigen::Vector2i> labelSizesForBuffer;
-  std::map<int, Eigen::Vector2i> anchors2DForBuffer;
-  std::map<int, Eigen::Vector2i> labelPositionsForBuffer;
+  labelSizesForBuffer.clear();
+  anchors2DForBuffer.clear();
+  labelPositionsForBuffer.clear();
 
   occupancySummedAreaTable->runKernel();
 

@@ -65,6 +65,10 @@ class Labeller
 
   Eigen::Vector2i size;
 
+  std::map<int, Eigen::Vector2i> labelSizesForBuffer;
+  std::map<int, Eigen::Vector2i> anchors2DForBuffer;
+  std::map<int, Eigen::Vector2i> labelPositionsForBuffer;
+
   std::map<int, Eigen::Vector3f> newPositions;
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
