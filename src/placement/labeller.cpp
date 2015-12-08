@@ -89,8 +89,6 @@ Labeller::update(const LabellerFrameData &frameData)
     auto anchor2D = frameData.project(label.anchorPosition);
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
 
-    std::cout << "x " << int(anchorPixels.x()) << " y " << int(anchorPixels.y())
-              << std::endl;
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
     labelSizesForBuffer[id] = labelSizeForBuffer;
