@@ -15,7 +15,6 @@ set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3;-std=c++11;-gencode arch=compute_30,c
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 add_definitions(-DUSECUDA)
 include_directories(${CUDA_INCLUDE_DIRS})
-list(APPEND LIBRARIES ${CUDA_LIB})
 list(APPEND LIBRARIES ${CUDA_LIBRARIES})
 
 find_package(OpenGL REQUIRED)
