@@ -82,7 +82,7 @@ Labeller::update(const LabellerFrameData &frameData)
     labelSizesForBuffer[id] = labelSizeForBuffer;
 
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
-    Eigen::Vector2i anchorForBuffer = anchorPixels.cast<int>();
+    Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
     anchors2DForBuffer[id] = anchorForBuffer;
 
     updateConstraints(i, anchorForBuffer, labelSizeForBuffer);
