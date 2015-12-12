@@ -15,7 +15,7 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
       side, side, constraintImageValues, channelDesc);
   Placement::CostFunctionCalculator calculator(constraintImage);
 
-  calculator.resize(side, side);
+  calculator.resize(2 * side, 2 * side);
   calculator.setTextureSize(side, side);
 
   thrust::host_vector<float> occupancy;
@@ -29,15 +29,15 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
   thrust::device_vector<float> occupancyDevice = occupancy;
 
   int labelId = 0;
-  int anchorX = 8;
-  int anchorY = 6;
+  int anchorX = 16;
+  int anchorY = 12;
   int labelWidthInPixel = 3;
   int labelHeightInPixel = 3;
   auto result =
       calculator.calculateForLabel(occupancyDevice, labelId, anchorX, anchorY,
                                    labelWidthInPixel, labelHeightInPixel);
 
-  EXPECT_EQ(9.0f, std::get<0>(result));
-  EXPECT_EQ(6.0f, std::get<1>(result));
+  EXPECT_EQ(9, std::get<0>(result));
+  EXPECT_EQ(6, std::get<1>(result));
 }
 
