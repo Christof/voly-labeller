@@ -1,4 +1,5 @@
 #include "../test.h"
+#include <Eigen/Geometry>
 #include "../../src/math/obb.h"
 
 TEST(Test_Obb, CreationWithDefaultConstructor)
@@ -58,5 +59,35 @@ TEST(Test_Obb, CreationFromCenterHalfWidthsAndAxes)
   EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.7f, 2.2f, 3.1f), obb.corners[5], 1E-4);
   EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 2.2f, 3.1f), obb.corners[6], 1E-4);
   EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 2.2f, 2.9f), obb.corners[7], 1E-4);
+}
+
+TEST(Test_Obb, ApplyTransformationMatrix)
+{
+  Eigen::Vector3f center(0, 0, 0);
+  Eigen::Vector3f halfWidths(0.1f, 0.2f, 0.3f);
+  Eigen::Matrix3f axes;
+  axes << 1, 0, 0, 0, 1, 0, 0, 0, 1;
+  Math::Obb untransformedObb(center, halfWidths, axes);
+
+  Eigen::Affine3f transformation(
+      Eigen::Translation3f(Eigen::Vector3f(1, 2, 3)) *
+      Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitY()));
+  Eigen::Matrix4f matrix = transformation.matrix();
+
+  Math::Obb obb = untransformedObb * matrix;
+
+  EXPECT_TRUE(obb.isInitialized());
+
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(1, 2, 3), obb.getCenter(), 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.3f, 0.2f, -0.1f), obb.getHalfWidths(), 1E-4);
+
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.7f, 1.8f, 3.1f), obb.corners[0], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.7f, 1.8f, 2.9f), obb.corners[1], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 1.8f, 2.9f), obb.corners[2], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 1.8f, 3.1f), obb.corners[3], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.7f, 2.2f, 3.1f), obb.corners[4], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.7f, 2.2f, 2.9f), obb.corners[5], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 2.2f, 2.9f), obb.corners[6], 1E-4);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(1.3f, 2.2f, 3.1f), obb.corners[7], 1E-4);
 }
 
