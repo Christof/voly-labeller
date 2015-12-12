@@ -96,6 +96,8 @@ set(SOURCES
   src/graphics/standard_texture_2d.cpp
   src/graphics/vertex_buffer.h
   src/graphics/vertex_array.cpp
+  src/graphics/drawer.h
+  src/graphics/buffer_drawer.cpp
   src/ui.qml
   ${RESOURCES})
 

@@ -6,23 +6,13 @@
 #include <cmath>
 #include <utility>
 #include <list>
-#include "../graphics/vertex_array.h"
-#include "../graphics/render_data.h"
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
 
-ConstraintUpdater::ConstraintUpdater(
-    Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager,
-    int width, int height)
-  : gl(gl), shaderManager(shaderManager), width(width), height(height)
+ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
+                                     int width, int height)
+  : drawer(drawer), width(width), height(height)
 {
-  shaderId = shaderManager->addShader(":/shader/constraint.vert",
-                                      ":/shader/colorImmediate.frag");
-
-  Eigen::Affine3f pixelToNDCTransform(
-      Eigen::Translation3f(Eigen::Vector3f(-1, 1, 0)) *
-      Eigen::Scaling(Eigen::Vector3f(2.0f / width, -2.0f / height, 1)));
-  pixelToNDC = pixelToNDCTransform.matrix();
 }
 
 polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
@@ -183,14 +173,12 @@ void ConstraintUpdater::drawConstraintRegionFor(
 
   convolveTwoPolygons(connectorPolygon, newLabel);
 
-  drawElementVector(positions);
+  drawer->drawElementVector(positions);
 }
 
 void ConstraintUpdater::clear()
 {
-  gl->glViewport(0, 0, width, height);
-  gl->glClearColor(0, 0, 0, 0);
-  gl->glClear(GL_COLOR_BUFFER_BIT);
+  drawer->clear();
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
@@ -208,20 +196,6 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
     positions.push_back(height - point.y());
   }
 
-  drawElementVector(positions);
-}
-
-void ConstraintUpdater::drawElementVector(std::vector<float> positions)
-{
-  Graphics::VertexArray *vertexArray =
-      new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
-  vertexArray->addStream(positions, 2);
-
-  RenderData renderData;
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.viewMatrix = pixelToNDC;
-  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
-  shaderManager->bind(shaderId, renderData);
-  vertexArray->draw();
+  drawer->drawElementVector(positions);
 }
 

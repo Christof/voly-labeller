@@ -9,6 +9,7 @@
 #include "./graphics/managers.h"
 #include "./graphics/volume_manager.h"
 #include "./graphics/shader_program.h"
+#include "./graphics/buffer_drawer.h"
 #include "./camera_controllers.h"
 #include "./nodes.h"
 #include "./labelling/labeller_frame_data.h"
@@ -63,7 +64,7 @@ void Scene::initialize()
 
   fbo->initialize(gl, width, height);
   constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
-                               textureMapperManager->getBufferSize());
+                                     textureMapperManager->getBufferSize());
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
@@ -80,8 +81,12 @@ void Scene::initialize()
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 
+  auto drawer = std::make_shared<Graphics::BufferDrawer>(
+      textureMapperManager->getBufferSize(),
+      textureMapperManager->getBufferSize(), gl, managers->getShaderManager());
+
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
-      gl, managers->getShaderManager(), textureMapperManager->getBufferSize(),
+      drawer, textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize());
 
   placementLabeller->initialize(

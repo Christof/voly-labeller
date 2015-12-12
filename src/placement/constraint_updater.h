@@ -7,8 +7,7 @@
 #include <boost/geometry.hpp>
 #include <vector>
 #include <utility>
-#include "../graphics/gl.h"
-#include "../graphics/shader_manager.h"
+#include "../graphics/drawer.h"
 
 // ccw, closed polygon
 typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> polygon;
@@ -39,9 +38,8 @@ typedef std::pair<point, point> edge;
 class ConstraintUpdater
 {
  public:
-  ConstraintUpdater(Graphics::Gl *gl,
-                    std::shared_ptr<Graphics::ShaderManager> shaderManager,
-                    int width, int height);
+  ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer, int width,
+                    int height);
 
   void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
                                Eigen::Vector2i labelSize,
@@ -52,13 +50,9 @@ class ConstraintUpdater
   void clear();
 
  private:
-  Graphics::Gl *gl;
-  std::shared_ptr<Graphics::ShaderManager> shaderManager;
+  std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
-
-  int shaderId;
-  Eigen::Matrix4f pixelToNDC;
 
   std::vector<float> positions;
 
@@ -72,8 +66,6 @@ class ConstraintUpdater
   void addPolygonToPositions(const Polygon &polygon);
 
   template <class T> void drawPolygon(std::vector<T> polygon);
-
-  void drawElementVector(std::vector<float> positions);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
