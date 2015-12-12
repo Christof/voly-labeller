@@ -5,13 +5,6 @@
 #include "../cuda_array_mapper.h"
 #include "../../src/placement/cost_function_calculator.h"
 
-float calculateCosts();
-
-TEST(Test_CostFunctionCalculator, TryFunctionPointsComposition)
-{
-  EXPECT_EQ(3.0f, calculateCosts());
-}
-
 TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
 {
   const int side = 16;
