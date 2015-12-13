@@ -8,8 +8,7 @@ namespace Graphics
 {
 
 /**
- * \brief
- *
+ * \brief Interface for drawing 2d polygons
  *
  */
 class Drawer

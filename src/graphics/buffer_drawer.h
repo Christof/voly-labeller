@@ -14,8 +14,8 @@ class Gl;
 class ShaderManager;
 
 /**
- * \brief
- *
+ * \brief Drawer implementation which uses OpenGL to draw into the currently
+ * bound frame buffer
  *
  */
 class BufferDrawer : public Drawer
