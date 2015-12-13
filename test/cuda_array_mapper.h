@@ -59,9 +59,20 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
     return result;
   }
 
+  void updateData(std::vector<ElementType> newData)
+  {
+    assert(width * height == static_cast<int>(newData.size()));
+    data = newData;
+  }
+
+  ElementType getDataAt(int index)
+  {
+    return data[index];
+  }
+
  private:
   std::vector<ElementType> data;
-  cudaArray_t array;
+  cudaArray_t array = nullptr;
   cudaChannelFormatDesc channelFormat;
   unsigned int flags;
 };
