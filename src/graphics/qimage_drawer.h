@@ -11,9 +11,10 @@ namespace Graphics
 {
 
 /**
- * \brief
+ * \brief Drawer implementation which draws into a QImage
  *
- *
+ * This is a good fit for testing because it doesn't require an OpenGL context
+ * to be created.
  */
 class QImageDrawer : public Drawer
 {
