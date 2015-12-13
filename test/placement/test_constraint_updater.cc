@@ -1,6 +1,7 @@
 #include "../test.h"
 #include <QImage>
 #include <QPainter>
+#include <QFile>
 #include "../../src/placement/constraint_updater.h"
 
 class QImageDrawer : public Graphics::Drawer
@@ -11,6 +12,7 @@ class QImageDrawer : public Graphics::Drawer
   {
     image = new QImage(width, height, QImage::Format_Grayscale8);
   }
+
   void drawElementVector(std::vector<float> positions)
   {
     QPainter painter;
@@ -62,5 +64,19 @@ TEST(Test_ConstraintUpdater, Draw)
                                             lastLabelPosition, lastLabelSize);
 
   drawer->image->save("constraints.png");
+
+  QFile expectedFile("expected-constraints.png");
+  ASSERT_TRUE(expectedFile.exists())
+      << "File 'expected-constraints.png' does not "
+         "exists. Check 'constraints.png' and "
+         "rename it if it is correct.";
+
+  QImage expectedImage(expectedFile.fileName());
+  ASSERT_EQ(expectedImage.width(), drawer->image->width());
+  ASSERT_EQ(expectedImage.height(), drawer->image->height());
+
+  for (int y = 0; y < expectedImage.width(); ++y)
+    for (int x = 0; x < expectedImage.width(); ++x)
+      EXPECT_EQ(expectedImage.pixel(x, y), drawer->image->pixel(x, y));
 }
 
