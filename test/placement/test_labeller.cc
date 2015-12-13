@@ -7,11 +7,8 @@
 #include "../../src/graphics/qimage_drawer.h"
 #include "../cuda_array_mapper.h"
 
-TEST(Test_PlacementLabeller, Integration)
+std::shared_ptr<Labels> createLabels()
 {
-  const int width = 512;
-  const int height = 512;
-
   auto labels = std::make_shared<Labels>();
   labels->add(Label(1, "Shoulder", Eigen::Vector3f(0.174f, 0.55f, 0.034f)));
   labels->add(Label(2, "Ellbow", Eigen::Vector3f(0.34f, 0.322f, -0.007f)));
@@ -19,6 +16,15 @@ TEST(Test_PlacementLabeller, Integration)
                     Eigen::Vector2i(128, 128)));
   labels->add(Label(4, "Wound 2", Eigen::Vector3f(0.034f, 0.373f, 0.141f)));
 
+  return labels;
+}
+
+TEST(Test_PlacementLabeller, Integration)
+{
+  const int width = 512;
+  const int height = 512;
+
+  auto labels = createLabels();
   Placement::Labeller labeller(labels);
 
   cudaChannelFormatDesc floatChannelDesc =
@@ -68,13 +74,13 @@ TEST(Test_PlacementLabeller, Integration)
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
-  Eigen::Vector3f expectedPosition1(0.192445f, 0.686766f, 0.034f);
-  EXPECT_Vector3f_NEAR(expectedPosition1, newPositions[1], 1e-5f);
-  Eigen::Vector3f expectedPosition2(0.338289f, 0.129809f, -0.00699999f);
-  EXPECT_Vector3f_NEAR(expectedPosition2, newPositions[2], 1e-5f);
-  Eigen::Vector3f expectedPosition3(0.459961f, 0.445242f, 0.058f);
-  EXPECT_Vector3f_NEAR(expectedPosition3, newPositions[3], 1e-5f);
-  Eigen::Vector3f expectedPosition4(-0.184551f, 0.60734f, 0.141f);
-  EXPECT_Vector3f_NEAR(expectedPosition4, newPositions[4], 1e-5f);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.192445f, 0.686766f, 0.034f),
+                       newPositions[1], 1e-5f);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.338289f, 0.129809f, -0.00699999f),
+                       newPositions[2], 1e-5f);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.459961f, 0.445242f, 0.058f),
+                       newPositions[3], 1e-5f);
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(-0.184551f, 0.60734f, 0.141f),
+                       newPositions[4], 1e-5f);
 }
 
