@@ -7,16 +7,16 @@
 class QImageDrawer : public Graphics::Drawer
 {
  public:
-  QImage *image;
+  std::shared_ptr<QImage> image;
   QImageDrawer(int width, int height)
   {
-    image = new QImage(width, height, QImage::Format_Grayscale8);
+    image = std::make_shared<QImage>(width, height, QImage::Format_Grayscale8);
   }
 
   void drawElementVector(std::vector<float> positions)
   {
     QPainter painter;
-    painter.begin(image);
+    painter.begin(image.get());
     painter.setBrush(QBrush(Qt::GlobalColor::white));
     painter.setPen(Qt::GlobalColor::white);
 
