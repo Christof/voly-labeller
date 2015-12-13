@@ -7,6 +7,41 @@
 #include "../../src/graphics/qimage_drawer.h"
 #include "../cuda_array_mapper.h"
 
+class QImageDrawerWithUpdating : public Graphics::QImageDrawer
+{
+ public:
+  QImageDrawerWithUpdating(
+      int width, int height,
+      std::shared_ptr<CudaArrayMapper<unsigned char>> texture)
+    : QImageDrawer(width, height), texture(texture)
+  {
+  }
+  virtual void drawElementVector(std::vector<float> positions)
+  {
+    Graphics::QImageDrawer::drawElementVector(positions);
+
+    const unsigned char *data = image->constBits();
+    std::vector<unsigned char> newData(image->width() * image->height(), 0.0f);
+    for (int i = 0; i < image->byteCount(); ++i)
+    {
+      newData[i] = data[i] > 0 || texture->getDataAt(i) > 0 ? 255 : 0;
+    }
+
+    texture->updateData(newData);
+  }
+
+  virtual void clear()
+  {
+    Graphics::QImageDrawer::clear();
+
+    std::vector<unsigned char> newData(image->width() * image->height(), 0);
+    texture->updateData(newData);
+  }
+
+ private:
+  std::shared_ptr<CudaArrayMapper<unsigned char>> texture;
+};
+
 std::shared_ptr<Labels> createLabels()
 {
   auto labels = std::make_shared<Labels>();
@@ -51,10 +86,14 @@ TEST(Test_PlacementLabeller, Integration)
       std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
           width, height, apolloniusImage, vector4ChannelDesc);
 
-  std::vector<float> constraintImage(width * height, 0);
-  auto constraintTextureMapper = std::make_shared<CudaArrayMapper<float>>(
-      width, height, constraintImage, floatChannelDesc);
-  auto drawer = std::make_shared<Graphics::QImageDrawer>(width, height);
+  cudaChannelFormatDesc byteChannelDesc =
+      cudaCreateChannelDesc(8, 0, 0, 0, cudaChannelFormatKindUnsigned);
+  std::vector<unsigned char> constraintImage(width * height, 0);
+  auto constraintTextureMapper =
+      std::make_shared<CudaArrayMapper<unsigned char>>(
+          width, height, constraintImage, byteChannelDesc);
+  auto drawer = std::make_shared<QImageDrawerWithUpdating>(
+      width, height, constraintTextureMapper);
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, width, height);
 
