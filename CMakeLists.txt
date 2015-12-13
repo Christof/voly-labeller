@@ -98,6 +98,7 @@ set(SOURCES
   src/graphics/vertex_array.cpp
   src/graphics/drawer.h
   src/graphics/buffer_drawer.cpp
+  src/graphics/qimage_drawer.cpp
   src/ui.qml
   ${RESOURCES})
 
