@@ -35,7 +35,7 @@ void QImageDrawer::drawElementVector(std::vector<float> positions)
     }
     points.push_back(QPointF(x, y));
   }
-  painter.drawPolygon(points.data(), points.size(), Qt::FillRule::OddEvenFill);
+  painter.drawConvexPolygon(points.data(), points.size());
   painter.end();
 }
 
