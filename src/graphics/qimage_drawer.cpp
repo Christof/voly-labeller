@@ -18,7 +18,11 @@ void QImageDrawer::drawElementVector(std::vector<float> positions)
   painter.setPen(Qt::GlobalColor::white);
 
   std::vector<QPointF> points;
-  for (size_t i = 0; i < positions.size() / 2; ++i)
+  size_t i = 0;
+  if (positions[0] == positions[2] && positions[1] == positions[3])
+    i = 1;
+
+  for (; i < positions.size() / 2; ++i)
   {
     float x = positions[i * 2];
     float y = positions[i * 2 + 1];
