@@ -68,7 +68,7 @@ createLabeller(std::shared_ptr<Labels> labels)
   return labeller;
 }
 
-TEST(Test_PlacementLabeller, Integration)
+TEST(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
 {
 
   auto labels = createLabels();
@@ -98,7 +98,23 @@ TEST(Test_PlacementLabeller, Integration)
   for (size_t i = 0; i < newPositions.size(); ++i)
   {
     EXPECT_Vector3f_NEAR(expectedPositions[i], newPositions[i + 1], 1e-5f);
-    EXPECT_Vector3f_NEAR(expectedPositions[i], lastPlacementResult[i + 1], 1e-5f);
+    EXPECT_Vector3f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
+                         1e-5f);
   }
+}
+
+TEST(Test_PlacementLabeller, UpdatesReturnsEmptyMapIfLabellerIsNotInitialized)
+{
+  auto labels = createLabels();
+  auto labeller = std::make_shared<Placement::Labeller>(labels);
+
+  LabellerFrameData frameData(0.02f, Eigen::Matrix4f::Identity(),
+                              Eigen::Matrix4f::Identity());
+
+  auto newPositions = labeller->update(frameData);
+  auto lastPlacementResult = labeller->getLastPlacementResult();
+
+  EXPECT_EQ(0, newPositions.size());
+  EXPECT_EQ(0, lastPlacementResult.size());
 }
 
