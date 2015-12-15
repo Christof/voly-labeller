@@ -6,8 +6,8 @@ Item {
   id: root
   x: 0
   y: 0
-  width: 1000
-  height: 1000
+  width: 1024
+  height: 1024
 
   function toggleVisibility() {
       root.visible = !root.visible;
@@ -70,6 +70,16 @@ Item {
           onTriggered: labels.toggleLabelsInfoVisbility();
         }
         MenuItem {
+          text: "Toggle buffer views"
+          shortcut: "F5"
+          onTriggered: scene.toggleBufferViews();
+        }
+        MenuItem {
+          text: "Toggle constraint overlay"
+          shortcut: "F6"
+          onTriggered: scene.toggleConstraintOverlay();
+        }
+        MenuItem {
           text: "Toggle fullscreen"
           shortcut: "F11"
           onTriggered: window.toggleFullscreen();
@@ -81,6 +91,24 @@ Item {
           text: "Toggle label update"
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();
+        }
+      }
+      Menu {
+        title: "Debug"
+        MenuItem {
+          text: "Save occupancy"
+          shortcut: "O"
+          onTriggered: bufferTextures.saveOccupancy();
+        }
+        MenuItem {
+          text: "Save distance transform"
+          shortcut: "I"
+          onTriggered: bufferTextures.saveDistanceTransform();
+        }
+        MenuItem {
+          text: "Save apollonius"
+          shortcut: "P"
+          onTriggered: bufferTextures.saveApollonius();
         }
       }
     }

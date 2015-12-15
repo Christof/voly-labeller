@@ -7,7 +7,8 @@
 #include <memory>
 #include "../utils/cuda_array_provider.h"
 
-thrust::host_vector<float> algSAT(float *h_inout, int w, int h);
+namespace Placement
+{
 
 /**
  * \brief Calculates the summed area table of a given float image
@@ -27,6 +28,8 @@ class SummedAreaTable
 
   void runKernel();
 
+  thrust::device_vector<float> &getResults();
+
  private:
   std::shared_ptr<CudaArrayProvider> inputImage;
 
@@ -35,5 +38,7 @@ class SummedAreaTable
   thrust::device_vector<float> vhat;
   thrust::device_vector<float> ysum;
 };
+
+}  // namespace Placement
 
 #endif  // SRC_PLACEMENT_SUMMED_AREA_TABLE_H_

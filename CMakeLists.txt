@@ -43,18 +43,23 @@ set(SOURCES
   src/nodes.cpp
   src/abstract_scene.h
   src/scene.cpp
+  src/scene_controller.cpp
+  src/texture_mapper_manager.cpp
+  src/texture_mapper_manager_controller.cpp
   src/frustum_optimizer.cpp
   src/camera_controller.cpp
   src/mouse_dragging_controller.cpp
   src/camera_rotation_controller.cpp
   src/camera_zoom_controller.cpp
   src/camera_move_controller.cpp
+  src/camera_controllers.cpp
   src/picking_controller.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   src/labels_model.cpp
   src/volume_reader.cpp
   src/default_scene_creator.cpp
+  src/constraint_buffer_object.cpp
   src/graphics/gl.cpp
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
@@ -89,6 +94,11 @@ set(SOURCES
   src/graphics/volume_manager.cpp
   src/graphics/managers.cpp
   src/graphics/standard_texture_2d.cpp
+  src/graphics/vertex_buffer.h
+  src/graphics/vertex_array.cpp
+  src/graphics/drawer.h
+  src/graphics/buffer_drawer.cpp
+  src/graphics/qimage_drawer.cpp
   src/ui.qml
   ${RESOURCES})
 
@@ -137,3 +147,10 @@ add_custom_target(cov-open xdg-open ./coverage-output/index.html)
 add_custom_target(doc cd ${CMAKE_CURRENT_SOURCE_DIR} && doxygen)
 add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html)
 
+# Profiling
+set(executable "./${PROJECT_NAME}")
+set(profile profile_${PROJECT_NAME})
+add_custom_target(profile_${PROJECT_NAME}
+  COMMAND LD_PRELOAD=/usr/local/lib/libprofiler.so CPUPROFILE=${profile} ${executable} \${PARAMS} && pprof ${executable} ${profile} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+add_custom_target(callgrind_${PROJECT_NAME}
+  COMMAND pprof --callgrind ${executable} ${profile} > ${profile}.callgrind && kcachegrind ${profile}.callgrind WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

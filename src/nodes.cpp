@@ -97,6 +97,16 @@ void Nodes::render(Graphics::Gl *gl,
   }
 }
 
+void Nodes::renderLabels(Graphics::Gl *gl,
+                   std::shared_ptr<Graphics::Managers> managers,
+                   RenderData renderData)
+{
+  for (auto labelNode : getLabelNodes())
+  {
+    labelNode->renderLabelAndConnector(gl, managers, renderData);
+  }
+}
+
 void Nodes::saveSceneTo(QUrl url)
 {
   saveSceneTo(url.path().toStdString());

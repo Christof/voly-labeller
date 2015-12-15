@@ -9,39 +9,36 @@
 #include "./graphics/managers.h"
 #include "./graphics/volume_manager.h"
 #include "./graphics/shader_program.h"
-#include "./camera_controller.h"
-#include "./camera_rotation_controller.h"
-#include "./camera_zoom_controller.h"
-#include "./camera_move_controller.h"
+#include "./graphics/buffer_drawer.h"
+#include "./camera_controllers.h"
 #include "./nodes.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
-#include "./placement/summed_area_table.h"
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
 #include "./placement/occupancy.h"
+#include "./placement/apollonius.h"
+#include "./texture_mapper_manager.h"
+#include "./constraint_buffer_object.h"
+#include "./placement/constraint_updater.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-             std::shared_ptr<Forces::Labeller> forcesLabeller)
+             std::shared_ptr<Forces::Labeller> forcesLabeller,
+             std::shared_ptr<Placement::Labeller> placementLabeller,
+             std::shared_ptr<TextureMapperManager> textureMapperManager)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    frustumOptimizer(nodes)
+    placementLabeller(placementLabeller), frustumOptimizer(nodes),
+    textureMapperManager(textureMapperManager)
 {
-  cameraController = std::make_shared<CameraController>(camera);
-  cameraRotationController = std::make_shared<CameraRotationController>(camera);
-  cameraZoomController = std::make_shared<CameraZoomController>(camera);
-  cameraMoveController = std::make_shared<CameraMoveController>(camera);
+  cameraControllers =
+      std::make_shared<CameraControllers>(invokeManager, camera);
 
-  invokeManager->addHandler("cam", cameraController.get());
-  invokeManager->addHandler("cameraRotation", cameraRotationController.get());
-  invokeManager->addHandler("cameraZoom", cameraZoomController.get());
-  invokeManager->addHandler("cameraMove", cameraMoveController.get());
-
-  fbo = std::unique_ptr<Graphics::FrameBufferObject>(
-      new Graphics::FrameBufferObject());
+  fbo = std::make_shared<Graphics::FrameBufferObject>();
+  constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }
 
@@ -60,8 +57,14 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
   positionQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
+  distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/distanceTransform.frag");
+  transparentQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
+  constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
+                                     textureMapperManager->getBufferSize());
   haBuffer =
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
@@ -70,32 +73,39 @@ void Scene::initialize()
   haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
+  distanceTransformQuad->initialize(gl, managers);
+  transparentQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
-  occupancyTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_R32F);
-  occupancyTexture->initialize(gl);
-  distanceTransformTexture =
-      std::make_shared<Graphics::StandardTexture2d>(width, height, GL_RGBA32F);
-  distanceTransformTexture->initialize(gl);
+  textureMapperManager->resize(width, height);
+  textureMapperManager->initialize(gl, fbo, constraintBufferObject);
+
+  auto drawer = std::make_shared<Graphics::BufferDrawer>(
+      textureMapperManager->getBufferSize(),
+      textureMapperManager->getBufferSize(), gl, managers->getShaderManager());
+
+  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+      drawer, textureMapperManager->getBufferSize(),
+      textureMapperManager->getBufferSize());
+
+  placementLabeller->initialize(
+      textureMapperManager->getOccupancyTextureMapper(),
+      textureMapperManager->getDistanceTransformTextureMapper(),
+      textureMapperManager->getApolloniusTextureMapper(),
+      textureMapperManager->getConstraintTextureMapper(), constraintUpdater);
 }
 
 void Scene::cleanup()
 {
-  colorTextureMapper.reset();
-  positionsTextureMapper.reset();
-  occupancyTextureMapper.reset();
-  distanceTransformTextureMapper.reset();
+  placementLabeller->cleanup();
+  textureMapperManager->cleanup();
 }
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
-  cameraController->setFrameTime(frameTime);
-  cameraRotationController->setFrameTime(frameTime);
-  cameraZoomController->setFrameTime(frameTime);
-  cameraMoveController->setFrameTime(frameTime);
+  cameraControllers->update(frameTime);
 
   frustumOptimizer.update(camera.getViewMatrix());
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
@@ -103,9 +113,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
+  /*
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-
+      */
+  auto newPositions = placementLabeller->getLastPlacementResult();
   for (auto &labelNode : nodes->getLabelNodes())
   {
     labelNode->labelPosition = newPositions[labelNode->label.id];
@@ -123,16 +135,43 @@ void Scene::render()
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+  RenderData renderData = createRenderData();
+
+  renderNodesWithHABufferIntoFBO(renderData);
+
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  renderScreenQuad();
+
+  textureMapperManager->update();
+
+  constraintBufferObject->bind();
+
+  placementLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+
+  constraintBufferObject->unbind();
+
+  glAssert(gl->glViewport(0, 0, width, height));
+
+  if (showConstraintOverlay)
+  {
+    constraintBufferObject->bindTexture(GL_TEXTURE0);
+    renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
+  }
+
+  if (showBufferDebuggingViews)
+    renderDebuggingViews(renderData);
+
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
+
+  nodes->renderLabels(gl, managers, renderData);
+}
+
+void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
+{
   fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-  RenderData renderData;
-  renderData.projectionMatrix = camera.getProjectionMatrix();
-  renderData.viewMatrix = camera.getViewMatrix();
-  renderData.cameraPosition = camera.getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
   haBuffer->clearAndPrepare(managers);
 
@@ -145,48 +184,39 @@ void Scene::render()
   // doPick();
 
   fbo->unbind();
+}
 
-  if (!colorTextureMapper.get())
-  {
-    colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(),
-                                                 width, height));
-    positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
-                                                width, height));
-    distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            distanceTransformTexture->getId(), width, height));
-    occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-        CudaTextureMapper::createReadWriteDiscardMapper(
-            occupancyTexture->getId(), width, height));
-  }
-
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  renderScreenQuad();
-
+void Scene::renderDebuggingViews(const RenderData &renderData)
+{
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  Occupancy(positionsTextureMapper, occupancyTextureMapper).runKernel();
-  occupancyTexture->bind();
+  textureMapperManager->bindOccupancyTexture();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  DistanceTransform(occupancyTextureMapper, distanceTransformTextureMapper)
-      .run();
-  distanceTransformTexture->bind();
+  textureMapperManager->bindDistanceTransform();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(positionQuad, transformation.matrix());
+  renderQuad(distanceTransformQuad, transformation.matrix());
 
-  glAssert(gl->glEnable(GL_DEPTH_TEST));
+  textureMapperManager->bindApollonius();
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
+
+  constraintBufferObject->bindTexture(GL_TEXTURE0);
+  transformation =
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  renderQuad(quad, transformation.matrix());
 }
 
 void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
@@ -214,9 +244,23 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
+  placementLabeller->resize(width, height);
+
   shouldResize = true;
 
   forcesLabeller->resize(width, height);
+}
+
+RenderData Scene::createRenderData()
+{
+  RenderData renderData;
+  renderData.projectionMatrix = camera.getProjectionMatrix();
+  renderData.viewMatrix = camera.getViewMatrix();
+  renderData.cameraPosition = camera.getPosition();
+  renderData.modelMatrix = Eigen::Matrix4f::Identity();
+  renderData.windowPixelSize = Eigen::Vector2f(width, height);
+
+  return renderData;
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)
@@ -254,5 +298,15 @@ void Scene::doPick()
   label.anchorPosition = toVector3f(positionWorld);
 
   labels->update(label);
+}
+
+void Scene::enableBufferDebuggingViews(bool enable)
+{
+  showBufferDebuggingViews = enable;
+}
+
+void Scene::enableConstraingOverlay(bool enable)
+{
+  showConstraintOverlay = enable;
 }
 

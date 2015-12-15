@@ -9,11 +9,15 @@
 #include "../src/utils/cuda_array_provider.h"
 
 /**
- * \brief
+ * \brief CudaArrayProvider implementation for tests, taking data from a given
+ * vector
  *
+ * The data can be updated using #updateData. It sets the data internally, but
+ * does not copy it to the GPU. This can be done by calling #map (which might
+ * be called be the tested code anyway).
  *
+ * Processed data can be retrieved from the GPU by calling #copyDataFromGpu.
  */
-
 template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
 {
  public:
@@ -27,7 +31,9 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
 
   virtual void map()
   {
-    HANDLE_ERROR(cudaMallocArray(&array, &channelFormat, width, height, flags));
+    if (!array)
+      HANDLE_ERROR(
+          cudaMallocArray(&array, &channelFormat, width, height, flags));
 
     HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, data.data(),
                                    sizeof(ElementType) * data.size(),
@@ -51,7 +57,7 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
   std::vector<ElementType> copyDataFromGpu()
   {
     std::vector<ElementType> result(width * height);
-    assert(width * height == result.size());
+    assert(width * height == static_cast<int>(result.size()));
     HANDLE_ERROR(cudaMemcpyFromArray(result.data(), array, 0, 0,
                                      sizeof(ElementType) * width * height,
                                      cudaMemcpyDeviceToHost));
@@ -59,9 +65,20 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
     return result;
   }
 
+  void updateData(std::vector<ElementType> newData)
+  {
+    assert(width * height == static_cast<int>(newData.size()));
+    data = newData;
+  }
+
+  ElementType getDataAt(int index)
+  {
+    return data[index];
+  }
+
  private:
   std::vector<ElementType> data;
-  cudaArray_t array;
+  cudaArray_t array = nullptr;
   cudaChannelFormatDesc channelFormat;
   unsigned int flags;
 };

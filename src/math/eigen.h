@@ -31,4 +31,9 @@ inline Eigen::Vector2f toEigen(const QPointF &pos)
   return Eigen::Vector2f(pos.x(), pos.y());
 }
 
+inline Eigen::Vector2f ndcToPixels(Eigen::Vector2f ndc, Eigen::Vector2f size)
+{
+  return (ndc * 0.5f + Eigen::Vector2f(0.5f, 0.5f)).cwiseProduct(size);
+}
+
 #endif  // SRC_MATH_EIGEN_H_

@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>shader/phong.frag</file>
         <file>shader/phong.vert</file>
-        <file>shader/label.frag</file>
         <file>shader/label.vert</file>
         <file>shader/slice.frag</file>
         <file>shader/texture3dAsColor.frag</file>
@@ -14,7 +13,8 @@
         <file>shader/buildHABuffer.hglsl</file>
         <file>shader/texture.frag</file>
         <file>shader/pass.vert</file>
-        <file>shader/test.frag</file>
+        <file>shader/color.frag</file>
+        <file>shader/colorImmediate.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/positionRenderTarget.frag</file>
         <file>shader/cube.geom</file>
@@ -22,6 +22,10 @@
         <file>shader/volume_cube.frag</file>
         <file>shader/vertexHelper.hglsl</file>
         <file>shader/bindlessTexture.hglsl</file>
+        <file>shader/distanceTransform.frag</file>
+        <file>shader/textureImmediate.frag</file>
+        <file>shader/constraint.vert</file>
+        <file>shader/transparentOverlay.frag</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>

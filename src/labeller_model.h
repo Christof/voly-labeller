@@ -51,7 +51,7 @@ class LabellerModel : public QAbstractTableModel
 
  private:
   std::shared_ptr<Forces::Labeller> labeller;
-  bool isVisible = true;
+  bool isVisible = false;
 };
 
 #endif  // SRC_LABELLER_MODEL_H_

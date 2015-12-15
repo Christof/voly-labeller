@@ -2,15 +2,18 @@
 
 #define SRC_GRAPHICS_STANDARD_TEXTURE_2D_H_
 
+#include <string>
+
 namespace Graphics
 {
 
 class Gl;
 
 /**
- * \brief
+ * \brief Encapsulates a plain old OpenGL texture
  *
- *
+ * This classes is inteded for use with textures which are used
+ * for post processing. Otherwise the bindless textures should be used.
  */
 class StandardTexture2d
 {
@@ -25,6 +28,11 @@ class StandardTexture2d
 
   unsigned int getId();
 
+  void save(std::string filename);
+
+  int getWidth();
+  int getHeight();
+
  private:
   unsigned int texture;
 
@@ -33,6 +41,8 @@ class StandardTexture2d
   unsigned int format;
 
   Gl *gl;
+
+  int getComponentsPerPixel();
 };
 
 }  // namespace Graphics

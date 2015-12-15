@@ -10,8 +10,12 @@ set(SOURCES
   distance_transform.cu
   apollonius.cu
   occupancy.cu
+  cost_function_calculator.cu
+  occupancy_updater.cu
   labeller.cpp
   cuda_texture_mapper.cpp
+  constraint_updater.cpp
   )
 
 cuda_add_library(placement-lib ${SOURCES})
+target_link_libraries(placement-lib ${CUDA_LIBRARIES})

@@ -28,6 +28,9 @@ class LabelNode : public Node
   virtual void render(Graphics::Gl *gl,
                       std::shared_ptr<Graphics::Managers> managers,
                       RenderData renderData);
+  void renderLabelAndConnector(Graphics::Gl *gl,
+                               std::shared_ptr<Graphics::Managers> managers,
+                               RenderData renderData);
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {

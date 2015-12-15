@@ -6,9 +6,8 @@
 /**
  * \brief Initializes the distance transform
  *
- * The value from the inputTexture is read. If it is larger than or equel to
- * 0.99 the data value is set to the index. Otherwise it is set to the given
- * outlier value.
+ * The value from the inputTexture is read. If it is equal to 0 the data value
+ * is set to the index. Otherwise it is set to the given outlier value.
  */
 __global__ void initializeForDistanceTransform(cudaTextureObject_t input,
                                                int width, int height,
@@ -24,7 +23,7 @@ __global__ void initializeForDistanceTransform(cudaTextureObject_t input,
 
   float pixelValue = tex2D<float>(input, x * xscale + 0.5f, y * yscale + 0.5f);
 
-  data[index] = pixelValue >= 0.99f ? index : outlierValue;
+  data[index] = pixelValue == 0.0f ? index : outlierValue;
 }
 
 __global__ void distanceTransformStep(int *data, unsigned int step, int width,
@@ -89,15 +88,15 @@ __global__ void distanceTransformFinish(cudaSurfaceObject_t output, int width,
   int tx = voronoival - ty * width;
 
   float sqdist = ((tx - x) * (tx - x) + (ty - y) * (ty - y));
-  float distf = sqrtf(sqdist);
+  float resultValue = sqdist / (width * width + height * height);
 
-  result[index] = distf;
+  result[index] = resultValue;
 
-  // write to texture for debugging
-  float grayTone = 16.0f * distf / width;
-  float4 color = make_float4(grayTone, grayTone, grayTone, 1.0f);
-  surf2Dwrite(color, output, x * sizeof(float4), y);
+  surf2Dwrite(resultValue, output, x * sizeof(float), y);
 }
+
+namespace Placement
+{
 
 DistanceTransform::DistanceTransform(
     std::shared_ptr<CudaArrayProvider> inputImage,
@@ -105,6 +104,16 @@ DistanceTransform::DistanceTransform(
   : inputImage(inputImage), outputImage(outputImage)
 
 {
+  prepareInputTexture();
+  prepareOutputSurface();
+}
+
+DistanceTransform::~DistanceTransform()
+{
+  if (inputTexture)
+    cudaDestroyTextureObject(inputTexture);
+  if (outputSurface)
+    cudaDestroySurfaceObject(outputSurface);
 }
 
 void DistanceTransform::resize()
@@ -121,21 +130,13 @@ void DistanceTransform::run()
 {
   resize();
 
-  prepareInputTexture();
-  prepareOutputSurface();
-
   dimBlock = dim3(32, 32, 1);
-  dimGrid = dim3(divUp(inputImage->getWidth(), dimBlock.x),
-               divUp(inputImage->getHeight(), dimBlock.y), 1);
+  dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
+                 divUp(outputImage->getHeight(), dimBlock.y), 1);
 
   runInitializeKernel();
   runStepsKernels();
   runFinishKernel();
-
-  cudaDestroyTextureObject(inputTexture);
-  cudaDestroySurfaceObject(outputSurface);
-  inputImage->unmap();
-  outputImage->unmap();
 }
 
 thrust::device_vector<float> &DistanceTransform::getResults()
@@ -157,6 +158,8 @@ void DistanceTransform::prepareInputTexture()
   texDesc.normalizedCoords = 0;
 
   cudaCreateTextureObject(&inputTexture, &resDesc, &texDesc, NULL);
+
+  inputImage->unmap();
 }
 
 void DistanceTransform::prepareOutputSurface()
@@ -165,6 +168,8 @@ void DistanceTransform::prepareOutputSurface()
   auto resDesc = outputImage->getResourceDesc();
 
   cudaCreateSurfaceObject(&outputSurface, &resDesc);
+
+  outputImage->unmap();
 }
 
 void DistanceTransform::runInitializeKernel()
@@ -187,6 +192,9 @@ void DistanceTransform::runInitializeKernel()
 
 void DistanceTransform::runStepsKernels()
 {
+  dimGrid = dim3(divUp(outputImage->getWidth(), dimBlock.x),
+                 divUp(outputImage->getHeight(), dimBlock.y), 1);
+
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
   distanceTransformStep<<<dimGrid, dimBlock>>>(
       computePtr, 1, outputImage->getWidth(), outputImage->getHeight());
@@ -212,3 +220,4 @@ void DistanceTransform::runFinishKernel()
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
+}  // namespace Placement

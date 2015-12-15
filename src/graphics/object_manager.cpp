@@ -83,7 +83,7 @@ void ObjectManager::render(const RenderData &renderData)
     qCDebug(omChan) << "Render objects with shader" << shaderObjectPair.first
                     << "with" << shaderObjectPair.second.size() << "objects";
 
-    shaderManager->bind(shaderObjectPair.first, renderData);
+    shaderManager->bindForHABuffer(shaderObjectPair.first, renderData);
 
     std::map<int, std::vector<ObjectData>> objectsByPrimitiveType;
     for (auto &object : shaderObjectPair.second)
@@ -136,8 +136,11 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     auto *transform = &matrices[counter];
     auto modelMatrix = objectData.modelMatrix;
+
+    // encode objectId into modelMatrix
     int objectId = objectData.getId();
     modelMatrix(3, 0) = *reinterpret_cast<float *>(&objectId);
+
     memcpy(transform, modelMatrix.data(), sizeof(float[16]));
 
     if (objectData.hasCustomBuffer())

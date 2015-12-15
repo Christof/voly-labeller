@@ -67,7 +67,6 @@ void ShaderManager::bind(int id, const RenderData &renderData)
 {
   auto shader = shaderPrograms[id];
   shader->bind();
-  haBuffer->begin(shader);
 
   Eigen::Matrix4f viewProjectionMatrix =
       renderData.projectionMatrix * renderData.viewMatrix;
@@ -76,10 +75,16 @@ void ShaderManager::bind(int id, const RenderData &renderData)
   shader->setUniform("projectionMatrix", renderData.projectionMatrix);
 }
 
+void ShaderManager::bindForHABuffer(int id, const RenderData &renderData)
+{
+  bind(id, renderData);
+  auto shader = shaderPrograms[id];
+  haBuffer->begin(shader);
+}
+
 std::shared_ptr<ShaderProgram> ShaderManager::getShader(int id)
 {
   return shaderPrograms[id];
 }
-
 
 }  // namespace Graphics

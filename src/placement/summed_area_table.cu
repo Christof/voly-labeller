@@ -409,35 +409,6 @@ __global__ void algSAT_stage4(const int c_width, const int c_height,
   }
 }
 
-/*
-__host__
-void prepare_algSAT(const int width
-    dvector<float>& d_inout,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const float *h_in,
-    const int& w,
-    const int& h ) {
-
-  algs.width = w;
-  algs.height = h;
-
-  if( w % 32 > 0 ) algs.width += (32 - (w % 32));
-  if( h % 32 > 0 ) algs.height += (32 - (h % 32));
-
-  calc_alg_setup( algs, algs.width, algs.height );
-  up_alg_setup( algs );
-
-  d_inout.copy_from( h_in, w, h, algs.width, algs.height );
-
-  d_ybar.resize( algs.n_size * algs.width );
-  d_vhat.resize( algs.m_size * algs.height );
-  d_ysum.resize( algs.m_size * algs.n_size );
-
-}
-*/
-
 __global__ void sat_init_kernel(int image_size, float xscale, float yscale,
                                 float *thrustptr)
 {
@@ -461,11 +432,11 @@ void resizeIfNecessary(thrust::device_vector<float> &vector, unsigned long size)
 void callStages(thrust::device_vector<float> &inout,
                 thrust::device_vector<float> &ybar,
                 thrust::device_vector<float> &vhat,
-                thrust::device_vector<float> &ysum, int compute_width,
-                int compute_height, int compute_m_size, int compute_n_size)
+                thrust::device_vector<float> &ysum, int computeWidth,
+                int computeHeight, int compute_m_size, int compute_n_size)
 {
-  const int nWm = (compute_width + MTS - 1) / MTS,
-            nHm = (compute_height + MTS - 1) / MTS;
+  const int nWm = (computeWidth + MTS - 1) / MTS,
+            nHm = (computeHeight + MTS - 1) / MTS;
   const dim3 cg_img(compute_m_size, compute_n_size);
   const dim3 cg_ybar(nWm, 1);
   const dim3 cg_vhat(1, nHm);
@@ -475,13 +446,13 @@ void callStages(thrust::device_vector<float> &inout,
   float *d_vhat = thrust::raw_pointer_cast(vhat.data());
   float *d_ysum = thrust::raw_pointer_cast(ysum.data());
 
-  algSAT_stage1<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
+  algSAT_stage1<<<cg_img, dim3(WS, SOW)>>>(computeWidth, computeHeight,
       d_inout, d_ybar, d_vhat);
   algSAT_stage2<<<cg_ybar, dim3(WS, MW)>>>(compute_m_size, compute_n_size,
-      compute_width, d_ybar, d_ysum);
-  algSAT_stage3<<<cg_vhat, dim3(WS, MW)>>>(compute_m_size, compute_height,
+      computeWidth, d_ybar, d_ysum);
+  algSAT_stage3<<<cg_vhat, dim3(WS, MW)>>>(compute_m_size, computeHeight,
       d_ysum, d_vhat);
-  algSAT_stage4<<<cg_img, dim3(WS, SOW)>>>(compute_width, compute_height,
+  algSAT_stage4<<<cg_img, dim3(WS, SOW)>>>(computeWidth, computeHeight,
       d_inout, d_ybar, d_vhat);
 }
 
@@ -492,19 +463,19 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
              thrust::device_vector<float> &vhat,
              thrust::device_vector<float> &ysum)
 {
-  int compute_width = image_size;
-  int compute_height = image_size;
-  if (compute_width % 32 > 0)
-    compute_width += (32 - (compute_width % 32));
-  if (compute_height % 32 > 0)
-    compute_height += (32 - (compute_height % 32));
-  int compute_m_size = (compute_width + WS - 1) / WS;
-  int compute_n_size = (compute_height + WS - 1) / WS;
+  int computeWidth = image_size;
+  int computeHeight = image_size;
+  if (computeWidth % 32 > 0)
+    computeWidth += (32 - (computeWidth % 32));
+  if (computeHeight % 32 > 0)
+    computeHeight += (32 - (computeHeight % 32));
+  int compute_m_size = (computeWidth + WS - 1) / WS;
+  int compute_n_size = (computeHeight + WS - 1) / WS;
 
   // set data structure sizes
-  resizeIfNecessary(inout, compute_width * compute_height);
-  resizeIfNecessary(ybar, compute_n_size * compute_width);
-  resizeIfNecessary(vhat, compute_m_size * compute_height);
+  resizeIfNecessary(inout, computeWidth * computeHeight);
+  resizeIfNecessary(ybar, compute_n_size * computeWidth);
+  resizeIfNecessary(vhat, compute_m_size * computeHeight);
   resizeIfNecessary(ysum, compute_m_size * compute_n_size);
 
 
@@ -537,92 +508,12 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   cudaUnbindTexture(&textureReadDepth);
   cudaGraphicsUnmapResources(1, &inputImage);
 
-  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
+  callStages(inout, ybar, vhat, ysum, computeWidth, computeHeight,
              compute_m_size, compute_n_size);
 }
 
-/*
-__host__
-void algSAT( dvector<float>& d_out,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const dvector<float>& d_in,
-    const alg_setup& algs ) {
-
-  const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-  const dim3 cg_img( algs.m_size, algs.n_size );
-  const dim3 cg_ybar( nWm, 1 );
-  const dim3 cg_vhat( 1, nHm );
-
-  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_in, d_ybar, d_vhat );
-
-  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
-
-  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
-
-  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_out, d_in, d_ybar, d_vhat );
-
-}
-
-__host__
-void algSAT( dvector<float>& d_inout,
-    dvector<float>& d_ybar,
-    dvector<float>& d_vhat,
-    dvector<float>& d_ysum,
-    const alg_setup& algs ) {
-
-  const int nWm = (algs.width+MTS-1)/MTS, nHm = (algs.height+MTS-1)/MTS;
-  const dim3 cg_img( algs.m_size, algs.n_size );
-  const dim3 cg_ybar( nWm, 1 );
-  const dim3 cg_vhat( 1, nHm );
-
-  algSAT_stage1<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
-
-  algSAT_stage2<<< cg_ybar, dim3(WS, MW) >>>( d_ybar, d_ysum );
-
-  algSAT_stage3<<< cg_vhat, dim3(WS, MW) >>>( d_ysum, d_vhat );
-
-  algSAT_stage4<<< cg_img, dim3(WS, SOW) >>>( d_inout, d_ybar, d_vhat );
-
-}
-*/
-
-thrust::host_vector<float> algSAT(float *h_inout, int w, int h)
+namespace Placement
 {
-  int compute_width = w;
-  int compute_height = w;
-  if (compute_width % 32 > 0)
-    compute_width += (32 - (compute_width % 32));
-  if (compute_height % 32 > 0)
-    compute_height += (32 - (compute_height % 32));
-  int compute_m_size = (compute_width + WS - 1) / WS;
-  int compute_n_size = (compute_height + WS - 1) / WS;
-
-  // alg_setup algs;
-  thrust::device_vector<float> inout(h_inout, h_inout + w * h);
-  thrust::device_vector<float> ybar;
-  thrust::device_vector<float> vhat;
-  thrust::device_vector<float> ysum;
-
-  // prepare_algSAT( algs, d_out, d_ybar, d_vhat, d_ysum, h_inout, w, h );
-  resizeIfNecessary(inout, compute_width * compute_height);
-  resizeIfNecessary(ybar, compute_n_size * compute_width);
-  resizeIfNecessary(vhat, compute_m_size * compute_height);
-  resizeIfNecessary(ysum, compute_m_size * compute_n_size);
-
-  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
-             compute_m_size, compute_n_size);
-
-  cudaDeviceSynchronize();
-  // algSAT(d_out, d_ybar, d_vhat, d_ysum, algs);
-
-  // thrust::host_vector<float> result = inout;
-  // thrust::host_vector<float> result(w * h);
-  // thrust::copy(inout.begin(), inout.end(), result.begin());
-
-  return inout;
-}
 
 SummedAreaTable::SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage)
   : inputImage(inputImage)
@@ -631,19 +522,19 @@ SummedAreaTable::SummedAreaTable(std::shared_ptr<CudaArrayProvider> inputImage)
 
 void SummedAreaTable::runKernel()
 {
-  int compute_width = inputImage->getWidth();
-  int compute_height = inputImage->getHeight();
-  if (compute_width % 32 > 0)
-    compute_width += (32 - (compute_width % 32));
-  if (compute_height % 32 > 0)
-    compute_height += (32 - (compute_height % 32));
-  int compute_m_size = (compute_width + WS - 1) / WS;
-  int compute_n_size = (compute_height + WS - 1) / WS;
+  int computeWidth = inputImage->getWidth();
+  int computeHeight = inputImage->getHeight();
+  if (computeWidth % 32 > 0)
+    computeWidth += (32 - (computeWidth % 32));
+  if (computeHeight % 32 > 0)
+    computeHeight += (32 - (computeHeight % 32));
+  int compute_m_size = (computeWidth + WS - 1) / WS;
+  int compute_n_size = (computeHeight + WS - 1) / WS;
 
   // set data structure sizes
-  resizeIfNecessary(inout, compute_width * compute_height);
-  resizeIfNecessary(ybar, compute_n_size * compute_width);
-  resizeIfNecessary(vhat, compute_m_size * compute_height);
+  resizeIfNecessary(inout, computeWidth * computeHeight);
+  resizeIfNecessary(ybar, compute_n_size * computeWidth);
+  resizeIfNecessary(vhat, compute_m_size * computeHeight);
   resizeIfNecessary(ysum, compute_m_size * compute_n_size);
 
   // initialize occupancy function from inputImage
@@ -673,7 +564,13 @@ void SummedAreaTable::runKernel()
   cudaUnbindTexture(&textureReadDepth);
   inputImage->unmap();
 
-  callStages(inout, ybar, vhat, ysum, compute_width, compute_height,
+  callStages(inout, ybar, vhat, ysum, computeWidth, computeHeight,
              compute_m_size, compute_n_size);
 }
 
+thrust::device_vector<float> &SummedAreaTable::getResults()
+{
+  return inout;
+}
+
+}  // namespace Placement

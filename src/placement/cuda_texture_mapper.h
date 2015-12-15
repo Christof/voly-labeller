@@ -18,7 +18,7 @@ typedef unsigned int GLenum;
  * can read it and also write to it.
  * To use the texture #map must be called. Then CUDA
  * can access the texture memory via the cudaArray which
- * is returned by #getArray. After the changes have been 
+ * is returned by #getArray. After the changes have been
  * made #unmap must be invoked.
  */
 class CudaTextureMapper : public CudaArrayProvider
@@ -43,6 +43,7 @@ class CudaTextureMapper : public CudaArrayProvider
 
  private:
   unsigned int textureId;
+  unsigned int flags;
   cudaGraphicsResource *resource = 0;
   cudaChannelFormatDesc channelDesc;
   cudaArray_t array;

@@ -8,6 +8,7 @@
 #include "./camera.h"
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
+#include "./placement/labeller.h"
 #include "./labelling/labels.h"
 #include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
@@ -19,10 +20,9 @@
 
 class Nodes;
 class InvokeManager;
-class CameraController;
-class CameraRotationController;
-class CameraZoomController;
-class CameraMoveController;
+class CameraControllers;
+class TextureMapperManager;
+class ConstraintBufferObject;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -36,7 +36,9 @@ class Scene : public AbstractScene
  public:
   Scene(std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-        std::shared_ptr<Forces::Labeller> forcesLabeller);
+        std::shared_ptr<Forces::Labeller> forcesLabeller,
+        std::shared_ptr<Placement::Labeller> placementLabeller,
+        std::shared_ptr<TextureMapperManager> textureMapperManager);
   ~Scene();
 
   virtual void initialize();
@@ -47,20 +49,24 @@ class Scene : public AbstractScene
 
   void pick(int id, Eigen::Vector2f position);
 
+  void enableBufferDebuggingViews(bool enable);
+  void enableConstraingOverlay(bool enable);
+
  private:
   Camera camera;
-  std::shared_ptr<CameraController> cameraController;
-  std::shared_ptr<CameraRotationController> cameraRotationController;
-  std::shared_ptr<CameraZoomController> cameraZoomController;
-  std::shared_ptr<CameraMoveController> cameraMoveController;
+  std::shared_ptr<CameraControllers> cameraControllers;
   double frameTime;
 
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
+  std::shared_ptr<Placement::Labeller> placementLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
-  std::unique_ptr<Graphics::FrameBufferObject> fbo;
+  std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
+  std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
+  std::shared_ptr<Graphics::FrameBufferObject> fbo;
+  std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
   FrustumOptimizer frustumOptimizer;
@@ -68,7 +74,10 @@ class Scene : public AbstractScene
   int width;
   int height;
   bool shouldResize = false;
+  bool showBufferDebuggingViews = false;
+  bool showConstraintOverlay = false;
 
+  void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
@@ -76,14 +85,11 @@ class Scene : public AbstractScene
   bool performPicking;
   Eigen::Vector2f pickingPosition;
   int pickingLabelId;
+  void renderDebuggingViews(const RenderData &renderData);
+  RenderData createRenderData();
   void doPick();
 
-  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
-  std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
-  std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
-  std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
+  std::shared_ptr<TextureMapperManager> textureMapperManager;
 };
 
 #endif  // SRC_SCENE_H_

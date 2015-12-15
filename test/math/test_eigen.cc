@@ -33,3 +33,19 @@ TEST(Test_Eigen, toEigenForQPointF)
   EXPECT_Vector2f_NEAR(Eigen::Vector2f(1.1f, 2.2f),
                        toEigen(QPointF(1.1f, 2.2f)), 1E-6);
 }
+
+TEST(Test_Eigen, ndcToPixels)
+{
+  EXPECT_Vector2f_NEAR(
+      Eigen::Vector2f(800, 600),
+      ndcToPixels(Eigen::Vector2f(1, 1), Eigen::Vector2f(800, 600)), 1E-6);
+
+  EXPECT_Vector2f_NEAR(
+      Eigen::Vector2f(0, 0),
+      ndcToPixels(Eigen::Vector2f(-1, -1), Eigen::Vector2f(800, 600)), 1E-6);
+
+  EXPECT_Vector2f_NEAR(
+      Eigen::Vector2f(400, 300),
+      ndcToPixels(Eigen::Vector2f(0, 0), Eigen::Vector2f(800, 600)), 1E-6);
+}
+

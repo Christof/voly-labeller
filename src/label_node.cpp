@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include "./graphics/texture_address.h"
+#include "./graphics/shader_program.h"
 #include "./importer.h"
 #include "./math/eigen.h"
 
@@ -14,10 +15,11 @@ LabelNode::LabelNode(Label label) : label(label)
 
   anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Graphics::Quad>(":/shader/label.vert",
-                                          ":/shader/texture.frag");
+                                          ":/shader/textureImmediate.frag");
 
-  connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
-                                                    Eigen::Vector3f(1, 0, 0));
+  connector = std::make_shared<Graphics::Connector>(
+      ":/shader/pass.vert", ":/shader/colorImmediate.frag",
+      Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
@@ -29,10 +31,11 @@ void LabelNode::render(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData)
 {
-  quad->initialize(gl, managers);
-
   if (textureId == -1 || textureText != label.text)
   {
+    quad->initialize(gl, managers);
+    connector->initialize(gl, managers);
+
     auto image = renderLabelTextToQImage();
     auto textureManager = managers->getTextureManager();
     textureId = textureManager->addTexture(image);
@@ -51,8 +54,15 @@ void LabelNode::render(Graphics::Gl *gl,
     }
   }
 
-  renderConnector(gl, managers, renderData);
   renderAnchor(gl, managers, renderData);
+}
+
+void
+LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
+                                   std::shared_ptr<Graphics::Managers> managers,
+                                   RenderData renderData)
+{
+  renderConnector(gl, managers, renderData);
   renderLabel(gl, managers, renderData);
 }
 
@@ -69,7 +79,10 @@ void LabelNode::renderConnector(Graphics::Gl *gl,
       Eigen::Scaling(length));
   renderData.modelMatrix = connectorTransform.matrix();
 
-  connector->render(gl, managers, renderData);
+  auto shaderId = connector->getObjectData().getShaderProgramId();
+  auto shader = managers->getShaderManager()->getShader(shaderId);
+  managers->getShaderManager()->bind(shaderId, renderData);
+  connector->renderImmediately(gl, managers, renderData);
 }
 
 void LabelNode::renderAnchor(Graphics::Gl *gl,
@@ -104,7 +117,12 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
       Eigen::Scaling(sizeWorld.x(), sizeWorld.y(), 1.0f));
 
   labelQuad.modelMatrix = labelTransform.matrix();
-  managers->getObjectManager()->renderLater(labelQuad);
+
+  auto shaderId = labelQuad.getShaderProgramId();
+  auto shader = managers->getShaderManager()->getShader(shaderId);
+  managers->getShaderManager()->bind(shaderId, renderData);
+
+  managers->getObjectManager()->renderImmediately(labelQuad);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()

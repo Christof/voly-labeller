@@ -65,7 +65,7 @@ class LabelsModel : public QAbstractTableModel
  private:
   std::shared_ptr<Labels> labels;
   PickingController &pickingController;
-  bool isVisible = true;
+  bool isVisible = false;
   std::function<void()> unsubscribeLabelChanges;
 };
 

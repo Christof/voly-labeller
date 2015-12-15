@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <string>
 #include "./render_data.h"
 #include "./renderable.h"
 #include "./object_manager.h"
@@ -28,7 +29,13 @@ class Connector : public Renderable
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   Connector(Eigen::Vector3f anchor, Eigen::Vector3f label);
-  explicit Connector(std::vector<Eigen::Vector3f> points);
+  Connector(std::string vertexShaderFilename,
+            std::string fragmentShaderFilename, Eigen::Vector3f anchor,
+            Eigen::Vector3f label);
+  explicit Connector(
+      std::vector<Eigen::Vector3f> points,
+      std::string vertexShaderFilename = ":/shader/pass.vert",
+      std::string fragmentShaderFilename = ":/shader/color.frag");
   virtual ~Connector();
 
   Eigen::Vector4f color;
@@ -43,6 +50,8 @@ class Connector : public Renderable
 
  private:
   std::vector<Eigen::Vector3f> points;
+  std::string vertexShaderFilename;
+  std::string fragmentShaderFilename;
 };
 
 }  // namespace Graphics

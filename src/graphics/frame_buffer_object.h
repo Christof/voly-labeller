@@ -14,16 +14,15 @@ class Gl;
  * attachments
  *
  * FrameBufferObject::initialize must be called once, and
- *FrameBufferObject::resize
- * if the window is resized (mind that it must be called from the rendering
- *thread).
+ * FrameBufferObject::resize if the window is resized (mind that it must be
+ * called from the rendering thread).
  *
- * The draw into the frame buffer call FrameBufferObject::bind. After drawing
+ * To draw into the frame buffer call FrameBufferObject::bind. After drawing
  * call FrameBufferObject::unbind.
  *
  * Using FrameBufferObject::bindColorTexture or
- *FrameBufferObject::bindDepthTexture
- * the corresponding textures can be used.
+ * FrameBufferObject::bindDepthTexture binds
+ * the corresponding texture so that it can be used.
  */
 class FrameBufferObject
 {
@@ -45,6 +44,7 @@ class FrameBufferObject
   unsigned int getRenderTextureId();
   unsigned int getPositionTextureId();
   unsigned int getDepthTextureId();
+
  private:
   unsigned int framebuffer = 0;
   unsigned int renderTexture = 0;
