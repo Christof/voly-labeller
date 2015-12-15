@@ -16,6 +16,7 @@ class QImageDrawerWithUpdating : public Graphics::QImageDrawer
     : QImageDrawer(width, height), texture(texture)
   {
   }
+
   virtual void drawElementVector(std::vector<float> positions)
   {
     Graphics::QImageDrawer::drawElementVector(positions);
@@ -54,13 +55,11 @@ std::shared_ptr<Labels> createLabels()
   return labels;
 }
 
-TEST(Test_PlacementLabeller, Integration)
+std::shared_ptr<Placement::Labeller>
+createLabeller(std::shared_ptr<Labels> labels)
 {
   const int width = 512;
   const int height = 512;
-
-  auto labels = createLabels();
-  Placement::Labeller labeller(labels);
 
   cudaChannelFormatDesc floatChannelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
@@ -97,10 +96,20 @@ TEST(Test_PlacementLabeller, Integration)
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, width, height);
 
-  labeller.initialize(occupancyTextureMapper, distanceTransformTextureMapper,
-                      apolloniusTextureMapper, constraintTextureMapper,
-                      constraintUpdater);
-  labeller.resize(1024, 1024);
+  auto labeller = std::make_shared<Placement::Labeller>(labels);
+  labeller->initialize(occupancyTextureMapper, distanceTransformTextureMapper,
+                       apolloniusTextureMapper, constraintTextureMapper,
+                       constraintUpdater);
+  labeller->resize(1024, 1024);
+
+  return labeller;
+}
+
+TEST(Test_PlacementLabeller, Integration)
+{
+
+  auto labels = createLabels();
+  auto labeller = createLabeller(labels);
 
   Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
   view(2, 3) = -1.0f;
@@ -109,7 +118,7 @@ TEST(Test_PlacementLabeller, Integration)
   view(2, 3) = -1.94522f;
   view(3, 2) = -1.0f;
   LabellerFrameData frameData(0.02f, projection, view);
-  auto newPositions = labeller.update(frameData);
+  auto newPositions = labeller->update(frameData);
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
