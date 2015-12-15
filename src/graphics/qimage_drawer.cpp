@@ -12,7 +12,17 @@ QImageDrawer::QImageDrawer(int width, int height)
 
 void drawPolygon(QPainter &painter, std::vector<QPointF> &points)
 {
-  painter.drawConvexPolygon(points.data(), points.size());
+  if (points.size() < 3)
+    return;
+
+  QPointF triangle[3];
+  triangle[0] = points[0];
+  for (size_t i = 2; i < points.size(); ++i)
+  {
+    triangle[1] = points[i - 1];
+    triangle[2] = points[i];
+    painter.drawConvexPolygon(triangle, 3);
+  }
   points.clear();
 }
 
