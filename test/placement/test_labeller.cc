@@ -82,16 +82,23 @@ TEST(Test_PlacementLabeller, Integration)
   view(3, 2) = -1.0f;
   LabellerFrameData frameData(0.02f, projection, view);
   auto newPositions = labeller->update(frameData);
+  auto lastPlacementResult = labeller->getLastPlacementResult();
+
+  labeller->cleanup();
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
-  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.192445f, 0.686766f, 0.034f),
-                       newPositions[1], 1e-5f);
-  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.338289f, 0.129809f, -0.00699999f),
-                       newPositions[2], 1e-5f);
-  EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.459961f, 0.445242f, 0.058f),
-                       newPositions[3], 1e-5f);
-  EXPECT_Vector3f_NEAR(Eigen::Vector3f(-0.184551f, 0.60734f, 0.141f),
-                       newPositions[4], 1e-5f);
+  std::vector<Eigen::Vector3f> expectedPositions = {
+    Eigen::Vector3f(0.192445f, 0.686766f, 0.034f),
+    Eigen::Vector3f(0.338289f, 0.129809f, -0.00699999f),
+    Eigen::Vector3f(0.459961f, 0.445242f, 0.058f),
+    Eigen::Vector3f(-0.184551f, 0.60734f, 0.141f),
+  };
+
+  for (size_t i = 0; i < newPositions.size(); ++i)
+  {
+    EXPECT_Vector3f_NEAR(expectedPositions[i], newPositions[i + 1], 1e-5f);
+    EXPECT_Vector3f_NEAR(expectedPositions[i], lastPlacementResult[i + 1], 1e-5f);
+  }
 }
 
