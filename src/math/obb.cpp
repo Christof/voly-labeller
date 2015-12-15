@@ -50,8 +50,9 @@ bool Obb::isInitialized() const
 Obb &Obb::operator*=(const Eigen::Matrix4f &rhs)
 {
   center = toVector3f(mul(rhs, center));
-  axes = axes * rhs.block<3, 3>(0, 0);
-  halfWidths = halfWidths.cwiseProduct(rhs.diagonal().block<3, 1>(0, 0));
+  Eigen::Matrix3f rotation = rhs.block<3, 3>(0, 0);
+  axes = axes * rotation;
+  halfWidths = rotation * halfWidths;
   for (int i = 0; i < 8; ++i)
     corners[i] = toVector3f(mul(rhs, corners[i]));
 
