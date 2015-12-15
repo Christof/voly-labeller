@@ -27,7 +27,9 @@ template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
 
   virtual void map()
   {
-    HANDLE_ERROR(cudaMallocArray(&array, &channelFormat, width, height, flags));
+    if (!array)
+      HANDLE_ERROR(
+          cudaMallocArray(&array, &channelFormat, width, height, flags));
 
     HANDLE_ERROR(cudaMemcpyToArray(array, 0, 0, data.data(),
                                    sizeof(ElementType) * data.size(),
