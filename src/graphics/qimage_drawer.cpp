@@ -10,6 +10,12 @@ QImageDrawer::QImageDrawer(int width, int height)
   image = std::make_shared<QImage>(width, height, QImage::Format_Grayscale8);
 }
 
+void drawPolygon(QPainter &painter, std::vector<QPointF> &points)
+{
+  painter.drawConvexPolygon(points.data(), points.size());
+  points.clear();
+}
+
 void QImageDrawer::drawElementVector(std::vector<float> positions)
 {
   QPainter painter;
@@ -29,13 +35,13 @@ void QImageDrawer::drawElementVector(std::vector<float> positions)
     if (i * 2 + 3 < positions.size() && x == positions[i * 2 + 2] &&
         y == positions[i * 2 + 3])
     {
-      painter.drawConvexPolygon(points.data(), points.size());
+      drawPolygon(painter, points);
       points.clear();
       i += 2;
     }
     points.push_back(QPointF(x, y));
   }
-  painter.drawConvexPolygon(points.data(), points.size());
+  drawPolygon(painter, points);
   painter.end();
 }
 
