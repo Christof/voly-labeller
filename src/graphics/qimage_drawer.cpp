@@ -25,7 +25,7 @@ void QImageDrawer::drawElementVector(std::vector<float> positions)
   for (; i < positions.size() / 2; ++i)
   {
     float x = positions[i * 2];
-    float y = positions[i * 2 + 1];
+    float y = image->height() - positions[i * 2 + 1];
     if (i * 2 + 3 < positions.size() && x == positions[i * 2 + 2] &&
         y == positions[i * 2 + 3])
     {
