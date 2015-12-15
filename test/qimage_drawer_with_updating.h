@@ -5,6 +5,12 @@
 #include "../src/graphics/qimage_drawer.h"
 #include "./cuda_array_mapper.h"
 
+/**
+ * \brief Specialization of Graphics::QImageDrawer which updates an underlying
+ * CudaArrayMapper
+ *
+ * Currently only a type of unsigend char is supported for the CudaArrayMapper.
+ */
 class QImageDrawerWithUpdating : public Graphics::QImageDrawer
 {
  public:

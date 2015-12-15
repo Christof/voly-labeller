@@ -9,11 +9,15 @@
 #include "../src/utils/cuda_array_provider.h"
 
 /**
- * \brief
+ * \brief CudaArrayProvider implementation for tests, taking data from a given
+ * vector
  *
+ * The data can be updated using #updateData. It sets the data internally, but
+ * does not copy it to the GPU. This can be done by calling #map (which might
+ * be called be the tested code anyway).
  *
+ * Processed data can be retrieved from the GPU by calling #copyDataFromGpu.
  */
-
 template <class ElementType> class CudaArrayMapper : public CudaArrayProvider
 {
  public:
