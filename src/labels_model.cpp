@@ -165,9 +165,9 @@ void LabelsModel::deleteLabel(int row)
 
 void LabelsModel::clear()
 {
-  for (int row = 0; row < labels->count(); ++row)
+  auto allLabels = labels->getLabels();
+  for (auto label : allLabels)
   {
-    auto label = labels->getLabels()[row];
     labels->remove(label);
   }
 }
