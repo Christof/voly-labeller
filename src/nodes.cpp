@@ -73,8 +73,8 @@ void Nodes::importFrom(std::string filename)
 
   for (size_t i = 0; i < meshes.size(); ++i)
   {
-    addNode(
-        std::make_shared<MeshNode>(filename, i, meshes[i], Eigen::Matrix4f()));
+    auto transformation = importer.getTransformationFor(filename, i);
+    addNode(std::make_shared<MeshNode>(filename, i, meshes[i], transformation));
   }
 }
 
@@ -98,8 +98,8 @@ void Nodes::render(Graphics::Gl *gl,
 }
 
 void Nodes::renderLabels(Graphics::Gl *gl,
-                   std::shared_ptr<Graphics::Managers> managers,
-                   RenderData renderData)
+                         std::shared_ptr<Graphics::Managers> managers,
+                         RenderData renderData)
 {
   for (auto labelNode : getLabelNodes())
   {
