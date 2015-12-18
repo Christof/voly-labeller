@@ -39,7 +39,10 @@ Item {
         MenuItem {
           text: "Reset scene"
           shortcut: "Ctrl+r"
-          onTriggered: nodes.clear();
+          onTriggered: {
+            labels.clear();
+            nodes.clear();
+          }
         }
         MenuItem {
           text: "Exit"
@@ -299,7 +302,7 @@ Item {
       }
     }
     Column {
-      id: lablesItem
+      id: labelsItem
       x: 10
       y: 192
       width: 441

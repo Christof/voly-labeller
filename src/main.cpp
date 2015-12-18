@@ -132,8 +132,7 @@ int main(int argc, char **argv)
   window->rootContext()->setContextProperty("nodes", nodes.get());
   window->rootContext()->setContextProperty(
       "bufferTextures", textureMapperManagerController.get());
-  window->rootContext()->setContextProperty(
-      "scene", &sceneController);
+  window->rootContext()->setContextProperty("scene", &sceneController);
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
@@ -155,6 +154,16 @@ int main(int argc, char **argv)
   window->setSource(QUrl("qrc:ui.qml"));
 
   forcesLabeller->resize(window->size().width(), window->size().height());
+
+  QObject::connect(nodes.get(), &Nodes::nodesChanged,
+                   [nodes, labels](std::shared_ptr<Node> node)
+                   {
+    std::shared_ptr<LabelNode> labelNode =
+        std::dynamic_pointer_cast<LabelNode>(node);
+    if (labelNode.get())
+      labels->add(labelNode->label);
+  });
+
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
 

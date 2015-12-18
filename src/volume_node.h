@@ -20,7 +20,7 @@ class VolumeReader;
 class VolumeNode : public Node, public Graphics::Volume
 {
  public:
-  explicit VolumeNode(std::string volumePath, std::string transferFunctionPath);
+  VolumeNode(std::string volumePath, std::string transferFunctionPath);
   virtual ~VolumeNode();
 
   virtual void render(Graphics::Gl *gl,
@@ -45,7 +45,6 @@ class VolumeNode : public Node, public Graphics::Volume
   std::unique_ptr<VolumeReader> volumeReader;
   std::unique_ptr<Graphics::Cube> cube;
   Graphics::ObjectData cubeData;
-  int volumeId;
   int transferFunctionRow = -1;
   Graphics::TextureAddress transferFunctionAddress;
 

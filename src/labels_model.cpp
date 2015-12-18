@@ -163,3 +163,12 @@ void LabelsModel::deleteLabel(int row)
   labels->remove(label);
 }
 
+void LabelsModel::clear()
+{
+  auto allLabels = labels->getLabels();
+  for (auto label : allLabels)
+  {
+    labels->remove(label);
+  }
+}
+

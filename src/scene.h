@@ -2,14 +2,13 @@
 
 #define SRC_SCENE_H_
 
-#include <memory>
 #include <functional>
+#include "./utils/memory.h"
 #include "./abstract_scene.h"
 #include "./camera.h"
 #include "./frustum_optimizer.h"
 #include "./forces/labeller.h"
 #include "./placement/labeller.h"
-#include "./labelling/labels.h"
 #include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
@@ -17,12 +16,14 @@
 #include "./placement/cuda_texture_mapper.h"
 #include "./graphics/managers.h"
 #include "./graphics/standard_texture_2d.h"
+#include "./picker.h"
 
 class Nodes;
 class InvokeManager;
 class CameraControllers;
 class TextureMapperManager;
 class ConstraintBufferObject;
+class Labels;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -69,6 +70,7 @@ class Scene : public AbstractScene
   std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
+  std::unique_ptr<Picker> picker;
   FrustumOptimizer frustumOptimizer;
 
   int width;
@@ -82,12 +84,8 @@ class Scene : public AbstractScene
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
 
-  bool performPicking;
-  Eigen::Vector2f pickingPosition;
-  int pickingLabelId;
   void renderDebuggingViews(const RenderData &renderData);
   RenderData createRenderData();
-  void doPick();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
 };

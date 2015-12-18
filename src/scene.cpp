@@ -63,6 +63,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
+  picker = std::make_unique<Picker>(fbo, gl, labels);
+  picker->resize(width, height);
   constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
                                      textureMapperManager->getBufferSize());
   haBuffer =
@@ -181,7 +183,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   haBuffer->render(managers, renderData);
 
-  // doPick();
+  picker->doPick(renderData.projectionMatrix * renderData.viewMatrix);
 
   fbo->unbind();
 }
@@ -265,39 +267,8 @@ RenderData Scene::createRenderData()
 
 void Scene::pick(int id, Eigen::Vector2f position)
 {
-  pickingPosition = position;
-  performPicking = true;
-  pickingLabelId = id;
-}
-
-void Scene::doPick()
-{
-  if (!performPicking)
-    return;
-
-  float depth = -2.0f;
-
-  fbo->bindDepthTexture(GL_TEXTURE0);
-
-  glAssert(gl->glReadPixels(pickingPosition.x(),
-                            height - pickingPosition.y() - 1, 1, 1,
-                            GL_DEPTH_COMPONENT, GL_FLOAT, &depth));
-  Eigen::Vector4f positionNDC(pickingPosition.x() * 2.0f / width - 1.0f,
-                              pickingPosition.y() * -2.0f / height + 1.0f,
-                              depth * 2.0f - 1.0f, 1.0f);
-
-  Eigen::Matrix4f viewProjection =
-      camera.getProjectionMatrix() * camera.getViewMatrix();
-  Eigen::Vector4f positionWorld = viewProjection.inverse() * positionNDC;
-  positionWorld = positionWorld / positionWorld.w();
-
-  qWarning() << "picked:" << positionWorld;
-
-  performPicking = false;
-  auto label = labels->getById(pickingLabelId);
-  label.anchorPosition = toVector3f(positionWorld);
-
-  labels->update(label);
+  if (picker.get())
+    picker->pick(id, position);
 }
 
 void Scene::enableBufferDebuggingViews(bool enable)

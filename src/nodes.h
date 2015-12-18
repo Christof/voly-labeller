@@ -58,7 +58,7 @@ class Nodes : public QObject
   void removeForcesVisualizerNode();
 
  signals:
-  void nodesChanged();
+  void nodesChanged(std::shared_ptr<Node> changedNode);
 
  private:
   std::vector<std::shared_ptr<Node>> nodes;

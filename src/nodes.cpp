@@ -37,7 +37,7 @@ void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
 
-  emit nodesChanged();
+  emit nodesChanged(node);
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)
@@ -73,8 +73,8 @@ void Nodes::importFrom(std::string filename)
 
   for (size_t i = 0; i < meshes.size(); ++i)
   {
-    addNode(
-        std::make_shared<MeshNode>(filename, i, meshes[i], Eigen::Matrix4f()));
+    auto transformation = importer.getTransformationFor(filename, i);
+    addNode(std::make_shared<MeshNode>(filename, i, meshes[i], transformation));
   }
 }
 
@@ -98,8 +98,8 @@ void Nodes::render(Graphics::Gl *gl,
 }
 
 void Nodes::renderLabels(Graphics::Gl *gl,
-                   std::shared_ptr<Graphics::Managers> managers,
-                   RenderData renderData)
+                         std::shared_ptr<Graphics::Managers> managers,
+                         RenderData renderData)
 {
   for (auto labelNode : getLabelNodes())
   {
@@ -125,6 +125,7 @@ void Nodes::saveSceneTo(std::string filename)
 void Nodes::clear()
 {
   nodes.clear();
+  obbNodes.clear();
 }
 
 void Nodes::toggleBoundingVolumes()

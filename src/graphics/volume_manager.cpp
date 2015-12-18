@@ -5,6 +5,7 @@
 #include <vector>
 #include "../eigen_qdebug.h"
 #include "./gl.h"
+#include "./volume.h"
 
 namespace Graphics
 {
@@ -22,14 +23,15 @@ void VolumeManager::updateStorage(Gl *gl)
   if (volumes.size() == 0)
     return;
 
-  for (size_t i = 0; i < volumes.size(); ++i)
+  for (auto iterator = volumes.cbegin(); iterator != volumes.cend();)
   {
-    auto volumeSize = volumes[i]->getDataSize();
+    auto volumeSize = iterator->second->getDataSize();
     volumeAtlasSize.z() += volumeSize.z();
     volumeAtlasSize.x() = std::max(volumeSize.x(), volumeAtlasSize.x());
     volumeAtlasSize.y() = std::max(volumeSize.y(), volumeAtlasSize.y());
 
-    if (i != volumes.size() - 1)
+    ++iterator;
+    if (iterator != volumes.cend())
       volumeAtlasSize.z() += zPadding;
   }
   qCInfo(vmChan) << "volumeAtlasSize" << volumeAtlasSize;
@@ -42,11 +44,12 @@ void VolumeManager::updateStorage(Gl *gl)
   float zero = 0.0f;
   gl->glClearTexImage(texture, 0, GL_RED, GL_FLOAT, &zero);
 
-  int id = 1;
   int voxelZOffset = 0;
-  for (auto volume : volumes)
+  for (auto volumePair : volumes)
   {
-    add3dTexture(id++, volume->getDataSize(), volume->getData(), voxelZOffset);
+    auto volume = volumePair.second;
+    add3dTexture(volumePair.first, volume->getDataSize(), volume->getData(),
+                 voxelZOffset);
     voxelZOffset += volume->getDataSize().z() + zPadding;
   }
 }
@@ -55,22 +58,33 @@ int VolumeManager::addVolume(Volume *volume, Gl *gl)
 {
   qCInfo(vmChan) << "addVolume";
 
-  volumes.push_back(volume);
+  volumes[nextVolumeId] = volume;
+  volume->initialize(nextVolumeId, this);
 
   updateStorage(gl);
 
   return nextVolumeId++;
 }
 
+void VolumeManager::removeVolume(int id)
+{
+  volumes.erase(volumes.find(id));
+}
+
 void VolumeManager::fillCustomBuffer(ObjectData &objectData)
 {
-  int size = sizeof(VolumeData) * volumes.size();
+  int size = sizeof(VolumeData) * (nextVolumeId - 1);
   std::vector<VolumeData> data;
-  for (auto volume : volumes)
+  for (int i = 1; i < nextVolumeId; ++i)
   {
-    auto volumeData = volume->getVolumeData();
-    volumeData.objectToDatasetMatrix =
-        objectToDatasetMatrices[volumeData.volumeId];
+    VolumeData volumeData;
+    if (volumes.count(i))
+    {
+      volumeData = volumes[i]->getVolumeData();
+      volumeData.objectToDatasetMatrix =
+          objectToDatasetMatrices[volumeData.volumeId];
+    }
+
     data.push_back(volumeData);
   }
 

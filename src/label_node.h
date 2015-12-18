@@ -52,6 +52,8 @@ class LabelNode : public Node
         static_cast<LabelNode *>(NULL), static_cast<Node *>(NULL));
   };
 
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::Managers> managers);
   void renderConnector(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData);

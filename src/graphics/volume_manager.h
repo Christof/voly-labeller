@@ -3,15 +3,14 @@
 #define SRC_GRAPHICS_VOLUME_MANAGER_H_
 
 #include <Eigen/Core>
-#include <vector>
 #include <map>
-#include "./volume.h"
 #include "./object_data.h"
 
 namespace Graphics
 {
 
 class Gl;
+class Volume;
 
 /**
  * \brief Creates and manages a texture atlas for volumes
@@ -25,6 +24,7 @@ class VolumeManager
 
   void updateStorage(Gl *gl);
   int addVolume(Volume *volume, Gl *gl);
+  void removeVolume(int id);
   void fillCustomBuffer(ObjectData &objectData);
   Eigen::Vector3i getVolumeAtlasSize() const;
 
@@ -35,7 +35,7 @@ class VolumeManager
   int nextVolumeId = 1;
   unsigned int texture = 0;
   Gl *gl = nullptr;
-  std::vector<Volume *> volumes;
+  std::map<int, Volume *> volumes;
   std::map<int, Eigen::Matrix4f> objectToDatasetMatrices;
   Eigen::Vector3i volumeAtlasSize = Eigen::Vector3i::Zero();
 

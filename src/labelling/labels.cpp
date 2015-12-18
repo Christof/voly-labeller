@@ -46,7 +46,10 @@ std::vector<Label> Labels::getLabels()
 
 Label Labels::getById(int id)
 {
-  return labels[id];
+  if (labels.count(id))
+    return labels[id];
+
+  return Label();
 }
 
 int Labels::count()

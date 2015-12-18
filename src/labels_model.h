@@ -56,6 +56,7 @@ class LabelsModel : public QAbstractTableModel
   void pick(int row);
   void addLabel();
   void deleteLabel(int row);
+  void clear();
 
  signals:
   void labelUpdated();
