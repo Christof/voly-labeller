@@ -104,20 +104,18 @@ vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
   vec3 viewDir = -1.0f * normalize(startPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
-  // float dotNL = abs(dot(ngradient, lightDir));
   float dotNL = max(dot(normalizedGradient, lightDir), 0.0f);
   vec3 H = normalize(lightDir + viewDir);
-  // float dotNH = abs(dot(ngradient, H));
   float dotNH = max(dot(normalizedGradient, H), 0.0f);
-  float ka = 0.3;  // gl_LightSource[li].ambient.xyz
-  float kd = 0.5;  // gl_LightSource[li].diffuse.xyz
-  float ks = 0.5;  // gl_LightSource[li].specular.xyz
-  float shininess = 32.0f;
-  vec3 specularColor = vec3(1.0, 1.0, 1.0);
+  const float ambient = 0.3;
+  const float diffuse = 0.5;
+  const float specular = 0.5;
+  const float shininess = 32.0f;
+  const vec3 specularColor = vec3(1.0, 1.0, 1.0);
 
-  vec3 specular = (shininess + 2.0f) / (2.0f * 3.1415f) * ks * color.a *
-                  specularColor * pow(dotNH, shininess);
-  return ka * color.rgb + kd * color.rgb * dotNL + specular;
+  vec3 specularTerm = (shininess + 2.0f) / (2.0f * 3.1415f) * specular *
+                      color.a * specularColor * pow(dotNH, shininess);
+  return ambient * color.rgb + diffuse * color.rgb * dotNL + specularTerm;
 }
 
 vec4 transferFunctionLookUp(int volumeId, float density)
