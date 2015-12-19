@@ -17,6 +17,7 @@ uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
+uniform float depthCutOff = 0.0;
 
 uniform sampler3D volumeSampler;
 
@@ -269,6 +270,8 @@ void main()
   if (maxAge == 0)
     discard;  // no fragment, early exit
 
+  vec4 farPlane = vec4(0, 0, 1, depthCutOff);
+
   int activeObjects = 0;
   FragmentData currentFragment;
   FragmentData nextFragment;
@@ -284,6 +287,16 @@ void main()
       nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
       endPos_eye = nextFragment.eyePos;
       ++age;
+  }
+
+  vec4 world = inverseViewMatrix * vec4(endPos_eye, 1);
+  float dist = dot(world, farPlane);
+  if (dist < 0)
+  {
+    endPos_eye = world.xyz - dist * farPlane.xyz;
+    nextFragmentReadStatus = false;
+    // to prevent case of maxAge == 1 at the end
+    age = ++maxAge;
   }
 
   for (--age; age < maxAge; age++)  // all fragments
@@ -313,6 +326,18 @@ void main()
 
     endPos_eye = nextFragmentReadStatus ?
       nextFragment.eyePos : segmentStartPos_eye;
+
+    vec4 world = inverseViewMatrix * vec4(endPos_eye, 1);
+    float dist = dot(world, farPlane);
+    if (dist < 0)
+    {
+      endPos_eye = world.xyz - dist * farPlane.xyz;
+      nextFragmentReadStatus = false;
+      // to prevent case of maxAge == 1 at the end
+      age = ++maxAge;
+      if (activeObjectCount == 0)
+        break;
+    }
 
     if (activeObjectCount > 0)
     {
