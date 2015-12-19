@@ -112,11 +112,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   this->frameTime = frameTime;
   cameraControllers->update(camera, frameTime);
 
-  frustumOptimizer.update(camera->getViewMatrix());
-  camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
-                                 frustumOptimizer.getFar());
-  haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
-                                   frustumOptimizer.getFar());
+  // frustumOptimizer.update(camera->getViewMatrix());
+  // camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+  //                                frustumOptimizer.getFar());
+  // haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+  //                                  frustumOptimizer.getFar());
 
   /*
   auto newPositions = forcesLabeller->update(LabellerFrameData(
