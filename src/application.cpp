@@ -24,10 +24,18 @@
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
   invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+
   nodes = std::make_shared<Nodes>();
+
   labels = std::make_shared<Labels>();
   forcesLabeller = std::make_shared<Forces::Labeller>(labels);
   placementLabeller = std::make_shared<Placement::Labeller>(labels);
+
+  const int postProcessingTextureSize = 512;
+  textureMapperManager =
+      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
+  textureMapperManagerController =
+      std::make_unique<TextureMapperManagerController>(textureMapperManager);
 }
 
 Application::~Application()
@@ -61,12 +69,6 @@ void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
 int Application::execute()
 {
   qInfo() << "Application start";
-
-  const int postProcessingTextureSize = 512;
-  auto textureMapperManager =
-      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
-  auto textureMapperManagerController =
-      std::make_unique<TextureMapperManagerController>(textureMapperManager);
 
   auto scene =
       std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
