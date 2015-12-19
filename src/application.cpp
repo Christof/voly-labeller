@@ -42,30 +42,6 @@ Application::~Application()
 {
 }
 
-void onLabelChangedUpdateLabelNodes(std::shared_ptr<Nodes> nodes,
-                                    Labels::Action action, const Label &label)
-{
-  auto labelNodes = nodes->getLabelNodes();
-  auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
-                                [label](std::shared_ptr<LabelNode> labelNode)
-                                {
-    return labelNode->label.id == label.id;
-  });
-
-  if (labelNode == labelNodes.end())
-  {
-    nodes->addNode(std::make_shared<LabelNode>(label));
-  }
-  else if (action == Labels::Action::Delete)
-  {
-    nodes->removeNode(*labelNode);
-  }
-  else
-  {
-    (*labelNode)->label = label;
-  }
-};
-
 int Application::execute()
 {
   qInfo() << "Application start";
@@ -76,8 +52,8 @@ int Application::execute()
   SceneController sceneController(scene);
 
   auto unsubscribeLabelChanges = labels->subscribe(
-      std::bind(&onLabelChangedUpdateLabelNodes, nodes, std::placeholders::_1,
-                std::placeholders::_2));
+      std::bind(&Application::onLabelChangedUpdateLabelNodes, this,
+                std::placeholders::_1, std::placeholders::_2));
 
   std::unique_ptr<Window> window = std::unique_ptr<Window>(new Window(scene));
   window->setResizeMode(QQuickView::SizeRootObjectToView);
@@ -147,4 +123,28 @@ void Application::onNodesChanged(std::shared_ptr<Node> node)
   if (labelNode.get())
     labels->add(labelNode->label);
 }
+
+void Application::onLabelChangedUpdateLabelNodes(Labels::Action action,
+                                                 const Label &label)
+{
+  auto labelNodes = nodes->getLabelNodes();
+  auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
+                                [label](std::shared_ptr<LabelNode> labelNode)
+                                {
+    return labelNode->label.id == label.id;
+  });
+
+  if (labelNode == labelNodes.end())
+  {
+    nodes->addNode(std::make_shared<LabelNode>(label));
+  }
+  else if (action == Labels::Action::Delete)
+  {
+    nodes->removeNode(*labelNode);
+  }
+  else
+  {
+    (*labelNode)->label = label;
+  }
+};
 
