@@ -22,7 +22,7 @@
 #include "./texture_mapper_manager_controller.h"
 #include "./utils/memory.h"
 
-Application::Application(int argc, char **argv) : application(argc, argv)
+Application::Application(int &argc, char **argv) : application(argc, argv)
 {
 }
 
