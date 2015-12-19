@@ -335,8 +335,6 @@ void main()
       nextFragmentReadStatus = false;
       // to prevent case of maxAge == 1 at the end
       age = ++maxAge;
-      if (activeObjectCount == 0)
-        break;
     }
 
     if (activeObjectCount > 0)
