@@ -14,6 +14,11 @@ class Labels;
 class TextureMapperManager;
 class TextureMapperManagerController;
 
+class Scene;
+class Window;
+class SceneController;
+class LabellerModel;
+
 /**
  * \brief
  *
@@ -39,10 +44,17 @@ class Application : public QObject
   std::shared_ptr<TextureMapperManager> textureMapperManager;
   std::shared_ptr<TextureMapperManagerController>
       textureMapperManagerController;
+  std::shared_ptr<Scene> scene;
+  std::unique_ptr<Window> window;
+  std::unique_ptr<SceneController> sceneController;
+  std::unique_ptr<LabellerModel> labellerModel;
+
+  void setupWindow();
 
   void onNodesChanged(std::shared_ptr<Node> node);
   void onLabelChangedUpdateLabelNodes(Labels::Action action,
                                       const Label &label);
+  void onFocesLabellerModelIsVisibleChanged();
 };
 
 #endif  // SRC_APPLICATION_H_

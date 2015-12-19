@@ -36,6 +36,12 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
   textureMapperManagerController =
       std::make_unique<TextureMapperManagerController>(textureMapperManager);
+  scene = std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
+                                  placementLabeller, textureMapperManager);
+
+  window = std::make_unique<Window>(scene);
+  sceneController = std::make_unique<SceneController>(scene);
+  labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
 }
 
 Application::~Application()
@@ -46,37 +52,19 @@ int Application::execute()
 {
   qInfo() << "Application start";
 
-  auto scene =
-      std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
-                              placementLabeller, textureMapperManager);
-  SceneController sceneController(scene);
-
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&Application::onLabelChangedUpdateLabelNodes, this,
                 std::placeholders::_1, std::placeholders::_2));
 
-  std::unique_ptr<Window> window = std::unique_ptr<Window>(new Window(scene));
-  window->setResizeMode(QQuickView::SizeRootObjectToView);
-  window->rootContext()->setContextProperty("window", window.get());
-  window->rootContext()->setContextProperty("nodes", nodes.get());
-  window->rootContext()->setContextProperty(
-      "bufferTextures", textureMapperManagerController.get());
-  window->rootContext()->setContextProperty("scene", &sceneController);
+  setupWindow();
 
   MouseShapeController mouseShapeController;
   PickingController pickingController(scene);
 
-  LabellerModel labellerModel(forcesLabeller);
-  labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
-                        [&labellerModel, this]()
-                        {
-    if (labellerModel.getIsVisible())
-      nodes->addForcesVisualizerNode(
-          std::make_shared<ForcesVisualizerNode>(forcesLabeller));
-    else
-      nodes->removeForcesVisualizerNode();
-  });
-  window->rootContext()->setContextProperty("labeller", &labellerModel);
+  connect(labellerModel.get(), &LabellerModel::isVisibleChanged, this,
+          &Application::onFocesLabellerModelIsVisibleChanged);
+
+  window->rootContext()->setContextProperty("labeller", labellerModel.get());
 
   LabelsModel labelsModel(labels, pickingController);
   window->rootContext()->setContextProperty("labels", &labelsModel);
@@ -116,6 +104,16 @@ int Application::execute()
   return resultCode;
 }
 
+void Application::setupWindow()
+{
+  window->setResizeMode(QQuickView::SizeRootObjectToView);
+  window->rootContext()->setContextProperty("window", window.get());
+  window->rootContext()->setContextProperty("nodes", nodes.get());
+  window->rootContext()->setContextProperty(
+      "bufferTextures", textureMapperManagerController.get());
+  window->rootContext()->setContextProperty("scene", sceneController.get());
+}
+
 void Application::onNodesChanged(std::shared_ptr<Node> node)
 {
   std::shared_ptr<LabelNode> labelNode =
@@ -147,4 +145,17 @@ void Application::onLabelChangedUpdateLabelNodes(Labels::Action action,
     (*labelNode)->label = label;
   }
 };
+
+void Application::onFocesLabellerModelIsVisibleChanged()
+{
+  if (labellerModel->getIsVisible())
+  {
+    nodes->addForcesVisualizerNode(
+        std::make_shared<ForcesVisualizerNode>(forcesLabeller));
+  }
+  else
+  {
+    nodes->removeForcesVisualizerNode();
+  }
+}
 
