@@ -41,6 +41,8 @@ class Application : public QObject
       textureMapperManagerController;
 
   void onNodesChanged(std::shared_ptr<Node> node);
+  void onLabelChangedUpdateLabelNodes(Labels::Action action,
+                                      const Label &label);
 };
 
 #endif  // SRC_APPLICATION_H_
