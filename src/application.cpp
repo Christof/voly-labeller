@@ -16,7 +16,6 @@
 #include "./labelling/labels.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
-#include "./placement/labeller.h"
 #include "./default_scene_creator.h"
 #include "./texture_mapper_manager.h"
 #include "./texture_mapper_manager_controller.h"
@@ -24,6 +23,11 @@
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
+  invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+  nodes = std::make_shared<Nodes>();
+  labels = std::make_shared<Labels>();
+  forcesLabeller = std::make_shared<Forces::Labeller>(labels);
+  placementLabeller = std::make_shared<Placement::Labeller>(labels);
 }
 
 Application::~Application()
@@ -58,12 +62,6 @@ int Application::execute()
 {
   qInfo() << "Application start";
 
-  auto invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
-  auto nodes = std::make_shared<Nodes>();
-  auto labels = std::make_shared<Labels>();
-  auto forcesLabeller = std::make_shared<Forces::Labeller>(labels);
-  auto placementLabeller = std::make_shared<Placement::Labeller>(labels);
-
   const int postProcessingTextureSize = 512;
   auto textureMapperManager =
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
@@ -92,7 +90,7 @@ int Application::execute()
 
   LabellerModel labellerModel(forcesLabeller);
   labellerModel.connect(&labellerModel, &LabellerModel::isVisibleChanged,
-                        [&labellerModel, &nodes, &forcesLabeller]()
+                        [&labellerModel, this]()
                         {
     if (labellerModel.getIsVisible())
       nodes->addForcesVisualizerNode(
@@ -108,14 +106,8 @@ int Application::execute()
 
   forcesLabeller->resize(window->size().width(), window->size().height());
 
-  QObject::connect(nodes.get(), &Nodes::nodesChanged,
-                   [nodes, labels](std::shared_ptr<Node> node)
-                   {
-    std::shared_ptr<LabelNode> labelNode =
-        std::dynamic_pointer_cast<LabelNode>(node);
-    if (labelNode.get())
-      labels->add(labelNode->label);
-  });
+  QObject::connect(nodes.get(), &Nodes::nodesChanged, this,
+                   &Application::onNodesChanged);
 
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
@@ -145,3 +137,12 @@ int Application::execute()
 
   return resultCode;
 }
+
+void Application::onNodesChanged(std::shared_ptr<Node> node)
+{
+  std::shared_ptr<LabelNode> labelNode =
+      std::dynamic_pointer_cast<LabelNode>(node);
+  if (labelNode.get())
+    labels->add(labelNode->label);
+}
+
