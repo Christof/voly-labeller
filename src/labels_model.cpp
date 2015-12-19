@@ -5,7 +5,7 @@
 #include "./picking_controller.h"
 
 LabelsModel::LabelsModel(std::shared_ptr<Labels> labels,
-                         PickingController &pickingController)
+                         std::shared_ptr<PickingController> pickingController)
   : labels(labels), pickingController(pickingController)
 {
   unsubscribeLabelChanges =
@@ -138,7 +138,7 @@ void LabelsModel::pick(int row)
   if (row < 0 || row >= labels->count())
     return;
 
-  pickingController.startPicking(labels->getLabels()[row]);
+  pickingController->startPicking(labels->getLabels()[row]);
   emit startPicking();
 }
 

@@ -18,7 +18,7 @@ class LabelsModel : public QAbstractTableModel
   Q_OBJECT
  public:
   LabelsModel(std::shared_ptr<Labels> labels,
-              PickingController &pickingController);
+              std::shared_ptr<PickingController> pickingController);
   ~LabelsModel();
 
   enum ForceRoles
@@ -65,7 +65,7 @@ class LabelsModel : public QAbstractTableModel
 
  private:
   std::shared_ptr<Labels> labels;
-  PickingController &pickingController;
+  std::shared_ptr<PickingController> pickingController;
   bool isVisible = false;
   std::function<void()> unsubscribeLabelChanges;
 };

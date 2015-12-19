@@ -42,6 +42,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   window = std::make_unique<Window>(scene);
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
+  mouseShapeController = std::make_unique<MouseShapeController>();
+  pickingController = std::make_shared<PickingController>(scene);
 }
 
 Application::~Application()
@@ -58,13 +60,8 @@ int Application::execute()
 
   setupWindow();
 
-  MouseShapeController mouseShapeController;
-  PickingController pickingController(scene);
-
   connect(labellerModel.get(), &LabellerModel::isVisibleChanged, this,
           &Application::onFocesLabellerModelIsVisibleChanged);
-
-  window->rootContext()->setContextProperty("labeller", labellerModel.get());
 
   LabelsModel labelsModel(labels, pickingController);
   window->rootContext()->setContextProperty("labels", &labelsModel);
@@ -83,8 +80,8 @@ int Application::execute()
                          invokeManager, signalManager);
 
   invokeManager->addHandler(window.get());
-  invokeManager->addHandler("mouseShape", &mouseShapeController);
-  invokeManager->addHandler("picking", &pickingController);
+  invokeManager->addHandler("mouseShape", mouseShapeController.get());
+  invokeManager->addHandler("picking", pickingController.get());
   signalManager->addSender("KeyboardEventSender", window.get());
   signalManager->addSender("labels", &labelsModel);
 
@@ -107,11 +104,13 @@ int Application::execute()
 void Application::setupWindow()
 {
   window->setResizeMode(QQuickView::SizeRootObjectToView);
-  window->rootContext()->setContextProperty("window", window.get());
-  window->rootContext()->setContextProperty("nodes", nodes.get());
-  window->rootContext()->setContextProperty(
-      "bufferTextures", textureMapperManagerController.get());
-  window->rootContext()->setContextProperty("scene", sceneController.get());
+  auto context = window->rootContext();
+  context->setContextProperty("window", window.get());
+  context->setContextProperty("nodes", nodes.get());
+  context->setContextProperty("bufferTextures",
+                              textureMapperManagerController.get());
+  context->setContextProperty("scene", sceneController.get());
+  context->setContextProperty("labeller", labellerModel.get());
 }
 
 void Application::onNodesChanged(std::shared_ptr<Node> node)
