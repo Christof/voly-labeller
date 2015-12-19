@@ -44,6 +44,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
+  labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
 }
 
 Application::~Application()
@@ -63,8 +64,6 @@ int Application::execute()
   connect(labellerModel.get(), &LabellerModel::isVisibleChanged, this,
           &Application::onFocesLabellerModelIsVisibleChanged);
 
-  LabelsModel labelsModel(labels, pickingController);
-  window->rootContext()->setContextProperty("labels", &labelsModel);
   window->setSource(QUrl("qrc:ui.qml"));
 
   forcesLabeller->resize(window->size().width(), window->size().height());
@@ -83,7 +82,7 @@ int Application::execute()
   invokeManager->addHandler("mouseShape", mouseShapeController.get());
   invokeManager->addHandler("picking", pickingController.get());
   signalManager->addSender("KeyboardEventSender", window.get());
-  signalManager->addSender("labels", &labelsModel);
+  signalManager->addSender("labels", labelsModel.get());
 
   auto stateMachine = importer.import();
 
@@ -111,6 +110,7 @@ void Application::setupWindow()
                               textureMapperManagerController.get());
   context->setContextProperty("scene", sceneController.get());
   context->setContextProperty("labeller", labellerModel.get());
+  context->setContextProperty("labels", labelsModel.get());
 }
 
 void Application::onNodesChanged(std::shared_ptr<Node> node)

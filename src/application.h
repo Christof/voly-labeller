@@ -20,6 +20,7 @@ class SceneController;
 class LabellerModel;
 class MouseShapeController;
 class PickingController;
+class LabelsModel;
 
 /**
  * \brief
@@ -52,6 +53,7 @@ class Application : public QObject
   std::unique_ptr<LabellerModel> labellerModel;
   std::unique_ptr<MouseShapeController> mouseShapeController;
   std::shared_ptr<PickingController> pickingController;
+  std::unique_ptr<LabelsModel> labelsModel;
 
   void setupWindow();
 
