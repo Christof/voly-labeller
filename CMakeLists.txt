@@ -30,6 +30,7 @@ set(CMAKE_CXX_FLAGS_COV "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ft
     "Flags used by the C++ compiler during coverage builds for GCC." FORCE)
 
 set(SOURCES
+  src/application.cpp
   src/window.cpp
   src/eigen_qdebug.cpp
   src/camera.cpp
