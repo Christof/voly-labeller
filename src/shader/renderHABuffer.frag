@@ -206,7 +206,7 @@ void main()
   vec4 finalColor = vec4(0, 0, 0, 0);
 
   uint age = 1;
-  while (!nextFragmentReadStatus && age < maxAge)
+  while (!nextFragmentReadStatus && age <= maxAge)
   {
       nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
       endPos_eye = nextFragment.eyePos.xyz;
@@ -332,11 +332,6 @@ void main()
 
     // break; // just the first fragment
   }  // all ages except last ...
-
-  if (maxAge == 1)
-  {
-    nextFragmentReadStatus = fetchFragment(ij, 1, nextFragment);
-  }
 
   if (nextFragmentReadStatus)
   {
