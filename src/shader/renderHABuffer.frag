@@ -203,10 +203,6 @@ void main()
   vec3 lastPos_eye;
   vec3 endPos_eye;
   vec3 segmentStartPos_eye;
-  vec3 direction_eye;
-  vec4 pos_proj;
-
-  vec3 gradient = vec3(0.0f);
 
   int objectId = -1;
 
@@ -256,7 +252,7 @@ void main()
     }
 
     // set up segment direction vector
-    direction_eye = endPos_eye - segmentStartPos_eye;
+    vec3 direction_eye = endPos_eye - segmentStartPos_eye;
 
     if (activeObjectCount > 0)
     {
