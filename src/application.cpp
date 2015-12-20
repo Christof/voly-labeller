@@ -54,6 +54,8 @@ Application::~Application()
 
 int Application::execute()
 {
+  setupCommandLineParser();
+  parser.process(application);
   qInfo() << "Application start";
 
   auto unsubscribeLabelChanges = labels->subscribe(
@@ -72,10 +74,10 @@ int Application::execute()
   QObject::connect(nodes.get(), &Nodes::nodesChanged, this,
                    &Application::onNodesChanged);
 
-  if (application.arguments().size() > 1)
+  if (parser.positionalArguments().size())
   {
     auto filename = absolutePathToProjectRelativePath(
-        QDir(application.arguments()[1]).absolutePath());
+        QDir(parser.positionalArguments()[0]).absolutePath());
     qInfo() << "import scene:" << filename;
     nodes->addSceneNodesFrom(filename);
   }
@@ -94,6 +96,19 @@ int Application::execute()
   unsubscribeLabelChanges();
 
   return resultCode;
+}
+
+void Application::setupCommandLineParser()
+{
+  QGuiApplication::setApplicationName("voly-labeller");
+  QGuiApplication::setApplicationVersion("0.1");
+
+  parser.setApplicationDescription(
+      "Multiple labelling implementations for volume rendered medical data");
+  parser.addHelpOption();
+  parser.addVersionOption();
+  parser.addPositionalArgument(
+      "scene", QCoreApplication::translate("main", "Scene file to load."));
 }
 
 void Application::setupWindow()

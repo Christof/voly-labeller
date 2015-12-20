@@ -3,6 +3,7 @@
 #define SRC_APPLICATION_H_
 
 #include <QtGui/QGuiApplication>
+#include <QCommandLineParser>
 #include <QObject>
 #include "./placement/labeller.h"
 #include "./forces/labeller.h"
@@ -40,6 +41,7 @@ class Application : public QObject
 
  private:
   QGuiApplication application;
+  QCommandLineParser parser;
   std::shared_ptr<InvokeManager> invokeManager;
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
@@ -57,6 +59,7 @@ class Application : public QObject
   std::unique_ptr<LabelsModel> labelsModel;
   std::shared_ptr<QStateMachine> stateMachine;
 
+  void setupCommandLineParser();
   void setupWindow();
   void createAndStartStateMachine();
 
