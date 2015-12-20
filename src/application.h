@@ -25,9 +25,12 @@ class LabelsModel;
 class QStateMachine;
 
 /**
- * \brief
+ * \brief Class for the whole application
  *
+ * It holds pointers to the main objects and handles the command line
+ * arguments.
  *
+ * The application is started by calling #execute.
  */
 class Application : public QObject
 {
