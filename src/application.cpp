@@ -48,10 +48,6 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
 }
 
-Application::~Application()
-{
-}
-
 int Application::execute()
 {
   setupCommandLineParser();

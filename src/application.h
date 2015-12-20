@@ -35,7 +35,6 @@ class Application : public QObject
 
  public:
   Application(int &argc, char **argv);
-  virtual ~Application();
 
   int execute();
 
