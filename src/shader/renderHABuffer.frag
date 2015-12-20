@@ -199,10 +199,7 @@ void main()
   FragmentData nextFragment;
   bool nextFragmentReadStatus = false;
 
-  vec3 startPos_eye;
-  vec3 lastPos_eye;
   vec3 endPos_eye;
-  vec3 segmentStartPos_eye;
 
   int objectId = -1;
 
@@ -219,7 +216,7 @@ void main()
   for (--age; age < maxAge; age++)  // all fragments
   {
     currentFragment = nextFragment;
-    segmentStartPos_eye = endPos_eye;
+    vec3 segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
     fragmentColor.xyz *= fragmentColor.w;
 
@@ -262,9 +259,8 @@ void main()
       sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
       float stepFactor = 1.0 / float(sampleSteps);
 
-      startPos_eye = segmentStartPos_eye;  // + noise offset;
-
-      lastPos_eye = startPos_eye - direction_eye * stepFactor;
+      vec3 startPos_eye = segmentStartPos_eye;  // + noise offset;
+      vec3 lastPos_eye = startPos_eye - direction_eye * stepFactor;
 
       // sample ray segment
       for (int step = 0; step < sampleSteps; step++)
