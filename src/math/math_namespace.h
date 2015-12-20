@@ -1,6 +1,6 @@
-#ifndef SRC_MATH_MATH_H_
+#ifndef SRC_MATH_MATH_NAMESPACE_H_
 
-#define SRC_MATH_MATH_H_
+#define SRC_MATH_MATH_NAMESPACE_H_
 
 /**
  * \brief Contains classes related to mathematical calculations or constructs.
@@ -13,4 +13,4 @@ namespace Math
 
 }  // namespace Math
 
-#endif  // SRC_MATH_MATH_H_
+#endif  // SRC_MATH_MATH_NAMESPACE_H_
