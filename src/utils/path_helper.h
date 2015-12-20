@@ -15,6 +15,11 @@ inline QString relativeApplicationToProjectRootPath()
       .relativeFilePath(QString(PROJECT_ROOT));
 }
 
+inline QString absolutePathToProjectRelativePath(QString filename)
+{
+  return QDir(QString(PROJECT_ROOT)).relativeFilePath(filename);
+}
+
 inline QString absolutePathOfRelativeUrl(QUrl url)
 {
   return QDir(QCoreApplication::applicationDirPath())
