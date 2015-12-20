@@ -23,7 +23,7 @@
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
-  invokeManager = std::shared_ptr<InvokeManager>(new InvokeManager());
+  invokeManager = std::make_shared<InvokeManager>();
 
   nodes = std::make_shared<Nodes>();
 
@@ -74,22 +74,7 @@ int Application::execute()
   DefaultSceneCreator sceneCreator(nodes, labels);
   sceneCreator.create();
 
-  auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
-  ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
-                         invokeManager, signalManager);
-
-  invokeManager->addHandler(window.get());
-  invokeManager->addHandler("mouseShape", mouseShapeController.get());
-  invokeManager->addHandler("picking", pickingController.get());
-  signalManager->addSender("KeyboardEventSender", window.get());
-  signalManager->addSender("labels", labelsModel.get());
-
-  auto stateMachine = importer.import();
-
-  // just for printCurrentState slot for debugging
-  window->stateMachine = stateMachine;
-
-  stateMachine->start();
+  createAndStartStateMachine();
 
   window->show();
 
@@ -111,6 +96,26 @@ void Application::setupWindow()
   context->setContextProperty("scene", sceneController.get());
   context->setContextProperty("labeller", labellerModel.get());
   context->setContextProperty("labels", labelsModel.get());
+}
+
+void Application::createAndStartStateMachine()
+{
+  auto signalManager = std::shared_ptr<SignalManager>(new SignalManager());
+  ScxmlImporter importer(QUrl::fromLocalFile("config/states.xml"),
+                         invokeManager, signalManager);
+
+  invokeManager->addHandler(window.get());
+  invokeManager->addHandler("mouseShape", mouseShapeController.get());
+  invokeManager->addHandler("picking", pickingController.get());
+  signalManager->addSender("KeyboardEventSender", window.get());
+  signalManager->addSender("labels", labelsModel.get());
+
+  stateMachine = importer.import();
+
+  // just for printCurrentState slot for debugging
+  window->stateMachine = stateMachine;
+
+  stateMachine->start();
 }
 
 void Application::onNodesChanged(std::shared_ptr<Node> node)

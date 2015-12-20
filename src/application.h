@@ -21,6 +21,7 @@ class LabellerModel;
 class MouseShapeController;
 class PickingController;
 class LabelsModel;
+class QStateMachine;
 
 /**
  * \brief
@@ -54,8 +55,10 @@ class Application : public QObject
   std::unique_ptr<MouseShapeController> mouseShapeController;
   std::shared_ptr<PickingController> pickingController;
   std::unique_ptr<LabelsModel> labelsModel;
+  std::shared_ptr<QStateMachine> stateMachine;
 
   void setupWindow();
+  void createAndStartStateMachine();
 
   void onNodesChanged(std::shared_ptr<Node> node);
   void onLabelChangedUpdateLabelNodes(Labels::Action action,
