@@ -24,6 +24,12 @@ Please visit http://www.antexel.com/research/gpupro5 for updates.
 
 // -------------------------------------------------
 
+/**
+ * \brief Data for each fragment stored in the HABuffer
+ *
+ * It consists of the color the position in eye space
+ * and an objectId (for volumes).
+ */
 struct FragmentData
 {
   vec4 color;
