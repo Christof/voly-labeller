@@ -20,6 +20,7 @@
 #include "./texture_mapper_manager.h"
 #include "./texture_mapper_manager_controller.h"
 #include "./utils/memory.h"
+#include "./utils/path_helper.h"
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
@@ -71,8 +72,18 @@ int Application::execute()
   QObject::connect(nodes.get(), &Nodes::nodesChanged, this,
                    &Application::onNodesChanged);
 
-  DefaultSceneCreator sceneCreator(nodes, labels);
-  sceneCreator.create();
+  if (application.arguments().size() > 1)
+  {
+    auto filename = absolutePathToProjectRelativePath(
+        QDir(application.arguments()[1]).absolutePath());
+    qInfo() << "import scene:" << filename;
+    nodes->addSceneNodesFrom(filename);
+  }
+  else
+  {
+    DefaultSceneCreator sceneCreator(nodes, labels);
+    sceneCreator.create();
+  }
 
   createAndStartStateMachine();
 
