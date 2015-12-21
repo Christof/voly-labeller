@@ -6,7 +6,7 @@
 
 in vec4 u_Pos;
 
-layout(location = 0) out vec4 o_PixColor;
+layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 position;
 layout(depth_any) out float gl_FragDepth;
 
@@ -243,7 +243,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 
 void main()
 {
-  o_PixColor = vec4(0);
+  outputColor = vec4(0);
 
   if (gl_SampleMaskIn[0] == 0)
     discard;
@@ -252,7 +252,7 @@ void main()
 
   if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
   {
-    o_PixColor = vec4(1.0, 1.0, 0.3, 1.0);
+    outputColor = vec4(1.0, 1.0, 0.3, 1.0);
     return;
   }
 
@@ -343,6 +343,6 @@ void main()
 
   finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
 
-  o_PixColor = blend(finalColor, vec4(backgroundColor, 1.0));
+  outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
 }
 
