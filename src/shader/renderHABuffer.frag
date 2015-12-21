@@ -243,8 +243,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 
 void main()
 {
-  outputColor = vec4(0);
-
   if (gl_SampleMaskIn[0] == 0)
     discard;
 
