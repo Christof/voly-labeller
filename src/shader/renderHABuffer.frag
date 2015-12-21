@@ -269,14 +269,11 @@ void main()
   }
 
   int activeObjects = 0;
-  int activeObjectCount = 0;
   FragmentData currentFragment;
   FragmentData nextFragment;
   bool nextFragmentReadStatus = false;
 
   vec3 endPos_eye;
-
-  int objectId = -1;
 
   vec4 finalColor = vec4(0, 0, 0, 0);
 
@@ -295,9 +292,9 @@ void main()
     vec4 fragmentColor = currentFragment.color;
     fragmentColor.xyz *= fragmentColor.w;
 
-    objectId = currentFragment.objectId;
+    int objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
-    activeObjectCount = bitCount(activeObjects);
+    int activeObjectCount = bitCount(activeObjects);
 
     if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth &&
         position.w == -2)
