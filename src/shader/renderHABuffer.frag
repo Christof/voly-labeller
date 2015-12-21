@@ -311,14 +311,8 @@ void main()
     }
     --age;
 
-    if (nextFragmentReadStatus)
-    {
-      endPos_eye = nextFragment.eyePos.xyz;
-    }
-    else
-    {
-      endPos_eye = segmentStartPos_eye;
-    }
+    endPos_eye = nextFragmentReadStatus ?
+      nextFragment.eyePos.xyz : segmentStartPos_eye;
 
     if (activeObjectCount > 0)
     {
