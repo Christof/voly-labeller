@@ -264,9 +264,7 @@ void main()
   uint maxAge = u_Counts[Saddr(ij)];
 
   if (maxAge == 0)
-  {
     discard;  // no fragment, early exit
-  }
 
   int activeObjects = 0;
   FragmentData currentFragment;
@@ -326,9 +324,7 @@ void main()
     }
 
     if (finalColor.a > 0.999)
-    {
       break;
-    }
 
     // break; // just the first fragment
   }  // all ages except last ...
