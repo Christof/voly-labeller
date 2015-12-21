@@ -296,7 +296,6 @@ void main()
       float stepFactor = 1.0 / float(sampleSteps);
 
       vec3 startPos_eye = segmentStartPos_eye;  // + noise offset;
-      vec3 lastPos_eye = startPos_eye - direction_eye * stepFactor;
 
       // sample ray segment
       for (int step = 0; step < sampleSteps; step++)
@@ -317,7 +316,6 @@ void main()
           break;
 
         // prepare next segment
-        lastPos_eye = startPos_eye;
         startPos_eye += stepFactor * direction_eye;
       }  // sampling steps
 
