@@ -181,7 +181,6 @@ void main()
   }
 
   uvec2 ij = uvec2(pos.xy);
-  uint32_t pix = (ij.x + ij.y * u_ScreenSz);
 
   gl_FragDepth = 1.0;
   position = vec4(-2, -2, 1, -2);
