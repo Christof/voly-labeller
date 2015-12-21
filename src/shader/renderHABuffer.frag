@@ -165,6 +165,43 @@ void setPositionAndDepth(vec4 positionInEyeSpace)
   position.w = 1.0f;
 }
 
+vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
+    in vec4 startPos_eye)
+{
+  vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+  // sampling per non-isosurface object
+  for (int objectIndex = 0; objectIndex < activeObjectCount;
+      objectIndex++)
+  {
+    int currentObjectId = calculateNextObjectId(remainingActiveObjects);
+    if (currentObjectId < 0)
+      break;
+
+    vec3 textureSamplePos =
+      (volumes[currentObjectId].objectToDatasetMatrix *
+       volumes[currentObjectId].textureMatrix * inverseViewMatrix *
+       startPos_eye).xyz;
+
+    float density = getVolumeSampleDensity(textureSamplePos);
+    vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
+    vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
+    float squareGradientLength = dot(gradient, gradient);
+
+    if (squareGradientLength > 0.05f)
+    {
+      currentColor.xyz = calculateLighting(currentColor, startPos_eye.xyz, gradient);
+    }
+    currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
+
+    // we sum up overlapping contributions
+    sampleColor += currentColor;
+  }  // per active object loop
+
+  // clamp cumulatie sample value
+  return clamp(sampleColor, vec4(0.0f), vec4(1.0f));
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -264,44 +301,11 @@ void main()
       // sample ray segment
       for (int step = 0; step < sampleSteps; step++)
       {
-        vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-
-        uint remainingActiveObjects = activeObjects;
-
-        // sampling per non-isosurface object
-        for (int objectIndex = 0; objectIndex < activeObjectCount;
-             objectIndex++)
-        {
-          int currentObjectId = calculateNextObjectId(remainingActiveObjects);
-          if (currentObjectId < 0)
-            break;
-
-          vec3 textureSamplePos =
-              (volumes[currentObjectId].objectToDatasetMatrix *
-               volumes[currentObjectId].textureMatrix * inverseViewMatrix *
-               vec4(startPos_eye, 1.0f)).xyz;
-
-          float density = getVolumeSampleDensity(textureSamplePos);
-          vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
-          vec3 gradient = getVolumeSampleGradient(currentObjectId, textureSamplePos);
-          float squareGradientLength = dot(gradient, gradient);
-
-          if (squareGradientLength > 0.05f)
-          {
-            currentColor.xyz = calculateLighting(currentColor, startPos_eye, gradient);
-          }
-          currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
-
-          // we sum up overlapping contributions
-          sampleColor += currentColor;
-        }  // per active object loop
-
-        // clamp cumulatie sample value
-        sampleColor = clamp(sampleColor, vec4(0.0f), vec4(1.0f));
+        vec4 sampleColor = calculateSampleColor(activeObjects,
+            activeObjectCount, vec4(startPos_eye, 1.0f));
 
         // sample accumulation
-        fragmentColor =
-            fragmentColor + sampleColor * (1.0f - fragmentColor.w);
+        fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
         if (fragmentColor.w > alphaThresholdForDepth && position.w == -2)
         {
