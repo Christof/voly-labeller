@@ -202,6 +202,45 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
   return clamp(sampleColor, vec4(0.0f), vec4(1.0f));
 }
 
+vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
+    in vec4 currentFragmentPos_eye, in vec3 segmentStartPos_eye,
+    in vec3 endPos_eye, in vec4 fragmentColor)
+{
+  float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
+      activeObjects, currentFragmentPos_eye, vec4(endPos_eye, 1.0));
+  int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
+  sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
+  float stepFactor = 1.0 / float(sampleSteps);
+
+  // set up segment direction vector
+  vec3 direction_eye = endPos_eye - segmentStartPos_eye;
+  vec3 startPos_eye = segmentStartPos_eye;  // + noise offset;
+
+  // sample ray segment
+  for (int step = 0; step < sampleSteps; step++)
+  {
+    vec4 sampleColor = calculateSampleColor(activeObjects,
+        activeObjectCount, vec4(startPos_eye, 1.0f));
+
+    // sample accumulation
+    fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
+
+    if (fragmentColor.w > alphaThresholdForDepth && position.w == -2)
+    {
+      setPositionAndDepth(vec4(startPos_eye, 1));
+    }
+
+    // early ray termination
+    if (fragmentColor.w > 0.999)
+      break;
+
+    // prepare next segment
+    startPos_eye += stepFactor * direction_eye;
+  }  // sampling steps
+
+  return fragmentColor;
+}
+
 void main()
 {
   o_PixColor = vec4(0);
@@ -284,43 +323,12 @@ void main()
       endPos_eye = segmentStartPos_eye;
     }
 
-    // set up segment direction vector
-    vec3 direction_eye = endPos_eye - segmentStartPos_eye;
-
     if (activeObjectCount > 0)
     {
-      float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount, activeObjects,
-        currentFragment.eyePos, nextFragment.eyePos);
-      int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
-      sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
-      float stepFactor = 1.0 / float(sampleSteps);
-
-      vec3 startPos_eye = segmentStartPos_eye;  // + noise offset;
-
-      // sample ray segment
-      for (int step = 0; step < sampleSteps; step++)
-      {
-        vec4 sampleColor = calculateSampleColor(activeObjects,
-            activeObjectCount, vec4(startPos_eye, 1.0f));
-
-        // sample accumulation
-        fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
-
-        if (fragmentColor.w > alphaThresholdForDepth && position.w == -2)
-        {
-          setPositionAndDepth(vec4(startPos_eye, 1));
-        }
-
-        // early ray termination
-        if (fragmentColor.w > 0.999)
-          break;
-
-        // prepare next segment
-        startPos_eye += stepFactor * direction_eye;
-      }  // sampling steps
-
+      fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
+          currentFragment.eyePos, segmentStartPos_eye, endPos_eye, fragmentColor);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-    }  // if (activeObjectCount > 0) ...
+    }
     else
     {
       finalColor = blend(finalColor, currentFragment.color);
