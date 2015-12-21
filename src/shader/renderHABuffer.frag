@@ -74,14 +74,11 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
 
   if (HA_AGE(key) == age)
   {
-    // clr = blend(clr,RGBA(uint32_t(rec)));
     fragment = u_FragmentData[uint32_t(rec)];
     return true;
   }
-  else
-  {
-    return false;
-  }
+
+  return false;
 }
 
 void updateActiveObjects(inout int objectId, inout int activeObjects)
