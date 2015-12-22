@@ -11,15 +11,20 @@
 #include "./utils/path_helper.h"
 #include "./eigen_qdebug.h"
 
-VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath)
-  : volumePath(volumePath), transferFunctionPath(transferFunctionPath)
+VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath,
+                       Eigen::Matrix4f transformation)
+  : volumePath(volumePath), transferFunctionPath(transferFunctionPath),
+    transformation(transformation)
 {
   volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(volumePath));
 
-  auto transformation = volumeReader->getTransformationMatrix();
+  auto transformationFromFile = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
-  Eigen::Vector3f center = transformation.col(3).head<3>();
-  obb = Math::Obb(center, halfWidths, transformation.block<3, 3>(0, 0));
+  Eigen::Vector3f center = transformationFromFile.col(3).head<3>();
+  obb =
+      Math::Obb(center, halfWidths, transformationFromFile.block<3, 3>(0, 0)) *
+      transformation;
+  overallTransformation = transformation * transformationFromFile;
 }
 
 VolumeNode::~VolumeNode()
@@ -78,8 +83,7 @@ void VolumeNode::initialize(Graphics::Gl *gl,
   cubeData = managers->getObjectManager()->addObject(
       pos, pos, colors, std::vector<float>{ 0, 0 }, std::vector<uint>{ 0 },
       shaderProgramId, GL_POINTS);
-  auto transformation = volumeReader->getTransformationMatrix();
-  cubeData.modelMatrix = transformation;
+  cubeData.modelMatrix = overallTransformation;
   float volumeIdAsFloat = *reinterpret_cast<float *>(&volumeId);
   Eigen::Vector4f physicalSize(
       volumeReader->getPhysicalSize().x(), volumeReader->getPhysicalSize().y(),

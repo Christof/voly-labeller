@@ -2,6 +2,7 @@
 
 #define SRC_VOLUME_NODE_H_
 
+#include <Eigen/Core>
 #include <string>
 #include <memory>
 #include "./node.h"
@@ -20,7 +21,8 @@ class VolumeReader;
 class VolumeNode : public Node, public Graphics::Volume
 {
  public:
-  VolumeNode(std::string volumePath, std::string transferFunctionPath);
+  VolumeNode(std::string volumePath, std::string transferFunctionPath,
+             Eigen::Matrix4f transformation);
   virtual ~VolumeNode();
 
   virtual void render(Graphics::Gl *gl,
@@ -35,6 +37,7 @@ class VolumeNode : public Node, public Graphics::Volume
   {
     ar << BOOST_SERIALIZATION_NVP(volumePath);
     ar << BOOST_SERIALIZATION_NVP(transferFunctionPath);
+    ar << BOOST_SERIALIZATION_NVP(transformation);
   };
 
   Eigen::Matrix4f getTransformation();
@@ -42,6 +45,8 @@ class VolumeNode : public Node, public Graphics::Volume
  private:
   std::string volumePath;
   std::string transferFunctionPath;
+  Eigen::Matrix4f transformation;
+  Eigen::Matrix4f overallTransformation;
   std::unique_ptr<VolumeReader> volumeReader;
   std::unique_ptr<Graphics::Cube> cube;
   Graphics::ObjectData cubeData;
@@ -80,8 +85,10 @@ inline void load_construct_data(Archive &ar, VolumeNode *t,
   ar >> BOOST_SERIALIZATION_NVP(volumePath);
   std::string transferFunctionPath;
   ar >> BOOST_SERIALIZATION_NVP(transferFunctionPath);
+  Eigen::Matrix4f transformation;
+  ar >> BOOST_SERIALIZATION_NVP(transformation);
 
-  ::new (t) VolumeNode(volumePath, transferFunctionPath);
+  ::new (t) VolumeNode(volumePath, transferFunctionPath, transformation);
 }
 }  // namespace serialization
 }  // namespace boost

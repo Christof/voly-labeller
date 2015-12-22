@@ -23,9 +23,9 @@ void DefaultSceneCreator::create()
   std::vector<std::shared_ptr<Node>> sceneNodes;
   addMeshNodesTo(sceneNodes);
   addLabelNodesTo(sceneNodes);
-  sceneNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/neurochirurgie_test.mhd",
-                                   "assets/transferfunctions/scapula4.gra"));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/neurochirurgie_test.mhd",
+      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");
@@ -70,11 +70,11 @@ void DefaultSceneCreator::addLabelNodesTo(
 void DefaultSceneCreator::addMultiVolumeNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
-  sceneNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/GRCH_Abdomen.mhd",
-                                   "assets/transferfunctions/scapula4.gra"));
-  sceneNodes.push_back(
-      std::make_shared<VolumeNode>("assets/datasets/GRCH_Schaedel_fein_H31.mhd",
-                                   "assets/transferfunctions/scapula4.gra"));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/GRCH_Abdomen.mhd",
+      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/GRCH_Schaedel_fein_H31.mhd",
+      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
 }
 
