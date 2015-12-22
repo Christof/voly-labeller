@@ -293,7 +293,7 @@ void main()
   float dist = dot(world, farPlane);
   if (dist < 0)
   {
-    endPos_eye = world.xyz - dist * farPlane.xyz;
+    endPos_eye = (viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f)).xyz;
     nextFragmentReadStatus = false;
     // to prevent case of maxAge == 1 at the end
     age = ++maxAge;
@@ -331,7 +331,7 @@ void main()
     float dist = dot(world, farPlane);
     if (dist < 0)
     {
-      endPos_eye = world.xyz - dist * farPlane.xyz;
+      endPos_eye = (viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f)).xyz;
       nextFragmentReadStatus = false;
       // to prevent case of maxAge == 1 at the end
       age = ++maxAge;
