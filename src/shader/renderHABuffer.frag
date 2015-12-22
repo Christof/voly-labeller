@@ -20,6 +20,8 @@ uniform float alphaThresholdForDepth = 0.1;
 
 uniform sampler3D volumeSampler;
 
+const float POSITION_NOT_SET = -2;
+
 #define transferFunctionRowCount 64.0f
 
 struct VolumeData
@@ -222,7 +224,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
-    if (fragmentColor.w > alphaThresholdForDepth && position.w == -2)
+    if (fragmentColor.w > alphaThresholdForDepth && position.w == POSITION_NOT_SET)
     {
       setPositionAndDepth(vec4(startPos_eye, 1));
     }
@@ -254,7 +256,7 @@ void main()
   uvec2 ij = uvec2(pos.xy);
 
   gl_FragDepth = 1.0;
-  position = vec4(-2, -2, 1, -2);
+  position = vec4(-2, -2, 1, POSITION_NOT_SET);
 
   uint maxAge = u_Counts[Saddr(ij)];
 
@@ -290,7 +292,7 @@ void main()
     int activeObjectCount = bitCount(activeObjects);
 
     if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth &&
-        position.w == -2)
+        position.w == POSITION_NOT_SET)
     {
       setPositionAndDepth(currentFragment.eyePos);
     }
@@ -327,13 +329,13 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (position.w == -2 && nextFragment.color.w > alphaThresholdForDepth)
+    if (position.w == POSITION_NOT_SET && nextFragment.color.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(nextFragment.eyePos);
     }
   }
 
-  if (position.w == -2)
+  if (position.w == POSITION_NOT_SET)
     position.w = 1;
 
   finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
