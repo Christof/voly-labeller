@@ -11,6 +11,8 @@ FrameBufferObject::~FrameBufferObject()
   glAssert(gl->glDeleteTextures(1, &depthTexture));
   glAssert(gl->glDeleteTextures(1, &renderTexture));
   glAssert(gl->glDeleteTextures(1, &positionTexture));
+  glAssert(gl->glDeleteTextures(1, &renderTexture2));
+  glAssert(gl->glDeleteTextures(1, &positionTexture2));
 }
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
@@ -31,10 +33,19 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
                                  height);
 
+  glAssert(gl->glGenTextures(1, &renderTexture2));
+  resizeAndSetColorAttachment(renderTexture2, GL_COLOR_ATTACHMENT2, width,
+                              height);
+
+  glAssert(gl->glGenTextures(1, &positionTexture2));
+  resizeAndSetPositionAttachment(positionTexture2, GL_COLOR_ATTACHMENT3, width,
+                                 height);
+
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
-  GLenum drawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-  glAssert(gl->glDrawBuffers(2, drawBuffers));
+  GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
+                            GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+  glAssert(gl->glDrawBuffers(4, drawBuffers));
 
   auto status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -51,6 +62,10 @@ void FrameBufferObject::resize(int width, int height)
   resizeAndSetColorAttachment(renderTexture, GL_COLOR_ATTACHMENT0, width,
                               height);
   resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
+                                 height);
+  resizeAndSetColorAttachment(renderTexture2, GL_COLOR_ATTACHMENT2, width,
+                              height);
+  resizeAndSetPositionAttachment(positionTexture2, GL_COLOR_ATTACHMENT3, width,
                                  height);
   resizeAndSetDepthAttachment(width, height);
 
