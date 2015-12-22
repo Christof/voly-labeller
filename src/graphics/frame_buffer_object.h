@@ -52,8 +52,8 @@ class FrameBufferObject
   unsigned int depthTexture = 0;
   Gl *gl;
 
-  void resizeAndSetColorAttachment(int width, int height);
-  void resizeAndSetPositionAttachment(int width, int height);
+  void resizeAndSetColorAttachment(int texture, int width, int height);
+  void resizeAndSetPositionAttachment(int texture, int width, int height);
   void resizeAndSetDepthAttachment(int width, int height);
   void resizeTexture(int texture, int width, int height, unsigned int component,
                      unsigned int format, unsigned int type);
