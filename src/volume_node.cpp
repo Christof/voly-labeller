@@ -16,7 +16,7 @@ VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath,
   : volumePath(volumePath), transferFunctionPath(transferFunctionPath),
     transformation(transformation)
 {
-  volumeReader = std::unique_ptr<VolumeReader>(new VolumeReader(volumePath));
+  volumeReader = std::make_unique<VolumeReader>(volumePath);
 
   auto transformationFromFile = volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();

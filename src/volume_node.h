@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 #include <string>
-#include <memory>
+#include "./utils/memory.h"
 #include "./node.h"
 #include "./graphics/gl.h"
 #include "./graphics/cube.h"
