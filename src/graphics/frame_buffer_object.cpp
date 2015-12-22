@@ -24,10 +24,12 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   resizeAndSetDepthAttachment(width, height);
 
   glAssert(gl->glGenTextures(1, &renderTexture));
-  resizeAndSetColorAttachment(renderTexture, width, height);
+  resizeAndSetColorAttachment(renderTexture, GL_COLOR_ATTACHMENT0, width,
+                              height);
 
   glAssert(gl->glGenTextures(1, &positionTexture));
-  resizeAndSetPositionAttachment(positionTexture, width, height);
+  resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
+                                 height);
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
@@ -46,8 +48,10 @@ void FrameBufferObject::resize(int width, int height)
 {
   bind();
 
-  resizeAndSetColorAttachment(renderTexture, width, height);
-  resizeAndSetPositionAttachment(positionTexture, width, height);
+  resizeAndSetColorAttachment(renderTexture, GL_COLOR_ATTACHMENT0, width,
+                              height);
+  resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
+                                 height);
   resizeAndSetDepthAttachment(width, height);
 
   unbind();
@@ -81,19 +85,20 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
 }
 
-void FrameBufferObject::resizeAndSetColorAttachment(int texture, int width,
-                                                    int height)
+void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
+                                                    int width, int height)
 {
   resizeTexture(texture, width, height, GL_RGBA, GL_RGBA8, GL_UNSIGNED_BYTE);
-  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment,
                                       GL_TEXTURE_2D, texture, 0));
 }
 
-void FrameBufferObject::resizeAndSetPositionAttachment(int texture, int width,
-                                                       int height)
+void FrameBufferObject::resizeAndSetPositionAttachment(int texture,
+                                                       int attachment,
+                                                       int width, int height)
 {
   resizeTexture(texture, width, height, GL_RGBA, GL_RGBA32F, GL_FLOAT);
-  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment,
                                       GL_TEXTURE_2D, texture, 0));
 }
 
