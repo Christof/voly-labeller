@@ -12,13 +12,16 @@
 #include "./eigen_qdebug.h"
 
 VolumeNode::VolumeNode(std::string volumePath, std::string transferFunctionPath,
-                       Eigen::Matrix4f transformation)
+                       Eigen::Matrix4f transformation,
+                       bool ignoreTransformationFromFile)
   : volumePath(volumePath), transferFunctionPath(transferFunctionPath),
     transformation(transformation)
 {
   volumeReader = std::make_unique<VolumeReader>(volumePath);
 
-  auto transformationFromFile = volumeReader->getTransformationMatrix();
+  Eigen::Matrix4f transformationFromFile =
+      ignoreTransformationFromFile ? Eigen::Matrix4f::Identity()
+                                   : volumeReader->getTransformationMatrix();
   Eigen::Vector3f halfWidths = 0.5f * volumeReader->getPhysicalSize();
   Eigen::Vector3f center = transformationFromFile.col(3).head<3>();
   obb =
