@@ -156,12 +156,15 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
 
 void setPositionAndDepth(vec4 positionInEyeSpace)
 {
-  vec4 ndcPos = projectionMatrix * positionInEyeSpace;
-  ndcPos = ndcPos / ndcPos.w;
-  float depth = ndcPos.z;
-  gl_FragDepth = depth;
-  position.xyz = ndcPos.xyz;
-  position.w = 1.0f;
+  if (position.w == POSITION_NOT_SET)
+  {
+    vec4 ndcPos = projectionMatrix * positionInEyeSpace;
+    ndcPos = ndcPos / ndcPos.w;
+    float depth = ndcPos.z;
+    gl_FragDepth = depth;
+    position.xyz = ndcPos.xyz;
+    position.w = 1.0f;
+  }
 }
 
 vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
@@ -224,7 +227,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
-    if (fragmentColor.w > alphaThresholdForDepth && position.w == POSITION_NOT_SET)
+    if (fragmentColor.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(vec4(startPos_eye, 1));
     }
@@ -291,8 +294,7 @@ void main()
     updateActiveObjects(objectId, activeObjects);
     int activeObjectCount = bitCount(activeObjects);
 
-    if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth &&
-        position.w == POSITION_NOT_SET)
+    if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(currentFragment.eyePos);
     }
@@ -329,7 +331,7 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (position.w == POSITION_NOT_SET && nextFragment.color.w > alphaThresholdForDepth)
+    if (nextFragment.color.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(nextFragment.eyePos);
     }
