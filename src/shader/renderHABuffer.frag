@@ -205,31 +205,31 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
-    in vec4 currentFragmentPos_eye, in vec3 segmentStartPos_eye,
-    in vec3 endPos_eye, in vec4 fragmentColor)
+    in vec4 currentFragmentPos_eye, in vec4 segmentStartPos_eye,
+    in vec4 endPos_eye, in vec4 fragmentColor)
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
-      activeObjects, currentFragmentPos_eye, vec4(endPos_eye, 1.0));
+      activeObjects, currentFragmentPos_eye, endPos_eye);
   int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
   float stepFactor = 1.0 / float(sampleSteps);
 
   // set up segment direction vector
-  vec3 direction_eye = endPos_eye - segmentStartPos_eye;
-  vec3 startPos_eye = segmentStartPos_eye;  // + noise offset;
+  vec4 direction_eye = endPos_eye - segmentStartPos_eye;
+  vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
   for (int step = 0; step < sampleSteps; step++)
   {
     vec4 sampleColor = calculateSampleColor(activeObjects,
-        activeObjectCount, vec4(startPos_eye, 1.0f));
+        activeObjectCount, startPos_eye);
 
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
 
     if (fragmentColor.w > alphaThresholdForDepth)
     {
-      setPositionAndDepth(vec4(startPos_eye, 1));
+      setPositionAndDepth(startPos_eye);
     }
 
     // early ray termination
@@ -271,7 +271,7 @@ void main()
   FragmentData nextFragment;
   bool nextFragmentReadStatus = false;
 
-  vec3 endPos_eye;
+  vec4 endPos_eye;
 
   vec4 finalColor = vec4(0, 0, 0, 0);
 
@@ -279,14 +279,14 @@ void main()
   while (!nextFragmentReadStatus && age <= maxAge)
   {
       nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
-      endPos_eye = nextFragment.eyePos.xyz;
+      endPos_eye = nextFragment.eyePos;
       ++age;
   }
 
   for (--age; age < maxAge; age++)  // all fragments
   {
     currentFragment = nextFragment;
-    vec3 segmentStartPos_eye = endPos_eye;
+    vec4 segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
     fragmentColor.xyz *= fragmentColor.w;
 
@@ -309,7 +309,7 @@ void main()
     --age;
 
     endPos_eye = nextFragmentReadStatus ?
-      nextFragment.eyePos.xyz : segmentStartPos_eye;
+      nextFragment.eyePos : segmentStartPos_eye;
 
     if (activeObjectCount > 0)
     {
