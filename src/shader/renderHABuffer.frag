@@ -68,7 +68,7 @@ vec4 blend(vec4 clr, vec4 srf)
 bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
 {
   uvec2 l = (ij + offsets[age]);
-  uint64_t h = Haddr(l % uvec2(u_HashSz));
+  uint64_t h = Haddr(l % uvec2(tableSize));
 
   uint64_t rec = u_Records[h];
 

@@ -148,7 +148,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   renderShader->bind();
 
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
-  renderShader->setUniform("u_HashSz", habufferTableSize);
+  renderShader->setUniform("tableSize", habufferTableSize);
   renderShader->setUniformAsVec2Array("offsets", offsets, 256);
   renderShader->setUniform("u_Records", recordsBuffer);
   renderShader->setUniform("u_Counts", countsBuffer);
@@ -189,7 +189,7 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 {
   shader->setUniform("tableElementCount", tableElementCount);
   shader->setUniform("u_ScreenSz", habufferScreenSize);
-  shader->setUniform("u_HashSz", habufferTableSize);
+  shader->setUniform("tableSize", habufferTableSize);
   shader->setUniformAsVec2Array("offsets", offsets, 256);
 
   shader->setUniform("u_ZNear", zNear);
