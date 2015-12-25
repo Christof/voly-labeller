@@ -2,10 +2,10 @@
 
 in vec3 vertexPosition;
 
-out vec4 u_Pos;
+out vec4 fragmentInputPosition;
 
 void main()
 {
-  u_Pos = vec4(vertexPosition, 1.0);
-  gl_Position = u_Pos;
+  fragmentInputPosition = vec4(vertexPosition, 1.0);
+  gl_Position = fragmentInputPosition;
 }

@@ -4,7 +4,7 @@
 #define MAX_SAMPLES 4096
 #define STEP_FACTOR 2.5
 
-in vec4 u_Pos;
+in vec4 fragmentInputPosition;
 
 layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 position;
@@ -248,7 +248,7 @@ void main()
   if (gl_SampleMaskIn[0] == 0)
     discard;
 
-  vec2 pos = (u_Pos.xy * 0.5 + 0.5) * float(u_ScreenSz);
+  vec2 pos = (fragmentInputPosition.xy * 0.5 + 0.5) * float(u_ScreenSz);
 
   if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
   {

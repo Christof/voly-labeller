@@ -8,8 +8,6 @@ coherent uniform uint32_t *u_Counts;  // auxiliary counters
 uniform uint tableElementCount;
 uniform uint u_ScreenSz;
 
-in vec4 u_Pos;
-
 void main()
 {
   // Ignore helper pixels
