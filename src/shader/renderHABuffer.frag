@@ -357,7 +357,7 @@ void main()
       if (activeObjectCount > 0)
       {
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-            segmentStartPos_eye, segmentStartPos_eye, endPosCut_eye, fragmentColor);
+            segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }
       else
