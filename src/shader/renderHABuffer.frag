@@ -205,11 +205,10 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
-    in vec4 currentFragmentPos_eye, in vec4 segmentStartPos_eye,
-    in vec4 endPos_eye, in vec4 fragmentColor)
+    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor)
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
-      activeObjects, currentFragmentPos_eye, endPos_eye);
+      activeObjects, segmentStartPos_eye, endPos_eye);
   int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
   float stepFactor = 1.0 / float(sampleSteps);
@@ -314,7 +313,7 @@ void main()
     if (activeObjectCount > 0)
     {
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-          currentFragment.eyePos, segmentStartPos_eye, endPos_eye, fragmentColor);
+          segmentStartPos_eye, endPos_eye, fragmentColor);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
     }
     else
