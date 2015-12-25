@@ -100,6 +100,18 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
 }
 
+void FrameBufferObject::bindColorTexture2(unsigned int textureUnit)
+{
+  glAssert(gl->glActiveTexture(textureUnit));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, renderTexture2));
+}
+
+void FrameBufferObject::bindPositionTexture2(unsigned int textureUnit)
+{
+  glAssert(gl->glActiveTexture(textureUnit));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, positionTexture2));
+}
+
 void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
                                                     int width, int height)
 {

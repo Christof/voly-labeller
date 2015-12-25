@@ -40,6 +40,8 @@ class FrameBufferObject
   void bindColorTexture(unsigned int textureUnit);
   void bindPositionTexture(unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
+  void bindColorTexture2(unsigned int textureUnit);
+  void bindPositionTexture2(unsigned int textureUnit);
 
   unsigned int getRenderTextureId();
   unsigned int getPositionTextureId();
