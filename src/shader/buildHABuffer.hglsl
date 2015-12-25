@@ -4,6 +4,7 @@ out vec4 o_PixColor;
 uniform float u_ZNear;
 uniform float u_ZFar;
 uniform mat4 projectionMatrix;
+uniform uint tableElementCount;
 
 // FragmentData computeData() function must be implemented by includee.
 
@@ -15,9 +16,9 @@ void main()
 
   // Detect main buffer overflow
   uint32_t count = atomicAdd(u_Counts + u_ScreenSz * u_ScreenSz, 1);
-  if (count > u_NumRecords)
+  if (count > tableElementCount)
   {
-    u_Counts[u_ScreenSz * u_ScreenSz] = u_NumRecords;
+    u_Counts[u_ScreenSz * u_ScreenSz] = tableElementCount;
     discard;
   }
 

@@ -69,7 +69,6 @@ coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
 coherent uint64_t *recordsPtr;
 coherent uint32_t *countsPtr;
 
-uniform uint u_NumRecords;
 uniform uint u_ScreenSz;
 uniform uint u_HashSz;
 

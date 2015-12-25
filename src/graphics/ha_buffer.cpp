@@ -57,16 +57,16 @@ void HABuffer::initializeBufferHash()
   habufferTableSize =
       std::max(habufferScreenSize,
                static_cast<uint>(ceil(sqrt(static_cast<float>(num_records)))));
-  habufferNumRecords = habufferTableSize * habufferTableSize;
+  tableElementCount = habufferTableSize * habufferTableSize;
   habufferCountsSize = habufferScreenSize * habufferScreenSize + 1;
   qCDebug(channel, "Screen size: %d %d\n# records: %d (%d x %d)\n", size.x(),
-          size.y(), habufferNumRecords, habufferTableSize, habufferTableSize);
+          size.y(), tableElementCount, habufferTableSize, habufferTableSize);
 
   // HA-Buffer records
   if (!recordsBuffer.isInitialized())
-    recordsBuffer.initialize(gl, habufferNumRecords * sizeof(uint) * 2);
+    recordsBuffer.initialize(gl, tableElementCount * sizeof(uint) * 2);
   else
-    recordsBuffer.resize(habufferNumRecords * sizeof(uint) * 2);
+    recordsBuffer.resize(tableElementCount * sizeof(uint) * 2);
 
   if (!countsBuffer.isInitialized())
     countsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
@@ -74,9 +74,9 @@ void HABuffer::initializeBufferHash()
     countsBuffer.resize(habufferCountsSize * sizeof(uint));
 
   if (!fragmentDataBuffer.isInitialized())
-    fragmentDataBuffer.initialize(gl, habufferNumRecords * FRAGMENT_DATA_SIZE);
+    fragmentDataBuffer.initialize(gl, tableElementCount * FRAGMENT_DATA_SIZE);
   else
-    fragmentDataBuffer.resize(habufferNumRecords * FRAGMENT_DATA_SIZE);
+    fragmentDataBuffer.resize(tableElementCount * FRAGMENT_DATA_SIZE);
 
   // clear counts
   countsBuffer.clear(0);
@@ -84,8 +84,8 @@ void HABuffer::initializeBufferHash()
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
   qCDebug(channel) << "Memory usage:"
-                   << ((habufferNumRecords * sizeof(uint) * 2 +
-                        habufferNumRecords * FRAGMENT_DATA_SIZE +
+                   << ((tableElementCount * sizeof(uint) * 2 +
+                        tableElementCount * FRAGMENT_DATA_SIZE +
                         (habufferScreenSize * habufferScreenSize + 1) *
                             sizeof(uint)) /
                        1024) /
@@ -104,7 +104,7 @@ void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
 
   auto clearShader = clearQuad->getShaderProgram();
   clearShader->bind();
-  clearShader->setUniform("u_NumRecords", habufferNumRecords);
+  clearShader->setUniform("tableElementCount", tableElementCount);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
   clearShader->setUniform("u_Records", recordsBuffer);
   clearShader->setUniform("u_Counts", countsBuffer);
@@ -187,7 +187,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 {
-  shader->setUniform("u_NumRecords", habufferNumRecords);
+  shader->setUniform("tableElementCount", tableElementCount);
   shader->setUniform("u_ScreenSz", habufferScreenSize);
   shader->setUniform("u_HashSz", habufferTableSize);
   shader->setUniformAsVec2Array("u_Offsets", offsets, 256);
@@ -207,14 +207,14 @@ void HABuffer::syncAndGetCounts()
   countsBuffer.getData(&numInserted, sizeof(uint),
                        countsBuffer.getSize() - sizeof(uint));
 
-  if (numInserted >= habufferNumRecords)
+  if (numInserted >= tableElementCount)
   {
     qCCritical(channel) << "Frame was interrupted:" << numInserted;
   }
-  else if (numInserted > habufferNumRecords * 0.8)
+  else if (numInserted > tableElementCount * 0.8)
   {
     qCWarning(channel) << "inserted" << numInserted << "/"
-                       << habufferNumRecords;
+                       << tableElementCount;
   }
 
   buildTimer.stop();
@@ -242,14 +242,14 @@ void HABuffer::displayStatistics(const char *label)
     num = 1;
 
   double rec_percentage = lcounts[habufferCountsSize - 1] /
-                          static_cast<double>(habufferNumRecords) * 100.0;
+                          static_cast<double>(tableElementCount) * 100.0;
 
   if (rec_percentage > 80.0)
   {
     qCWarning(channel) << label << " habufferCountsSize:" << habufferCountsSize
                        << "<avg:" << avgdepth / static_cast<float>(num)
                        << " max: " << lcounts[habufferCountsSize - 1] << "/"
-                       << habufferNumRecords << "(" << rec_percentage << "% "
+                       << tableElementCount << "(" << rec_percentage << "% "
                        << ">";
   }
 
