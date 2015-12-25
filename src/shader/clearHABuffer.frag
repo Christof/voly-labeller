@@ -2,7 +2,7 @@
 #extension GL_NV_gpu_shader5 : enable
 
 coherent uniform
-    uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
+    uint64_t *records;  // all fragment records (<depth|pointer> pairs)
 coherent uniform uint32_t *u_Counts;  // auxiliary counters
 
 uniform uint tableElementCount;
@@ -21,7 +21,7 @@ void main()
   for (uint o = ij.x + ij.y * u_ScreenSz; o < tableElementCount;
        o += u_ScreenSz * u_ScreenSz)
   {
-    u_Records[o] = uint64_t(0);
+    records[o] = uint64_t(0);
   }
 
   // clear max age table (max age = 0)

@@ -106,7 +106,7 @@ void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
   clearShader->bind();
   clearShader->setUniform("tableElementCount", tableElementCount);
   clearShader->setUniform("u_ScreenSz", habufferScreenSize);
-  clearShader->setUniform("u_Records", recordsBuffer);
+  clearShader->setUniform("records", recordsBuffer);
   clearShader->setUniform("u_Counts", countsBuffer);
 
   clearQuad->renderImmediately(gl, managers, RenderData());
@@ -150,7 +150,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   renderShader->setUniform("u_ScreenSz", habufferScreenSize);
   renderShader->setUniform("tableSize", habufferTableSize);
   renderShader->setUniformAsVec2Array("offsets", offsets, 256);
-  renderShader->setUniform("u_Records", recordsBuffer);
+  renderShader->setUniform("records", recordsBuffer);
   renderShader->setUniform("u_Counts", countsBuffer);
   renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
 
@@ -194,7 +194,7 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
 
   shader->setUniform("u_ZNear", zNear);
   shader->setUniform("u_ZFar", zFar);
-  shader->setUniform("u_Records", recordsBuffer);
+  shader->setUniform("records", recordsBuffer);
   shader->setUniform("u_Counts", countsBuffer);
   shader->setUniform("u_FragmentData", fragmentDataBuffer);
 }

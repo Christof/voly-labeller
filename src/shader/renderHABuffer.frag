@@ -70,7 +70,7 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
   uvec2 l = (ij + offsets[age]);
   uint64_t h = Haddr(l % uvec2(tableSize));
 
-  uint64_t rec = u_Records[h];
+  uint64_t rec = records[h];
 
   uint32_t key = uint32_t(rec >> uint64_t(32));
 

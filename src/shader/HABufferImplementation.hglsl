@@ -61,7 +61,7 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 #endif
 
 coherent uniform
-    uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
+    uint64_t *records;  // all fragment records (<depth|pointer> pairs)
 coherent uniform uint32_t *u_Counts;            // auxiliary counters
 coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
 
@@ -124,7 +124,7 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
     uvec2 l = (ij + offsets[age]);
     uint64_t h = Haddr(l % uvec2(tableSize));
 
-    recordsPtr = u_Records + h;
+    recordsPtr = records + h;
 #ifdef GL_NV_shader_atomic_int64
     uint64_t old = atomicMax(recordsPtr, key_info);
 #else
