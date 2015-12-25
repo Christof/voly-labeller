@@ -8,6 +8,8 @@ in vec4 fragmentInputPosition;
 
 layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 position;
+layout(location = 2) out vec4 outputColor2;
+layout(location = 3) out vec4 position2;
 layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
@@ -174,6 +176,14 @@ void setPositionAndDepth(vec4 positionInEyeSpace)
     position.xyz = ndcPos.xyz;
     position.w = 1.0f;
   }
+  else if (position2.w == POSITION_NOT_SET)
+  {
+    vec4 ndcPos = projectionMatrix * positionInEyeSpace;
+    ndcPos = ndcPos / ndcPos.w;
+    float depth = ndcPos.z;
+    gl_FragDepth = depth;
+    position2 = ndcPos;
+  }
 }
 
 vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
@@ -233,9 +243,12 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
     if (fragmentColor.a > alphaThresholdForDepth)
+    /*
+    if (fragmentColor.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(startPos_eye);
     }
+    */
 
     // early ray termination
     if (fragmentColor.a > 0.999)
@@ -289,14 +302,16 @@ void main()
       ++age;
   }
 
-  vec4 world = inverseViewMatrix * vec4(endPos_eye, 1);
+  vec4 world = inverseViewMatrix * endPos_eye;
   float dist = dot(world, farPlane);
   if (dist < 0)
   {
-    endPos_eye = (viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f)).xyz;
-    nextFragmentReadStatus = false;
+    setPositionAndDepth(viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f));
+    outputColor = vec4(1, 0, 0, 1);
+    /*
     // to prevent case of maxAge == 1 at the end
     age = ++maxAge;
+    */
   }
 
   for (--age; age < maxAge; age++)  // all fragments
@@ -310,10 +325,12 @@ void main()
     updateActiveObjects(objectId, activeObjects);
     int activeObjectCount = bitCount(activeObjects);
 
+    /*
     if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth)
     {
       setPositionAndDepth(currentFragment.eyePos);
     }
+    */
 
     // fetch next Fragment
     nextFragmentReadStatus = false;
@@ -327,14 +344,29 @@ void main()
     endPos_eye = nextFragmentReadStatus ?
       nextFragment.eyePos : segmentStartPos_eye;
 
-    vec4 world = inverseViewMatrix * vec4(endPos_eye, 1);
+    vec4 world = inverseViewMatrix * endPos_eye;
     float dist = dot(world, farPlane);
     if (dist < 0)
     {
-      endPos_eye = (viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f)).xyz;
+      vec4 endPosCut_eye = viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f);
+      /*
       nextFragmentReadStatus = false;
       // to prevent case of maxAge == 1 at the end
       age = ++maxAge;
+      */
+      if (activeObjectCount > 0)
+      {
+        fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
+            segmentStartPos_eye, segmentStartPos_eye, endPosCut_eye, fragmentColor);
+        finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+      }
+      else
+      {
+        finalColor = blend(finalColor, currentFragment.color);
+      }
+      outputColor = blend(clamp(finalColor, vec4(0.0), vec4(1.0)), vec4(backgroundColor, 1.0));
+      setPositionAndDepth(endPosCut_eye);
+      segmentStartPos_eye = endPosCut_eye;
     }
 
     if (activeObjectCount > 0)
@@ -363,11 +395,17 @@ void main()
     }
   }
 
-  if (position.w == POSITION_NOT_SET)
-    position.w = 1;
-
   finalColor = clampColor(finalColor);
 
-  outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
+  if (position.w == POSITION_NOT_SET)
+  {
+    position.w = 1;
+    outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
+    outputColor2 = vec4(backgroundColor, 1);
+  }
+  else
+  {
+    outputColor2 = blend(finalColor, vec4(backgroundColor, 1.0));
+  }
 }
 
