@@ -72,7 +72,7 @@ coherent uint32_t *countsPtr;
 uniform uint u_ScreenSz;
 uniform uint u_HashSz;
 
-uniform uvec2 u_Offsets[256];
+uniform uvec2 offsets[256];
 
 vec4 RGBA(uint32_t rgba)
 {
@@ -121,7 +121,7 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
   while (true)
   {
 
-    uvec2 l = (ij + u_Offsets[age]);
+    uvec2 l = (ij + offsets[age]);
     uint64_t h = Haddr(l % uvec2(u_HashSz));
 
     recordsPtr = u_Records + h;
@@ -147,7 +147,7 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
         // -> evict
         age = uint32_t(old >> uint64_t(32 + 24));
         // recompute coordinates from offset
-        ij = uvec2((l + uvec2(u_HashSz)) - u_Offsets[age]) % uvec2(u_HashSz);
+        ij = uvec2((l + uvec2(u_HashSz)) - offsets[age]) % uvec2(u_HashSz);
 
         countsPtr = u_Counts + Saddr(ij);
 
