@@ -348,7 +348,7 @@ void main()
     float dist = dot(world, farPlane);
     if (dist < 0)
     {
-      vec4 endPosCut_eye = viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f);
+      vec4 endPosCut_eye = endPos_eye; //viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f);
       /*
       nextFragmentReadStatus = false;
       // to prevent case of maxAge == 1 at the end
@@ -364,10 +364,14 @@ void main()
       {
         finalColor = blend(finalColor, currentFragment.color);
       }
+      /*
       setPositionAndDepth(endPosCut_eye);
       outputColor = blend(clamp(finalColor, vec4(0.0), vec4(1.0)), vec4(backgroundColor, 1.0));
       segmentStartPos_eye = endPosCut_eye;
+      */
     }
+    else
+    {
 
     if (activeObjectCount > 0)
     {
@@ -378,6 +382,7 @@ void main()
     else
     {
       finalColor = blend(finalColor, currentFragment.color);
+    }
     }
 
     if (finalColor.a > 0.999)
