@@ -307,7 +307,7 @@ void main()
   if (dist < 0)
   {
     setPositionAndDepth(viewMatrix * vec4(world.xyz - dist * farPlane.xyz, 1.0f));
-    outputColor = vec4(1, 0, 0, 1);
+    outputColor = vec4(backgroundColor, 1);
     /*
     // to prevent case of maxAge == 1 at the end
     age = ++maxAge;
