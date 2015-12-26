@@ -165,12 +165,17 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   return segmentTextureLength;
 }
 
-void setPositionAndDepth(vec4 positionInEyeSpace)
+vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
+{
+  vec4 ndcPos = projectionMatrix * positionInEyeSpace;
+  return ndcPos / ndcPos.w;
+}
+
+void setPositionAndDepth(in vec4 positionInEyeSpace)
 {
   if (position.w == POSITION_NOT_SET)
   {
-    vec4 ndcPos = projectionMatrix * positionInEyeSpace;
-    ndcPos = ndcPos / ndcPos.w;
+    vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
     float depth = ndcPos.z;
     gl_FragDepth = depth;
     position.xyz = ndcPos.xyz;
@@ -178,8 +183,7 @@ void setPositionAndDepth(vec4 positionInEyeSpace)
   }
   else if (position2.w == POSITION_NOT_SET)
   {
-    vec4 ndcPos = projectionMatrix * positionInEyeSpace;
-    ndcPos = ndcPos / ndcPos.w;
+    vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
     float depth = ndcPos.z;
     gl_FragDepth = depth;
     position2 = ndcPos;
