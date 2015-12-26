@@ -312,10 +312,6 @@ void main()
   {
     setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f));
     outputColor = vec4(backgroundColor, 1);
-    /*
-    // to prevent case of maxAge == 1 at the end
-    age = ++maxAge;
-    */
   }
 
   for (--age; age < maxAge; age++)  // all fragments
@@ -354,11 +350,6 @@ void main()
     if (startDistance > 0 && endDistance < 0)
     {
       vec4 endPosCut_eye = viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f);
-      /*
-      nextFragmentReadStatus = false;
-      // to prevent case of maxAge == 1 at the end
-      age = ++maxAge;
-      */
       if (activeObjectCount > 0)
       {
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
