@@ -347,7 +347,7 @@ void main()
 
     vec4 world = inverseViewMatrix * endPos_eye;
     endDistance = dot(world, farPlane);
-    if (startDistance > 0 && endDistance < 0)
+    if (startDistance >= 0 && endDistance < 0)
     {
       vec4 endPosCut_eye = viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f);
       if (activeObjectCount > 0)
