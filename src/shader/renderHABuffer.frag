@@ -391,7 +391,9 @@ void main()
     finalColor = blend(finalColor, nextFragment.color);
     if (nextFragment.color.w > alphaThresholdForDepth)
     {
+      float status = position.w;
       setPositionAndDepth(nextFragment.eyePos);
+      position.w = status;
     }
   }
 
