@@ -199,7 +199,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-  fbo->bindDepthTexture(GL_TEXTURE0);
+  fbo->bindColorTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
@@ -245,7 +245,7 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
 
 void Scene::renderScreenQuad()
 {
-  fbo->bindColorTexture(GL_TEXTURE0);
+  fbo->bindColorTexture2(GL_TEXTURE0);
 
   renderQuad(quad, Eigen::Matrix4f::Identity());
 }
