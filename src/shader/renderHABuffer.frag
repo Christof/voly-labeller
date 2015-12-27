@@ -356,10 +356,6 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }
-      else
-      {
-        finalColor = blend(finalColor, currentFragment.color);
-      }
       setPositionAndDepth(endPosCut_eye);
       outputColor = clamp(finalColor, vec4(0.0), vec4(1.0));
       finalColor = vec4(0);
