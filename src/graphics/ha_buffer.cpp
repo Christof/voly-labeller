@@ -152,7 +152,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   renderShader->setUniformAsVec2Array("offsets", offsets, 256);
   renderShader->setUniform("records", recordsBuffer);
   renderShader->setUniform("counters", countsBuffer);
-  renderShader->setUniform("u_FragmentData", fragmentDataBuffer);
+  renderShader->setUniform("fragmentData", fragmentDataBuffer);
 
   Eigen::Matrix4f inverseViewMatrix = renderData.viewMatrix.inverse();
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
@@ -196,7 +196,7 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("u_ZFar", zFar);
   shader->setUniform("records", recordsBuffer);
   shader->setUniform("counters", countsBuffer);
-  shader->setUniform("u_FragmentData", fragmentDataBuffer);
+  shader->setUniform("fragmentData", fragmentDataBuffer);
 }
 
 void HABuffer::syncAndGetCounts()

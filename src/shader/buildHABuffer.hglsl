@@ -27,7 +27,7 @@ void main()
   FragmentData fragment = computeData();
   vec4 position = projectionMatrix * fragment.eyePos;
 
-  u_FragmentData[count] = fragment;
+  fragmentData[count] = fragment;
 
   vec2 prj = position.xy / position.w;
   vec3 pos = (vec3(prj * 0.5 + 0.5,

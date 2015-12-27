@@ -86,7 +86,7 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
 
   if (HA_AGE(key) == age)
   {
-    fragment = u_FragmentData[uint32_t(rec)];
+    fragment = fragmentData[uint32_t(rec)];
     return true;
   }
 

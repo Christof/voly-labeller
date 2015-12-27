@@ -63,7 +63,7 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 coherent uniform
     uint64_t *records;  // all fragment records (<depth|pointer> pairs)
 coherent uniform uint32_t *counters;            // auxiliary counters
-coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
+coherent uniform FragmentData *fragmentData;  // RGBA color of fragments
 
 // global variable for temporary pointers
 coherent uint64_t *recordsPtr;
