@@ -139,6 +139,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   gl->glDepthFunc(GL_ALWAYS);
+  gl->glDisable(GL_BLEND);
 
   syncAndGetCounts();
 
@@ -183,6 +184,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   qCDebug(channel) << "Render time" << renderTime << "ms";
 
   gl->glDepthFunc(GL_LESS);
+  gl->glEnable(GL_BLEND);
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
