@@ -62,6 +62,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::shared_ptr<Placement::Labeller> placementLabeller;
   std::shared_ptr<Graphics::ScreenQuad> quad;
+  std::shared_ptr<Graphics::ScreenQuad> screenQuad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
   std::shared_ptr<Graphics::ScreenQuad> transparentQuad;

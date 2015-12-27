@@ -56,6 +56,8 @@ void Scene::initialize()
 
   quad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
+  screenQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/combineLayers.frag");
   positionQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/positionRenderTarget.frag");
   distanceTransformQuad = std::make_shared<Graphics::ScreenQuad>(
@@ -75,6 +77,7 @@ void Scene::initialize()
   managers->getObjectManager()->initialize(gl, 128, 10000000);
   haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
+  screenQuad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
   distanceTransformQuad->initialize(gl, managers);
   transparentQuad->initialize(gl, managers);
@@ -245,9 +248,11 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
 
 void Scene::renderScreenQuad()
 {
-  fbo->bindColorTexture2(GL_TEXTURE0);
+  fbo->bindColorTexture(GL_TEXTURE0);
+  fbo->bindColorTexture2(GL_TEXTURE1);
 
-  renderQuad(quad, Eigen::Matrix4f::Identity());
+  screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
+  renderQuad(screenQuad, Eigen::Matrix4f::Identity());
 }
 
 void Scene::resize(int width, int height)
