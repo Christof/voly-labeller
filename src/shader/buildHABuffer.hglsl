@@ -1,8 +1,8 @@
 #version 440
 out vec4 o_PixColor;
 
-uniform float u_ZNear;
-uniform float u_ZFar;
+uniform float near;
+uniform float far;
 uniform mat4 projectionMatrix;
 uniform uint tableElementCount;
 
@@ -30,8 +30,8 @@ void main()
   fragmentData[count] = fragment;
 
   vec2 prj = position.xy / position.w;
-  vec3 pos = (vec3(prj * 0.5 + 0.5,
-                   1.0 - (position.z + u_ZNear) / (u_ZFar + u_ZNear)));
+  float zValue = 1.0 - (position.z + near) / (far + near);
+  vec3 pos = vec3(prj * 0.5 + 0.5, zValue);
   uint32_t depth = uint32_t(pos.z * MAX_DEPTH);
   uvec2 pix = uvec2(pos.xy * screenSize);
 

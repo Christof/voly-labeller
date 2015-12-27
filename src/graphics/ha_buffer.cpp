@@ -192,8 +192,8 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("tableSize", habufferTableSize);
   shader->setUniformAsVec2Array("offsets", offsets, 256);
 
-  shader->setUniform("u_ZNear", zNear);
-  shader->setUniform("u_ZFar", zFar);
+  shader->setUniform("near", zNear);
+  shader->setUniform("far", zFar);
   shader->setUniform("records", recordsBuffer);
   shader->setUniform("counters", countsBuffer);
   shader->setUniform("fragmentData", fragmentDataBuffer);
