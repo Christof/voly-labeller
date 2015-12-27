@@ -311,7 +311,7 @@ void main()
   if (endDistance < 0)
   {
     setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f));
-    outputColor = vec4(backgroundColor, 1);
+    outputColor = vec4(0);
   }
 
   for (--age; age < maxAge; age++)  // all fragments
