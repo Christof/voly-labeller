@@ -62,7 +62,7 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
 {
-  return clr + (1.0 - clr.w) * vec4(srf.xyz * srf.w, srf.w);
+  return clr + (1.0 - clr.a) * vec4(srf.rgb * srf.a, srf.a);
 }
 
 bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
@@ -192,9 +192,9 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 
     if (squareGradientLength > 0.05f)
     {
-      currentColor.xyz = calculateLighting(currentColor, startPos_eye.xyz, gradient);
+      currentColor.rgb = calculateLighting(currentColor, startPos_eye.xyz, gradient);
     }
-    currentColor.xyz = clamp(currentColor.xyz, vec3(0.0f), vec3(1.0f));
+    currentColor.rgb = clamp(currentColor.rgb, vec3(0.0f), vec3(1.0f));
 
     // we sum up overlapping contributions
     sampleColor += currentColor;
@@ -287,7 +287,7 @@ void main()
     currentFragment = nextFragment;
     vec4 segmentStartPos_eye = endPos_eye;
     vec4 fragmentColor = currentFragment.color;
-    fragmentColor.xyz *= fragmentColor.w;
+    fragmentColor.rgb *= fragmentColor.w;
 
     int objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
