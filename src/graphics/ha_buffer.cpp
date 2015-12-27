@@ -53,10 +53,10 @@ void HABuffer::updateNearAndFarPlanes(float near, float far)
 void HABuffer::initializeBufferHash()
 {
   habufferScreenSize = std::max(size[0], size[1]);
-  uint num_records = habufferScreenSize * habufferScreenSize * 8;
+  uint recordCount = habufferScreenSize * habufferScreenSize * 8;
   habufferTableSize =
       std::max(habufferScreenSize,
-               static_cast<uint>(ceil(sqrt(static_cast<float>(num_records)))));
+               static_cast<uint>(ceil(sqrt(static_cast<float>(recordCount)))));
   tableElementCount = habufferTableSize * habufferTableSize;
   habufferCountsSize = habufferScreenSize * habufferScreenSize + 1;
   qCDebug(channel, "Screen size: %d %d\n# records: %d (%d x %d)\n", size.x(),
