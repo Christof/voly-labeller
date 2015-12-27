@@ -39,6 +39,16 @@ layout(std430, binding = 1) buffer CB1
   VolumeData volumes[];
 };
 
+vec4 clampColor(in vec4 color)
+{
+  return clamp(color, vec4(0), vec4(1));
+}
+
+vec3 clampColor(in vec3 color)
+{
+  return clamp(color, vec3(0), vec3(1));
+}
+
 float getVolumeSampleDensity(in vec3 texturePos)
 {
   return texture(volumeSampler, texturePos).r;
@@ -194,14 +204,14 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     {
       currentColor.rgb = calculateLighting(currentColor, startPos_eye.xyz, gradient);
     }
-    currentColor.rgb = clamp(currentColor.rgb, vec3(0.0f), vec3(1.0f));
+    currentColor.rgb = clampColor(currentColor.rgb);
 
     // we sum up overlapping contributions
     sampleColor += currentColor;
   }  // per active object loop
 
   // clamp cumulatie sample value
-  return clamp(sampleColor, vec4(0.0f), vec4(1.0f));
+  return clampColor(sampleColor);
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
@@ -339,7 +349,7 @@ void main()
   if (position.w == POSITION_NOT_SET)
     position.w = 1;
 
-  finalColor = clamp(finalColor, vec4(0.0), vec4(1.0));
+  finalColor = clampColor(finalColor);
 
   outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
 }
