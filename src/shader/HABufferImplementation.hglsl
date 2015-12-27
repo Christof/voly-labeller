@@ -62,7 +62,7 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 
 coherent uniform
     uint64_t *records;  // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *u_Counts;            // auxiliary counters
+coherent uniform uint32_t *counters;            // auxiliary counters
 coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
 
 // global variable for temporary pointers
@@ -116,7 +116,7 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
   uint age = 1u;
   uint64_t key_info = HA_PACK_DATA(age, depth, data);
 
-  countsPtr = u_Counts + Saddr(ij);
+  countsPtr = counters + Saddr(ij);
 
   while (true)
   {
@@ -149,7 +149,7 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
         // recompute coordinates from offset
         ij = uvec2((l + uvec2(tableSize)) - offsets[age]) % uvec2(tableSize);
 
-        countsPtr = u_Counts + Saddr(ij);
+        countsPtr = counters + Saddr(ij);
 
         // reinsert evicted key
         key_info = old;

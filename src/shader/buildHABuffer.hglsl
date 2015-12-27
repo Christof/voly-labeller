@@ -15,10 +15,10 @@ void main()
     discard;
 
   // Detect main buffer overflow
-  uint32_t count = atomicAdd(u_Counts + u_ScreenSz * u_ScreenSz, 1);
+  uint32_t count = atomicAdd(counters + u_ScreenSz * u_ScreenSz, 1);
   if (count > tableElementCount)
   {
-    u_Counts[u_ScreenSz * u_ScreenSz] = tableElementCount;
+    counters[u_ScreenSz * u_ScreenSz] = tableElementCount;
     discard;
   }
 

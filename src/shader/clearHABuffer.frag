@@ -3,7 +3,7 @@
 
 coherent uniform
     uint64_t *records;  // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *u_Counts;  // auxiliary counters
+coherent uniform uint32_t *counters;  // auxiliary counters
 
 uniform uint tableElementCount;
 uniform uint u_ScreenSz;
@@ -25,11 +25,11 @@ void main()
   }
 
   // clear max age table (max age = 0)
-  u_Counts[ij.x + ij.y * u_ScreenSz] = 0u;
+  counters[ij.x + ij.y * u_ScreenSz] = 0u;
 
   if (ij.x == 0 && ij.y == 0)
   {
-    u_Counts[u_ScreenSz * u_ScreenSz] = uint32_t(0);
+    counters[u_ScreenSz * u_ScreenSz] = uint32_t(0);
   }
 
   discard;

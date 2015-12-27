@@ -270,7 +270,7 @@ void main()
   gl_FragDepth = 1.0;
   position = vec4(-2, -2, 1, POSITION_NOT_SET);
 
-  uint maxAge = u_Counts[Saddr(ij)];
+  uint maxAge = counters[Saddr(ij)];
 
   if (maxAge == 0)
     discard;  // no fragment, early exit
