@@ -6,7 +6,7 @@ coherent uniform
 coherent uniform uint32_t *counters;  // auxiliary counters
 
 uniform uint tableElementCount;
-uniform uint u_ScreenSz;
+uniform uint screenSize;
 
 void main()
 {
@@ -18,18 +18,18 @@ void main()
 
   // Hashed-lists
   // clear all records
-  for (uint o = ij.x + ij.y * u_ScreenSz; o < tableElementCount;
-       o += u_ScreenSz * u_ScreenSz)
+  for (uint o = ij.x + ij.y * screenSize; o < tableElementCount;
+       o += screenSize * screenSize)
   {
     records[o] = uint64_t(0);
   }
 
   // clear max age table (max age = 0)
-  counters[ij.x + ij.y * u_ScreenSz] = 0u;
+  counters[ij.x + ij.y * screenSize] = 0u;
 
   if (ij.x == 0 && ij.y == 0)
   {
-    counters[u_ScreenSz * u_ScreenSz] = uint32_t(0);
+    counters[screenSize * screenSize] = uint32_t(0);
   }
 
   discard;

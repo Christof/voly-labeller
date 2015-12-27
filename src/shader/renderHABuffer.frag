@@ -257,9 +257,9 @@ void main()
   if (gl_SampleMaskIn[0] == 0)
     discard;
 
-  vec2 pos = (fragmentInputPosition.xy * 0.5 + 0.5) * float(u_ScreenSz);
+  vec2 pos = (fragmentInputPosition.xy * 0.5 + 0.5) * float(screenSize);
 
-  if (pos.x >= u_ScreenSz || pos.y >= u_ScreenSz || pos.x < 0 || pos.y < 0)
+  if (pos.x >= screenSize || pos.y >= screenSize || pos.x < 0 || pos.y < 0)
   {
     outputColor = vec4(1.0, 1.0, 0.3, 1.0);
     return;

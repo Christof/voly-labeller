@@ -69,7 +69,7 @@ coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
 coherent uint64_t *recordsPtr;
 coherent uint32_t *countsPtr;
 
-uniform uint u_ScreenSz;
+uniform uint screenSize;
 uniform uint tableSize;
 
 uniform uvec2 offsets[256];
@@ -99,7 +99,7 @@ vec4 RGBA(uint32_t rgba)
 
 uint64_t Saddr(uvec2 l)
 {
-  return uint64_t(l.x + l.y * u_ScreenSz);
+  return uint64_t(l.x + l.y * screenSize);
 }
 uint64_t Haddr(uvec2 l)
 {
