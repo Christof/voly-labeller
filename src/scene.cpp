@@ -253,6 +253,8 @@ void Scene::renderScreenQuad()
 
   screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
   renderQuad(screenQuad, Eigen::Matrix4f::Identity());
+
+  gl->glActiveTexture(GL_TEXTURE0);
 }
 
 void Scene::resize(int width, int height)
