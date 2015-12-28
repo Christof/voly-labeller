@@ -340,7 +340,10 @@ void main()
     endDistance = dot(world, farPlane);
     if (startDistance >= 0 && endDistance < 0)
     {
-      vec4 endPosCut_eye = viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f);
+      vec4 startWorld = inverseViewMatrix * segmentStartPos_eye;
+      vec3 dir = world.xyz - startWorld.xyz;
+      float alpha = - dot(startWorld, farPlane) / dot(dir, farPlane.xyz);
+      vec4 endPosCut_eye = viewMatrix * (startWorld + alpha * vec4(dir, 0));
       if (activeObjectCount > 0)
       {
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
