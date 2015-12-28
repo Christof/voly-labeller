@@ -178,8 +178,7 @@ void setPositionAndDepth(in vec4 positionInEyeSpace)
     vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
     float depth = ndcPos.z;
     gl_FragDepth = depth;
-    position.xyz = ndcPos.xyz;
-    position.w = 1.0f;
+    position = ndcPos;
   }
   else if (position2.w == POSITION_NOT_SET)
   {
