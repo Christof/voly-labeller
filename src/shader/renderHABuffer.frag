@@ -243,12 +243,9 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
     if (fragmentColor.a > alphaThresholdForDepth)
-    /*
-    if (fragmentColor.w > alphaThresholdForDepth)
     {
-      setPositionAndDepth(startPos_eye);
+      gl_FragDepth = fromEyeToNdcSpace(startPos_eye).z;
     }
-    */
 
     // early ray termination
     if (fragmentColor.a > 0.999)
@@ -322,12 +319,10 @@ void main()
     updateActiveObjects(objectId, activeObjects);
     int activeObjectCount = bitCount(activeObjects);
 
-    /*
     if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth)
     {
-      setPositionAndDepth(currentFragment.eyePos);
+      gl_FragDepth = fromEyeToNdcSpace(currentFragment.eyePos).z;
     }
-    */
 
     // fetch next Fragment
     nextFragmentReadStatus = false;
@@ -352,7 +347,7 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }
-      setPositionAndDepth(endPosCut_eye);
+      position = fromEyeToNdcSpace(endPos_eye);
       outputColor = clamp(finalColor, vec4(0.0), vec4(1.0));
       finalColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
