@@ -390,7 +390,7 @@ void main()
   if (position.w == POSITION_NOT_SET)
   {
     position.w = 1;
-    outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
+    outputColor = finalColor;
     outputColor2 = vec4(backgroundColor, 1);
   }
   else
