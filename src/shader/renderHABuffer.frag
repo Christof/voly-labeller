@@ -353,6 +353,7 @@ void main()
       position = fromEyeToNdcSpace(endPos_eye);
       outputColor = clamp(finalColor, vec4(0.0), vec4(1.0));
       finalColor = vec4(0);
+      fragmentColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
     }
 
