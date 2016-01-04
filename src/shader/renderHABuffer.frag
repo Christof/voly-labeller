@@ -54,19 +54,18 @@ float getVolumeSampleDensity(in vec3 texturePos)
   return texture(volumeSampler, texturePos).r;
 }
 
+// gradient calculation based on dataset values using central differences
 vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
 {
-  const vec3 gscf = vec3(1.0, 1.0f, 1.0f);
+  vec3 gradient = vec3(texture(volumeSampler, vec3(texturePos.x + sampleDistance.x, texturePos.yz)).x -
+      texture(volumeSampler, vec3(texturePos.x - sampleDistance.x, texturePos.yz)).x,
+      texture(volumeSampler, vec3(texturePos.x, texturePos.y + sampleDistance.y, texturePos.z)).x -
+      texture(volumeSampler, vec3(texturePos.x, texturePos.y - sampleDistance.y, texturePos.z)).x,
+      texture(volumeSampler, vec3(texturePos.xy, texturePos.z + sampleDistance.z)).x -
+      texture(volumeSampler, vec3(texturePos.xy, texturePos.z - sampleDistance.z)).x);
 
-  // gradient calculation based on dataset values using central differences
-  vec3 gradient = -vec3(texture(volumeSampler, vec3(texturePos.x+sampleDistance.x*gscf.x, texturePos.yz)).x-
-                   texture(volumeSampler, vec3(texturePos.x-sampleDistance.x*gscf.y, texturePos.yz)).x,
-                   texture(volumeSampler, vec3(texturePos.x,texturePos.y+sampleDistance.y*gscf.y, texturePos.z)).x-
-                   texture(volumeSampler, vec3(texturePos.x,texturePos.y-sampleDistance.y*gscf.y, texturePos.z)).x,
-                   texture(volumeSampler, vec3(texturePos.xy, texturePos.z+sampleDistance.z*gscf.z)).x-
-                   texture(volumeSampler, vec3(texturePos.xy, texturePos.z-sampleDistance.z*gscf.z)).x);
   return normalize(mat3(viewMatrix) *
-                   transpose(mat3(volumes[objectId].textureMatrix)) * gradient);
+                   transpose(mat3(volumes[objectId].textureMatrix)) * -gradient);
 }
 
 // Blending equation for in-order traversal
