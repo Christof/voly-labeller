@@ -260,13 +260,33 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
 
 void Scene::renderScreenQuad()
 {
-  fbo->bindColorTexture(GL_TEXTURE0);
-  fbo->bindColorTexture2(GL_TEXTURE1);
+  if (activeLayerNumber == 0)
+  {
+    fbo->bindColorTexture(GL_TEXTURE0);
+    fbo->bindColorTexture2(GL_TEXTURE1);
 
-  screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
-  renderQuad(screenQuad, Eigen::Matrix4f::Identity());
+    screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
+    renderQuad(screenQuad, Eigen::Matrix4f::Identity());
 
-  gl->glActiveTexture(GL_TEXTURE0);
+    gl->glActiveTexture(GL_TEXTURE0);
+  }
+  else
+  {
+    switch (activeLayerNumber)
+    {
+    case 1:
+      fbo->bindColorTexture(GL_TEXTURE0);
+      break;
+    case 2:
+      fbo->bindColorTexture2(GL_TEXTURE0);
+      break;
+    default:
+      activeLayerNumber = 0;
+      return;
+    }
+
+    renderQuad(quad, Eigen::Matrix4f::Identity());
+  }
 }
 
 void Scene::resize(int width, int height)
@@ -313,5 +333,10 @@ void Scene::enableConstraingOverlay(bool enable)
 std::shared_ptr<Camera> Scene::getCamera()
 {
   return nodes->getCameraNode()->getCamera();
+}
+
+void Scene::setRenderLayer(int layerNumber)
+{
+  activeLayerNumber = layerNumber;
 }
 

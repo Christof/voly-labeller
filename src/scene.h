@@ -52,6 +52,7 @@ class Scene : public AbstractScene
 
   void enableBufferDebuggingViews(bool enable);
   void enableConstraingOverlay(bool enable);
+  void setRenderLayer(int layerNumber);
 
  private:
   std::shared_ptr<CameraControllers> cameraControllers;
@@ -78,6 +79,7 @@ class Scene : public AbstractScene
   bool shouldResize = false;
   bool showBufferDebuggingViews = false;
   bool showConstraintOverlay = false;
+  int activeLayerNumber = 0;
 
   void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
