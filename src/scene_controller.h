@@ -20,6 +20,9 @@ class SceneController : public QObject
  public slots:
   void toggleBufferViews();
   void toggleConstraintOverlay();
+  void compositeLayers();
+  void renderFirstLayer();
+  void renderSecondLayer();
 
  private:
   std::shared_ptr<Scene> scene;
