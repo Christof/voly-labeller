@@ -133,6 +133,7 @@ void Application::createAndStartStateMachine()
   invokeManager->addHandler(window.get());
   invokeManager->addHandler("mouseShape", mouseShapeController.get());
   invokeManager->addHandler("picking", pickingController.get());
+  invokeManager->addHandler("scene", sceneController.get());
   signalManager->addSender("KeyboardEventSender", window.get());
   signalManager->addSender("labels", labelsModel.get());
 
