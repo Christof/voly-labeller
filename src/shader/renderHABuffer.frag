@@ -220,10 +220,9 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
   int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
-  float stepFactor = 1.0 / float(sampleSteps);
 
   // set up segment direction vector
-  vec4 direction_eye = endPos_eye - segmentStartPos_eye;
+  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / float(sampleSteps);
   vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
@@ -245,7 +244,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
       break;
 
     // prepare next segment
-    startPos_eye += stepFactor * direction_eye;
+    startPos_eye += step_eye;
   }  // sampling steps
 
   return fragmentColor;
