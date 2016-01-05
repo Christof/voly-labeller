@@ -31,7 +31,6 @@ struct VolumeData
   int volumeId;
   mat4 objectToDatasetMatrix;
   int transferFunctionRow;
-  // int transferFunctionRowCount;
 };
 
 layout(std430, binding = 1) buffer CB1
@@ -209,7 +208,6 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     sampleColor += currentColor;
   }  // per active object loop
 
-  // clamp cumulatie sample value
   return clampColor(sampleColor);
 }
 
@@ -221,7 +219,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
-  // set up segment direction vector
   vec4 step_eye = (endPos_eye - segmentStartPos_eye) / float(sampleSteps);
   vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
 
@@ -243,7 +240,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     if (fragmentColor.w > 0.999)
       break;
 
-    // prepare next segment
     startPos_eye += step_eye;
   }  // sampling steps
 
