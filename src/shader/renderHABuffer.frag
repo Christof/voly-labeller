@@ -227,7 +227,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
-  for (int step = 0; step < sampleSteps; step++)
+  for (int stepIndex = 0; stepIndex < sampleSteps; stepIndex++)
   {
     vec4 sampleColor = calculateSampleColor(activeObjects,
         activeObjectCount, startPos_eye);
