@@ -141,6 +141,35 @@ void ConstraintUpdater::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
+  int border = 2;
+  polygon newLabel = createBoxPolygon(
+      Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
+
+  positions.clear();
+
+  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
+                        newLabel);
+  drawConnectorShadowRegion(anchorPosition, lastAnchorPosition,
+                            lastLabelPosition, newLabel);
+
+  drawer->drawElementVector(positions);
+}
+
+void ConstraintUpdater::clear()
+{
+  drawer->clear();
+}
+
+void ConstraintUpdater::useConnectorShadowRegion(bool enable)
+{
+  isConnectorShadowRegionEnabled = enable;
+}
+
+void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
+                                              Eigen::Vector2i lastLabelPosition,
+                                              Eigen::Vector2i lastLabelSize,
+                                              const polygon &newLabel)
+{
   polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
   polygon oldLabelExtruded(oldLabel);
@@ -153,12 +182,15 @@ void ConstraintUpdater::drawConstraintRegionFor(
   polygon oldLabelExtrudedConvexHull;
   boost::geometry::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
 
-  int border = 2;
-  polygon newLabel = createBoxPolygon(
-      Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
-
-  positions.clear();
   convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
+}
+
+void ConstraintUpdater::drawConnectorShadowRegion(
+    Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
+    Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
+{
+  if (!isConnectorShadowRegionEnabled)
+    return;
 
   polygon connectorPolygon;
   Eigen::Vector2i throughLastAnchor =
@@ -172,13 +204,6 @@ void ConstraintUpdater::drawConstraintRegionFor(
   connectorPolygon.outer().push_back(lastLabelPosition);
 
   convolveTwoPolygons(connectorPolygon, newLabel);
-
-  drawer->drawElementVector(positions);
-}
-
-void ConstraintUpdater::clear()
-{
-  drawer->clear();
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)

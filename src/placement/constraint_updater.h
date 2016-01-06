@@ -48,13 +48,24 @@ class ConstraintUpdater
                                Eigen::Vector2i lastLabelSize);
 
   void clear();
+  void useConnectorShadowRegion(bool enable);
 
  private:
   std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
+  bool isConnectorShadowRegionEnabled = true;
 
   std::vector<float> positions;
+
+  void drawConnectorShadowRegion(Eigen::Vector2i anchorPosition,
+                                 Eigen::Vector2i lastAnchorPosition,
+                                 Eigen::Vector2i lastLabelPosition,
+                                 const polygon &newLabel);
+  void drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
+                             Eigen::Vector2i lastLabelPosition,
+                             Eigen::Vector2i lastLabelSize,
+                             const polygon &newLabel);
 
   template <typename edge>
   void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
