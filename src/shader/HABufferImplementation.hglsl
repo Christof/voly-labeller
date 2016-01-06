@@ -61,19 +61,18 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 #endif
 
 coherent uniform
-    uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *u_Counts;            // auxiliary counters
-coherent uniform FragmentData *u_FragmentData;  // RGBA color of fragments
+    uint64_t *records;  // all fragment records (<depth|pointer> pairs)
+coherent uniform uint32_t *counters;            // auxiliary counters
+coherent uniform FragmentData *fragmentData;  // RGBA color of fragments
 
 // global variable for temporary pointers
 coherent uint64_t *recordsPtr;
 coherent uint32_t *countsPtr;
 
-uniform uint u_NumRecords;
-uniform uint u_ScreenSz;
-uniform uint u_HashSz;
+uniform uint screenSize;
+uniform uint tableSize;
 
-uniform uvec2 u_Offsets[256];
+uniform uvec2 offsets[256];
 
 vec4 RGBA(uint32_t rgba)
 {
@@ -100,11 +99,11 @@ vec4 RGBA(uint32_t rgba)
 
 uint64_t Saddr(uvec2 l)
 {
-  return uint64_t(l.x + l.y * u_ScreenSz);
+  return uint64_t(l.x + l.y * screenSize);
 }
 uint64_t Haddr(uvec2 l)
 {
-  return uint64_t(l.x + l.y * u_HashSz);
+  return uint64_t(l.x + l.y * tableSize);
 }
 
 // -------------------------------------------------
@@ -117,15 +116,15 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
   uint age = 1u;
   uint64_t key_info = HA_PACK_DATA(age, depth, data);
 
-  countsPtr = u_Counts + Saddr(ij);
+  countsPtr = counters + Saddr(ij);
 
   while (true)
   {
 
-    uvec2 l = (ij + u_Offsets[age]);
-    uint64_t h = Haddr(l % uvec2(u_HashSz));
+    uvec2 l = (ij + offsets[age]);
+    uint64_t h = Haddr(l % uvec2(tableSize));
 
-    recordsPtr = u_Records + h;
+    recordsPtr = records + h;
 #ifdef GL_NV_shader_atomic_int64
     uint64_t old = atomicMax(recordsPtr, key_info);
 #else
@@ -148,9 +147,9 @@ bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
         // -> evict
         age = uint32_t(old >> uint64_t(32 + 24));
         // recompute coordinates from offset
-        ij = uvec2((l + uvec2(u_HashSz)) - u_Offsets[age]) % uvec2(u_HashSz);
+        ij = uvec2((l + uvec2(tableSize)) - offsets[age]) % uvec2(tableSize);
 
-        countsPtr = u_Counts + Saddr(ij);
+        countsPtr = counters + Saddr(ij);
 
         // reinsert evicted key
         key_info = old;

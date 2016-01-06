@@ -88,7 +88,7 @@ class HABuffer
 
   unsigned int habufferScreenSize = 0;
   unsigned int habufferTableSize = 0;
-  uint habufferNumRecords = 0;
+  uint tableElementCount = 0;
   uint habufferCountsSize = 0;
 
   Buffer recordsBuffer;

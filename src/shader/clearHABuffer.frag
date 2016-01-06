@@ -2,13 +2,11 @@
 #extension GL_NV_gpu_shader5 : enable
 
 coherent uniform
-    uint64_t *u_Records;  // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *u_Counts;  // auxiliary counters
+    uint64_t *records;  // all fragment records (<depth|pointer> pairs)
+coherent uniform uint32_t *counters;  // auxiliary counters
 
-uniform uint u_NumRecords;
-uniform uint u_ScreenSz;
-
-in vec4 u_Pos;
+uniform uint tableElementCount;
+uniform uint screenSize;
 
 void main()
 {
@@ -20,18 +18,18 @@ void main()
 
   // Hashed-lists
   // clear all records
-  for (uint o = ij.x + ij.y * u_ScreenSz; o < u_NumRecords;
-       o += u_ScreenSz * u_ScreenSz)
+  for (uint o = ij.x + ij.y * screenSize; o < tableElementCount;
+       o += screenSize * screenSize)
   {
-    u_Records[o] = uint64_t(0);
+    records[o] = uint64_t(0);
   }
 
   // clear max age table (max age = 0)
-  u_Counts[ij.x + ij.y * u_ScreenSz] = 0u;
+  counters[ij.x + ij.y * screenSize] = 0u;
 
   if (ij.x == 0 && ij.y == 0)
   {
-    u_Counts[u_ScreenSz * u_ScreenSz] = uint32_t(0);
+    counters[screenSize * screenSize] = uint32_t(0);
   }
 
   discard;
