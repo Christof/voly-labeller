@@ -58,6 +58,15 @@ class ConstraintUpdater
 
   std::vector<float> positions;
 
+  void drawConnectorShadowRegion(Eigen::Vector2i anchorPosition,
+                                 Eigen::Vector2i lastAnchorPosition,
+                                 Eigen::Vector2i lastLabelPosition,
+                                 const polygon &newLabel);
+  void drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
+                             Eigen::Vector2i lastLabelPosition,
+                             Eigen::Vector2i lastLabelSize,
+                             const polygon &newLabel);
+
   template <typename edge>
   void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
   template <typename itrT1, typename itrT2>
