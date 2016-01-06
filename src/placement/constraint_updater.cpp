@@ -160,18 +160,21 @@ void ConstraintUpdater::drawConstraintRegionFor(
   positions.clear();
   convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
 
-  polygon connectorPolygon;
-  Eigen::Vector2i throughLastAnchor =
-      anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
-  Eigen::Vector2i throughLastLabel =
-      anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
+  if (isConnectorShadowRegionEnabled)
+  {
+    polygon connectorPolygon;
+    Eigen::Vector2i throughLastAnchor =
+        anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
+    Eigen::Vector2i throughLastLabel =
+        anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
 
-  connectorPolygon.outer().push_back(lastAnchorPosition);
-  connectorPolygon.outer().push_back(throughLastAnchor);
-  connectorPolygon.outer().push_back(throughLastLabel);
-  connectorPolygon.outer().push_back(lastLabelPosition);
+    connectorPolygon.outer().push_back(lastAnchorPosition);
+    connectorPolygon.outer().push_back(throughLastAnchor);
+    connectorPolygon.outer().push_back(throughLastLabel);
+    connectorPolygon.outer().push_back(lastLabelPosition);
 
-  convolveTwoPolygons(connectorPolygon, newLabel);
+    convolveTwoPolygons(connectorPolygon, newLabel);
+  }
 
   drawer->drawElementVector(positions);
 }
@@ -179,6 +182,11 @@ void ConstraintUpdater::drawConstraintRegionFor(
 void ConstraintUpdater::clear()
 {
   drawer->clear();
+}
+
+void ConstraintUpdater::useConnectorShadowRegion(bool enable)
+{
+  isConnectorShadowRegionEnabled = enable;
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
