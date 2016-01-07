@@ -34,6 +34,7 @@ class LabelState
 
   Eigen::Vector2f anchorPosition2D;
   Eigen::Vector2f labelPosition2D;
+  Eigen::Vector2f placementPosition2D;
   float labelPositionDepth;
 
   std::string text;
