@@ -196,23 +196,29 @@ void Scene::render()
 
 void Scene::updateLabelling()
 {
-  /*
-  auto newPositions = forcesLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-      */
   persistentConstraintUpdater->clear();
-  std::map<int, Eigen::Vector3f> newPositions;
+  std::map<int, Eigen::Vector3f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
   {
     if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
     {
       auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
-      newPositions.insert(newPositionsForLayer.begin(),
-                          newPositionsForLayer.end());
+      placementPositions.insert(newPositionsForLayer.begin(),
+                                newPositionsForLayer.end());
     }
 
     layerIndex++;
+  }
+
+  auto camera = getCamera();
+  LabellerFrameData frameData(frameTime, camera->getProjectionMatrix(),
+                              camera->getViewMatrix());
+  auto newPositions = forcesLabeller->update(frameData, placementPositions);
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    labelNode->labelPosition = newPositions[labelNode->label.id];
   }
 
   auto centerWithLabelIds = clustering.getCentersWithLabelIds();

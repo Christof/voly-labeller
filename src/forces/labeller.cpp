@@ -19,6 +19,7 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
   addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
+  addForce(new PlacementForce());
 
   unsubscribeLabelChanges = labels->subscribe(std::bind(
       &Labeller::setLabel, this, std::placeholders::_1, std::placeholders::_2));
@@ -71,7 +72,8 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
 }
 
 std::map<int, Eigen::Vector3f>
-Labeller::update(const LabellerFrameData &frameData)
+Labeller::update(const LabellerFrameData &frameData,
+                 std::map<int, Eigen::Vector3f> placementPositions)
 {
   std::map<int, Eigen::Vector3f> positions;
 
@@ -88,6 +90,9 @@ Labeller::update(const LabellerFrameData &frameData)
     auto label2D = frameData.project(label.labelPosition);
     label.labelPosition2D = label2D.head<2>();
     label.labelPositionDepth = label2D.z();
+    if (placementPositions.count(label.id))
+      label.placementPosition2D =
+          frameData.project(placementPositions[label.id]).head<2>();
 
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
