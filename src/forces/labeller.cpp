@@ -84,15 +84,14 @@ Labeller::update(const LabellerFrameData &frameData,
 
   for (auto &label : labelStates)
   {
-    auto anchor2D = frameData.project(label.anchorPosition);
-    label.anchorPosition2D = anchor2D.head<2>();
+    label.anchorPosition2D = frameData.project2d(label.anchorPosition);
 
     auto label2D = frameData.project(label.labelPosition);
     label.labelPosition2D = label2D.head<2>();
     label.labelPositionDepth = label2D.z();
     if (placementPositions.count(label.id))
       label.placementPosition2D =
-          frameData.project(placementPositions[label.id]).head<2>();
+          frameData.project2d(placementPositions[label.id]);
 
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
