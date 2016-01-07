@@ -8,6 +8,7 @@
 #include "./anchor_force.h"
 #include "./label_collision_force.h"
 #include "./lines_crossing_force.h"
+#include "./placement_force.h"
 
 namespace Forces
 {
