@@ -32,6 +32,11 @@ class LabellerFrameData
 
     return projected.head<3>() / projected.w();
   }
+
+  Eigen::Vector2f project2d(Eigen::Vector3f vector) const
+  {
+    return project(vector).head<2>();
+  }
 };
 
 #endif  // SRC_LABELLING_LABELLER_FRAME_DATA_H_
