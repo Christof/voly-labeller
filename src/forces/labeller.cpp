@@ -93,8 +93,11 @@ Labeller::update(const LabellerFrameData &frameData,
     for (auto &force : forces)
       forceOnLabel += force->calculateForce(label, labelStates, frameData);
 
-    if (updatePositions)
-      label.labelPosition2D += forceOnLabel * frameData.frameTime;
+    if (updatePositions && forceOnLabel.norm() > epsilon)
+    {
+      auto delta = forceOnLabel * frameData.frameTime;
+      label.labelPosition2D += delta;
+    }
 
     Eigen::Vector4f reprojected =
         inverseViewProjection * Eigen::Vector4f(label.labelPosition2D.x(),

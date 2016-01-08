@@ -56,6 +56,8 @@ class Labeller
   void setLabel(Labels::Action action, const Label &label);
 
   Eigen::Vector2f size;
+
+  float epsilon = 0.05f;
 };
 }  // namespace Forces
 
