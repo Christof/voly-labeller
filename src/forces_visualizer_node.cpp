@@ -7,11 +7,6 @@ ForcesVisualizerNode::ForcesVisualizerNode(
   : labeller(labeller)
 {
   persistable = false;
-
-  connector = std::make_shared<Graphics::Connector>(Eigen::Vector3f(0, 0, 0),
-                                                    Eigen::Vector3f(1, 0, 0));
-  connector->color = Eigen::Vector4f(1.0f, 0.8f, 0, 1);
-  connector->zOffset = -0.02f;
 }
 
 void ForcesVisualizerNode::render(Graphics::Gl *gl,
@@ -22,14 +17,24 @@ void ForcesVisualizerNode::render(Graphics::Gl *gl,
   {
     for (auto &forcePair : label.forces)
     {
-      connector->color.head<3>() = forcePair.first->color;
-      renderForce(label.labelPosition2D, forcePair.second, gl, managers,
-                  renderData);
+      auto force = forcePair.first;
+      if (!connectors.count(force->name))
+      {
+        auto connector = std::make_shared<Graphics::Connector>(
+            Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(1, 0, 0));
+        connector->zOffset = -0.02f;
+        connector->color.head<3>() = forcePair.first->color;
+        connectors[force->name] = connector;
+      }
+
+      renderForce(connectors[force->name], label.labelPosition2D,
+                  forcePair.second, gl, managers, renderData);
     }
   }
 }
 
 void ForcesVisualizerNode::renderForce(
+    std::shared_ptr<Graphics::Connector> connector,
     Eigen::Vector2f labelPosition, Eigen::Vector2f force, Graphics::Gl *gl,
     std::shared_ptr<Graphics::Managers> managers, RenderData renderData)
 {
