@@ -5,7 +5,7 @@
 namespace Forces
 {
 
-PlacementForce::PlacementForce() : Force("Placement", 2.0f)
+PlacementForce::PlacementForce() : Force("Placement", 4.0f)
 {
 }
 
