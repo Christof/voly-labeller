@@ -6,6 +6,8 @@
 #include <boost/serialization/nvp.hpp>
 #include <string>
 
+class LabellerFrameData;
+
 /**
  * \brief Holds basic data of a label: id, text, anchor position
  *
@@ -32,6 +34,7 @@ struct Label
 
   bool operator!=(const Label &other) const;
 
+  bool isAnchorInsideFieldOfView(const LabellerFrameData &frameData) const;
 };
 
 namespace boost

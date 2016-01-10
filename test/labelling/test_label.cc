@@ -1,5 +1,6 @@
 #include "../test.h"
 #include "../../src/labelling/label.h"
+#include "../../src/labelling/labeller_frame_data.h"
 
 TEST(Test_Label, EqualityIsDeterminedByIdTextAnchorPositionAndSize)
 {
@@ -27,3 +28,22 @@ TEST(Test_Label, EqualityIsDeterminedByIdTextAnchorPositionAndSize)
   EXPECT_FALSE(label1 == label5);
   EXPECT_TRUE(label1 != label5);
 }
+
+TEST(Test_Label, IsAnchorInsideFieldOfViewForPositiveCase)
+{
+  Label label(0, "Label 0", Eigen::Vector3f(0, 0, -1));
+
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(), Eigen::Matrix4f::Identity());
+
+  EXPECT_TRUE(label.isAnchorInsideFieldOfView(frameData));
+}
+
+TEST(Test_Label, IsAnchorInsideFieldOfViewForNegativeCase)
+{
+  Label label(0, "Label 0", Eigen::Vector3f(-10, 10, 1));
+
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(), Eigen::Matrix4f::Identity());
+
+  EXPECT_FALSE(label.isAnchorInsideFieldOfView(frameData));
+}
+
