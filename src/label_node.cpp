@@ -8,6 +8,7 @@
 #include "./graphics/shader_program.h"
 #include "./importer.h"
 #include "./math/eigen.h"
+#include "./labelling/labeller_frame_data.h"
 
 LabelNode::LabelNode(Label label) : label(label)
 {
@@ -31,6 +32,10 @@ void LabelNode::render(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData)
 {
+  if (!label.isAnchorInsideFieldOfView(LabellerFrameData(
+          0, renderData.projectionMatrix, renderData.viewMatrix)))
+    return;
+
   if (textureId == -1 || textureText != label.text)
   {
     initialize(gl, managers);
@@ -45,6 +50,10 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    std::shared_ptr<Graphics::Managers> managers,
                                    RenderData renderData)
 {
+  if (!label.isAnchorInsideFieldOfView(LabellerFrameData(
+          0, renderData.projectionMatrix, renderData.viewMatrix)))
+    return;
+
   if (textureId == -1 || textureText != label.text)
   {
     initialize(gl, managers);
