@@ -259,9 +259,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 
 void main()
 {
-  if (gl_SampleMaskIn[0] == 0)
-    discard;
-
   vec2 pos = (fragmentInputPosition.xy * 0.5 + 0.5) * float(screenSize);
 
   if (pos.x >= screenSize || pos.y >= screenSize || pos.x < 0 || pos.y < 0)
