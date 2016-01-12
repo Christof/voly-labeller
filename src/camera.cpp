@@ -132,6 +132,11 @@ Eigen::Vector3f Camera::getPosition()
   return position;
 }
 
+float Camera::getRadius()
+{
+  return (position - origin).norm();
+}
+
 void Camera::resize(float width, float height)
 {
   aspectRatio = width / height;

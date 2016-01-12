@@ -9,7 +9,7 @@ CameraRotationController::CameraRotationController(Camera &camera)
 
 void CameraRotationController::update(Eigen::Vector2f diff)
 {
-  double scaling = frameTime * speedFactor / camera.getPosition().norm();
+  double scaling = frameTime * speedFactor / camera.getRadius();
   Eigen::Vector2f delta = scaling * diff;
 
   camera.changeAzimuth(atan(delta.x()));

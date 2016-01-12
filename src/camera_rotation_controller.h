@@ -22,7 +22,7 @@ class CameraRotationController : public MouseDraggingController
 
  private:
   Camera &camera;
-  double speedFactor = 0.5;
+  double speedFactor = 0.04;
 };
 
 #endif  // SRC_CAMERA_ROTATION_CONTROLLER_H_

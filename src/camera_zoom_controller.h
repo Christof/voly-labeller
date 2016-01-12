@@ -27,7 +27,7 @@ class CameraZoomController : public MouseDraggingController
 
  private:
   Camera &camera;
-  double speedFactor = 1;
+  double speedFactor = 0.1;
 };
 
 #endif  // SRC_CAMERA_ZOOM_CONTROLLER_H_
