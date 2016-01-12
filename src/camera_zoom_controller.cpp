@@ -20,7 +20,7 @@ void CameraZoomController::wheelZoom(QEvent *event)
 {
   QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
 
-  double scaling = -0.02f * frameTime * speedFactor;
+  double scaling = -0.02f * frameTime * speedFactor * camera.getRadius();
   float delta = scaling * wheelEvent->angleDelta().y();
 
   camera.changeRadius(delta);
