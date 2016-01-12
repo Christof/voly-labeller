@@ -44,8 +44,8 @@ make
 ```
 
 # Dependencies
-- Qt5
-- OpenGL 4.3
+- Qt5.5
+- OpenGL 4.5
 - Eigen3
 - Assimp
 - Boost 1.59
