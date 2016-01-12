@@ -229,15 +229,15 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
         activeObjectCount, startPos_eye);
 
     // sample accumulation
-    fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.w);
+    fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
-    if (fragmentColor.w > alphaThresholdForDepth)
+    if (fragmentColor.a > alphaThresholdForDepth)
     {
       setPositionAndDepth(startPos_eye);
     }
 
     // early ray termination
-    if (fragmentColor.w > 0.999)
+    if (fragmentColor.a > 0.999)
       break;
 
     startPos_eye += step_eye;
