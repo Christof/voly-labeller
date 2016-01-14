@@ -277,7 +277,7 @@ void main()
   if (maxAge == 0)
     discard;  // no fragment, early exit
 
-  vec4 farPlane = vec4(0, 0, 1, depthCutOff);
+  vec4 farPlane = vec4(viewMatrix[2][0], viewMatrix[2][1], viewMatrix[2][2], depthCutOff);
 
   int activeObjects = 0;
   FragmentData currentFragment;
