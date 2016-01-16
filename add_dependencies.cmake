@@ -53,7 +53,7 @@ find_package(Boost 1.59.0 COMPONENTS date_time timer filesystem system serializa
 include_directories(${Boost_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Boost_LIBRARIES})
 
-FIND_PACKAGE (ITK 4.5 REQUIRED)
+find_package(ITK 4.5 REQUIRED)
 include(${ITK_USE_FILE})
 add_definitions("-DVCL_CAN_STATIC_CONST_INIT_FLOAT=0")
 add_definitions("-DVCL_NEEDS_INLINE_INSTANTIATION=0")
@@ -61,6 +61,8 @@ list(APPEND LIBRARIES ${ITK_LIBRARIES})
 
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 include_directories(${ImageMagick_INCLUDE_DIRS})
+add_definitions("-DMAGICKCORE_QUANTUM_DEPTH=32")
+add_definitions("-DMAGICKCORE_HDRI_ENABLE=1")
 list(APPEND LIBRARIES ${ImageMagick_LIBRARIES})
 
 #  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
