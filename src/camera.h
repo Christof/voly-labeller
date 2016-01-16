@@ -15,11 +15,11 @@ class Camera
   Camera();
   virtual ~Camera();
 
-  Eigen::Matrix4f getProjectionMatrix();
-  Eigen::Matrix4f getViewMatrix();
-  Eigen::Vector3f getPosition();
-  Eigen::Vector3f getOrigin();
-  float getRadius();
+  Eigen::Matrix4f getProjectionMatrix() const;
+  Eigen::Matrix4f getViewMatrix() const;
+  Eigen::Vector3f getPosition() const;
+  Eigen::Vector3f getOrigin() const;
+  float getRadius() const;
 
   void moveForward(float distance);
   void moveBackward(float distance);

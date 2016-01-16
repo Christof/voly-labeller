@@ -9,6 +9,8 @@ Camera::Camera()
 {
   projection = createProjection(fieldOfView, aspectRatio, near, far);
   // projection = createOrthographicProjection(aspectRatio, near, far);
+
+  update();
 }
 
 Camera::~Camera()
@@ -107,10 +109,7 @@ void Camera::update()
   float upDeclination = declination - M_PI / 2.0f;
   up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
                         sin(azimuth) * cos(upDeclination)).normalized();
-}
 
-Eigen::Matrix4f Camera::getViewMatrix()
-{
   auto n = direction.normalized();
   auto u = up.cross(n).normalized();
   auto v = n.cross(u);
@@ -118,26 +117,29 @@ Eigen::Matrix4f Camera::getViewMatrix()
 
   view << u.x(), u.y(), u.z(), u.dot(e), v.x(), v.y(), v.z(), v.dot(e), n.x(),
       n.y(), n.z(), n.dot(e), 0, 0, 0, 1;
+}
 
+Eigen::Matrix4f Camera::getViewMatrix() const
+{
   return view;
 }
 
-Eigen::Matrix4f Camera::getProjectionMatrix()
+Eigen::Matrix4f Camera::getProjectionMatrix() const
 {
   return projection;
 }
 
-Eigen::Vector3f Camera::getPosition()
+Eigen::Vector3f Camera::getPosition() const
 {
   return position;
 }
 
-Eigen::Vector3f Camera::getOrigin()
+Eigen::Vector3f Camera::getOrigin() const
 {
   return origin;
 }
 
-float Camera::getRadius()
+float Camera::getRadius() const
 {
   return (position - origin).norm();
 }
