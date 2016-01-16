@@ -20,7 +20,6 @@ class Camera
   Eigen::Vector3f getPosition();
   float getRadius();
 
- public:
   void moveForward(float distance);
   void moveBackward(float distance);
   void strafeLeft(float distance);
@@ -35,6 +34,7 @@ class Camera
   void resize(float width, float height);
 
   void updateNearAndFarPlanes(float near, float far);
+
  private:
   float near = 0.1f;
   float far = 5.0f;
