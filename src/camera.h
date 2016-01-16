@@ -18,6 +18,7 @@ class Camera
   Eigen::Matrix4f getProjectionMatrix();
   Eigen::Matrix4f getViewMatrix();
   Eigen::Vector3f getPosition();
+  Eigen::Vector3f getOrigin();
   float getRadius();
 
   void moveForward(float distance);

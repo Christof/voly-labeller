@@ -132,6 +132,11 @@ Eigen::Vector3f Camera::getPosition()
   return position;
 }
 
+Eigen::Vector3f Camera::getOrigin()
+{
+  return origin;
+}
+
 float Camera::getRadius()
 {
   return (position - origin).norm();
