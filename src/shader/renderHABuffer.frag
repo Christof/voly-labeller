@@ -310,13 +310,13 @@ void main()
     vec4 segmentStartPos_eye = endPos_eye;
     float startDistance = endDistance;
     vec4 fragmentColor = currentFragment.color;
-    fragmentColor.rgb *= fragmentColor.w;
+    fragmentColor.rgb *= fragmentColor.a;
 
     int objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
     int activeObjectCount = bitCount(activeObjects);
 
-    if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth)
+    if (objectId == 0 && fragmentColor.a > alphaThresholdForDepth)
     {
       gl_FragDepth = fromEyeToNdcSpace(currentFragment.eyePos).z;
     }
