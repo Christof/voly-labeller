@@ -13,6 +13,8 @@
 Nodes::Nodes()
 {
   addNode(std::make_shared<CoordinateSystemNode>());
+  cameraNode = std::make_shared<CameraNode>();
+  addNode(cameraNode);
 }
 
 Nodes::~Nodes()
