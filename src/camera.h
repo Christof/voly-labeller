@@ -13,6 +13,8 @@ class Camera
 {
  public:
   Camera();
+  Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
+         Eigen::Vector3f origin);
   virtual ~Camera();
 
   Eigen::Matrix4f getProjectionMatrix() const;

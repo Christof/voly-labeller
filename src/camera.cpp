@@ -2,6 +2,8 @@
 #include <Eigen/Geometry>
 #include <math.h>
 
+#include <iostream>
+
 Camera::Camera()
   : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
     radius(1.0f), azimuth(-M_PI / 2.0f), declination(0),
@@ -11,6 +13,21 @@ Camera::Camera()
   // projection = createOrthographicProjection(aspectRatio, near, far);
 
   update();
+}
+
+Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
+               Eigen::Vector3f origin)
+  : projection(projectionMatrix), view(viewMatrix), origin(origin)
+{
+  position = viewMatrix.col(3).head<3>();
+  direction = viewMatrix.col(2).head<3>();
+  up = viewMatrix.col(1).head<3>();
+
+  radius = (position - origin).norm();
+
+  Eigen::Vector3f diff = position - origin;
+  declination = asin(diff.y());
+  azimuth = -acos(diff.x() / cos(declination));
 }
 
 Camera::~Camera()

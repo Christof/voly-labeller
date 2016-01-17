@@ -1,0 +1,19 @@
+#include "./test.h"
+#include "../src/camera.h"
+
+TEST(Test_Camera, ConstructorFromMatrices)
+{
+  Camera expected;
+
+  Camera camera(expected.getViewMatrix(), expected.getProjectionMatrix(),
+                expected.getOrigin());
+
+
+  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
+  EXPECT_NEAR(expected.getRadius(), camera.getRadius(), 1e-5f);
+
+  // just to recalculate the view matrix from the angles and test them
+  camera.changeAzimuth(0);
+
+  EXPECT_Matrix4f_NEAR(expected.getViewMatrix(), camera.getViewMatrix(), 1e-5f);
+}
