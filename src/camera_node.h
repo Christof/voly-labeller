@@ -38,6 +38,14 @@ class CameraNode : public Node
 
  private:
   Camera camera;
+
+  friend class boost::serialization::access;
+  template <class Archive>
+  void serialize(Archive &ar, unsigned int version) const
+  {
+    boost::serialization::void_cast_register<CameraNode, Node>(
+        static_cast<CameraNode *>(NULL), static_cast<Node *>(NULL));
+  };
 };
 
 namespace boost

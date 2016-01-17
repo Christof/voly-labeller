@@ -6,11 +6,13 @@
 #include "./mesh_node.h"
 #include "./label_node.h"
 #include "./volume_node.h"
+#include "./camera_node.h"
 #include "./utils/persister.h"
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
 BOOST_CLASS_EXPORT_GUID(VolumeNode, "VolumeNode")
+BOOST_CLASS_EXPORT_GUID(CameraNode, "CameraNode")
 
 DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
                                          std::shared_ptr<Labels> labels)
