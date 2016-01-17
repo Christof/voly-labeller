@@ -35,7 +35,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
-      std::make_shared<CameraControllers>(invokeManager, camera);
+      std::make_shared<CameraControllers>(invokeManager, getCamera());
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
@@ -109,6 +109,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   this->frameTime = frameTime;
   cameraControllers->update(frameTime);
 
+  Camera &camera = getCamera();
   frustumOptimizer.update(camera.getViewMatrix());
   camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                 frustumOptimizer.getFar());
@@ -128,6 +129,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
+  Camera &camera = getCamera();
   if (shouldResize)
   {
     camera.resize(width, height);
@@ -256,6 +258,7 @@ void Scene::resize(int width, int height)
 RenderData Scene::createRenderData()
 {
   RenderData renderData;
+  auto camera = getCamera();
   renderData.projectionMatrix = camera.getProjectionMatrix();
   renderData.viewMatrix = camera.getViewMatrix();
   renderData.cameraPosition = camera.getPosition();
@@ -279,5 +282,10 @@ void Scene::enableBufferDebuggingViews(bool enable)
 void Scene::enableConstraingOverlay(bool enable)
 {
   showConstraintOverlay = enable;
+}
+
+Camera &Scene::getCamera()
+{
+  return camera;
 }
 
