@@ -19,6 +19,8 @@ class CameraNode : public Node
   CameraNode() = default;
   CameraNode(Camera camera);
 
+  Camera &getCamera();
+
   virtual void render(Graphics::Gl *gl,
                       std::shared_ptr<Graphics::Managers> managers,
                       RenderData renderData);
@@ -33,6 +35,7 @@ class CameraNode : public Node
     ar << BOOST_SERIALIZATION_NVP(projectionMatrix);
     ar << BOOST_SERIALIZATION_NVP(origin);
   };
+
  private:
   Camera camera;
 };

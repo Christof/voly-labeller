@@ -10,3 +10,7 @@ void CameraNode::render(Graphics::Gl *gl,
 {
 }
 
+Camera &CameraNode::getCamera()
+{
+  return camera;
+}
