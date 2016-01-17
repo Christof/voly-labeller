@@ -54,7 +54,6 @@ class Scene : public AbstractScene
   void enableConstraingOverlay(bool enable);
 
  private:
-  Camera camera;
   std::shared_ptr<CameraControllers> cameraControllers;
   double frameTime;
 

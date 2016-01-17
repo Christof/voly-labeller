@@ -12,6 +12,7 @@
 #include "./graphics/buffer_drawer.h"
 #include "./camera_controllers.h"
 #include "./nodes.h"
+#include "./camera_node.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
@@ -286,6 +287,6 @@ void Scene::enableConstraingOverlay(bool enable)
 
 Camera &Scene::getCamera()
 {
-  return camera;
+  return nodes->getCameraNode()->getCamera();
 }
 
