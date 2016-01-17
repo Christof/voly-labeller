@@ -71,7 +71,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
   {
     std::shared_ptr<CameraNode> camera =
         std::dynamic_pointer_cast<CameraNode>(node);
-    if (cameraNode.get())
+    if (camera.get())
       cameraNode = camera;
 
     addNode(node);
