@@ -1,13 +1,12 @@
 #include "./test.h"
 #include "../src/camera.h"
 
-TEST(Test_Camera, ConstructorFromMatrices)
+TEST(Test_Camera, ConstructorFromMatricesWithDefaultValues)
 {
   Camera expected;
 
   Camera camera(expected.getViewMatrix(), expected.getProjectionMatrix(),
                 expected.getOrigin());
-
 
   EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
   EXPECT_NEAR(expected.getRadius(), camera.getRadius(), 1e-5f);
@@ -16,4 +15,28 @@ TEST(Test_Camera, ConstructorFromMatrices)
   camera.changeAzimuth(0);
 
   EXPECT_Matrix4f_NEAR(expected.getViewMatrix(), camera.getViewMatrix(), 1e-5f);
+  EXPECT_Matrix4f_NEAR(expected.getProjectionMatrix(),
+                       camera.getProjectionMatrix(), 1e-5f);
+  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
 }
+
+TEST(Test_Camera, ConstructorFromMatricesAfterRotation)
+{
+  Camera expected;
+  expected.changeAzimuth(M_PI * 0.25f);
+
+  Camera camera(expected.getViewMatrix(), expected.getProjectionMatrix(),
+                expected.getOrigin());
+
+  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
+  EXPECT_NEAR(expected.getRadius(), camera.getRadius(), 1e-5f);
+
+  // just to recalculate the view matrix from the angles and test them
+  camera.changeAzimuth(0);
+
+  EXPECT_Matrix4f_NEAR(expected.getViewMatrix(), camera.getViewMatrix(), 1e-5f);
+  EXPECT_Matrix4f_NEAR(expected.getProjectionMatrix(),
+                       camera.getProjectionMatrix(), 1e-5f);
+  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
+}
+
