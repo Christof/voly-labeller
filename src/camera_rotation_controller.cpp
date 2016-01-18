@@ -2,7 +2,8 @@
 #include <QCursor>
 #include "./camera.h"
 
-CameraRotationController::CameraRotationController(std::shared_ptr<Camera> camera)
+CameraRotationController::CameraRotationController(
+    std::shared_ptr<Camera> camera)
   : MouseDraggingController(camera, 0.04)
 {
 }

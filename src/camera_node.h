@@ -18,7 +18,7 @@ class CameraNode : public Node
 {
  public:
   CameraNode();
-  CameraNode(std::shared_ptr<Camera> camera);
+  explicit CameraNode(std::shared_ptr<Camera> camera);
 
   std::shared_ptr<Camera> getCamera();
 
