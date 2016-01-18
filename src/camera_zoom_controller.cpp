@@ -4,11 +4,12 @@
 #include <QWheelEvent>
 #include "./camera.h"
 
-CameraZoomController::CameraZoomController(Camera &camera) : camera(camera)
+CameraZoomController::CameraZoomController(Camera &camera)
+  : MouseDraggingController(camera, 0.1)
 {
 }
 
-void CameraZoomController::update(Eigen::Vector2f diff)
+void CameraZoomController::updateFromDiff(Eigen::Vector2f diff)
 {
   double scaling = frameTime * speedFactor;
   Eigen::Vector2f delta = scaling * diff;
@@ -18,7 +19,7 @@ void CameraZoomController::update(Eigen::Vector2f diff)
 
 void CameraZoomController::wheelZoom(QEvent *event)
 {
-  QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+  QWheelEvent *wheelEvent = static_cast<QWheelEvent *>(event);
 
   double scaling = -0.02f * frameTime * speedFactor * camera.getRadius();
   float delta = scaling * wheelEvent->angleDelta().y();

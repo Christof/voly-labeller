@@ -5,8 +5,9 @@ CameraController::CameraController(Camera &camera) : camera(camera)
 {
 }
 
-void CameraController::setFrameTime(double frameTime)
+void CameraController::update(Camera &camera, double frameTime)
 {
+  this->camera = camera;
   this->frameTime = frameTime;
 }
 

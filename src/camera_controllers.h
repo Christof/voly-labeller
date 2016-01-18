@@ -21,7 +21,7 @@ class CameraControllers
   CameraControllers(std::shared_ptr<InvokeManager> invokeManager,
                     Camera &camera);
 
-  void update(double frameTime);
+  void update(Camera &camera, double frameTime);
 
  private:
   std::shared_ptr<CameraController> cameraController;

@@ -18,7 +18,7 @@ class CameraController : public QObject
  public:
   explicit CameraController(Camera &camera);
 
-  void setFrameTime(double frameTime);
+  void update(Camera &camera, double frameTime);
 
  public slots:
   void moveForward();

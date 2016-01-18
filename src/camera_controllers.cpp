@@ -19,11 +19,11 @@ CameraControllers::CameraControllers(
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 }
 
-void CameraControllers::update(double frameTime)
+void CameraControllers::update(Camera &camera, double frameTime)
 {
-  cameraController->setFrameTime(frameTime);
-  cameraRotationController->setFrameTime(frameTime);
-  cameraZoomController->setFrameTime(frameTime);
-  cameraMoveController->setFrameTime(frameTime);
+  cameraController->update(camera, frameTime);
+  cameraRotationController->update(camera, frameTime);
+  cameraZoomController->update(camera, frameTime);
+  cameraMoveController->update(camera, frameTime);
 }
 

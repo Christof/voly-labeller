@@ -108,7 +108,7 @@ void Scene::cleanup()
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   this->frameTime = frameTime;
-  cameraControllers->update(frameTime);
+  cameraControllers->update(getCamera(), frameTime);
 
   Camera &camera = getCamera();
   frustumOptimizer.update(camera.getViewMatrix());

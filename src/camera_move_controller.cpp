@@ -1,11 +1,12 @@
 #include "./camera_move_controller.h"
 #include "./camera.h"
 
-CameraMoveController::CameraMoveController(Camera &camera) : camera(camera)
+CameraMoveController::CameraMoveController(Camera &camera)
+  : MouseDraggingController(camera, 0.2)
 {
 }
 
-void CameraMoveController::update(Eigen::Vector2f diff)
+void CameraMoveController::updateFromDiff(Eigen::Vector2f diff)
 {
   Eigen::Vector2f delta = -frameTime * speedFactor * diff;
 

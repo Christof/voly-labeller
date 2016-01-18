@@ -1,8 +1,16 @@
 #include "./mouse_dragging_controller.h"
 #include <QMouseEvent>
+#include "./camera.h"
 
-void MouseDraggingController::setFrameTime(double frameTime)
+MouseDraggingController::MouseDraggingController(Camera &camera,
+                                                 double speedFactor)
+    : camera(camera), speedFactor(speedFactor)
 {
+}
+
+void MouseDraggingController::update(Camera &camera, double frameTime)
+{
+  this->camera = camera;
   this->frameTime = frameTime;
 }
 
@@ -24,7 +32,7 @@ void MouseDraggingController::updateDragging(QEvent *event)
 
   Eigen::Vector2f diff = mousePosition - lastMousePosition;
 
-  update(diff);
+  updateFromDiff(diff);
 
   lastMousePosition = mousePosition;
 }

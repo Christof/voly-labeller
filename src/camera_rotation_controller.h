@@ -18,11 +18,7 @@ class CameraRotationController : public MouseDraggingController
   explicit CameraRotationController(Camera &camera);
 
  protected:
-  virtual void update(Eigen::Vector2f diff);
-
- private:
-  Camera &camera;
-  double speedFactor = 0.04;
+  virtual void updateFromDiff(Eigen::Vector2f diff);
 };
 
 #endif  // SRC_CAMERA_ROTATION_CONTROLLER_H_
