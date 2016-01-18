@@ -15,7 +15,7 @@ class Camera;
 class CameraRotationController : public MouseDraggingController
 {
  public:
-  explicit CameraRotationController(Camera &camera);
+  explicit CameraRotationController(std::shared_ptr<Camera> camera);
 
  protected:
   virtual void updateFromDiff(Eigen::Vector2f diff);

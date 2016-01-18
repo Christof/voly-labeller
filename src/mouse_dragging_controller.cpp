@@ -2,13 +2,13 @@
 #include <QMouseEvent>
 #include "./camera.h"
 
-MouseDraggingController::MouseDraggingController(Camera &camera,
+MouseDraggingController::MouseDraggingController(std::shared_ptr<Camera> camera,
                                                  double speedFactor)
     : camera(camera), speedFactor(speedFactor)
 {
 }
 
-void MouseDraggingController::update(Camera &camera, double frameTime)
+void MouseDraggingController::update(std::shared_ptr<Camera> camera, double frameTime)
 {
   this->camera = camera;
   this->frameTime = frameTime;

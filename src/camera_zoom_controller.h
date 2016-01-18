@@ -17,7 +17,7 @@ class CameraZoomController : public MouseDraggingController
   Q_OBJECT
 
  public:
-  explicit CameraZoomController(Camera &camera);
+  explicit CameraZoomController(std::shared_ptr<Camera> camera);
 
  public slots:
   void wheelZoom(QEvent *event);

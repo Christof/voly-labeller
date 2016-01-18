@@ -107,13 +107,14 @@ void Scene::cleanup()
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
-  this->frameTime = frameTime;
-  cameraControllers->update(getCamera(), frameTime);
+  auto camera = getCamera();
 
-  Camera &camera = getCamera();
-  frustumOptimizer.update(camera.getViewMatrix());
-  camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
-                                frustumOptimizer.getFar());
+  this->frameTime = frameTime;
+  cameraControllers->update(camera, frameTime);
+
+  frustumOptimizer.update(camera->getViewMatrix());
+  camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                 frustumOptimizer.getFar());
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
@@ -130,10 +131,10 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
-  Camera &camera = getCamera();
+  auto camera = getCamera();
   if (shouldResize)
   {
-    camera.resize(width, height);
+    camera->resize(width, height);
     fbo->resize(width, height);
     shouldResize = false;
   }
@@ -152,7 +153,7 @@ void Scene::render()
   constraintBufferObject->bind();
 
   placementLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+      frameTime, camera->getProjectionMatrix(), camera->getViewMatrix()));
 
   constraintBufferObject->unbind();
 
@@ -260,9 +261,9 @@ RenderData Scene::createRenderData()
 {
   RenderData renderData;
   auto camera = getCamera();
-  renderData.projectionMatrix = camera.getProjectionMatrix();
-  renderData.viewMatrix = camera.getViewMatrix();
-  renderData.cameraPosition = camera.getPosition();
+  renderData.projectionMatrix = camera->getProjectionMatrix();
+  renderData.viewMatrix = camera->getViewMatrix();
+  renderData.cameraPosition = camera->getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
   renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
@@ -285,7 +286,7 @@ void Scene::enableConstraingOverlay(bool enable)
   showConstraintOverlay = enable;
 }
 
-Camera &Scene::getCamera()
+std::shared_ptr<Camera> Scene::getCamera()
 {
   return nodes->getCameraNode()->getCamera();
 }

@@ -1,6 +1,12 @@
 #include "./camera_node.h"
 
-CameraNode::CameraNode(Camera camera) : camera(camera)
+CameraNode::CameraNode()
+{
+  camera = std::make_shared<Camera>();
+}
+
+CameraNode::CameraNode(std::shared_ptr<Camera> camera)
+  : camera(camera)
 {
 }
 
@@ -10,7 +16,7 @@ void CameraNode::render(Graphics::Gl *gl,
 {
 }
 
-Camera &CameraNode::getCamera()
+std::shared_ptr<Camera> CameraNode::getCamera()
 {
   return camera;
 }

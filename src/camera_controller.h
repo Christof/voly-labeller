@@ -3,7 +3,9 @@
 #define SRC_CAMERA_CONTROLLER_H_
 
 #include <QObject>
-#include "./camera.h"
+#include <memory>
+
+class Camera;
 
 /**
  * \brief Provides slots to control the given camera from
@@ -16,9 +18,9 @@ class CameraController : public QObject
 {
   Q_OBJECT
  public:
-  explicit CameraController(Camera &camera);
+  explicit CameraController(std::shared_ptr<Camera> camera);
 
-  void update(Camera &camera, double frameTime);
+  void update(std::shared_ptr<Camera> camera, double frameTime);
 
  public slots:
   void moveForward();
@@ -31,7 +33,7 @@ class CameraController : public QObject
   void decreaseDeclination();
 
  private:
-  Camera &camera;
+  std::shared_ptr<Camera> camera;
   double cameraSpeed = 10.0f;
   double frameTime;
 };

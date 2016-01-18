@@ -6,7 +6,8 @@
 #include "./camera_move_controller.h"
 
 CameraControllers::CameraControllers(
-    std::shared_ptr<InvokeManager> invokeManager, Camera &camera)
+    std::shared_ptr<InvokeManager> invokeManager,
+    std::shared_ptr<Camera> camera)
 {
   cameraController = std::make_shared<CameraController>(camera);
   cameraRotationController = std::make_shared<CameraRotationController>(camera);
@@ -19,7 +20,7 @@ CameraControllers::CameraControllers(
   invokeManager->addHandler("cameraMove", cameraMoveController.get());
 }
 
-void CameraControllers::update(Camera &camera, double frameTime)
+void CameraControllers::update(std::shared_ptr<Camera> camera, double frameTime)
 {
   cameraController->update(camera, frameTime);
   cameraRotationController->update(camera, frameTime);

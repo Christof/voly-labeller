@@ -85,7 +85,7 @@ class Scene : public AbstractScene
 
   void renderDebuggingViews(const RenderData &renderData);
   RenderData createRenderData();
-  Camera& getCamera();
+  std::shared_ptr<Camera> getCamera();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
 };

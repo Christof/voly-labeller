@@ -3,6 +3,7 @@
 #define SRC_CAMERA_NODE_H_
 
 #include <Eigen/Core>
+#include <memory>
 #include "./node.h"
 #include "./graphics/gl.h"
 #include "./graphics/managers.h"
@@ -16,10 +17,10 @@
 class CameraNode : public Node
 {
  public:
-  CameraNode() = default;
-  CameraNode(Camera camera);
+  CameraNode();
+  CameraNode(std::shared_ptr<Camera> camera);
 
-  Camera &getCamera();
+  std::shared_ptr<Camera> getCamera();
 
   virtual void render(Graphics::Gl *gl,
                       std::shared_ptr<Graphics::Managers> managers,
@@ -27,9 +28,9 @@ class CameraNode : public Node
 
   template <class Archive> void save_construct_data(Archive &ar) const
   {
-    Eigen::Matrix4f viewMatrix = camera.getViewMatrix();
-    Eigen::Matrix4f projectionMatrix = camera.getProjectionMatrix();
-    Eigen::Vector3f origin = camera.getOrigin();
+    Eigen::Matrix4f viewMatrix = camera->getViewMatrix();
+    Eigen::Matrix4f projectionMatrix = camera->getProjectionMatrix();
+    Eigen::Vector3f origin = camera->getOrigin();
 
     ar << BOOST_SERIALIZATION_NVP(viewMatrix);
     ar << BOOST_SERIALIZATION_NVP(projectionMatrix);
@@ -37,7 +38,7 @@ class CameraNode : public Node
   };
 
  private:
-  Camera camera;
+  std::shared_ptr<Camera> camera;
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -71,7 +72,8 @@ inline void load_construct_data(Archive &ar, CameraNode *t,
   Eigen::Vector3f origin;
   ar >> BOOST_SERIALIZATION_NVP(origin);
 
-  ::new (t) CameraNode(Camera(viewMatrix, projectionMatrix, origin));
+  ::new (t) CameraNode(
+      std::make_shared<Camera>(viewMatrix, projectionMatrix, origin));
 }
 }  // namespace serialization
 }  // namespace boost
