@@ -41,6 +41,7 @@ class Nodes : public QObject
   void removeNode(std::shared_ptr<Node> node);
   std::vector<std::shared_ptr<Node>> getNodes();
   std::shared_ptr<CameraNode> getCameraNode();
+  void setCameraNode(std::shared_ptr<CameraNode> node);
 
  public slots:
   void addSceneNodesFrom(std::string filename);

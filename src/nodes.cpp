@@ -58,6 +58,15 @@ std::shared_ptr<CameraNode> Nodes::getCameraNode()
   return cameraNode;
 }
 
+void Nodes::setCameraNode(std::shared_ptr<CameraNode> node)
+{
+  if (cameraNode.get())
+    removeNode(cameraNode);
+
+  cameraNode = node;
+  addNode(node);
+}
+
 void Nodes::addSceneNodesFrom(QUrl url)
 {
   addSceneNodesFrom(url.path().toStdString());
@@ -74,7 +83,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
     std::shared_ptr<CameraNode> camera =
         std::dynamic_pointer_cast<CameraNode>(node);
     if (camera.get())
-      cameraNode = camera;
+      setCameraNode(camera);
 
     addNode(node);
   }
