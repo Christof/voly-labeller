@@ -18,15 +18,15 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
   : projection(projectionMatrix), view(viewMatrix), origin(origin)
 {
-  position = viewMatrix.col(3).head<3>();
+  position = -viewMatrix.inverse().col(3).head<3>();
   direction = viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
 
   radius = (position - origin).norm();
 
-  Eigen::Vector3f diff = position - origin;
+  Eigen::Vector3f diff = (position - origin) / radius;
   declination = asin(diff.y());
-  azimuth = -acos(diff.x() / cos(declination));
+  azimuth = acos(diff.x() / cos(declination));
 }
 
 Camera::~Camera()
