@@ -65,11 +65,13 @@ Eigen::Matrix4f Camera::createOrthographicProjection(float aspectRatio,
 void Camera::moveForward(float distance)
 {
   position += distance * direction;
+  update();
 }
 
 void Camera::moveBackward(float distance)
 {
   position -= distance * direction;
+  update();
 }
 
 void Camera::strafe(float distance)
@@ -77,6 +79,7 @@ void Camera::strafe(float distance)
   auto right = direction.cross(up);
   position += distance * right;
   origin += distance * right;
+  update();
 }
 
 void Camera::strafeLeft(float distance)
@@ -93,6 +96,7 @@ void Camera::moveVertical(float distance)
 {
   position += distance * up;
   origin += distance * up;
+  update();
 }
 
 void Camera::changeAzimuth(float deltaAngle)
