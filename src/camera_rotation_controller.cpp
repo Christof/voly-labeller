@@ -2,17 +2,18 @@
 #include <QCursor>
 #include "./camera.h"
 
-CameraRotationController::CameraRotationController(Camera &camera)
-  : camera(camera)
+CameraRotationController::CameraRotationController(
+    std::shared_ptr<Camera> camera)
+  : MouseDraggingController(camera, 0.04)
 {
 }
 
-void CameraRotationController::update(Eigen::Vector2f diff)
+void CameraRotationController::updateFromDiff(Eigen::Vector2f diff)
 {
-  double scaling = frameTime * speedFactor / camera.getRadius();
+  double scaling = frameTime * speedFactor / camera->getRadius();
   Eigen::Vector2f delta = scaling * diff;
 
-  camera.changeAzimuth(atan(delta.x()));
-  camera.changeDeclination(-atan(delta.y()));
+  camera->changeAzimuth(atan(delta.x()));
+  camera->changeDeclination(-atan(delta.y()));
 }
 

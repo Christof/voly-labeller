@@ -41,6 +41,7 @@ set(SOURCES
   src/volume_node.cpp
   src/forces_visualizer_node.cpp
   src/coordinate_system_node.cpp
+  src/camera_node.cpp
   src/nodes.cpp
   src/abstract_scene.h
   src/scene.cpp

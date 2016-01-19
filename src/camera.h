@@ -13,14 +13,16 @@ class Camera
 {
  public:
   Camera();
+  Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
+         Eigen::Vector3f origin);
   virtual ~Camera();
 
-  Eigen::Matrix4f getProjectionMatrix();
-  Eigen::Matrix4f getViewMatrix();
-  Eigen::Vector3f getPosition();
-  float getRadius();
+  Eigen::Matrix4f getProjectionMatrix() const;
+  Eigen::Matrix4f getViewMatrix() const;
+  Eigen::Vector3f getPosition() const;
+  Eigen::Vector3f getOrigin() const;
+  float getRadius() const;
 
- public:
   void moveForward(float distance);
   void moveBackward(float distance);
   void strafeLeft(float distance);
@@ -35,6 +37,9 @@ class Camera
   void resize(float width, float height);
 
   void updateNearAndFarPlanes(float near, float far);
+
+  bool needsResizing();
+
  private:
   float near = 0.1f;
   float far = 5.0f;
@@ -50,8 +55,8 @@ class Camera
   float azimuth;
   float declination;
 
-  float fieldOfView;
-  float aspectRatio = 16.0f / 9.0f;
+  float fieldOfView = 0.5 * M_PI;
+  float aspectRatio = 0.0f;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);

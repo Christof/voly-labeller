@@ -12,6 +12,7 @@
 #include "./graphics/buffer_drawer.h"
 #include "./camera_controllers.h"
 #include "./nodes.h"
+#include "./camera_node.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
@@ -35,7 +36,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
-      std::make_shared<CameraControllers>(invokeManager, camera);
+      std::make_shared<CameraControllers>(invokeManager, getCamera());
 
   fbo = std::make_shared<Graphics::FrameBufferObject>();
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
@@ -106,12 +107,14 @@ void Scene::cleanup()
 
 void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
-  this->frameTime = frameTime;
-  cameraControllers->update(frameTime);
+  auto camera = getCamera();
 
-  frustumOptimizer.update(camera.getViewMatrix());
-  camera.updateNearAndFarPlanes(frustumOptimizer.getNear(),
-                                frustumOptimizer.getFar());
+  this->frameTime = frameTime;
+  cameraControllers->update(camera, frameTime);
+
+  frustumOptimizer.update(camera->getViewMatrix());
+  camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                 frustumOptimizer.getFar());
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
@@ -128,12 +131,18 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 
 void Scene::render()
 {
+  auto camera = getCamera();
+
   if (shouldResize)
   {
-    camera.resize(width, height);
+    camera->resize(width, height);
     fbo->resize(width, height);
     shouldResize = false;
   }
+
+  if (camera->needsResizing())
+    camera->resize(width, height);
+
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
@@ -149,7 +158,7 @@ void Scene::render()
   constraintBufferObject->bind();
 
   placementLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+      frameTime, camera->getProjectionMatrix(), camera->getViewMatrix()));
 
   constraintBufferObject->unbind();
 
@@ -256,9 +265,10 @@ void Scene::resize(int width, int height)
 RenderData Scene::createRenderData()
 {
   RenderData renderData;
-  renderData.projectionMatrix = camera.getProjectionMatrix();
-  renderData.viewMatrix = camera.getViewMatrix();
-  renderData.cameraPosition = camera.getPosition();
+  auto camera = getCamera();
+  renderData.projectionMatrix = camera->getProjectionMatrix();
+  renderData.viewMatrix = camera->getViewMatrix();
+  renderData.cameraPosition = camera->getPosition();
   renderData.modelMatrix = Eigen::Matrix4f::Identity();
   renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
@@ -279,5 +289,10 @@ void Scene::enableBufferDebuggingViews(bool enable)
 void Scene::enableConstraingOverlay(bool enable)
 {
   showConstraintOverlay = enable;
+}
+
+std::shared_ptr<Camera> Scene::getCamera()
+{
+  return nodes->getCameraNode()->getCamera();
 }
 

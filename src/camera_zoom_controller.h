@@ -17,17 +17,13 @@ class CameraZoomController : public MouseDraggingController
   Q_OBJECT
 
  public:
-  explicit CameraZoomController(Camera &camera);
+  explicit CameraZoomController(std::shared_ptr<Camera> camera);
 
  public slots:
   void wheelZoom(QEvent *event);
 
  protected:
-  virtual void update(Eigen::Vector2f diff);
-
- private:
-  Camera &camera;
-  double speedFactor = 0.1;
+  virtual void updateFromDiff(Eigen::Vector2f diff);
 };
 
 #endif  // SRC_CAMERA_ZOOM_CONTROLLER_H_

@@ -7,11 +7,14 @@
 #include "./mesh_node.h"
 #include "./label_node.h"
 #include "./obb_node.h"
+#include "./camera_node.h"
 #include "./coordinate_system_node.h"
 
 Nodes::Nodes()
 {
   addNode(std::make_shared<CoordinateSystemNode>());
+  cameraNode = std::make_shared<CameraNode>();
+  addNode(cameraNode);
 }
 
 Nodes::~Nodes()
@@ -50,6 +53,20 @@ std::vector<std::shared_ptr<Node>> Nodes::getNodes()
   return nodes;
 }
 
+std::shared_ptr<CameraNode> Nodes::getCameraNode()
+{
+  return cameraNode;
+}
+
+void Nodes::setCameraNode(std::shared_ptr<CameraNode> node)
+{
+  if (cameraNode.get())
+    removeNode(cameraNode);
+
+  cameraNode = node;
+  addNode(node);
+}
+
 void Nodes::addSceneNodesFrom(QUrl url)
 {
   addSceneNodesFrom(url.path().toStdString());
@@ -61,8 +78,15 @@ void Nodes::addSceneNodesFrom(std::string filename)
   auto loadedNodes =
       Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
 
-  for (auto &m : loadedNodes)
-    addNode(m);
+  for (auto &node : loadedNodes)
+  {
+    std::shared_ptr<CameraNode> camera =
+        std::dynamic_pointer_cast<CameraNode>(node);
+    if (camera.get())
+      setCameraNode(camera);
+
+    addNode(node);
+  }
 }
 
 void Nodes::importFrom(std::string filename)

@@ -15,14 +15,10 @@ class Camera;
 class CameraMoveController : public MouseDraggingController
 {
  public:
-  explicit CameraMoveController(Camera &camera);
+  explicit CameraMoveController(std::shared_ptr<Camera> camera);
 
  protected:
-  virtual void update(Eigen::Vector2f diff);
-
- private:
-  Camera &camera;
-  double speedFactor = 0.2;
+  virtual void updateFromDiff(Eigen::Vector2f diff);
 };
 
 #endif  // SRC_CAMERA_MOVE_CONTROLLER_H_

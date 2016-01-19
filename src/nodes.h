@@ -13,6 +13,7 @@
 #include "./graphics/gl.h"
 
 class LabelNode;
+class CameraNode;
 
 /**
  * \brief Manages a collection of nodes which is rendered
@@ -39,6 +40,9 @@ class Nodes : public QObject
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
   void removeNode(std::shared_ptr<Node> node);
   std::vector<std::shared_ptr<Node>> getNodes();
+  std::shared_ptr<CameraNode> getCameraNode();
+  void setCameraNode(std::shared_ptr<CameraNode> node);
+
  public slots:
   void addSceneNodesFrom(std::string filename);
   void addSceneNodesFrom(QUrl url);
@@ -65,6 +69,7 @@ class Nodes : public QObject
   bool showBoundingVolumes = false;
   std::vector<std::shared_ptr<Node>> obbNodes;
   std::shared_ptr<Node> forcesVisualizerNode;
+  std::shared_ptr<CameraNode> cameraNode;
 };
 
 #endif  // SRC_NODES_H_
