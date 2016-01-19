@@ -26,7 +26,7 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
 
   Eigen::Vector3f diff = (position - origin) / radius;
   declination = asin(diff.y());
-  azimuth = acos(diff.x() / cos(declination));
+  azimuth = -acos(diff.x() / cos(declination));
 }
 
 Camera::~Camera()

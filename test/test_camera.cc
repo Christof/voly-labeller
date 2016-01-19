@@ -4,6 +4,7 @@
 TEST(Test_Camera, ConstructorFromMatricesWithDefaultValues)
 {
   Camera expected;
+  expected.resize(1, 1);
 
   Camera camera(expected.getViewMatrix(), expected.getProjectionMatrix(),
                 expected.getOrigin());
@@ -15,14 +16,19 @@ TEST(Test_Camera, ConstructorFromMatricesWithDefaultValues)
   camera.changeAzimuth(0);
 
   EXPECT_Matrix4f_NEAR(expected.getViewMatrix(), camera.getViewMatrix(), 1e-5f);
+  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
+  EXPECT_TRUE(camera.needsResizing());
+
+  camera.resize(1, 1);
+
   EXPECT_Matrix4f_NEAR(expected.getProjectionMatrix(),
                        camera.getProjectionMatrix(), 1e-5f);
-  EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
 }
 
 TEST(Test_Camera, ConstructorFromMatricesAfterRotation)
 {
   Camera expected;
+  expected.resize(1, 1);
   expected.changeAzimuth(M_PI * 0.25f);
 
   Camera camera(expected.getViewMatrix(), expected.getProjectionMatrix(),
@@ -38,5 +44,6 @@ TEST(Test_Camera, ConstructorFromMatricesAfterRotation)
   EXPECT_Matrix4f_NEAR(expected.getProjectionMatrix(),
                        camera.getProjectionMatrix(), 1e-5f);
   EXPECT_Vector3f_NEAR(expected.getPosition(), camera.getPosition(), 1e-5f);
+  EXPECT_TRUE(camera.needsResizing());
 }
 
