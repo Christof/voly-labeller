@@ -14,7 +14,6 @@ QLoggingCategory vmChan("Graphics.VolumeManager");
 
 void VolumeManager::updateStorage(Gl *gl)
 {
-
   qCInfo(vmChan) << "initialize: current texture:" << texture;
 
   if (texture)
@@ -24,7 +23,6 @@ void VolumeManager::updateStorage(Gl *gl)
     volumeAtlasSize = Eigen::Vector3i::Zero();
   }
 
-
   this->gl = gl;
 
   if (volumes.size() == 0)
@@ -33,7 +31,8 @@ void VolumeManager::updateStorage(Gl *gl)
   for (auto iterator = volumes.cbegin(); iterator != volumes.cend();)
   {
     auto volumeSize = iterator->second->getDataSize();
-    qCInfo(vmChan) << "adding volume with size:" << volumeSize.x() << volumeSize.y() << volumeSize.z();
+    qCInfo(vmChan) << "adding volume with size:" << volumeSize.x()
+                   << volumeSize.y() << volumeSize.z();
     volumeAtlasSize.z() += volumeSize.z();
     volumeAtlasSize.x() = std::max(volumeSize.x(), volumeAtlasSize.x());
     volumeAtlasSize.y() = std::max(volumeSize.y(), volumeAtlasSize.y());
