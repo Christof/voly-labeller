@@ -178,3 +178,8 @@ void Camera::updateNearAndFarPlanes(float near, float far)
   projection = createProjection(fieldOfView, aspectRatio, near, far);
 }
 
+bool Camera::needsResizing()
+{
+  return aspectRatio == 0.0f;
+}
+
