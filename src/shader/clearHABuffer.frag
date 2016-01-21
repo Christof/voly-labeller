@@ -10,10 +10,6 @@ uniform uint screenSize;
 
 void main()
 {
-  // Ignore helper pixels
-  if (gl_SampleMaskIn[0] == 0)
-    discard;
-
   uvec2 ij = uvec2(gl_FragCoord.xy);
 
   // Hashed-lists
