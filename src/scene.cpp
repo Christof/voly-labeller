@@ -202,20 +202,17 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-  fbo->bindColorTexture(0, GL_TEXTURE0);
-  auto transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.4, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(quad, transformation.matrix());
-
-  fbo->bindColorTexture(1, GL_TEXTURE0);
-  transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.4, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
-  renderQuad(quad, transformation.matrix());
+  for (int i = 0; i < fbo->getLayerCount(); ++i)
+  {
+    fbo->bindColorTexture(i, GL_TEXTURE0);
+    auto transformation = Eigen::Affine3f(
+        Eigen::Translation3f(Eigen::Vector3f(-0.8 + 0.4 * i, -0.4, 0)) *
+        Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+    renderQuad(quad, transformation.matrix());
+  }
 
   fbo->bindDepthTexture(GL_TEXTURE0);
-  transformation =
+  auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
