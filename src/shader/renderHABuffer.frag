@@ -10,6 +10,10 @@ layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 position;
 layout(location = 2) out vec4 outputColor2;
 layout(location = 3) out vec4 position2;
+layout(location = 4) out vec4 outputColor3;
+layout(location = 5) out vec4 position3;
+layout(location = 6) out vec4 outputColor4;
+layout(location = 7) out vec4 position4;
 layout(depth_any) out float gl_FragDepth;
 
 uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
@@ -19,7 +23,8 @@ uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
-uniform float depthCutOff = 0.0;
+uniform int layerCount = 4;
+uniform vec4 layerCuts = vec4(-0.15, 0, 0.1, 0);
 
 uniform sampler3D volumeSampler;
 
@@ -277,7 +282,9 @@ void main()
   if (maxAge == 0)
     discard;  // no fragment, early exit
 
-  vec4 farPlane = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], depthCutOff);
+  vec4 layerPlane1 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.x);
+  vec4 layerPlane2 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.y);
+  vec4 layerPlane3 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.z);
 
   int activeObjects = 0;
   FragmentData currentFragment;
@@ -297,11 +304,23 @@ void main()
   }
 
   vec4 world = inverseViewMatrix * endPos_eye;
-  float endDistance = dot(world, farPlane);
+  float endDistance = dot(world, layerPlane1);
   if (endDistance < 0)
   {
-    setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * farPlane.xyz, 1.0f));
+    setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * layerPlane1.xyz, 1.0f));
     outputColor = vec4(0);
+  }
+  endDistance = dot(world, layerPlane2);
+  if (endDistance < 0)
+  {
+    setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * layerPlane2.xyz, 1.0f));
+    outputColor2 = vec4(0);
+  }
+  endDistance = dot(world, layerPlane3);
+  if (endDistance < 0)
+  {
+    setPositionAndDepth(viewMatrix * vec4(world.xyz - endDistance * layerPlane3.xyz, 1.0f));
+    outputColor3 = vec4(0);
   }
 
   for (--age; age < maxAge; age++)  // all fragments
@@ -334,12 +353,12 @@ void main()
       nextFragment.eyePos : segmentStartPos_eye;
 
     vec4 world = inverseViewMatrix * endPos_eye;
-    endDistance = dot(world, farPlane);
+    endDistance = dot(world, layerPlane1);
     if (startDistance >= 0 && endDistance < 0)
     {
       vec4 startWorld = inverseViewMatrix * segmentStartPos_eye;
       vec3 dir = world.xyz - startWorld.xyz;
-      float alpha = - dot(startWorld, farPlane) / dot(dir, farPlane.xyz);
+      float alpha = - dot(startWorld, layerPlane1) / dot(dir, layerPlane1.xyz);
       vec4 endPosCut_eye = viewMatrix * (startWorld + alpha * vec4(dir, 0));
       if (activeObjectCount > 0)
       {
