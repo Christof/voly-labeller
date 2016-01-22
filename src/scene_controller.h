@@ -23,6 +23,8 @@ class SceneController : public QObject
   void compositeLayers();
   void renderFirstLayer();
   void renderSecondLayer();
+  void renderThirdLayer();
+  void renderFourthLayer();
 
  private:
   std::shared_ptr<Scene> scene;
