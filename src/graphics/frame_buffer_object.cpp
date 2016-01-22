@@ -1,18 +1,22 @@
 #include "./frame_buffer_object.h"
 #include <QDebug>
+#include <vector>
 #include "./gl.h"
 
 namespace Graphics
 {
 
+FrameBufferObject::FrameBufferObject()
+  : colorTextures(layerCount), depthTextures(layerCount)
+{
+}
+
 FrameBufferObject::~FrameBufferObject()
 {
   glAssert(gl->glDeleteBuffers(1, &framebuffer));
-  glAssert(gl->glDeleteTextures(1, &depthTexture));
-  glAssert(gl->glDeleteTextures(1, &renderTexture));
-  glAssert(gl->glDeleteTextures(1, &positionTexture));
-  glAssert(gl->glDeleteTextures(1, &renderTexture2));
-  glAssert(gl->glDeleteTextures(1, &positionTexture2));
+  glAssert(gl->glDeleteBuffers(1, &depthTexture));
+  glAssert(gl->glDeleteTextures(layerCount, colorTextures.data()));
+  glAssert(gl->glDeleteTextures(layerCount, depthTextures.data()));
 }
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
@@ -25,27 +29,22 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   glAssert(gl->glGenTextures(1, &depthTexture));
   resizeAndSetDepthAttachment(width, height);
 
-  glAssert(gl->glGenTextures(1, &renderTexture));
-  resizeAndSetColorAttachment(renderTexture, GL_COLOR_ATTACHMENT0, width,
-                              height);
+  glAssert(gl->glGenTextures(layerCount, colorTextures.data()));
+  for (int i = 0; i < layerCount; ++i)
+    resizeAndSetColorAttachment(colorTextures[i], GL_COLOR_ATTACHMENT0 + 2 * i,
+                                width, height);
 
-  glAssert(gl->glGenTextures(1, &positionTexture));
-  resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
-                                 height);
-
-  glAssert(gl->glGenTextures(1, &renderTexture2));
-  resizeAndSetColorAttachment(renderTexture2, GL_COLOR_ATTACHMENT2, width,
-                              height);
-
-  glAssert(gl->glGenTextures(1, &positionTexture2));
-  resizeAndSetPositionAttachment(positionTexture2, GL_COLOR_ATTACHMENT3, width,
-                                 height);
+  glAssert(gl->glGenTextures(layerCount, depthTextures.data()));
+  for (int i = 0; i < layerCount; ++i)
+    resizeAndSetPositionAttachment(depthTextures[i],
+                                   GL_COLOR_ATTACHMENT1 + 2 * i, width, height);
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
-  GLenum drawBuffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-                            GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-  glAssert(gl->glDrawBuffers(4, drawBuffers));
+  std::vector<GLenum> drawBuffers(2 * layerCount);
+  for (int i = 0; i < 2 * layerCount; ++i)
+    drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+  glAssert(gl->glDrawBuffers(2 * layerCount, drawBuffers.data()));
 
   auto status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -59,14 +58,14 @@ void FrameBufferObject::resize(int width, int height)
 {
   bind();
 
-  resizeAndSetColorAttachment(renderTexture, GL_COLOR_ATTACHMENT0, width,
-                              height);
-  resizeAndSetPositionAttachment(positionTexture, GL_COLOR_ATTACHMENT1, width,
-                                 height);
-  resizeAndSetColorAttachment(renderTexture2, GL_COLOR_ATTACHMENT2, width,
-                              height);
-  resizeAndSetPositionAttachment(positionTexture2, GL_COLOR_ATTACHMENT3, width,
-                                 height);
+  for (int i = 0; i < layerCount; ++i)
+  {
+    resizeAndSetColorAttachment(colorTextures[i], GL_COLOR_ATTACHMENT0 + 2 * i,
+                                width, height);
+    resizeAndSetPositionAttachment(depthTextures[i],
+                                   GL_COLOR_ATTACHMENT1 + 2 * i, width, height);
+  }
+
   resizeAndSetDepthAttachment(width, height);
 
   unbind();
@@ -85,13 +84,13 @@ void FrameBufferObject::unbind()
 void FrameBufferObject::bindColorTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, renderTexture));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[0]));
 }
 
 void FrameBufferObject::bindPositionTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, positionTexture));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTextures[0]));
 }
 
 void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
@@ -103,13 +102,13 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
 void FrameBufferObject::bindColorTexture2(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, renderTexture2));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[1]));
 }
 
 void FrameBufferObject::bindPositionTexture2(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, positionTexture2));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTextures[1]));
 }
 
 void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
@@ -152,12 +151,12 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
 
 unsigned int FrameBufferObject::getRenderTextureId()
 {
-  return renderTexture;
+  return colorTextures[0];
 }
 
 unsigned int FrameBufferObject::getPositionTextureId()
 {
-  return positionTexture;
+  return depthTextures[0];
 }
 
 unsigned int FrameBufferObject::getDepthTextureId()
@@ -166,3 +165,4 @@ unsigned int FrameBufferObject::getDepthTextureId()
 }
 
 }  // namespace Graphics
+

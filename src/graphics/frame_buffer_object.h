@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_FRAME_BUFFER_OBJECT_H_
 
 #include <memory>
+#include <vector>
 
 namespace Graphics
 {
@@ -27,7 +28,7 @@ class Gl;
 class FrameBufferObject
 {
  public:
-  FrameBufferObject() = default;
+  FrameBufferObject();
   ~FrameBufferObject();
 
   void initialize(Gl *gl, int width, int height);
@@ -38,7 +39,9 @@ class FrameBufferObject
   void unbind();
 
   void bindColorTexture(unsigned int textureUnit);
+  void bindColorTexture(int index, unsigned int textureUnit);
   void bindPositionTexture(unsigned int textureUnit);
+  void bindDepthTexture(int index, unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
   void bindColorTexture2(unsigned int textureUnit);
   void bindPositionTexture2(unsigned int textureUnit);
@@ -48,12 +51,11 @@ class FrameBufferObject
   unsigned int getDepthTextureId();
 
  private:
+  const int layerCount = 2;
   unsigned int framebuffer = 0;
-  unsigned int renderTexture = 0;
-  unsigned int positionTexture = 0;
+  std::vector<unsigned int> colorTextures;
+  std::vector<unsigned int> depthTextures;
   unsigned int depthTexture = 0;
-  unsigned int positionTexture2 = 0;
-  unsigned int renderTexture2 = 0;
   Gl *gl;
 
   void resizeAndSetColorAttachment(int texture, int attachment, int width,
