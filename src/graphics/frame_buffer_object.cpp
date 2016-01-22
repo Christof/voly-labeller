@@ -81,34 +81,22 @@ void FrameBufferObject::unbind()
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, 0));
 }
 
-void FrameBufferObject::bindColorTexture(unsigned int textureUnit)
+void FrameBufferObject::bindColorTexture(int index, unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[0]));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[index]));
 }
 
-void FrameBufferObject::bindPositionTexture(unsigned int textureUnit)
+void FrameBufferObject::bindDepthTexture(int index, unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTextures[0]));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTextures[index]));
 }
 
 void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
-}
-
-void FrameBufferObject::bindColorTexture2(unsigned int textureUnit)
-{
-  glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[1]));
-}
-
-void FrameBufferObject::bindPositionTexture2(unsigned int textureUnit)
-{
-  glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTextures[1]));
 }
 
 void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
@@ -149,19 +137,24 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
                             component, type, NULL));
 }
 
-unsigned int FrameBufferObject::getRenderTextureId()
+unsigned int FrameBufferObject::getColorTextureId(int index)
 {
-  return colorTextures[0];
+  return colorTextures[index];
 }
 
-unsigned int FrameBufferObject::getPositionTextureId()
+unsigned int FrameBufferObject::getDepthTextureId(int index)
 {
-  return depthTextures[0];
+  return depthTextures[index];
 }
 
 unsigned int FrameBufferObject::getDepthTextureId()
 {
   return depthTexture;
+}
+
+int FrameBufferObject::getLayerCount()
+{
+  return layerCount;
 }
 
 }  // namespace Graphics

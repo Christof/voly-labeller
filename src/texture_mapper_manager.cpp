@@ -144,12 +144,12 @@ void TextureMapperManager::initializeMappers(
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
   colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteMapper(fbo->getRenderTextureId(), width,
+      CudaTextureMapper::createReadWriteMapper(fbo->getColorTextureId(0), width,
                                                height));
 
   positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadOnlyMapper(fbo->getPositionTextureId(),
-                                              width, height));
+      CudaTextureMapper::createReadOnlyMapper(fbo->getDepthTextureId(0), width,
+                                              height));
 
   distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(

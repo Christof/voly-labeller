@@ -202,13 +202,13 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
-  fbo->bindColorTexture(GL_TEXTURE0);
+  fbo->bindColorTexture(0, GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.4, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  fbo->bindColorTexture2(GL_TEXTURE0);
+  fbo->bindColorTexture(1, GL_TEXTURE0);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.4, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
@@ -262,8 +262,8 @@ void Scene::renderScreenQuad()
 {
   if (activeLayerNumber == 0)
   {
-    fbo->bindColorTexture(GL_TEXTURE0);
-    fbo->bindColorTexture2(GL_TEXTURE1);
+    fbo->bindColorTexture(0, GL_TEXTURE0);
+    fbo->bindColorTexture(1, GL_TEXTURE1);
 
     screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
     renderQuad(screenQuad, Eigen::Matrix4f::Identity());
@@ -272,19 +272,7 @@ void Scene::renderScreenQuad()
   }
   else
   {
-    switch (activeLayerNumber)
-    {
-    case 1:
-      fbo->bindColorTexture(GL_TEXTURE0);
-      break;
-    case 2:
-      fbo->bindColorTexture2(GL_TEXTURE0);
-      break;
-    default:
-      activeLayerNumber = 0;
-      return;
-    }
-
+    fbo->bindColorTexture(activeLayerNumber - 1, GL_TEXTURE0);
     renderQuad(quad, Eigen::Matrix4f::Identity());
   }
 }
