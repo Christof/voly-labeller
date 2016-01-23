@@ -2,8 +2,10 @@
 
 in vec2 vertexTexCoord;
 
-uniform sampler2D textureSampler;
-uniform sampler2D textureSampler2;
+uniform sampler2D layer1;
+uniform sampler2D layer2;
+uniform sampler2D layer3;
+uniform sampler2D layer4;
 
 out vec4 outputColor;
 
@@ -15,8 +17,10 @@ vec4 blend(vec4 clr, vec4 srf)
 
 void main()
 {
-  vec4 color1 = texture(textureSampler, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
-  vec4 color2 = texture(textureSampler2, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  vec4 color1 = texture(layer1, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  vec4 color2 = texture(layer2, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  vec4 color3 = texture(layer3, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  vec4 color4 = texture(layer4, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
 
-  outputColor = blend(color1, color2);
+  outputColor = blend(blend(blend(color1, color2), color3), color4);
 }
