@@ -142,6 +142,13 @@ void ShaderProgram::setUniformAsVec2Array(const char *name,
   glAssert(gl->glProgramUniform2uiv(getId(), getLocation(name), count, values));
 }
 
+void ShaderProgram::setUniformAsVec4Array(const char *name,
+                                          Eigen::Vector4f *values, int count)
+{
+  glAssert(gl->glProgramUniform4fv(getId(), getLocation(name), count,
+                                   reinterpret_cast<float *>(values)));
+}
+
 QString readFile(QString path)
 {
   QFile file(path);
