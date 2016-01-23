@@ -28,8 +28,6 @@ uniform vec4 layerPlanes[layerCount - 1];
 
 uniform sampler3D volumeSampler;
 
-const float POSITION_NOT_SET = -2;
-
 #define transferFunctionRowCount 64.0f
 
 struct VolumeData
@@ -176,19 +174,19 @@ vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
   return ndcPos / ndcPos.w;
 }
 
-void setPositionAndDepth(in vec4 positionInEyeSpace)
+void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
 {
-  if (position.w == POSITION_NOT_SET)
-  {
-    vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
-    gl_FragDepth = ndcPos.z;
+  vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
+  if (layerIndex == 0)
     position = ndcPos;
-  }
-  else if (position2.w == POSITION_NOT_SET)
-  {
-    vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
+  else if (layerIndex == 1)
     position2 = ndcPos;
-  }
+  else if (layerIndex == 2)
+    position3 = ndcPos;
+  else if (layerIndex == 2)
+    position4 = ndcPos;
+
+  // TODO depth
 }
 
 void setColorForLayer(int layerIndex, vec4 color)
@@ -287,7 +285,6 @@ void main()
   uvec2 ij = uvec2(pos.xy);
 
   gl_FragDepth = 1.0;
-  position = vec4(-2, -2, 1, POSITION_NOT_SET);
 
   uint maxAge = counters[Saddr(ij)];
 
@@ -316,8 +313,9 @@ void main()
   float endDistance = dot(world, layerPlanes[layerIndex]);
   while (endDistance < 0)
   {
-    setPositionAndDepth(viewMatrix *
-                        vec4(world.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f));
+    vec4 newPosition = viewMatrix *
+        vec4(world.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f);
+    setPositionAndDepthFor(layerIndex, newPosition);
     setColorForLayer(layerIndex, vec4(0));
     ++layerIndex;
     endDistance = dot(world, layerPlanes[layerIndex]);
@@ -367,11 +365,13 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }
-      position = fromEyeToNdcSpace(endPos_eye);
-      outputColor = clamp(finalColor, vec4(0.0), vec4(1.0));
+      setPositionAndDepthFor(layerIndex, endPos_eye);
+      setColorForLayer(layerIndex, clamp(finalColor, vec4(0.0), vec4(1.0)));
       finalColor = vec4(0);
       fragmentColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
+
+      ++layerIndex;
     }
 
     if (activeObjectCount > 0)
@@ -396,23 +396,22 @@ void main()
     finalColor = blend(finalColor, nextFragment.color);
     if (nextFragment.color.w > alphaThresholdForDepth)
     {
-      float status = position.w;
-      setPositionAndDepth(nextFragment.eyePos);
-      position.w = status;
+      setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
     }
   }
 
   finalColor = clampColor(finalColor);
 
-  if (position.w == POSITION_NOT_SET)
+  if (layerIndex != layerCount - 1)
   {
-    position.w = 1;
-    outputColor = finalColor;
-    outputColor2 = vec4(backgroundColor, 1);
+    setColorForLayer(layerIndex++, finalColor);
   }
   else
   {
-    outputColor2 = blend(finalColor, vec4(backgroundColor, 1.0));
+    setColorForLayer(layerIndex++, blend(finalColor, vec4(backgroundColor, 1.0)));
   }
+
+  for (; layerIndex < layerCount; ++layerIndex)
+    setColorForLayer(layerIndex, vec4(backgroundColor, 1));
 }
 
