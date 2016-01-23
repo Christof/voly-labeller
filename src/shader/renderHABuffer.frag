@@ -182,7 +182,7 @@ void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
     position2 = ndcPos;
   else if (layerIndex == 2)
     position3 = ndcPos;
-  else if (layerIndex == 2)
+  else
     position4 = ndcPos;
 
   // TODO depth
