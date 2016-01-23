@@ -6,6 +6,7 @@ uniform sampler2D layer1;
 uniform sampler2D layer2;
 uniform sampler2D layer3;
 uniform sampler2D layer4;
+uniform vec4 backgroundColor = vec4(1, 1, 1, 1);
 
 out vec4 outputColor;
 
@@ -22,5 +23,6 @@ void main()
   vec4 color3 = texture(layer3, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
   vec4 color4 = texture(layer4, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
 
-  outputColor = blend(blend(blend(color1, color2), color3), color4);
+  outputColor = blend(blend(blend(blend(color1, color2), color3), color4),
+                      backgroundColor);
 }

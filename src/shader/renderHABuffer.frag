@@ -16,7 +16,6 @@ layout(location = 6) out vec4 outputColor4;
 layout(location = 7) out vec4 position4;
 layout(depth_any) out float gl_FragDepth;
 
-uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
@@ -402,16 +401,9 @@ void main()
 
   finalColor = clampColor(finalColor);
 
-  if (layerIndex != layerCount - 1)
-  {
-    setColorForLayer(layerIndex++, finalColor);
-  }
-  else
-  {
-    setColorForLayer(layerIndex++, blend(finalColor, vec4(backgroundColor, 1.0)));
-  }
+  setColorForLayer(layerIndex++, finalColor);
 
   for (; layerIndex < layerCount; ++layerIndex)
-    setColorForLayer(layerIndex, vec4(backgroundColor, 1));
+    setColorForLayer(layerIndex, vec4(0));
 }
 
