@@ -166,6 +166,17 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
   renderShader->setUniform("sampleDistance", sampleDistance);
 
+  std::vector<Eigen::Vector4f> layerPlanes = {
+    Eigen::Vector4f(renderData.viewMatrix(0, 2), renderData.viewMatrix(1, 2),
+                    renderData.viewMatrix(2, 2), -0.15f),
+    Eigen::Vector4f(renderData.viewMatrix(0, 2), renderData.viewMatrix(1, 2),
+                    renderData.viewMatrix(2, 2), 0.0f),
+    Eigen::Vector4f(renderData.viewMatrix(0, 2), renderData.viewMatrix(1, 2),
+                    renderData.viewMatrix(2, 2), 0.1),
+  };
+  renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
+                                      layerPlanes.size());
+
   ObjectData &objectData = renderQuad->getObjectDataReference();
   managers->getVolumeManager()->fillCustomBuffer(objectData);
 
@@ -215,8 +226,7 @@ void HABuffer::syncAndGetCounts()
   }
   else if (numInserted > tableElementCount * 0.8)
   {
-    qCWarning(channel) << "inserted" << numInserted << "/"
-                       << tableElementCount;
+    qCWarning(channel) << "inserted" << numInserted << "/" << tableElementCount;
   }
 
   buildTimer.stop();

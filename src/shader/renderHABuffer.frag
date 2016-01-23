@@ -23,8 +23,9 @@ uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
-uniform int layerCount = 4;
+const int layerCount = 4;
 uniform vec4 layerCuts = vec4(-0.15, 0, 0.1, 0);
+uniform vec4 layerPlanes[layerCount - 1];
 
 uniform sampler3D volumeSampler;
 
@@ -282,9 +283,9 @@ void main()
   if (maxAge == 0)
     discard;  // no fragment, early exit
 
-  vec4 layerPlane1 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.x);
-  vec4 layerPlane2 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.y);
-  vec4 layerPlane3 = vec4(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2], layerCuts.z);
+  vec4 layerPlane1 = layerPlanes[0];
+  vec4 layerPlane2 = layerPlanes[1];
+  vec4 layerPlane3 = layerPlanes[2];
 
   int activeObjects = 0;
   FragmentData currentFragment;
