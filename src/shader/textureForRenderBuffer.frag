@@ -3,7 +3,7 @@
 in vec2 vertexTexCoord;
 
 uniform sampler2D textureSampler;
-uniform vec4 backgroundColor = vec4(0.8, 0.8, 0.8, 1);
+uniform vec4 backgroundColor = vec4(1, 1, 1, 1);
 
 out vec4 color;
 
