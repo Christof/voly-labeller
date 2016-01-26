@@ -23,7 +23,8 @@ uniform vec3 textureAtlasSize;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
 const int layerCount = 4;
-uniform vec4 layerPlanes[layerCount - 1];
+const int planeCount = layerCount - 1;
+uniform vec4 layerPlanes[planeCount];
 
 uniform sampler3D volumeSampler;
 
