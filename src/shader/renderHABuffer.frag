@@ -311,7 +311,7 @@ void main()
   vec4 world = inverseViewMatrix * endPos_eye;
   int layerIndex = 0;
   float endDistance = dot(world, layerPlanes[layerIndex]);
-  while (endDistance < 0 && layerIndex < layerCount - 1)
+  while (endDistance < 0)
   {
     vec4 newPosition = viewMatrix *
         vec4(world.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f);
@@ -319,6 +319,9 @@ void main()
     setColorForLayer(layerIndex, vec4(0));
     ++layerIndex;
     endDistance = dot(world, layerPlanes[layerIndex]);
+
+    if (layerIndex == planeCount - 1)
+      break;
   }
 
   for (--age; age < maxAge; age++)  // all fragments
