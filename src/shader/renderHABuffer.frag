@@ -369,7 +369,7 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
       }
-      setPositionAndDepthFor(layerIndex, endPos_eye);
+      setPositionAndDepthFor(layerIndex, endPosCut_eye);
       setColorForLayer(layerIndex, clamp(finalColor, vec4(0.0), vec4(1.0)));
       finalColor = vec4(0);
       fragmentColor = vec4(0);
