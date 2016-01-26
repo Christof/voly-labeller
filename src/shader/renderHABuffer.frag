@@ -375,9 +375,9 @@ void main()
       fragmentColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
 
-      ++layerIndex;
       if (layerIndex + 1 < planeCount)
       {
+        ++layerIndex;
         endDistance = dot(world, layerPlanes[layerIndex + 1]);
       }
       else
@@ -406,17 +406,25 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (nextFragment.color.w > alphaThresholdForDepth)
+    if (nextFragment.color.a > alphaThresholdForDepth)
     {
-      setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
+      vec4 world = inverseViewMatrix * nextFragment.eyePos;
+      float endDistance = dot(world, layerPlanes[layerIndex]);
+      while (endDistance < 0 && layerIndex < planeCount)
+      {
+        setColorForLayer(layerIndex, vec4(0));
+        ++layerIndex;
+        endDistance = dot(world, layerPlanes[layerIndex]);
+      }
+      // setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
     }
   }
 
   finalColor = clampColor(finalColor);
 
-  setColorForLayer(layerIndex++, finalColor);
+  setColorForLayer(layerIndex, finalColor);
 
-  for (; layerIndex < layerCount; ++layerIndex)
+  for (++layerIndex; layerIndex < layerCount; ++layerIndex)
     setColorForLayer(layerIndex, vec4(0));
 }
 
