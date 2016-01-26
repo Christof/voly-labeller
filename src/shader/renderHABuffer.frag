@@ -355,7 +355,8 @@ void main()
 
     vec4 world = inverseViewMatrix * endPos_eye;
     endDistance = dot(world, layerPlanes[layerIndex + 1]);
-    if (startDistance >= 0 && endDistance < 0)
+
+    while (startDistance >= 0 && endDistance < 0 && layerIndex + 1 < planeCount)
     {
       vec4 startWorld = inverseViewMatrix * segmentStartPos_eye;
       vec3 dir = world.xyz - startWorld.xyz;
@@ -375,6 +376,14 @@ void main()
       segmentStartPos_eye = endPosCut_eye;
 
       ++layerIndex;
+      if (layerIndex + 1 < planeCount)
+      {
+        endDistance = dot(world, layerPlanes[layerIndex + 1]);
+      }
+      else
+      {
+        break;
+      }
     }
 
     if (activeObjectCount > 0)
