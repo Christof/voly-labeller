@@ -354,14 +354,14 @@ void main()
       nextFragment.eyePos : segmentStartPos_eye;
 
     vec4 world = inverseViewMatrix * endPos_eye;
-    endDistance = dot(world, layerPlanes[layerIndex + 1]);
+    endDistance = dot(world, layerPlanes[layerIndex]);
 
-    while (startDistance >= 0 && endDistance < 0 && layerIndex + 1 < planeCount)
+    while (startDistance >= 0 && endDistance < 0 && layerIndex < planeCount)
     {
       vec4 startWorld = inverseViewMatrix * segmentStartPos_eye;
       vec3 dir = world.xyz - startWorld.xyz;
-      float alpha = -dot(startWorld, layerPlanes[layerIndex + 1]) /
-                    dot(dir, layerPlanes[layerIndex + 1].xyz);
+      float alpha = -dot(startWorld, layerPlanes[layerIndex]) /
+                    dot(dir, layerPlanes[layerIndex].xyz);
       vec4 endPosCut_eye = viewMatrix * (startWorld + alpha * vec4(dir, 0));
       if (activeObjectCount > 0)
       {
@@ -375,10 +375,10 @@ void main()
       fragmentColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
 
-      if (layerIndex + 1 < planeCount)
+      ++layerIndex;
+      if (layerIndex < planeCount)
       {
-        ++layerIndex;
-        endDistance = dot(world, layerPlanes[layerIndex + 1]);
+        endDistance = dot(world, layerPlanes[layerIndex]);
       }
       else
       {
