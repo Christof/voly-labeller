@@ -406,17 +406,19 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
+    finalColor = clampColor(finalColor);
     if (nextFragment.color.a > alphaThresholdForDepth)
     {
-      vec4 world = inverseViewMatrix * nextFragment.eyePos;
-      float endDistance = dot(world, layerPlanes[layerIndex]);
-      while (endDistance < 0 && layerIndex < planeCount)
-      {
-        setColorForLayer(layerIndex, vec4(0));
-        ++layerIndex;
-        endDistance = dot(world, layerPlanes[layerIndex]);
-      }
       // setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
+    }
+    vec4 world = inverseViewMatrix * nextFragment.eyePos;
+    float endDistance = dot(world, layerPlanes[layerIndex]);
+    while (endDistance < 0 && layerIndex < planeCount)
+    {
+      setColorForLayer(layerIndex, finalColor);
+      finalColor = vec4(0);
+      ++layerIndex;
+      endDistance = dot(world, layerPlanes[layerIndex]);
     }
   }
 
