@@ -174,18 +174,22 @@ vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
   return ndcPos / ndcPos.w;
 }
 
+void setPositionNdc(in int layerIndex, in vec4 positionNdc)
+{
+  if (layerIndex == 0)
+    position = positionNdc;
+  else if (layerIndex == 1)
+    position2 = positionNdc;
+  else if (layerIndex == 2)
+    position3 = positionNdc;
+  else
+    position4 = positionNdc;
+}
+
 void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
 {
   vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
-  if (layerIndex == 0)
-    position = ndcPos;
-  else if (layerIndex == 1)
-    position2 = ndcPos;
-  else if (layerIndex == 2)
-    position3 = ndcPos;
-  else
-    position4 = ndcPos;
-
+  setPositionNdc(layerIndex, ndcPos);
   // TODO depth
 }
 
