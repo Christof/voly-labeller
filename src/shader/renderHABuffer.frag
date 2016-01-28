@@ -266,7 +266,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     if (fragmentColor.a > alphaThresholdForDepth)
     {
       depth = fromEyeToNdcSpace(startPos_eye).z;
-      gl_FragDepth = fromEyeToNdcSpace(startPos_eye).z;
+      gl_FragDepth = depth;
     }
 
     // early ray termination
