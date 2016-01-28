@@ -28,6 +28,8 @@ uniform vec4 layerPlanes[planeCount];
 
 uniform sampler3D volumeSampler;
 
+const float DEPTH_NOT_SET = -10.0f;
+
 #define transferFunctionRowCount 64.0f
 
 struct VolumeData
@@ -242,7 +244,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
-    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor)
+    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor, inout float depth)
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
@@ -263,6 +265,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 
     if (fragmentColor.a > alphaThresholdForDepth)
     {
+      depth = fromEyeToNdcSpace(startPos_eye).z;
       gl_FragDepth = fromEyeToNdcSpace(startPos_eye).z;
     }
 
@@ -369,11 +372,18 @@ void main()
       vec4 endPosCut_eye = viewMatrix * (startWorld + alpha * vec4(dir, 0));
       if (activeObjectCount > 0)
       {
+        float depth = DEPTH_NOT_SET;
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-            segmentStartPos_eye, endPosCut_eye, fragmentColor);
+            segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+        if (depth != DEPTH_NOT_SET)
+          setPositionNdc(layerIndex, vec4(0, 0, depth, 1));
       }
-      setPositionAndDepthFor(layerIndex, endPosCut_eye);
+      else
+      {
+        setPositionAndDepthFor(layerIndex, endPosCut_eye);
+      }
+
       setColorForLayer(layerIndex, clamp(finalColor, vec4(0.0), vec4(1.0)));
       finalColor = vec4(0);
       fragmentColor = vec4(0);
@@ -392,9 +402,12 @@ void main()
 
     if (activeObjectCount > 0)
     {
+      float depth;
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-          segmentStartPos_eye, endPos_eye, fragmentColor);
+          segmentStartPos_eye, endPos_eye, fragmentColor, depth);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+
+      setPositionNdc(layerIndex, vec4(0, 0, depth, 1));
     }
     else
     {
@@ -431,6 +444,9 @@ void main()
   setColorForLayer(layerIndex, finalColor);
 
   for (++layerIndex; layerIndex < layerCount; ++layerIndex)
+  {
     setColorForLayer(layerIndex, vec4(0));
+    setPositionNdc(layerIndex, vec4(0));
+  }
 }
 
