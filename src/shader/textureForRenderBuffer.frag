@@ -9,12 +9,11 @@ out vec4 color;
 
 vec4 blend(vec4 clr, vec4 srf)
 {
-  return clr + (1.0 - clr.w) * vec4(srf.xyz * srf.w, srf.w);
+  return clr + (1.0 - clr.a) * vec4(srf.rgb * srf.a, srf.a);
 }
 
 void main()
 {
-  color = blend(
-      texture(textureSampler, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y)),
-      backgroundColor);
+  vec4 texel = texture(textureSampler, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  color = blend(texel, backgroundColor);
 }
