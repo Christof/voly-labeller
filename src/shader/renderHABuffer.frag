@@ -384,7 +384,7 @@ void main()
         setPositionAndDepthFor(layerIndex, endPosCut_eye);
       }
 
-      setColorForLayer(layerIndex, clamp(finalColor, vec4(0.0), vec4(1.0)));
+      setColorForLayer(layerIndex, finalColor);
       finalColor = vec4(0);
       fragmentColor = vec4(0);
       segmentStartPos_eye = endPosCut_eye;
@@ -423,7 +423,6 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    finalColor = clampColor(finalColor);
     if (nextFragment.color.a > alphaThresholdForDepth)
     {
       // setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
@@ -439,7 +438,6 @@ void main()
     }
   }
 
-  finalColor = clampColor(finalColor);
 
   setColorForLayer(layerIndex, finalColor);
 
