@@ -360,16 +360,16 @@ void main()
     endPos_eye = nextFragmentReadStatus ?
       nextFragment.eyePos : segmentStartPos_eye;
 
-    vec4 world = inverseViewMatrix * endPos_eye;
-    endDistance = dot(world, layerPlanes[layerIndex]);
+    vec4 endPos_world = inverseViewMatrix * endPos_eye;
+    endDistance = dot(endPos_world, layerPlanes[layerIndex]);
 
     while (startDistance >= 0 && endDistance < 0 && layerIndex < planeCount)
     {
-      vec4 startWorld = inverseViewMatrix * segmentStartPos_eye;
-      vec3 dir = world.xyz - startWorld.xyz;
-      float alpha = -dot(startWorld, layerPlanes[layerIndex]) /
+      vec4 startPos_world = inverseViewMatrix * segmentStartPos_eye;
+      vec3 dir = endPos_world.xyz - startPos_world.xyz;
+      float alpha = -dot(startPos_world, layerPlanes[layerIndex]) /
                     dot(dir, layerPlanes[layerIndex].xyz);
-      vec4 endPosCut_eye = viewMatrix * (startWorld + alpha * vec4(dir, 0));
+      vec4 endPosCut_eye = viewMatrix * (startPos_world + alpha * vec4(dir, 0));
       if (activeObjectCount > 0)
       {
         float depth = DEPTH_NOT_SET;
@@ -392,7 +392,7 @@ void main()
       ++layerIndex;
       if (layerIndex < planeCount)
       {
-        endDistance = dot(world, layerPlanes[layerIndex]);
+        endDistance = dot(endPos_world, layerPlanes[layerIndex]);
       }
       else
       {
