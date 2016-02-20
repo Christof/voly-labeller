@@ -315,17 +315,16 @@ void main()
       ++age;
   }
 
-  vec4 world = inverseViewMatrix * endPos_eye;
   int layerIndex = 0;
-  float endDistance = dot(world, layerPlanes[layerIndex]);
+  float endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
   while (endDistance < 0)
   {
-    vec4 newPosition = viewMatrix *
-        vec4(world.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f);
+    vec4 newPosition =
+        vec4(endPos_eye.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f);
     setPositionAndDepthFor(layerIndex, newPosition);
     setColorForLayer(layerIndex, vec4(0));
     ++layerIndex;
-    endDistance = dot(world, layerPlanes[layerIndex]);
+    endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
 
     if (layerIndex == planeCount - 1)
       break;
@@ -360,16 +359,14 @@ void main()
     endPos_eye = nextFragmentReadStatus ?
       nextFragment.eyePos : segmentStartPos_eye;
 
-    vec4 endPos_world = inverseViewMatrix * endPos_eye;
-    endDistance = dot(endPos_world, layerPlanes[layerIndex]);
+    endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
 
     while (startDistance >= 0 && endDistance < 0 && layerIndex < planeCount)
     {
-      vec4 startPos_world = inverseViewMatrix * segmentStartPos_eye;
-      vec3 dir = endPos_world.xyz - startPos_world.xyz;
-      float alpha = -dot(startPos_world, layerPlanes[layerIndex]) /
+      vec3 dir = endPos_eye.xyz - segmentStartPos_eye.xyz;
+      float alpha = -dot(segmentStartPos_eye, layerPlanes[layerIndex]) /
                     dot(dir, layerPlanes[layerIndex].xyz);
-      vec4 endPosCut_eye = viewMatrix * (startPos_world + alpha * vec4(dir, 0));
+      vec4 endPosCut_eye = segmentStartPos_eye + alpha * vec4(dir, 0);
       if (activeObjectCount > 0)
       {
         float depth = DEPTH_NOT_SET;
@@ -392,7 +389,7 @@ void main()
       ++layerIndex;
       if (layerIndex < planeCount)
       {
-        endDistance = dot(endPos_world, layerPlanes[layerIndex]);
+        endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
       }
       else
       {
@@ -427,14 +424,13 @@ void main()
     {
       // setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
     }
-    vec4 world = inverseViewMatrix * nextFragment.eyePos;
-    float endDistance = dot(world, layerPlanes[layerIndex]);
+    float endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
     while (endDistance < 0 && layerIndex < planeCount)
     {
       setColorForLayer(layerIndex, finalColor);
       finalColor = vec4(0);
       ++layerIndex;
-      endDistance = dot(world, layerPlanes[layerIndex]);
+      endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
     }
   }
 

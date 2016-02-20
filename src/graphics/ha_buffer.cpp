@@ -172,6 +172,14 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.0f),
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.1),
   };
+
+  Eigen::Matrix4f inverseTransposeViewMatrix =
+      renderData.viewMatrix.transpose().inverse();
+  for (auto &plane : layerPlanes)
+  {
+    plane = inverseTransposeViewMatrix * plane;
+  }
+
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
                                       layerPlanes.size());
 
