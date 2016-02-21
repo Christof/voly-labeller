@@ -203,7 +203,7 @@ void setPositionNdc(in int layerIndex, in vec4 positionNdc)
 void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
 {
   vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
-  setPositionNdc(layerIndex, ndcPos);
+  setPositionNdc(layerIndex, ndcPos.zzzw);
   // TODO depth
 }
 
@@ -331,9 +331,7 @@ void main()
   float endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
   while (endDistance < 0)
   {
-    vec4 newPosition =
-        vec4(endPos_eye.xyz - endDistance * layerPlanes[layerIndex].xyz, 1.0f);
-    setPositionAndDepthFor(layerIndex, newPosition);
+    setPositionNdc(layerIndex, vec4(1));
     setColorForLayer(layerIndex, vec4(0));
     ++layerIndex;
     endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
@@ -386,7 +384,7 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
         if (depth != DEPTH_NOT_SET)
-          setPositionNdc(layerIndex, vec4(0, 0, depth, 1));
+          setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
       }
       else
       {
@@ -416,7 +414,8 @@ void main()
           segmentStartPos_eye, endPos_eye, fragmentColor, depth);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
 
-      setPositionNdc(layerIndex, vec4(0, 0, depth, 1));
+      if (depth != DEPTH_NOT_SET)
+        setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
     }
     else
     {
@@ -434,7 +433,7 @@ void main()
     finalColor = blend(finalColor, nextFragment.color);
     if (nextFragment.color.a > alphaThresholdForDepth)
     {
-      // setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
+      setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
     }
     float endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
     while (endDistance < 0 && layerIndex < planeCount)
@@ -446,13 +445,14 @@ void main()
     }
   }
 
-
   setColorForLayer(layerIndex, finalColor);
+  if (getDepth(layerIndex) == 0)
+    setPositionNdc(layerIndex, vec4(1));
 
   for (++layerIndex; layerIndex < layerCount; ++layerIndex)
   {
     setColorForLayer(layerIndex, vec4(0));
-    setPositionNdc(layerIndex, vec4(0));
+    setPositionNdc(layerIndex, vec4(1));
   }
 }
 
