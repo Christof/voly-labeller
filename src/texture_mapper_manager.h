@@ -3,6 +3,7 @@
 #define SRC_TEXTURE_MAPPER_MANAGER_H_
 
 #include <memory>
+#include <vector>
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/standard_texture_2d.h"
 #include "./graphics/gl.h"
@@ -41,7 +42,8 @@ class TextureMapperManager
   void bindApollonius(int layerIndex);
 
   std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper(int layerIndex);
-  std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper>
+  getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper(int layerIndex);
 

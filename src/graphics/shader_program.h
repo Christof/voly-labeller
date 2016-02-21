@@ -50,7 +50,8 @@ class ShaderProgram
 
   void setUniformAsVec2Array(const char *name, float *values, int count);
   void setUniformAsVec2Array(const char *name, unsigned int *values, int count);
-  void setUniformAsVec4Array(const char *name, Eigen::Vector4f *values, int count);
+  void setUniformAsVec4Array(const char *name, Eigen::Vector4f *values,
+                             int count);
 
   static QString readFileAndHandleIncludes(QString path);
 

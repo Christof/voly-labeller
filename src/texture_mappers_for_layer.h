@@ -23,7 +23,7 @@ class ConstraintBufferObject;
 class TextureMappersForLayer
 {
  public:
-  TextureMappersForLayer(int bufferSize);
+  explicit TextureMappersForLayer(int bufferSize);
   virtual ~TextureMappersForLayer();
 
   void
