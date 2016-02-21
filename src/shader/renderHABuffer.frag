@@ -176,6 +176,18 @@ vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
   return ndcPos / ndcPos.w;
 }
 
+float getDepth(in int layerIndex)
+{
+  if (layerIndex == 0)
+    return position.z;
+  else if (layerIndex == 1)
+    return position2.z;
+  else if (layerIndex == 2)
+    return position3.z;
+  else
+    return position4.z;
+}
+
 void setPositionNdc(in int layerIndex, in vec4 positionNdc)
 {
   if (layerIndex == 0)
