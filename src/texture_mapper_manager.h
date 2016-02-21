@@ -14,6 +14,7 @@ class Occupancy;
 class DistanceTransform;
 }
 class ConstraintBufferObject;
+class TextureMappersForLayer;
 
 /**
  * \brief Container for all CudaTextureMapper%s and corresponding textures
@@ -35,14 +36,14 @@ class TextureMapperManager
 
   void update();
 
-  void bindOccupancyTexture();
-  void bindDistanceTransform();
-  void bindApollonius();
+  void bindOccupancyTexture(int layerIndex);
+  void bindDistanceTransform(int layerIndex);
+  void bindApollonius(int layerIndex);
 
-  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper(int layerIndex);
 
   void cleanup();
 
@@ -53,30 +54,8 @@ class TextureMapperManager
   int getBufferSize();
 
  private:
-  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
-  std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
-  std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
-  std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
-  std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
-
-  std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
-
-  std::unique_ptr<Placement::Occupancy> occupancy;
-  std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
-  int width;
-  int height;
-
-  bool saveOccupancyInNextFrame = false;
-  bool saveDistanceTransformInNextFrame = false;
-  bool saveApolloniusInNextFrame = false;
-
-  void initializeMappers(
-      std::shared_ptr<Graphics::FrameBufferObject> fbo,
-      std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
+  std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

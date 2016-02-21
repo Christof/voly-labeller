@@ -96,10 +96,10 @@ void Scene::initialize()
       textureMapperManager->getBufferSize());
 
   placementLabeller->initialize(
-      textureMapperManager->getOccupancyTextureMapper(),
-      textureMapperManager->getDistanceTransformTextureMapper(),
-      textureMapperManager->getApolloniusTextureMapper(),
-      textureMapperManager->getConstraintTextureMapper(), constraintUpdater);
+      textureMapperManager->getOccupancyTextureMapper(0),
+      textureMapperManager->getDistanceTransformTextureMapper(0),
+      textureMapperManager->getApolloniusTextureMapper(0),
+      textureMapperManager->getConstraintTextureMapper(0), constraintUpdater);
 }
 
 void Scene::cleanup()
@@ -226,19 +226,20 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  textureMapperManager->bindOccupancyTexture();
+  int layerIndex = 0;
+  textureMapperManager->bindOccupancyTexture(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  textureMapperManager->bindDistanceTransform();
+  textureMapperManager->bindDistanceTransform(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(distanceTransformQuad, transformation.matrix());
 
-  textureMapperManager->bindApollonius();
+  textureMapperManager->bindApollonius(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));

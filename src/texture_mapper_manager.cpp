@@ -6,6 +6,7 @@
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
 #include "./constraint_buffer_object.h"
+#include "./texture_mappers_for_layer.h"
 
 TextureMapperManager::TextureMapperManager(int bufferSize)
   : bufferSize(bufferSize)
@@ -14,169 +15,99 @@ TextureMapperManager::TextureMapperManager(int bufferSize)
 
 TextureMapperManager::~TextureMapperManager()
 {
-  cleanup();
+  for (auto mappers : mappersForLayers)
+    mappers->cleanup();
 }
 
 void TextureMapperManager::initialize(
     Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
-  occupancyTexture = std::make_shared<Graphics::StandardTexture2d>(
-      bufferSize, bufferSize, GL_R32F);
-  occupancyTexture->initialize(gl);
-
-  distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
-      bufferSize, bufferSize, GL_R32F);
-  distanceTransformTexture->initialize(gl);
-
-  apolloniusTexture = std::make_shared<Graphics::StandardTexture2d>(
-      bufferSize, bufferSize, GL_RGBA32F);
-  apolloniusTexture->initialize(gl);
-
-  initializeMappers(fbo, constraintBufferObject);
+  for (int i = 0; i < fbo->getLayerCount(); ++i)
+  {
+    auto mappers = std::make_shared<TextureMappersForLayer>(bufferSize);
+    mappers->initialize(gl, fbo, constraintBufferObject);
+    mappersForLayers.push_back(mappers);
+  }
 }
 
 void TextureMapperManager::resize(int width, int height)
 {
-  this->width = width;
-  this->height = height;
+  for (auto mappers : mappersForLayers)
+    mappers->resize(width, height);
 }
 
 void TextureMapperManager::update()
 {
-  occupancy->runKernel();
-
-  if (saveOccupancyInNextFrame)
-  {
-    saveOccupancyInNextFrame = false;
-    occupancyTexture->save("occupancy.tiff");
-  }
-
-  distanceTransform->run();
-
-  if (saveDistanceTransformInNextFrame)
-  {
-    saveDistanceTransformInNextFrame = false;
-    distanceTransformTexture->save("distanceTransform.tiff");
-  }
-
-  if (saveApolloniusInNextFrame)
-  {
-    saveApolloniusInNextFrame = false;
-    apolloniusTexture->save("apollonius.tiff");
-  }
+  for (auto mappers : mappersForLayers)
+    mappers->update();
 }
 
-void TextureMapperManager::bindOccupancyTexture()
+void TextureMapperManager::bindOccupancyTexture(int layerIndex)
 {
-  occupancyTexture->bind();
+  mappersForLayers[layerIndex]->bindOccupancyTexture();
 }
 
-void TextureMapperManager::bindDistanceTransform()
+void TextureMapperManager::bindDistanceTransform(int layerIndex)
 {
-  distanceTransformTexture->bind();
+  mappersForLayers[layerIndex]->bindDistanceTransform();
 }
 
-void TextureMapperManager::bindApollonius()
+void TextureMapperManager::bindApollonius(int layerIndex)
 {
-  apolloniusTexture->bind();
+  mappersForLayers[layerIndex]->bindApollonius();
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getOccupancyTextureMapper()
+TextureMapperManager::getOccupancyTextureMapper(int layerIndex)
 {
-  return occupancyTextureMapper;
+  return mappersForLayers[layerIndex]->getOccupancyTextureMapper();
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getDistanceTransformTextureMapper()
+TextureMapperManager::getDistanceTransformTextureMapper(int layerIndex)
 {
-  return distanceTransformTextureMapper;
+  return mappersForLayers[layerIndex]->getDistanceTransformTextureMapper();
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getApolloniusTextureMapper()
+TextureMapperManager::getApolloniusTextureMapper(int layerIndex)
 {
-  return apolloniusTextureMapper;
+  return mappersForLayers[layerIndex]->getApolloniusTextureMapper();
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getConstraintTextureMapper()
+TextureMapperManager::getConstraintTextureMapper(int layerIndex)
 {
-  return constraintTextureMapper;
+  return mappersForLayers[layerIndex]->getConstraintTextureMapper();
 }
 
 void TextureMapperManager::cleanup()
 {
-  occupancy.release();
-  distanceTransform.release();
-
-  colorTextureMapper.reset();
-  positionsTextureMapper.reset();
-  occupancyTextureMapper.reset();
-  distanceTransformTextureMapper.reset();
-  apolloniusTextureMapper.reset();
-  constraintTextureMapper.reset();
+  for (auto mappers : mappersForLayers)
+    mappers->cleanup();
 }
 
 void TextureMapperManager::saveOccupancy()
 {
-  saveOccupancyInNextFrame = true;
+  for (auto mappers : mappersForLayers)
+    mappers->saveOccupancy();
 }
 
 void TextureMapperManager::saveDistanceTransform()
 {
-  saveDistanceTransformInNextFrame = true;
+  for (auto mappers : mappersForLayers)
+    mappers->saveDistanceTransform();
 }
 
 void TextureMapperManager::saveApollonius()
 {
-  saveApolloniusInNextFrame = true;
+  for (auto mappers : mappersForLayers)
+    mappers->saveApollonius();
 }
 
 int TextureMapperManager::getBufferSize()
 {
   return bufferSize;
-}
-
-void TextureMapperManager::initializeMappers(
-    std::shared_ptr<Graphics::FrameBufferObject> fbo,
-    std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
-{
-  colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteMapper(fbo->getColorTextureId(0), width,
-                                               height));
-
-  positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadOnlyMapper(fbo->getDepthTextureId(0), width,
-                                              height));
-
-  distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteDiscardMapper(
-          distanceTransformTexture->getId(),
-          distanceTransformTexture->getWidth(),
-          distanceTransformTexture->getHeight()));
-
-  occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteDiscardMapper(
-          occupancyTexture->getId(), occupancyTexture->getWidth(),
-          occupancyTexture->getHeight()));
-
-  apolloniusTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteDiscardMapper(
-          apolloniusTexture->getId(), apolloniusTexture->getWidth(),
-          apolloniusTexture->getHeight()));
-
-  constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadOnlyMapper(
-          constraintBufferObject->getRenderTextureId(),
-          constraintBufferObject->getWidth(),
-          constraintBufferObject->getHeight()));
-
-  occupancy = std::make_unique<Placement::Occupancy>(positionsTextureMapper,
-                                                     occupancyTextureMapper);
-
-  distanceTransform = std::make_unique<Placement::DistanceTransform>(
-      occupancyTextureMapper, distanceTransformTextureMapper);
 }
 
