@@ -394,7 +394,7 @@ void main()
       }
       else
       {
-        setPositionAndDepthFor(layerIndex, endPosCut_eye);
+        setPositionNdc(layerIndex, vec4(1));
       }
 
       setColorForLayer(layerIndex, finalColor);
