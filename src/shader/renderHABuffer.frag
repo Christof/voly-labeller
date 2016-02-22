@@ -304,6 +304,10 @@ void main()
   uvec2 ij = uvec2(pos.xy);
 
   gl_FragDepth = 1.0;
+  position = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position2 = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position3 = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position4 = vec4(1, 0, DEPTH_NOT_SET, 1);
 
   uint maxAge = counters[Saddr(ij)];
 
@@ -433,14 +437,18 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (nextFragment.color.a > alphaThresholdForDepth)
+    if (finalColor.a > alphaThresholdForDepth &&
+        getDepth(layerIndex) == DEPTH_NOT_SET)
     {
       setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
     }
+
     float endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
     while (endDistance < 0 && layerIndex < planeCount)
     {
       setColorForLayer(layerIndex, finalColor);
+      if (getDepth(layerIndex) == DEPTH_NOT_SET)
+        setPositionNdc(layerIndex, vec4(1));
       finalColor = vec4(0);
       ++layerIndex;
       endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
@@ -448,7 +456,7 @@ void main()
   }
 
   setColorForLayer(layerIndex, finalColor);
-  if (getDepth(layerIndex) == 0)
+  if (getDepth(layerIndex) == DEPTH_NOT_SET)
     setPositionNdc(layerIndex, vec4(1));
 
   for (++layerIndex; layerIndex < layerCount; ++layerIndex)
