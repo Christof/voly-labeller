@@ -383,8 +383,10 @@ void main()
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
             segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-        if (depth != DEPTH_NOT_SET)
-          setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
+        if (depth == DEPTH_NOT_SET)
+          depth = 1.0;
+
+        setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
       }
       else
       {
