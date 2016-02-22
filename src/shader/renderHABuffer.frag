@@ -264,20 +264,20 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
   vec4 step_eye = (endPos_eye - segmentStartPos_eye) / float(sampleSteps);
-  vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
+  vec4 currentPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
   for (int stepIndex = 0; stepIndex < sampleSteps; stepIndex++)
   {
     vec4 sampleColor = calculateSampleColor(activeObjects,
-        activeObjectCount, startPos_eye);
+        activeObjectCount, currentPos_eye);
 
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
     if (fragmentColor.a > alphaThresholdForDepth)
     {
-      depth = fromEyeToNdcSpace(startPos_eye).z;
+      depth = fromEyeToNdcSpace(currentPos_eye).z;
       gl_FragDepth = depth;
     }
 
@@ -285,7 +285,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     if (fragmentColor.a > 0.999)
       break;
 
-    startPos_eye += step_eye;
+    currentPos_eye += step_eye;
   }  // sampling steps
 
   return fragmentColor;
