@@ -359,6 +359,7 @@ void main()
     if (objectId == 0 && fragmentColor.a > alphaThresholdForDepth)
     {
       gl_FragDepth = fromEyeToNdcSpace(currentFragment.eyePos).z;
+      setPositionAndDepthFor(layerIndex, currentFragment.eyePos);
     }
 
     // fetch next Fragment
