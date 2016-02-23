@@ -275,7 +275,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
-    if (fragmentColor.a > alphaThresholdForDepth)
+    if (depth == DEPTH_NOT_SET && fragmentColor.a > alphaThresholdForDepth)
     {
       depth = fromEyeToNdcSpace(currentPos_eye).z;
       gl_FragDepth = depth;
