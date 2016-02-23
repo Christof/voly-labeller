@@ -416,7 +416,7 @@ void main()
 
     if (activeObjectCount > 0)
     {
-      float depth;
+      float depth = DEPTH_NOT_SET;
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
           segmentStartPos_eye, endPos_eye, fragmentColor, depth);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
