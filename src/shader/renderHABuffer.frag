@@ -190,6 +190,9 @@ float getDepth(in int layerIndex)
 
 void setPositionNdc(in int layerIndex, in vec4 positionNdc)
 {
+  if (gl_FragDepth == DEPTH_NOT_SET)
+    gl_FragDepth = positionNdc.z;
+
   if (layerIndex == 0)
     position = positionNdc;
   else if (layerIndex == 1)
@@ -278,7 +281,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     if (depth == DEPTH_NOT_SET && fragmentColor.a > alphaThresholdForDepth)
     {
       depth = fromEyeToNdcSpace(currentPos_eye).z;
-      gl_FragDepth = depth;
     }
 
     // early ray termination
@@ -303,7 +305,7 @@ void main()
 
   uvec2 ij = uvec2(pos.xy);
 
-  gl_FragDepth = 1.0;
+  gl_FragDepth = DEPTH_NOT_SET;
   position = vec4(1, 0, DEPTH_NOT_SET, 1);
   position2 = vec4(1, 0, DEPTH_NOT_SET, 1);
   position3 = vec4(1, 0, DEPTH_NOT_SET, 1);
@@ -358,7 +360,6 @@ void main()
 
     if (objectId == 0 && fragmentColor.a > alphaThresholdForDepth)
     {
-      gl_FragDepth = fromEyeToNdcSpace(currentFragment.eyePos).z;
       setPositionAndDepthFor(layerIndex, currentFragment.eyePos);
     }
 
@@ -450,6 +451,7 @@ void main()
       setColorForLayer(layerIndex, finalColor);
       if (getDepth(layerIndex) == DEPTH_NOT_SET)
         setPositionNdc(layerIndex, vec4(1));
+
       finalColor = vec4(0);
       ++layerIndex;
       endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
