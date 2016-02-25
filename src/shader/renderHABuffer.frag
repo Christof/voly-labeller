@@ -25,6 +25,7 @@ uniform float alphaThresholdForDepth = 0.1;
 const int layerCount = 4;
 const int planeCount = layerCount - 1;
 uniform vec4 layerPlanes[planeCount];
+uniform float planesZValuesNdc[planeCount];
 
 uniform sampler3D volumeSampler;
 
@@ -214,13 +215,21 @@ void setPositionNdc(in int layerIndex, in vec4 positionNdc)
     gl_FragDepth = positionNdc.z;
 
   if (layerIndex == 0)
-    position = positionNdc;
+  {
+    position = vec4(vec3(positionNdc.z / planesZValuesNdc[0]), 1);
+  }
   else if (layerIndex == 1)
-    position2 = positionNdc;
+  {
+    position2 = vec4(vec3((positionNdc.z - planesZValuesNdc[0]) / (planesZValuesNdc[1] - planesZValuesNdc[0])), 1);
+  }
   else if (layerIndex == 2)
-    position3 = positionNdc;
+  {
+    position3 = vec4(vec3((positionNdc.z - planesZValuesNdc[1]) / (planesZValuesNdc[2] - planesZValuesNdc[1])), 1);
+  }
   else
-    position4 = positionNdc;
+  {
+    position4 = vec4(vec3((positionNdc.z - planesZValuesNdc[2]) / (1.0 - planesZValuesNdc[2])), 1);
+  }
 }
 
 void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
