@@ -188,6 +188,26 @@ float getDepth(in int layerIndex)
     return position4.z;
 }
 
+void setPositionNdcToEndValue(in int layerIndex)
+{
+  if (layerIndex == 0)
+  {
+    position = vec4(1);
+  }
+  else if (layerIndex == 1)
+  {
+    position2 = vec4(1);
+  }
+  else if (layerIndex == 2)
+  {
+    position3 = vec4(1);
+  }
+  else
+  {
+    position4 = vec4(1);
+  }
+}
+
 void setPositionNdc(in int layerIndex, in vec4 positionNdc)
 {
   if (gl_FragDepth == DEPTH_NOT_SET)
@@ -337,7 +357,7 @@ void main()
   float endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
   while (endDistance < 0)
   {
-    setPositionNdc(layerIndex, vec4(1));
+    setPositionNdcToEndValue(layerIndex);
     setColorForLayer(layerIndex, vec4(0));
     ++layerIndex;
     endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
@@ -390,13 +410,13 @@ void main()
             segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
         if (depth == DEPTH_NOT_SET)
-          depth = 1.0;
-
-        setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
+          setPositionNdcToEndValue(layerIndex);
+        else
+          setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
       }
       else
       {
-        setPositionNdc(layerIndex, vec4(1));
+        setPositionNdcToEndValue(layerIndex);
       }
 
       setColorForLayer(layerIndex, finalColor);
@@ -450,7 +470,7 @@ void main()
     {
       setColorForLayer(layerIndex, finalColor);
       if (getDepth(layerIndex) == DEPTH_NOT_SET)
-        setPositionNdc(layerIndex, vec4(1));
+        setPositionNdcToEndValue(layerIndex);
 
       finalColor = vec4(0);
       ++layerIndex;
@@ -460,12 +480,15 @@ void main()
 
   setColorForLayer(layerIndex, finalColor);
   if (getDepth(layerIndex) == DEPTH_NOT_SET)
-    setPositionNdc(layerIndex, vec4(1));
+    setPositionNdcToEndValue(layerIndex);
 
   for (++layerIndex; layerIndex < layerCount; ++layerIndex)
   {
     setColorForLayer(layerIndex, vec4(0));
-    setPositionNdc(layerIndex, vec4(1));
+    setPositionNdcToEndValue(layerIndex);
   }
+
+  if (gl_FragDepth == DEPTH_NOT_SET)
+    gl_FragDepth = 1.0;
 }
 
