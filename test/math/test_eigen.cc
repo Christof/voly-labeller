@@ -49,3 +49,17 @@ TEST(Test_Eigen, ndcToPixels)
       ndcToPixels(Eigen::Vector2f(0, 0), Eigen::Vector2f(800, 600)), 1E-6);
 }
 
+TEST(Test_Eigen, project)
+{
+  Eigen::Matrix4f matrix = Eigen::Matrix4f::Identity();
+  matrix(0, 0) = 2;
+  matrix(1, 1) = 3;
+  matrix(2, 2) = 4;
+  matrix(3, 3) = 5;
+
+  Eigen::Vector3f result = project(matrix, Eigen::Vector3f(1, 2, 3));
+
+  EXPECT_Vector3f_NEAR(Eigen::Vector3f(2 / 5.0, 6 / 5.0, 12 / 5.0),
+                       result, 1E-6);
+}
+
