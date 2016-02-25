@@ -9,6 +9,7 @@
 #include "./object_manager.h"
 #include "./volume_manager.h"
 #include "./texture_manager.h"
+#include "../math/eigen.h"
 
 namespace Graphics
 {
@@ -167,22 +168,33 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
   renderShader->setUniform("sampleDistance", sampleDistance);
 
-  Eigen::Vector3f normal = renderData.viewMatrix.row(2).head<3>();
+  Eigen::Vector3f normal = renderData.viewMatrix.row(2).head<3>().normalized();
   std::vector<Eigen::Vector4f> layerPlanes = {
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), -0.15f),
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.0f),
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.1),
   };
+  std::vector<float> planesZValuesNdc;
 
   Eigen::Matrix4f inverseTransposeViewMatrix =
       renderData.viewMatrix.transpose().inverse();
+
+  Eigen::Matrix4f viewProjectionMatrix =
+      renderData.projectionMatrix * renderData.viewMatrix;
   for (auto &plane : layerPlanes)
   {
+    float alpha = -toVector4f(renderData.cameraPosition).dot(plane);
+    Eigen::Vector3f pointOnPlane = renderData.cameraPosition + alpha * normal;
+    Eigen::Vector3f projected = project(viewProjectionMatrix, pointOnPlane);
+    planesZValuesNdc.push_back(projected.z());
+
     plane = inverseTransposeViewMatrix * plane;
   }
 
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
                                       layerPlanes.size());
+  renderShader->setUniformAsFloatArray(
+      "planesZValuesNdc", planesZValuesNdc.data(), planesZValuesNdc.size());
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   managers->getVolumeManager()->fillCustomBuffer(objectData);
