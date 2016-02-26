@@ -23,7 +23,7 @@ class ConstraintBufferObject;
 class TextureMappersForLayer
 {
  public:
-  explicit TextureMappersForLayer(int bufferSize);
+  TextureMappersForLayer(int bufferSize, int layerIndex);
   virtual ~TextureMappersForLayer();
 
   void
@@ -64,6 +64,7 @@ class TextureMappersForLayer
   std::unique_ptr<Placement::Occupancy> occupancy;
   std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
+  int layerIndex;
   int width;
   int height;
 

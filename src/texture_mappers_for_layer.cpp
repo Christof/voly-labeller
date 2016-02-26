@@ -7,8 +7,8 @@
 #include "./utils/image_persister.h"
 #include "./constraint_buffer_object.h"
 
-TextureMappersForLayer::TextureMappersForLayer(int bufferSize)
-  : bufferSize(bufferSize)
+TextureMappersForLayer::TextureMappersForLayer(int bufferSize, int layerIndex)
+  : bufferSize(bufferSize), layerIndex(layerIndex)
 {
 }
 
@@ -139,12 +139,12 @@ void TextureMappersForLayer::initializeMappers(
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
   colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteMapper(fbo->getColorTextureId(0), width,
-                                               height));
+      CudaTextureMapper::createReadWriteMapper(
+          fbo->getColorTextureId(layerIndex), width, height));
 
   positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadOnlyMapper(fbo->getDepthTextureId(0), width,
-                                              height));
+      CudaTextureMapper::createReadOnlyMapper(
+          fbo->getDepthTextureId(layerIndex), width, height));
 
   distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(

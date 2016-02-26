@@ -84,6 +84,7 @@ void Scene::initialize()
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
+  textureMapperManager->createTextureMappersForLayers(fbo->getLayerCount());
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 

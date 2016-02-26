@@ -19,16 +19,22 @@ TextureMapperManager::~TextureMapperManager()
     mappers->cleanup();
 }
 
+void TextureMapperManager::createTextureMappersForLayers(int layerCount)
+{
+  for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
+  {
+    auto mappers =
+        std::make_shared<TextureMappersForLayer>(bufferSize, layerIndex);
+    mappersForLayers.push_back(mappers);
+  }
+}
+
 void TextureMapperManager::initialize(
     Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
-  for (int i = 0; i < fbo->getLayerCount(); ++i)
-  {
-    auto mappers = std::make_shared<TextureMappersForLayer>(bufferSize);
-    mappers->initialize(gl, fbo, constraintBufferObject);
-    mappersForLayers.push_back(mappers);
-  }
+  for (auto mappersForLayer : mappersForLayers)
+    mappersForLayer->initialize(gl, fbo, constraintBufferObject);
 }
 
 void TextureMapperManager::resize(int width, int height)

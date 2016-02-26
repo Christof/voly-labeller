@@ -29,6 +29,7 @@ class TextureMapperManager
   explicit TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
+  void createTextureMappersForLayers(int layerCount);
   void
   initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
              std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
