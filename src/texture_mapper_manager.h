@@ -12,9 +12,9 @@ class ConstraintBufferObject;
 class TextureMappersForLayer;
 
 /**
- * \brief Container for all CudaTextureMapper%s and corresponding textures
+ * \brief Container for all TextureMapperForLayer%s
  *
- * It also provides methods to save a texture to the filesystem as well
+ * It also provides methods to save a textures to the filesystem as well
  * as methods to bind the textures to render them for debugging purposes.
  */
 class TextureMapperManager
