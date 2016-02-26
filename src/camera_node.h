@@ -10,9 +10,9 @@
 #include "./camera.h"
 
 /**
- * \brief
+ * \brief Node for a Camera
  *
- *
+ * This is used so that the camera settings are saved in the scene.
  */
 class CameraNode : public Node
 {
