@@ -5,15 +5,9 @@
 #include <memory>
 #include <vector>
 #include "./graphics/frame_buffer_object.h"
-#include "./graphics/standard_texture_2d.h"
 #include "./graphics/gl.h"
 
 class CudaTextureMapper;
-namespace Placement
-{
-class Occupancy;
-class DistanceTransform;
-}
 class ConstraintBufferObject;
 class TextureMappersForLayer;
 
