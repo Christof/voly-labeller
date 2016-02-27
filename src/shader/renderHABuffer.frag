@@ -434,14 +434,7 @@ void main()
       segmentStartPos_eye = endPosCut_eye;
 
       ++layerIndex;
-      if (layerIndex < planeCount)
-      {
-        endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
-      }
-      else
-      {
-        break;
-      }
+      endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
     }
 
     if (activeObjectCount > 0)
