@@ -292,10 +292,10 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
-  int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
+  float sampleSteps = segmentTextureLength * STEP_FACTOR;
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
-  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / float(sampleSteps);
+  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / sampleSteps;
   vec4 currentPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
