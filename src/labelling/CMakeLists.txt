@@ -6,6 +6,7 @@ include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(SOURCES
   labels.cpp
+  clustering.cpp
   )
 
 add_library(labelling OBJECT ${SOURCES})
