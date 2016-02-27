@@ -113,11 +113,11 @@ void updateActiveObjects(inout int objectId, inout int activeObjects)
   }
 }
 
-vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
+vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
 {
   const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
-  vec3 lightDir = normalize(lightPos - startPos_eye);
-  vec3 viewDir = -1.0f * normalize(startPos_eye);
+  vec3 lightDir = normalize(lightPos - currentPos_eye);
+  vec3 viewDir = -1.0f * normalize(currentPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
   float dotNL = max(dot(normalizedGradient, lightDir), 0.0f);
@@ -252,7 +252,7 @@ void setColorForLayer(int layerIndex, vec4 color)
 }
 
 vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
-    in vec4 startPos_eye)
+    in vec4 currentPos_eye)
 {
   vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -267,7 +267,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     vec3 textureSamplePos =
       (volumes[currentObjectId].objectToDatasetMatrix *
        volumes[currentObjectId].textureMatrix * inverseViewMatrix *
-       startPos_eye).xyz;
+       currentPos_eye).xyz;
 
     float density = getVolumeSampleDensity(textureSamplePos);
     vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
@@ -276,7 +276,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 
     if (squareGradientLength > 0.05f)
     {
-      currentColor.rgb = calculateLighting(currentColor, startPos_eye.xyz, gradient);
+      currentColor.rgb = calculateLighting(currentColor, currentPos_eye.xyz, gradient);
     }
     currentColor.rgb = clampColor(currentColor.rgb);
 
