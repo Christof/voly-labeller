@@ -20,6 +20,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
+uniform int transferFunctionWidth = 4096;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
 const int layerCount = 4;
@@ -136,10 +137,9 @@ vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
 
 vec4 transferFunctionLookUp(int volumeId, float density)
 {
-  float row = volumes[volumeId].transferFunctionRow;
-
-  return Texture(volumes[volumeId].textureAddress,
-                 vec2(density, row / (transferFunctionRowCount - 1.0f)));
+  return TexelFetch(volumes[volumeId].textureAddress,
+                    ivec2(int(density * transferFunctionWidth),
+                          volumes[volumeId].transferFunctionRow));
 }
 
 int calculateNextObjectId(inout uint remainingActiveObjects)
