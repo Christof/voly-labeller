@@ -22,7 +22,8 @@ class Clustering
 
   // returns map of clusters (given by their z-value) to all their labels
   // (given as vector of label Ids).
-  std::map<float, std::vector<int>> update(Eigen::Matrix4f viewProjectionMatrix);
+  std::map<float, std::vector<int>>
+  update(Eigen::Matrix4f viewProjectionMatrix);
 
  private:
   std::shared_ptr<Labels> labels;
