@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="13">
+<data class_id="0" tracking_level="0" version="0">
+	<count>8</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>1.056454033e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>9.944038987e-01</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>2.934034914e-02</r1c0>
+				<r1c1>9.995646477e-01</r1c1>
+				<r1c2>-3.117116867e-03</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>-9.939709306e-01</r2c0>
+				<r2c1>2.950546518e-02</r2c1>
+				<r2c2>1.055994034e-01</r2c2>
+				<r2c3>-1.209885240e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>9.999999404e-01</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.612432718e+00</r2c2>
+				<r2c3>-1.200510859e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>0.000000000e+00</x>
+				<y>0.000000000e+00</y>
+				<z>0.000000000e+00</z>
+			</origin>
+		</px>
+	</item>
+	<item>
+		<px class_id="5" class_name="LabelNode" tracking_level="1" version="0" object_id="_1">
+			<label class_id="6" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>N11</label.text>
+				<label.anchorPosition>
+					<x>1.676204801e-02</x>
+					<y>2.820012532e-02</y>
+					<z>-4.842323363e-01</z>
+				</label.anchorPosition>
+				<label.size class_id="7" tracking_level="0" version="0">
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_2">
+			<label>
+				<label.id>2</label.id>
+				<label.text>N21</label.text>
+				<label.anchorPosition>
+					<x>1.907133907e-01</x>
+					<y>-4.831303060e-01</y>
+					<z>1.732767969e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_3">
+			<label>
+				<label.id>4</label.id>
+				<label.text>N22</label.text>
+				<label.anchorPosition>
+					<x>-1.596263498e-01</x>
+					<y>-4.831686020e-01</y>
+					<z>-1.638088375e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="VolumeNode" tracking_level="1" version="0" object_id="_4">
+			<volumePath>assets/datasets/dice.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/dice2.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>1.800000000e+01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>1.800000000e+01</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>1.800000000e+01</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_5">
+			<label>
+				<label.id>5</label.id>
+				<label.text>N31</label.text>
+				<label.anchorPosition>
+					<x>-4.864571989e-01</x>
+					<y>-1.700221896e-01</y>
+					<z>-1.682062149e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_6">
+			<label>
+				<label.id>6</label.id>
+				<label.text>N32</label.text>
+				<label.anchorPosition>
+					<x>-4.847277105e-01</x>
+					<y>1.286578178e-02</y>
+					<z>-6.739691831e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_7">
+			<label>
+				<label.id>7</label.id>
+				<label.text>N33</label.text>
+				<label.anchorPosition>
+					<x>-4.807830155e-01</x>
+					<y>1.834527105e-01</y>
+					<z>1.813730448e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
