@@ -5,7 +5,7 @@
 #include "./labels.h"
 
 Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
-  : labels(labels), clusterCount(clusterCount)
+  : labels(labels), clusterCount(clusterCount), clusterCenters(clusterCount)
 {
 }
 
@@ -20,13 +20,11 @@ Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   {
     // clusterIndexToLabelIndices[0].push_back(labelIndex);
     zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
-    clusterIndices.push_back(0);
+    clusterIndices.push_back(labelIndex % clusterCount);
     ++labelIndex;
   }
 
-  clusterCenters.clear();
-  for (int i = 0; i < clusterCount; ++i)
-    clusterCenters.push_back((i + 0.5f) / clusterCount);
+  recalculateCenters();
 
   int updateCount = 0;
   do
