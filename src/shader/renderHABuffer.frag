@@ -20,7 +20,7 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
-uniform int transferFunctionWidth = 4096;
+uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
 const int layerCount = 4;

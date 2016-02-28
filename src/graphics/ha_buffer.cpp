@@ -9,6 +9,7 @@
 #include "./object_manager.h"
 #include "./volume_manager.h"
 #include "./texture_manager.h"
+#include "./transfer_function_manager.h"
 #include "../math/eigen.h"
 
 namespace Graphics
@@ -167,6 +168,9 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   Eigen::Vector3f sampleDistance =
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
   renderShader->setUniform("sampleDistance", sampleDistance);
+  renderShader->setUniform(
+      "transferFunctionWidth",
+      managers->getTransferFunctionManager()->getTextureWidth());
 
   Eigen::Vector3f normal = renderData.viewMatrix.row(2).head<3>().normalized();
   std::vector<Eigen::Vector4f> layerPlanes = {
