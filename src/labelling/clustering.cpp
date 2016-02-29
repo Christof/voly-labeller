@@ -44,6 +44,34 @@ Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   return result;
 }
 
+std::map<float, std::vector<int>> Clustering::updateAndReturnFarthestDepthValue(
+    Eigen::Matrix4f viewProjectionMatrix)
+{
+  auto allLabels = labels->getLabels();
+  update(viewProjectionMatrix);
+
+  std::map<float, std::vector<int>> result;
+  std::map<int, std::vector<float>> clusterIndexToZValues;
+  std::map<int, std::vector<int>> clusterIndexToLabelIds;
+  int labelIndex = 0;
+  for (auto &label : allLabels)
+  {
+    int clusterIndex = clusterIndices[labelIndex];
+    clusterIndexToZValues[clusterIndex].push_back(zValues[labelIndex]);
+    clusterIndexToLabelIds[clusterIndex].push_back(label.id);
+    ++labelIndex;
+  }
+
+  for (auto &pair : clusterIndexToZValues)
+  {
+    float maxDepth = *std::max_element(pair.second.begin(), pair.second.end());
+
+    result[maxDepth] = clusterIndexToLabelIds[pair.first];
+  }
+
+  return result;
+}
+
 int Clustering::updateStep()
 {
   int updateCount = 0;

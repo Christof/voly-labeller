@@ -139,3 +139,53 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClustersWhereLabelsAreAtTheFarEnd)
   }
 }
 
+TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
+{
+  auto labels = std::make_shared<Labels>();
+
+  labels->add(Label(0, "Label 0", Eigen::Vector3f(0, 0, 1)));
+  labels->add(Label(1, "Label 1", Eigen::Vector3f(0, 0, 0.7)));
+  labels->add(Label(2, "Label 2", Eigen::Vector3f(0, 0, 0.4)));
+  labels->add(Label(3, "Label 3", Eigen::Vector3f(0, 0, 0)));
+  labels->add(Label(4, "Label 4", Eigen::Vector3f(0, 0, 0.3)));
+  labels->add(Label(5, "Label 5", Eigen::Vector3f(0, 0, 0.35)));
+  labels->add(Label(6, "Label 6", Eigen::Vector3f(0, 0, 0.1)));
+  labels->add(Label(7, "Label 7", Eigen::Vector3f(0, 0, 0.9)));
+
+  Clustering clustering(labels, 3);
+
+  auto result =
+      clustering.updateAndReturnFarthestDepthValue(Eigen::Matrix4f::Identity());
+
+  ASSERT_EQ(3, result.size());
+
+  for (auto &pair : result)
+  {
+    auto indices = pair.second;
+    if (std::fabs(pair.first - 0.1) < 1e-5)
+    {
+      EXPECT_EQ(2, indices.size());
+      EXPECT_EQ(3, indices[0]);
+      EXPECT_EQ(6, indices[1]);
+    }
+    else if (std::fabs(pair.first - 0.4) < 1e-5)
+    {
+      EXPECT_EQ(3, indices.size());
+      EXPECT_EQ(2, indices[0]);
+      EXPECT_EQ(4, indices[1]);
+      EXPECT_EQ(5, indices[2]);
+    }
+    else if (std::fabs(pair.first - 1.0) < 1e-5)
+    {
+      EXPECT_EQ(3, indices.size());
+      EXPECT_EQ(0, indices[0]);
+      EXPECT_EQ(1, indices[1]);
+      EXPECT_EQ(7, indices[2]);
+    }
+    else
+    {
+      ADD_FAILURE() << "Unexpected cluster center: " << pair.first;
+    }
+  }
+}
+
