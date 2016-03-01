@@ -63,34 +63,28 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClusters)
 
   ASSERT_EQ(3, result.size());
 
-  for (auto &pair : result)
-  {
-    auto indices = pair.second;
-    if (std::fabs(pair.first - 0.05) < 1e-5)
-    {
-      EXPECT_EQ(2, indices.size());
-      EXPECT_EQ(3, indices[0]);
-      EXPECT_EQ(6, indices[1]);
-    }
-    else if (std::fabs(pair.first - 0.35) < 1e-5)
-    {
-      EXPECT_EQ(3, indices.size());
-      EXPECT_EQ(2, indices[0]);
-      EXPECT_EQ(4, indices[1]);
-      EXPECT_EQ(5, indices[2]);
-    }
-    else if (std::fabs(pair.first - 0.866666) < 1e-5)
-    {
-      EXPECT_EQ(3, indices.size());
-      EXPECT_EQ(0, indices[0]);
-      EXPECT_EQ(1, indices[1]);
-      EXPECT_EQ(7, indices[2]);
-    }
-    else
-    {
-      ADD_FAILURE() << "Unexpected cluster center: " << pair.first;
-    }
-  }
+  auto pairIterator = result.begin();
+  auto indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.05, pairIterator->first);
+  EXPECT_EQ(2, indices.size());
+  EXPECT_EQ(3, indices[0]);
+  EXPECT_EQ(6, indices[1]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.35, pairIterator->first);
+  EXPECT_EQ(3, indices.size());
+  EXPECT_EQ(2, indices[0]);
+  EXPECT_EQ(4, indices[1]);
+  EXPECT_EQ(5, indices[2]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.8666666, pairIterator->first);
+  EXPECT_EQ(3, indices.size());
+  EXPECT_EQ(0, indices[0]);
+  EXPECT_EQ(1, indices[1]);
+  EXPECT_EQ(7, indices[2]);
 }
 
 TEST(Test_Clustering, ForAsMoreLabelsThanClustersWhereLabelsAreAtTheFarEnd)
@@ -113,34 +107,28 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClustersWhereLabelsAreAtTheFarEnd)
 
   ASSERT_EQ(3, result.size());
 
-  for (auto &pair : result)
-  {
-    auto indices = pair.second;
-    if (std::fabs(pair.first - 0.75) < 1e-5)
-    {
-      EXPECT_EQ(2, indices.size());
-      EXPECT_EQ(0, indices[0]);
-      EXPECT_EQ(1, indices[1]);
-    }
-    else if (std::fabs(pair.first - 0.889999) < 1e-5)
-    {
-      EXPECT_EQ(4, indices.size());
-      EXPECT_EQ(2, indices[0]);
-      EXPECT_EQ(4, indices[1]);
-      EXPECT_EQ(6, indices[2]);
-      EXPECT_EQ(7, indices[3]);
-    }
-    else if (std::fabs(pair.first - 0.9499999) < 1e-5)
-    {
-      EXPECT_EQ(2, indices.size());
-      EXPECT_EQ(3, indices[0]);
-      EXPECT_EQ(5, indices[1]);
-    }
-    else
-    {
-      ADD_FAILURE() << "Unexpected cluster center: " << pair.first;
-    }
-  }
+  auto pairIterator = result.begin();
+  auto indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.75, pairIterator->first);
+  EXPECT_EQ(2, indices.size());
+  EXPECT_EQ(0, indices[0]);
+  EXPECT_EQ(1, indices[1]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.89, pairIterator->first);
+  EXPECT_EQ(4, indices.size());
+  EXPECT_EQ(2, indices[0]);
+  EXPECT_EQ(4, indices[1]);
+  EXPECT_EQ(6, indices[2]);
+  EXPECT_EQ(7, indices[3]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.95, pairIterator->first);
+  EXPECT_EQ(2, indices.size());
+  EXPECT_EQ(3, indices[0]);
+  EXPECT_EQ(5, indices[1]);
 }
 
 TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
@@ -163,33 +151,27 @@ TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
 
   ASSERT_EQ(3, result.size());
 
-  for (auto &pair : result)
-  {
-    auto indices = pair.second;
-    if (std::fabs(pair.first - 0.1) < 1e-5)
-    {
-      EXPECT_EQ(2, indices.size());
-      EXPECT_EQ(3, indices[0]);
-      EXPECT_EQ(6, indices[1]);
-    }
-    else if (std::fabs(pair.first - 0.4) < 1e-5)
-    {
-      EXPECT_EQ(3, indices.size());
-      EXPECT_EQ(2, indices[0]);
-      EXPECT_EQ(4, indices[1]);
-      EXPECT_EQ(5, indices[2]);
-    }
-    else if (std::fabs(pair.first - 1.0) < 1e-5)
-    {
-      EXPECT_EQ(3, indices.size());
-      EXPECT_EQ(0, indices[0]);
-      EXPECT_EQ(1, indices[1]);
-      EXPECT_EQ(7, indices[2]);
-    }
-    else
-    {
-      ADD_FAILURE() << "Unexpected cluster center: " << pair.first;
-    }
-  }
+  auto pairIterator = result.begin();
+  auto indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.1, pairIterator->first);
+  EXPECT_EQ(2, indices.size());
+  EXPECT_EQ(3, indices[0]);
+  EXPECT_EQ(6, indices[1]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(0.4, pairIterator->first);
+  EXPECT_EQ(3, indices.size());
+  EXPECT_EQ(2, indices[0]);
+  EXPECT_EQ(4, indices[1]);
+  EXPECT_EQ(5, indices[2]);
+
+  ++pairIterator;
+  indices = pairIterator->second;
+  EXPECT_FLOAT_EQ(1.0, pairIterator->first);
+  EXPECT_EQ(3, indices.size());
+  EXPECT_EQ(0, indices[0]);
+  EXPECT_EQ(1, indices[1]);
+  EXPECT_EQ(7, indices[2]);
 }
 
