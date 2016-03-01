@@ -12,8 +12,6 @@
 #include "./transfer_function_manager.h"
 #include "../math/eigen.h"
 
-#include <iostream>
-
 namespace Graphics
 {
 
@@ -174,31 +172,13 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
       "transferFunctionWidth",
       managers->getTransferFunctionManager()->getTextureWidth());
 
-  /*
-  Eigen::Vector3f normal = renderData.viewMatrix.row(2).head<3>().normalized();
-  std::vector<Eigen::Vector4f> layerPlanes = {
-    Eigen::Vector4f(normal.x(), normal.y(), normal.z(), -0.15f),
-    Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.0f),
-    Eigen::Vector4f(normal.x(), normal.y(), normal.z(), 0.1),
-  };
-  std::vector<float> planesZValuesNdc;
-
-  Eigen::Matrix4f inverseTransposeViewMatrix =
-      renderData.viewMatrix.transpose().inverse();
-
-  Eigen::Matrix4f viewProjectionMatrix =
-      renderData.projectionMatrix * renderData.viewMatrix;
-  */
   std::vector<Eigen::Vector4f> layerPlanes;
-  std::cout << "ProbePointsEye: " << std::endl;
   for (auto &layerZValue : layerZValues)
   {
     Eigen::Vector4f probePointNdc(0.0, 0.0, layerZValue, 1);
     Eigen::Vector3f probePointEye =
         project(renderData.projectionMatrix.inverse(), probePointNdc);
-    std::cout << probePointEye << std::endl;
     layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -probePointEye.z()));
-    //layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -layerZValue));
   }
 
   std::sort(layerPlanes.begin(), layerPlanes.end(),
@@ -206,11 +186,6 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
             {
     return left.w() < right.w();
   });
-
-  std::cout << "layerPlanes: ";
-  for (auto &p : layerPlanes)
-    std::cout << p << "|";
-  std::cout << std::endl;
 
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
                                       layerPlanes.size());
