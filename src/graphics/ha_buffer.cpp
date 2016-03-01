@@ -197,8 +197,8 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
     Eigen::Vector3f probePointEye =
         project(renderData.projectionMatrix.inverse(), probePointNdc);
     std::cout << probePointEye << std::endl;
-    //layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, probePointEye.z()));
-    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -layerZValue));
+    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -probePointEye.z()));
+    //layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -layerZValue));
   }
 
   std::sort(layerPlanes.begin(), layerPlanes.end(),

@@ -196,8 +196,8 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
   managers->getObjectManager()->render(renderData);
 
   Clustering clustering(labels, 3);
-  auto clusters =
-      clustering.updateAndReturnFarthestDepthValue(renderData.viewMatrix);
+  auto clusters = clustering.updateAndReturnFarthestDepthValue(
+      renderData.projectionMatrix * renderData.viewMatrix);
   std::vector<float> zValues;
   std::cout << "zValuesEye: ";
   for (auto pair : clusters)
