@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <memory>
+#include <vector>
 #include "./render_data.h"
 #include "./gl.h"
 #include "./timer.h"
