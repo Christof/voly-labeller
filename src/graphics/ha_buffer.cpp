@@ -12,6 +12,8 @@
 #include "./transfer_function_manager.h"
 #include "../math/eigen.h"
 
+#include <iostream>
+
 namespace Graphics
 {
 
@@ -172,6 +174,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
       "transferFunctionWidth",
       managers->getTransferFunctionManager()->getTextureWidth());
 
+  /*
   Eigen::Vector3f normal = renderData.viewMatrix.row(2).head<3>().normalized();
   std::vector<Eigen::Vector4f> layerPlanes = {
     Eigen::Vector4f(normal.x(), normal.y(), normal.z(), -0.15f),
@@ -185,20 +188,34 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
 
   Eigen::Matrix4f viewProjectionMatrix =
       renderData.projectionMatrix * renderData.viewMatrix;
-  for (auto &plane : layerPlanes)
+  */
+  std::vector<Eigen::Vector4f> layerPlanes;
+  std::cout << "ProbePointsEye: " << std::endl;
+  for (auto &layerZValue : layerZValues)
   {
-    float alpha = -toVector4f(renderData.cameraPosition).dot(plane);
-    Eigen::Vector3f pointOnPlane = renderData.cameraPosition + alpha * normal;
-    Eigen::Vector3f projected = project(viewProjectionMatrix, pointOnPlane);
-    planesZValuesNdc.push_back(projected.z());
-
-    plane = inverseTransposeViewMatrix * plane;
+    Eigen::Vector4f probePointNdc(0.0, 0.0, layerZValue, 1);
+    Eigen::Vector3f probePointEye =
+        project(renderData.projectionMatrix.inverse(), probePointNdc);
+    std::cout << probePointEye << std::endl;
+    //layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, probePointEye.z()));
+    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -layerZValue));
   }
+
+  std::sort(layerPlanes.begin(), layerPlanes.end(),
+            [](const Eigen::Vector4f &left, const Eigen::Vector4f &right)
+            {
+    return left.w() < right.w();
+  });
+
+  std::cout << "layerPlanes: ";
+  for (auto &p : layerPlanes)
+    std::cout << p << "|";
+  std::cout << std::endl;
 
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
                                       layerPlanes.size());
-  renderShader->setUniformAsFloatArray(
-      "planesZValuesNdc", planesZValuesNdc.data(), planesZValuesNdc.size());
+  renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
+                                       layerZValues.size());
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   managers->getVolumeManager()->fillCustomBuffer(objectData);
@@ -219,6 +236,11 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
 
   gl->glDepthFunc(GL_LESS);
   gl->glEnable(GL_BLEND);
+}
+
+void HABuffer::setLayerZValues(std::vector<float> layerZValues)
+{
+  this->layerZValues = layerZValues;
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)

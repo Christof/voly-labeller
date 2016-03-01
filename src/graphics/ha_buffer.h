@@ -70,6 +70,8 @@ class HABuffer
   void render(std::shared_ptr<Graphics::Managers> managers,
               const RenderData &renderData);
 
+  void setLayerZValues(std::vector<float> layerZValues);
+
   bool wireframe = false;
 
  private:
@@ -104,6 +106,8 @@ class HABuffer
   Timer clearTimer;
   Timer buildTimer;
   Timer renderTimer;
+
+  std::vector<float> layerZValues;
 };
 
 }  // namespace Graphics

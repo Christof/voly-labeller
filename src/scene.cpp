@@ -24,6 +24,7 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./placement/constraint_updater.h"
+#include "./labelling/clustering.h"
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -194,6 +195,22 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   managers->getObjectManager()->render(renderData);
 
+  Clustering clustering(labels, 3);
+  auto clusters =
+      clustering.updateAndReturnFarthestDepthValue(renderData.viewMatrix);
+  std::vector<float> zValues;
+  std::cout << "zValuesEye: ";
+  for (auto pair : clusters)
+  {
+    zValues.push_back(pair.first);
+    std::cout << pair.first << ":";
+    for (auto z : pair.second)
+      std::cout << z << ", ";
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+
+  haBuffer->setLayerZValues(zValues);
   haBuffer->render(managers, renderData);
 
   picker->doPick(renderData.projectionMatrix * renderData.viewMatrix);
