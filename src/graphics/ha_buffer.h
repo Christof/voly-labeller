@@ -79,6 +79,8 @@ class HABuffer
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
   void syncAndGetCounts();
   void displayStatistics(const char *label);
+  void setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
+                           const RenderData &renderData);
 
   // vec4 color and vec4 position
   const int FRAGMENT_DATA_SIZE = 36;

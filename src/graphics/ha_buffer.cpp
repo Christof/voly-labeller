@@ -172,25 +172,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
       "transferFunctionWidth",
       managers->getTransferFunctionManager()->getTextureWidth());
 
-  std::vector<Eigen::Vector4f> layerPlanes;
-  for (auto &layerZValue : layerZValues)
-  {
-    Eigen::Vector4f probePointNdc(0.0, 0.0, layerZValue, 1);
-    Eigen::Vector3f probePointEye =
-        project(renderData.projectionMatrix.inverse(), probePointNdc);
-    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -probePointEye.z()));
-  }
-
-  std::sort(layerPlanes.begin(), layerPlanes.end(),
-            [](const Eigen::Vector4f &left, const Eigen::Vector4f &right)
-            {
-    return left.w() < right.w();
-  });
-
-  renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
-                                      layerPlanes.size());
-  renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
-                                       layerZValues.size());
+  setLayeringUniforms(renderShader, renderData);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   managers->getVolumeManager()->fillCustomBuffer(objectData);
@@ -230,6 +212,30 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("records", recordsBuffer);
   shader->setUniform("counters", countsBuffer);
   shader->setUniform("fragmentData", fragmentDataBuffer);
+}
+
+void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
+                                   const RenderData &renderData)
+{
+  std::vector<Eigen::Vector4f> layerPlanes;
+  for (auto &layerZValue : layerZValues)
+  {
+    Eigen::Vector4f probePointNdc(0.0, 0.0, layerZValue, 1);
+    Eigen::Vector3f probePointEye =
+        project(renderData.projectionMatrix.inverse(), probePointNdc);
+    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -probePointEye.z()));
+  }
+
+  std::sort(layerPlanes.begin(), layerPlanes.end(),
+            [](const Eigen::Vector4f &left, const Eigen::Vector4f &right)
+            {
+    return left.w() < right.w();
+  });
+
+  renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
+                                      layerPlanes.size());
+  renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
+                                       layerZValues.size());
 }
 
 void HABuffer::syncAndGetCounts()
