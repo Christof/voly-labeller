@@ -9,10 +9,9 @@ Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
 {
 }
 
-std::map<float, std::vector<int>>
-Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
+void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 {
-  auto allLabels = labels->getLabels();
+  allLabels = labels->getLabels();
 
   zValues.clear();
   int labelIndex = 0;
@@ -31,8 +30,11 @@ Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   {
     updateCount = updateStep();
   } while (updateCount != 0);
+}
 
-  labelIndex = 0;
+std::map<float, std::vector<int>> Clustering::getCentersWithLabelIds()
+{
+  int labelIndex = 0;
   std::map<float, std::vector<int>> result;
   for (auto &label : allLabels)
   {
@@ -44,12 +46,9 @@ Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   return result;
 }
 
-std::map<float, std::vector<int>> Clustering::updateAndReturnFarthestDepthValue(
-    Eigen::Matrix4f viewProjectionMatrix)
+std::map<float, std::vector<int>>
+Clustering::getFarthestClusterMembersWithLabelIds()
 {
-  auto allLabels = labels->getLabels();
-  update(viewProjectionMatrix);
-
   std::map<float, std::vector<int>> result;
   std::map<int, std::vector<float>> clusterIndexToZValues;
   std::map<int, std::vector<int>> clusterIndexToLabelIds;

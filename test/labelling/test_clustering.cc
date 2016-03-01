@@ -8,7 +8,8 @@ TEST(Test_Clustering, ForNoLabel)
 
   Clustering clustering(labels, 4);
 
-  auto result = clustering.update(Eigen::Matrix4f::Identity());
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getCentersWithLabelIds();
 
   EXPECT_EQ(0, result.size());
 }
@@ -24,7 +25,8 @@ TEST(Test_Clustering, ForAsManyLabelsAsClusters)
 
   Clustering clustering(labels, 4);
 
-  auto result = clustering.update(Eigen::Matrix4f::Identity());
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getCentersWithLabelIds();
 
   ASSERT_EQ(4, result.size());
 
@@ -56,7 +58,8 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClusters)
 
   Clustering clustering(labels, 3);
 
-  auto result = clustering.update(Eigen::Matrix4f::Identity());
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getCentersWithLabelIds();
 
   ASSERT_EQ(3, result.size());
 
@@ -105,7 +108,8 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClustersWhereLabelsAreAtTheFarEnd)
 
   Clustering clustering(labels, 3);
 
-  auto result = clustering.update(Eigen::Matrix4f::Identity());
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getCentersWithLabelIds();
 
   ASSERT_EQ(3, result.size());
 
@@ -154,8 +158,8 @@ TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
 
   Clustering clustering(labels, 3);
 
-  auto result =
-      clustering.updateAndReturnFarthestDepthValue(Eigen::Matrix4f::Identity());
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getFarthestClusterMembersWithLabelIds();
 
   ASSERT_EQ(3, result.size());
 

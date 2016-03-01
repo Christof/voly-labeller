@@ -20,20 +20,21 @@ class Clustering
  public:
   Clustering(std::shared_ptr<Labels> labels, int clusterCount);
 
+  void update(Eigen::Matrix4f viewProjectionMatrix);
+
   // returns map of clusters (given by their z-value) to all their labels
   // (given as vector of label Ids).
-  std::map<float, std::vector<int>>
-  update(Eigen::Matrix4f viewProjectionMatrix);
+  std::map<float, std::vector<int>> getCentersWithLabelIds();
 
   // returns map of clusters (given by farthest z-value of clust members)
   // to all their labels // (given as vector of label Ids).
-  std::map<float, std::vector<int>>
-  updateAndReturnFarthestDepthValue(Eigen::Matrix4f viewProjectionMatrix);
+  std::map<float, std::vector<int>> getFarthestClusterMembersWithLabelIds();
 
  private:
   std::shared_ptr<Labels> labels;
   int clusterCount;
 
+  std::vector<Label> allLabels;
   std::map<int, std::vector<int>> clusterIndexToLabelIndices;
 
   std::vector<float> zValues;
