@@ -15,7 +15,7 @@ namespace Placement
 
 QLoggingCategory plChan("Placement.Labeller");
 
-Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
+Labeller::Labeller(std::shared_ptr<LabelsContainer> labels) : labels(labels)
 {
 }
 

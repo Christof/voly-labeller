@@ -6,7 +6,7 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "../labelling/labels.h"
+#include "../labelling/labels_container.h"
 #include "../labelling/labeller_frame_data.h"
 #include "./cost_function_calculator.h"
 
@@ -33,7 +33,7 @@ class SummedAreaTable;
 class Labeller
 {
  public:
-  explicit Labeller(std::shared_ptr<Labels> labels);
+  explicit Labeller(std::shared_ptr<LabelsContainer> labels);
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
@@ -51,7 +51,7 @@ class Labeller
   void cleanup();
 
  private:
-  std::shared_ptr<Labels> labels;
+  std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
