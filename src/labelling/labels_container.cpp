@@ -19,6 +19,11 @@ int LabelsContainer::count()
   return labels.size();
 }
 
+void LabelsContainer::clear()
+{
+  labels.clear();
+}
+
 std::vector<Label> LabelsContainer::getLabels()
 {
   std::vector<Label> result;

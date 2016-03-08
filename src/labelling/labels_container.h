@@ -22,6 +22,8 @@ class LabelsContainer
 
   int count();
 
+  void clear();
+
   std::vector<Label> getLabels();
 
  protected:
