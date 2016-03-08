@@ -17,6 +17,7 @@
 #include "./graphics/managers.h"
 #include "./graphics/standard_texture_2d.h"
 #include "./picker.h"
+#include "./labelling/clustering.h"
 
 class Nodes;
 class InvokeManager;
@@ -73,6 +74,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::Managers> managers;
   std::unique_ptr<Picker> picker;
   FrustumOptimizer frustumOptimizer;
+  Clustering clustering;
 
   int width;
   int height;

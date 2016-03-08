@@ -24,7 +24,6 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./placement/constraint_updater.h"
-#include "./labelling/clustering.h"
 
 const int LAYER_COUNT = 4;
 
@@ -36,6 +35,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
     placementLabeller(placementLabeller), frustumOptimizer(nodes),
+    clustering(labels, LAYER_COUNT - 1),
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
@@ -197,9 +197,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   managers->getObjectManager()->render(renderData);
 
-  Clustering clustering(labels, 3);
-  clustering.update(
-      renderData.projectionMatrix * renderData.viewMatrix);
+  clustering.update(renderData.projectionMatrix * renderData.viewMatrix);
   auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
   std::vector<float> zValues;
   std::cout << "zValuesEye: ";
