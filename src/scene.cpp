@@ -26,6 +26,8 @@
 #include "./placement/constraint_updater.h"
 #include "./labelling/clustering.h"
 
+const int LAYER_COUNT = 4;
+
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> forcesLabeller,
@@ -39,7 +41,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, getCamera());
 
-  fbo = std::make_shared<Graphics::FrameBufferObject>();
+  fbo = std::make_shared<Graphics::FrameBufferObject>(LAYER_COUNT);
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }

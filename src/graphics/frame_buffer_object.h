@@ -28,7 +28,7 @@ class Gl;
 class FrameBufferObject
 {
  public:
-  FrameBufferObject();
+  explicit FrameBufferObject(int layerCount);
   ~FrameBufferObject();
 
   void initialize(Gl *gl, int width, int height);
@@ -50,7 +50,7 @@ class FrameBufferObject
   int getLayerCount();
 
  private:
-  const int layerCount = 4;
+  int layerCount;
   unsigned int framebuffer = 0;
   std::vector<unsigned int> colorTextures;
   std::vector<unsigned int> depthTextures;
