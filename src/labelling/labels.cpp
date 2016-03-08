@@ -15,7 +15,7 @@ Labels::subscribe(std::function<void(Action action, const Label &)> subscriber)
 
 void Labels::add(Label label)
 {
-  labels[label.id] = label;
+  LabelsContainer::add(label);
   notify(Action::Add, label);
 }
 
@@ -33,28 +33,6 @@ void Labels::remove(Label label)
 {
   labels.erase(labels.find(label.id));
   notify(Action::Delete, label);
-}
-
-std::vector<Label> Labels::getLabels()
-{
-  std::vector<Label> result;
-  for (auto &pair : labels)
-    result.push_back(pair.second);
-
-  return result;
-}
-
-Label Labels::getById(int id)
-{
-  if (labels.count(id))
-    return labels[id];
-
-  return Label();
-}
-
-int Labels::count()
-{
-  return labels.size();
 }
 
 void Labels::notify(Action action, const Label &label)

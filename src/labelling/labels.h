@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include "./label.h"
+#include "./labels_container.h"
 
 /**
  * \brief Collection of all labels
@@ -13,7 +14,7 @@
  * Provides an observer mechanism to subscribe to changes of
  * labels or the addition of a new one.
  */
-class Labels
+class Labels : public LabelsContainer
 {
  public:
   enum Action
@@ -28,12 +29,9 @@ class Labels
   std::function<void()>
   subscribe(std::function<void(Action action, const Label &)> subscriber);
 
-  void add(Label label);
+  virtual void add(Label label);
   void update(Label label);
   void remove(Label label);
-  std::vector<Label> getLabels();
-  Label getById(int id);
-  int count();
 
  private:
   std::map<int, Label> labels;

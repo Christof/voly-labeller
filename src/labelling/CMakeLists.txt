@@ -5,6 +5,7 @@ project(labelling)
 include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(SOURCES
+  labels_container.cpp
   labels.cpp
   clustering.cpp
   )
