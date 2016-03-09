@@ -143,6 +143,9 @@ std::vector<int>
 Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
                                   Eigen::Vector2i bufferSize)
 {
+  if (labels->count() == 1)
+    return std::vector<int>{ labels->getLabels()[0].id };
+
   std::vector<Eigen::Vector4f> labelsSeed =
       createLabelSeeds(bufferSize, frameData.viewProjection);
 
