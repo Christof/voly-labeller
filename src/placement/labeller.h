@@ -60,7 +60,6 @@ class Labeller
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
   std::shared_ptr<PersistentConstraintUpdater> constraintUpdater;
-  std::vector<int> insertionOrder;
 
   Eigen::Vector2i size;
 

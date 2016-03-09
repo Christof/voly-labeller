@@ -65,7 +65,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
                              distanceTransformTextureMapper->getHeight());
-  insertionOrder = calculateInsertionOrder(frameData, bufferSize);
+  auto insertionOrder = calculateInsertionOrder(frameData, bufferSize);
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
