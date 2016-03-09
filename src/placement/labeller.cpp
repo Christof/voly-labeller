@@ -71,10 +71,6 @@ Labeller::update(const LabellerFrameData &frameData)
 
   constraintUpdater->clear();
 
-  labelSizesForBuffer.clear();
-  anchors2DForBuffer.clear();
-  labelPositionsForBuffer.clear();
-
   occupancySummedAreaTable->runKernel();
 
   for (size_t i = 0; i < insertionOrder.size(); ++i)
@@ -86,11 +82,9 @@ Labeller::update(const LabellerFrameData &frameData)
 
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
-    labelSizesForBuffer[id] = labelSizeForBuffer;
 
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
-    anchors2DForBuffer[id] = anchorForBuffer;
 
     updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 
@@ -99,7 +93,6 @@ Labeller::update(const LabellerFrameData &frameData)
         anchorPixels.y(), label.size.x(), label.size.y());
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
-    labelPositionsForBuffer[id] = newPosition;
     constraintUpdater->setPosition(id, newPosition);
 
     // occupancyUpdater->addLabel(newXPosition, newYPosition,
