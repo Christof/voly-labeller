@@ -196,15 +196,21 @@ void Scene::updateLabelling()
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
       */
   std::map<int, Eigen::Vector3f> newPositions;
+  int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
   {
-    auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
-    newPositions.insert(newPositionsForLayer.begin(),
-                        newPositionsForLayer.end());
+    if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
+    {
+      auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
+      newPositions.insert(newPositionsForLayer.begin(),
+                          newPositionsForLayer.end());
+    }
+
+    layerIndex++;
   }
 
   auto centerWithLabelIds = clustering.getCentersWithLabelIds();
-  int layerIndex = 0;
+  layerIndex = 0;
   for (auto &pair : centerWithLabelIds)
   {
     auto &container = labelsInLayer[layerIndex];
@@ -218,30 +224,14 @@ void Scene::updateLabelling()
 
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    if (activeLayerNumber == 0)
+    if (newPositions.count(labelNode->label.id))
     {
       labelNode->setIsVisible(true);
       labelNode->labelPosition = newPositions[labelNode->label.id];
     }
     else
     {
-      auto clusterToLabelIdsPair =
-          std::next(centerWithLabelIds.begin(), activeLayerNumber + 1);
-
-      if (clusterToLabelIdsPair == centerWithLabelIds.end())
-        continue;
-
-      auto &labelIds = clusterToLabelIdsPair->second;
-      if (std::find(labelIds.begin(), labelIds.end(), labelNode->label.id) !=
-          labelIds.end())
-      {
-        labelNode->labelPosition = newPositions[labelNode->label.id];
-        labelNode->setIsVisible(true);
-      }
-      else
-      {
-        labelNode->setIsVisible(false);
-      }
+      labelNode->setIsVisible(false);
     }
   }
 }
