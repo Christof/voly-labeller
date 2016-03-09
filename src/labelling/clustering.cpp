@@ -17,7 +17,6 @@ void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   int labelIndex = 0;
   for (auto &label : allLabels)
   {
-    // clusterIndexToLabelIndices[0].push_back(labelIndex);
     zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
     clusterIndices.push_back(labelIndex % clusterCount);
     ++labelIndex;

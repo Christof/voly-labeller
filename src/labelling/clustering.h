@@ -35,7 +35,6 @@ class Clustering
   int clusterCount;
 
   std::vector<Label> allLabels;
-  std::map<int, std::vector<int>> clusterIndexToLabelIndices;
 
   std::vector<float> zValues;
   std::vector<int> clusterIndices;
