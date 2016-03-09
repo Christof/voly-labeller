@@ -34,7 +34,6 @@ class Labels : public LabelsContainer
   void remove(Label label);
 
  private:
-  std::map<int, Label> labels;
   std::vector<std::function<void(Action action, const Label &)>> subscribers;
 
   void notify(Action action, const Label &label);
