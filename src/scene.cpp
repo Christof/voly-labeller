@@ -34,8 +34,7 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<TextureMapperManager> textureMapperManager)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    placementLabeller(placementLabeller), frustumOptimizer(nodes),
-    clustering(labels, LAYER_COUNT - 1),
+    frustumOptimizer(nodes), clustering(labels, LAYER_COUNT - 1),
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
@@ -99,16 +98,27 @@ void Scene::initialize()
       drawer, textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize());
 
-  placementLabeller->initialize(
-      textureMapperManager->getOccupancyTextureMapper(0),
-      textureMapperManager->getDistanceTransformTextureMapper(0),
-      textureMapperManager->getApolloniusTextureMapper(0),
-      textureMapperManager->getConstraintTextureMapper(0), constraintUpdater);
+  for (int layerIndex = 0; layerIndex < LAYER_COUNT; ++layerIndex)
+  {
+    auto labelsContainer = std::make_shared<LabelsContainer>();
+    labelsInLayer.push_back(labelsContainer);
+    auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
+    labeller->resize(width, height);
+    labeller->initialize(
+        textureMapperManager->getOccupancyTextureMapper(layerIndex),
+        textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
+        textureMapperManager->getApolloniusTextureMapper(layerIndex),
+        textureMapperManager->getConstraintTextureMapper(0), constraintUpdater);
+
+    placementLabellers.push_back(labeller);
+  }
 }
 
 void Scene::cleanup()
 {
-  placementLabeller->cleanup();
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->cleanup();
+
   textureMapperManager->cleanup();
 }
 
@@ -129,10 +139,54 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
       */
-  auto newPositions = placementLabeller->getLastPlacementResult();
+  std::map<int, Eigen::Vector3f> newPositions;
+  for (auto placementLabeller : placementLabellers)
+  {
+    auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
+    newPositions.insert(newPositionsForLayer.begin(),
+                        newPositionsForLayer.end());
+  }
+
+  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
+  int layerIndex = 0;
+  for (auto &pair : centerWithLabelIds)
+  {
+    auto &container = labelsInLayer[layerIndex];
+    container->clear();
+
+    for (int labelId : pair.second)
+      container->add(labels->getById(labelId));
+
+    layerIndex++;
+  }
+
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    labelNode->labelPosition = newPositions[labelNode->label.id];
+    if (activeLayerNumber == 0)
+    {
+      labelNode->setIsVisible(true);
+      labelNode->labelPosition = newPositions[labelNode->label.id];
+    }
+    else
+    {
+      auto clusterToLabelIdsPair =
+          std::next(centerWithLabelIds.begin(), activeLayerNumber + 1);
+
+      if (clusterToLabelIdsPair == centerWithLabelIds.end())
+        continue;
+
+      auto &labelIds = clusterToLabelIdsPair->second;
+      if (std::find(labelIds.begin(), labelIds.end(), labelNode->label.id) !=
+          labelIds.end())
+      {
+        labelNode->labelPosition = newPositions[labelNode->label.id];
+        labelNode->setIsVisible(true);
+      }
+      else
+      {
+        labelNode->setIsVisible(false);
+      }
+    }
   }
 }
 
@@ -164,8 +218,10 @@ void Scene::render()
 
   constraintBufferObject->bind();
 
-  placementLabeller->update(LabellerFrameData(
-      frameTime, camera->getProjectionMatrix(), camera->getViewMatrix()));
+  LabellerFrameData labellerFrameData(frameTime, camera->getProjectionMatrix(),
+                                      camera->getViewMatrix());
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->update(labellerFrameData);
 
   constraintBufferObject->unbind();
 
@@ -313,7 +369,8 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
-  placementLabeller->resize(width, height);
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->resize(width, height);
 
   shouldResize = true;
 

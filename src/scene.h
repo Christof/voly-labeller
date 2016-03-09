@@ -62,7 +62,8 @@ class Scene : public AbstractScene
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
-  std::shared_ptr<Placement::Labeller> placementLabeller;
+  std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
+  std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
   std::shared_ptr<Graphics::ScreenQuad> quad;
   std::shared_ptr<Graphics::ScreenQuad> screenQuad;
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
