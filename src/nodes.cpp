@@ -111,7 +111,8 @@ void Nodes::render(Graphics::Gl *gl,
                    std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData)
 {
-  for (auto &node : nodes)
+  auto allNodes = nodes;
+  for (auto &node : allNodes)
     node->render(gl, managers, renderData);
 
   if (showBoundingVolumes)
