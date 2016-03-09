@@ -54,6 +54,9 @@ void Labeller::cleanup()
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {
+  if (labels->count() == 0)
+    return std::map<int, Eigen::Vector3f>();
+
   newPositions.clear();
   if (!occupancySummedAreaTable.get())
     return newPositions;
