@@ -135,6 +135,62 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
+  updateLabelling();
+}
+
+void Scene::render()
+{
+  auto camera = getCamera();
+
+  if (shouldResize)
+  {
+    camera->resize(width, height);
+    fbo->resize(width, height);
+    shouldResize = false;
+  }
+
+  if (camera->needsResizing())
+    camera->resize(width, height);
+
+  glAssert(gl->glViewport(0, 0, width, height));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+
+  RenderData renderData = createRenderData();
+
+  renderNodesWithHABufferIntoFBO(renderData);
+
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  renderScreenQuad();
+
+  textureMapperManager->update();
+
+  constraintBufferObject->bind();
+
+  LabellerFrameData labellerFrameData(frameTime, camera->getProjectionMatrix(),
+                                      camera->getViewMatrix());
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->update(labellerFrameData);
+
+  constraintBufferObject->unbind();
+
+  glAssert(gl->glViewport(0, 0, width, height));
+
+  if (showConstraintOverlay)
+  {
+    constraintBufferObject->bindTexture(GL_TEXTURE0);
+    renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
+  }
+
+  if (showBufferDebuggingViews)
+    renderDebuggingViews(renderData);
+
+  glAssert(gl->glEnable(GL_DEPTH_TEST));
+
+  nodes->renderLabels(gl, managers, renderData);
+}
+
+void Scene::updateLabelling()
+{
   /*
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
@@ -188,57 +244,6 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
       }
     }
   }
-}
-
-void Scene::render()
-{
-  auto camera = getCamera();
-
-  if (shouldResize)
-  {
-    camera->resize(width, height);
-    fbo->resize(width, height);
-    shouldResize = false;
-  }
-
-  if (camera->needsResizing())
-    camera->resize(width, height);
-
-  glAssert(gl->glViewport(0, 0, width, height));
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-  RenderData renderData = createRenderData();
-
-  renderNodesWithHABufferIntoFBO(renderData);
-
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  renderScreenQuad();
-
-  textureMapperManager->update();
-
-  constraintBufferObject->bind();
-
-  LabellerFrameData labellerFrameData(frameTime, camera->getProjectionMatrix(),
-                                      camera->getViewMatrix());
-  for (auto placementLabeller : placementLabellers)
-    placementLabeller->update(labellerFrameData);
-
-  constraintBufferObject->unbind();
-
-  glAssert(gl->glViewport(0, 0, width, height));
-
-  if (showConstraintOverlay)
-  {
-    constraintBufferObject->bindTexture(GL_TEXTURE0);
-    renderQuad(transparentQuad, Eigen::Matrix4f::Identity());
-  }
-
-  if (showBufferDebuggingViews)
-    renderDebuggingViews(renderData);
-
-  glAssert(gl->glEnable(GL_DEPTH_TEST));
-
-  nodes->renderLabels(gl, managers, renderData);
 }
 
 void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)

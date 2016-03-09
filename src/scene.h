@@ -84,6 +84,8 @@ class Scene : public AbstractScene
   bool showConstraintOverlay = false;
   int activeLayerNumber = 0;
 
+  void updateLabelling();
+
   void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
