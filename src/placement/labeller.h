@@ -12,6 +12,7 @@
 
 class CudaArrayProvider;
 class ConstraintUpdater;
+class PersistentConstraintUpdater;
 
 /**
  * \brief Contains classes for label placement using a global minimization of a
@@ -58,7 +59,7 @@ class Labeller
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
-  std::shared_ptr<ConstraintUpdater> constraintUpdater;
+  std::shared_ptr<PersistentConstraintUpdater> constraintUpdater;
   std::vector<int> insertionOrder;
 
   Eigen::Vector2i size;
@@ -73,8 +74,7 @@ class Labeller
                                                 Eigen::Matrix4f viewProjection);
   std::vector<int> calculateInsertionOrder(const LabellerFrameData &frameData,
                                            Eigen::Vector2i bufferSize);
-  void updateConstraints(size_t currentLabelIndex,
-                         Eigen::Vector2i anchorForBuffer,
+  void updateConstraints(int id, Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
   Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
                                 Eigen::Vector2i bufferSize,

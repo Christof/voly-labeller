@@ -8,6 +8,7 @@
 #include "./apollonius.h"
 #include "./occupancy_updater.h"
 #include "./constraint_updater.h"
+#include "./persistent_constraint_updater.h"
 #include "../utils/memory.h"
 
 namespace Placement
@@ -34,7 +35,8 @@ void Labeller::initialize(
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
-  this->constraintUpdater = constraintUpdater;
+  this->constraintUpdater =
+      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
@@ -67,6 +69,8 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
+  constraintUpdater->clear();
+
   labelSizesForBuffer.clear();
   anchors2DForBuffer.clear();
   labelPositionsForBuffer.clear();
@@ -88,7 +92,7 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
     anchors2DForBuffer[id] = anchorForBuffer;
 
-    updateConstraints(i, anchorForBuffer, labelSizeForBuffer);
+    updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
@@ -96,6 +100,7 @@ Labeller::update(const LabellerFrameData &frameData)
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
     labelPositionsForBuffer[id] = newPosition;
+    constraintUpdater->setPosition(id, newPosition);
 
     // occupancyUpdater->addLabel(newXPosition, newYPosition,
     //                            labelSizeForBuffer.x(),
@@ -155,19 +160,10 @@ Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
   return apollonius.calculateOrdering();
 }
 
-void Labeller::updateConstraints(size_t currentLabelIndex,
-                                 Eigen::Vector2i anchorForBuffer,
+void Labeller::updateConstraints(int id, Eigen::Vector2i anchorForBuffer,
                                  Eigen::Vector2i labelSizeForBuffer)
 {
-  constraintUpdater->clear();
-  for (size_t insertedLabelIndex = 0; insertedLabelIndex < currentLabelIndex;
-       ++insertedLabelIndex)
-  {
-    int oldId = insertionOrder[insertedLabelIndex];
-    constraintUpdater->drawConstraintRegionFor(
-        anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
-        labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
-  }
+  constraintUpdater->updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,
