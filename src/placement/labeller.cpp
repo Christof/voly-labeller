@@ -86,7 +86,7 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
 
-    updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
+  constraintUpdater->updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
@@ -151,12 +151,6 @@ Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
                         labelsSeed, labels->count());
   apollonius.run();
   return apollonius.calculateOrdering();
-}
-
-void Labeller::updateConstraints(int id, Eigen::Vector2i anchorForBuffer,
-                                 Eigen::Vector2i labelSizeForBuffer)
-{
-  constraintUpdater->updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,

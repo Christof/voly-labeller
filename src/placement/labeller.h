@@ -70,8 +70,6 @@ class Labeller
                                                 Eigen::Matrix4f viewProjection);
   std::vector<int> calculateInsertionOrder(const LabellerFrameData &frameData,
                                            Eigen::Vector2i bufferSize);
-  void updateConstraints(int id, Eigen::Vector2i anchorForBuffer,
-                         Eigen::Vector2i labelSizeForBuffer);
   Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
                                 Eigen::Vector2i bufferSize,
                                 Eigen::Matrix4f inverseViewProjection);
