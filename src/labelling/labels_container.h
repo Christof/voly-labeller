@@ -7,9 +7,10 @@
 #include "./label.h"
 
 /**
- * \brief
+ * \brief Collection of lables with lookup by id
  *
- *
+ * This is used by Labels and also to work on a subset of all labels,
+ * e.g. labels of a layer or in cluster.
  */
 class LabelsContainer
 {
