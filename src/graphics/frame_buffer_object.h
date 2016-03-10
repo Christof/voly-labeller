@@ -50,7 +50,7 @@ class FrameBufferObject
   int getLayerCount();
 
  private:
-  const int layerCount = 2;
+  const int layerCount = 4;
   unsigned int framebuffer = 0;
   std::vector<unsigned int> colorTextures;
   std::vector<unsigned int> depthTextures;

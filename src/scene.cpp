@@ -115,11 +115,11 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   this->frameTime = frameTime;
   cameraControllers->update(camera, frameTime);
 
-  // frustumOptimizer.update(camera->getViewMatrix());
-  // camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
-  //                                frustumOptimizer.getFar());
-  // haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
-  //                                  frustumOptimizer.getFar());
+  frustumOptimizer.update(camera->getViewMatrix());
+  camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                 frustumOptimizer.getFar());
+  haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
+                                   frustumOptimizer.getFar());
 
   /*
   auto newPositions = forcesLabeller->update(LabellerFrameData(
@@ -211,6 +211,15 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
     renderQuad(quad, transformation.matrix());
   }
 
+  for (int i = 0; i < fbo->getLayerCount(); ++i)
+  {
+    fbo->bindDepthTexture(i, GL_TEXTURE0);
+    auto transformation = Eigen::Affine3f(
+        Eigen::Translation3f(Eigen::Vector3f(-0.8 + 0.4 * i, 0.8, 0)) *
+        Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+    renderQuad(quad, transformation.matrix());
+  }
+
   fbo->bindDepthTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
@@ -261,8 +270,13 @@ void Scene::renderScreenQuad()
   {
     fbo->bindColorTexture(0, GL_TEXTURE0);
     fbo->bindColorTexture(1, GL_TEXTURE1);
+    fbo->bindColorTexture(2, GL_TEXTURE2);
+    fbo->bindColorTexture(3, GL_TEXTURE3);
 
-    screenQuad->getShaderProgram()->setUniform("textureSampler2", 1);
+    screenQuad->getShaderProgram()->setUniform("layer1", 0);
+    screenQuad->getShaderProgram()->setUniform("layer2", 1);
+    screenQuad->getShaderProgram()->setUniform("layer3", 2);
+    screenQuad->getShaderProgram()->setUniform("layer4", 3);
     renderQuad(screenQuad, Eigen::Matrix4f::Identity());
 
     gl->glActiveTexture(GL_TEXTURE0);

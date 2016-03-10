@@ -32,3 +32,13 @@ void SceneController::renderSecondLayer()
   scene->setRenderLayer(2);
 }
 
+void SceneController::renderThirdLayer()
+{
+  scene->setRenderLayer(3);
+}
+
+void SceneController::renderFourthLayer()
+{
+  scene->setRenderLayer(4);
+}
+
