@@ -199,6 +199,7 @@ void Scene::updateLabelling()
   auto newPositions = forcesLabeller->update(LabellerFrameData(
       frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
       */
+  persistentConstraintUpdater->clear();
   std::map<int, Eigen::Vector3f> newPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)

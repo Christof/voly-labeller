@@ -68,8 +68,6 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
-  constraintUpdater->clear();
-
   occupancySummedAreaTable->runKernel();
 
   for (size_t i = 0; i < insertionOrder.size(); ++i)
