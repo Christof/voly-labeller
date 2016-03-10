@@ -25,6 +25,7 @@ class CameraControllers;
 class TextureMapperManager;
 class ConstraintBufferObject;
 class Labels;
+class PersistentConstraintUpdater;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -71,6 +72,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
   std::shared_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
+  std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
   std::shared_ptr<Graphics::Managers> managers;
   std::unique_ptr<Picker> picker;

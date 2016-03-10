@@ -25,7 +25,7 @@ void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
     std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
-    std::shared_ptr<ConstraintUpdater> constraintUpdater)
+    std::shared_ptr<PersistentConstraintUpdater> constraintUpdater)
 {
   qCInfo(plChan) << "Initialize";
   if (!occupancySummedAreaTable.get())
@@ -35,8 +35,7 @@ void Labeller::initialize(
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
-  this->constraintUpdater =
-      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
+  this->constraintUpdater = constraintUpdater;
 
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);

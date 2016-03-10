@@ -41,7 +41,7 @@ class Labeller
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
-             std::shared_ptr<ConstraintUpdater> constraintUpdater);
+             std::shared_ptr<PersistentConstraintUpdater> constraintUpdater);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 

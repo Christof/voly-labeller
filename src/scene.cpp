@@ -24,6 +24,7 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./placement/constraint_updater.h"
+#include "./placement/persistent_constraint_updater.h"
 
 const int LAYER_COUNT = 4;
 
@@ -97,6 +98,8 @@ void Scene::initialize()
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
       drawer, textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize());
+  persistentConstraintUpdater =
+      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
   for (int layerIndex = 0; layerIndex < LAYER_COUNT; ++layerIndex)
   {
@@ -108,7 +111,8 @@ void Scene::initialize()
         textureMapperManager->getOccupancyTextureMapper(layerIndex),
         textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
         textureMapperManager->getApolloniusTextureMapper(layerIndex),
-        textureMapperManager->getConstraintTextureMapper(0), constraintUpdater);
+        textureMapperManager->getConstraintTextureMapper(0),
+        persistentConstraintUpdater);
 
     placementLabellers.push_back(labeller);
   }
