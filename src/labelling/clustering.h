@@ -11,8 +11,7 @@
 class Labels;
 
 /**
- * \brief
- *
+ * \brief Cluster given labels by their depth using k-means
  *
  */
 class Clustering
@@ -22,12 +21,15 @@ class Clustering
 
   void update(Eigen::Matrix4f viewProjectionMatrix);
 
-  // returns map of clusters (given by their z-value) to all their labels
-  // (given as vector of label Ids).
+  /** \brief Returns map of clusters (given by their z-value) to all their
+   * labels (given as vector of label Ids).
+   */
   std::map<float, std::vector<int>> getCentersWithLabelIds();
 
-  // returns map of clusters (given by farthest z-value of clust members)
-  // to all their labels // (given as vector of label Ids).
+  /** \brief Returns map of clusters (given by farthest z-value of clust
+   * members)
+   * to all their labels // (given as vector of label Ids).
+   */
   std::map<float, std::vector<int>> getFarthestClusterMembersWithLabelIds();
 
  private:
@@ -40,7 +42,11 @@ class Clustering
   std::vector<int> clusterIndices;
   std::vector<float> clusterCenters;
 
-  // returns number of changes
+  /** \brief Iterate over all labels, assign each label to the nearest clust
+   * and recalculate the cluster centers
+   *
+   * \return Number of assignment changes
+   */
   int updateStep();
   int findNearestCluster(float zValue);
   void recalculateCenters();
