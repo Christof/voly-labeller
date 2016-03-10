@@ -3,17 +3,26 @@
 
 __global__ void occupancyKernel(cudaTextureObject_t positions,
                                 cudaSurfaceObject_t output, int width,
-                                int height, float widthScale, float heightScale)
+                                int height, int widthScale, int heightScale)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= width || y >= height)
     return;
 
-  float4 position =
-      tex2D<float4>(positions, x * widthScale + 0.5f, y * heightScale + 0.5f);
+  float maxDepth = -1.0f;
+  for (int i = 0; i < widthScale; ++i)
+  {
+    for (int j = 0; j < heightScale; ++j)
+    {
+      float4 position = tex2D<float4>(positions, x * widthScale + 0.5f + i,
+                                      y * heightScale + 0.5f + j);
+      if (position.z > maxDepth)
+        maxDepth = position.z;
+    }
+  }
 
-  float outputValue = 1.0f - position.z;
+  float outputValue = 1.0f - maxDepth;
   surf2Dwrite(outputValue, output, x * sizeof(float), y);
 }
 
@@ -46,8 +55,8 @@ void Occupancy::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  float widthScale = positionProvider->getWidth() / outputWidth;
-  float heightScale = positionProvider->getHeight() / outputHeight;
+  int widthScale = positionProvider->getWidth() / outputWidth;
+  int heightScale = positionProvider->getHeight() / outputHeight;
 
   occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
       outputWidth, outputHeight, widthScale, heightScale);
