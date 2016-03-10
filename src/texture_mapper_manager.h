@@ -40,7 +40,7 @@ class TextureMapperManager
   std::shared_ptr<CudaTextureMapper>
   getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
-  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
 
   void cleanup();
 
@@ -53,6 +53,7 @@ class TextureMapperManager
  private:
   int bufferSize;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
+  std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

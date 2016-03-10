@@ -34,7 +34,13 @@ void TextureMapperManager::initialize(
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
   for (auto mappersForLayer : mappersForLayers)
-    mappersForLayer->initialize(gl, fbo, constraintBufferObject);
+    mappersForLayer->initialize(gl, fbo);
+
+  constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadOnlyMapper(
+          constraintBufferObject->getRenderTextureId(),
+          constraintBufferObject->getWidth(),
+          constraintBufferObject->getHeight()));
 }
 
 void TextureMapperManager::resize(int width, int height)
@@ -83,15 +89,17 @@ TextureMapperManager::getApolloniusTextureMapper(int layerIndex)
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getConstraintTextureMapper(int layerIndex)
+TextureMapperManager::getConstraintTextureMapper()
 {
-  return mappersForLayers[layerIndex]->getConstraintTextureMapper();
+  return constraintTextureMapper;
 }
 
 void TextureMapperManager::cleanup()
 {
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
+
+  constraintTextureMapper.reset();
 }
 
 void TextureMapperManager::saveOccupancy()

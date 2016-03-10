@@ -13,10 +13,10 @@ namespace Placement
 class Occupancy;
 class DistanceTransform;
 }
-class ConstraintBufferObject;
 
 /**
- * \brief Container for CudaTextureMapper%s and corresponding textures for a layer
+ * \brief Container for CudaTextureMapper%s and corresponding textures for a
+ * layer
  *
  * It also provides methods to save a texture to the filesystem as well
  * as methods to bind the textures to render them for debugging purposes.
@@ -28,8 +28,7 @@ class TextureMappersForLayer
   virtual ~TextureMappersForLayer();
 
   void
-  initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
-             std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
+  initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo);
 
   void resize(int widht, int height);
 
@@ -42,7 +41,6 @@ class TextureMappersForLayer
   std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
   std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
 
   void cleanup();
 
@@ -56,7 +54,6 @@ class TextureMappersForLayer
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
   std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
-  std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
 
   std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
@@ -73,9 +70,7 @@ class TextureMappersForLayer
   bool saveDistanceTransformInNextFrame = false;
   bool saveApolloniusInNextFrame = false;
 
-  void initializeMappers(
-      std::shared_ptr<Graphics::FrameBufferObject> fbo,
-      std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
+  void initializeMappers(std::shared_ptr<Graphics::FrameBufferObject> fbo);
 };
 
 #endif  // SRC_TEXTURE_MAPPERS_FOR_LAYER_H_

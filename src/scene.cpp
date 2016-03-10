@@ -111,7 +111,7 @@ void Scene::initialize()
         textureMapperManager->getOccupancyTextureMapper(layerIndex),
         textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
         textureMapperManager->getApolloniusTextureMapper(layerIndex),
-        textureMapperManager->getConstraintTextureMapper(0),
+        textureMapperManager->getConstraintTextureMapper(),
         persistentConstraintUpdater);
 
     placementLabellers.push_back(labeller);
