@@ -48,7 +48,7 @@ TEST(Test_Persister, SaveAndLoadALabelPointer)
   auto label = new Label(2, "my label 2", Eigen::Vector3f(1, 2, 3));
 
   Persister::save(label, "test.xml");
-  auto loaded = Persister::load<Label*>("test.xml");
+  auto loaded = Persister::load<Label *>("test.xml");
   EXPECT_EQ(label->id, loaded->id);
   EXPECT_EQ(label->text, loaded->text);
   EXPECT_Vector3f_NEAR(label->anchorPosition, loaded->anchorPosition, 1E-5f);
@@ -62,21 +62,23 @@ TEST(Test_Persister, SaveAndLoadAVectorOfLabelPointers)
   auto label = new Label(1, "my label 1", Eigen::Vector3f(1, 2, 3));
   auto label2 = new Label(2, "my label 2", Eigen::Vector3f(4, 5, 6));
 
-  std::vector<Label*> labels;
+  std::vector<Label *> labels;
   labels.push_back(label);
   labels.push_back(label2);
 
   Persister::save(labels, "test.xml");
-  auto loaded = Persister::load<std::vector<Label*>>("test.xml");
+  auto loaded = Persister::load<std::vector<Label *>>("test.xml");
   auto loadedLabel1 = loaded[0];
   auto loadedLabel2 = loaded[1];
   EXPECT_EQ(label->id, loadedLabel1->id);
   EXPECT_EQ(label->text, loadedLabel1->text);
-  EXPECT_Vector3f_NEAR(label->anchorPosition, loadedLabel1->anchorPosition, 1E-5f);
+  EXPECT_Vector3f_NEAR(label->anchorPosition, loadedLabel1->anchorPosition,
+                       1E-5f);
 
   EXPECT_EQ(label2->id, loadedLabel2->id);
   EXPECT_EQ(label2->text, loadedLabel2->text);
-  EXPECT_Vector3f_NEAR(label2->anchorPosition, loadedLabel2->anchorPosition, 1E-5f);
+  EXPECT_Vector3f_NEAR(label2->anchorPosition, loadedLabel2->anchorPosition,
+                       1E-5f);
 
   delete label;
   delete label2;
