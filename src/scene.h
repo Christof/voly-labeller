@@ -85,6 +85,7 @@ class Scene : public AbstractScene
   bool shouldResize = false;
   bool showBufferDebuggingViews = false;
   bool showConstraintOverlay = false;
+  bool firstFramesWithoutPlacement = true;
   int activeLayerNumber = 0;
 
   void updateLabelling();
