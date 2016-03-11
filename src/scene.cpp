@@ -3,6 +3,7 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
+#include <map>
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"

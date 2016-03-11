@@ -27,8 +27,8 @@ class TextureMappersForLayer
   TextureMappersForLayer(int bufferSize, int layerIndex);
   virtual ~TextureMappersForLayer();
 
-  void
-  initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo);
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::FrameBufferObject> fbo);
 
   void resize(int widht, int height);
 

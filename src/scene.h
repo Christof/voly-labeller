@@ -3,6 +3,7 @@
 #define SRC_SCENE_H_
 
 #include <functional>
+#include <vector>
 #include "./utils/memory.h"
 #include "./abstract_scene.h"
 #include "./camera.h"

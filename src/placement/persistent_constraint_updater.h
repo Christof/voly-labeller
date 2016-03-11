@@ -2,9 +2,9 @@
 
 #define SRC_PLACEMENT_PERSISTENT_CONSTRAINT_UPDATER_H_
 
+#include <Eigen/Core>
 #include <memory>
 #include <map>
-#include <Eigen/Core>
 
 class ConstraintUpdater;
 
