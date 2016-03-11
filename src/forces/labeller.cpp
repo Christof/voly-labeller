@@ -115,6 +115,18 @@ Labeller::update(const LabellerFrameData &frameData,
   return positions;
 }
 
+void Labeller::setPositions(const LabellerFrameData &frameData,
+                            std::map<int, Eigen::Vector3f> positions)
+{
+  for (auto &label : labelStates)
+  {
+    if (positions.count(label.id))
+      label.labelPosition = positions[label.id];
+
+    label.update2dValues(frameData);
+  }
+}
+
 std::vector<LabelState> Labeller::getLabels()
 {
   return labelStates;
