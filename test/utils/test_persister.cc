@@ -94,3 +94,10 @@ TEST(Test_Persister, SaveAndLoadAMatrix)
   auto loaded = Persister::load<Eigen::Matrix4f>("test.xml");
   EXPECT_Matrix4f_NEAR(matrix, loaded, 1E-5f);
 }
+
+TEST(Test_Persister, LoadThrowsExceptionForNotExistingFile)
+{
+  ASSERT_THROW(Persister::load<Eigen::Matrix4f>("not-existing-file.xml"),
+               std::invalid_argument);
+}
+

@@ -2,6 +2,7 @@
 
 #define SRC_UTILS_PERSISTER_H_
 
+#include <boost/filesystem.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/serialization/vector.hpp>
@@ -31,6 +32,10 @@ class Persister
 
   template <typename T> static T load(std::string filename)
   {
+    if (!boost::filesystem::exists(filename))
+      throw std::invalid_argument("The given file '" + filename +
+                                  "' does not exist.");
+
     std::ifstream ifs(absolutePathOfProjectRelativePath(filename));
     boost::archive::xml_iarchive ia(ifs);
 
