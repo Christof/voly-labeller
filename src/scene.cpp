@@ -214,6 +214,12 @@ void Scene::updateLabelling()
   auto camera = getCamera();
   LabellerFrameData frameData(frameTime, camera->getProjectionMatrix(),
                               camera->getViewMatrix());
+  if (firstFramesWithoutPlacement && placementPositions.size())
+  {
+    firstFramesWithoutPlacement = false;
+    forcesLabeller->setPositions(frameData, placementPositions);
+  }
+
   auto newPositions = forcesLabeller->update(frameData, placementPositions);
 
   for (auto &labelNode : nodes->getLabelNodes())
