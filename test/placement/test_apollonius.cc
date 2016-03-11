@@ -88,25 +88,26 @@ TEST(Test_Apollonius, Apollonius)
   EXPECT_EQ(0, insertionOrder[0]);
 
   ASSERT_EQ(16, image.size());
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[0], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[1], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[2], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[3], 1e-4f);
+  Eigen::Vector4f expectedColor(1, 1, 1, 1);
+  EXPECT_Vector4f_NEAR(expectedColor, image[0], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[1], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[2], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[3], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[4], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[5], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[6], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[7], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[4], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[5], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[6], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[7], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[8], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[9], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[10], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[11], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[8], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[9], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[10], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[11], 1e-4f);
 
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[12], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[13], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[14], 1e-4f);
-  EXPECT_Vector4f_NEAR(Eigen::Vector4f(0.5f, 0.5f, 0.5f, 1), image[15], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[12], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[13], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[14], 1e-4f);
+  EXPECT_Vector4f_NEAR(expectedColor, image[15], 1e-4f);
 }
 
 TEST(Test_Apollonius, ApolloniusWithRealData)
