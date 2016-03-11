@@ -131,6 +131,9 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
 {
   auto camera = getCamera();
 
+  if (camera->needsResizing())
+    camera->resize(width, height);
+
   this->frameTime = frameTime;
   cameraControllers->update(camera, frameTime);
 
@@ -153,9 +156,6 @@ void Scene::render()
     fbo->resize(width, height);
     shouldResize = false;
   }
-
-  if (camera->needsResizing())
-    camera->resize(width, height);
 
   glAssert(gl->glViewport(0, 0, width, height));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
