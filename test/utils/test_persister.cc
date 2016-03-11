@@ -5,7 +5,7 @@
 #include "../../src/mesh_node.h"
 #include "../../src/label_node.h"
 
-TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
+TEST(Test_Persister, SaveAndLoadASimpleString)
 {
   std::string text = "example text";
 
@@ -14,7 +14,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadASimpleString)
   EXPECT_EQ(text, Persister::load<std::string>("test.xml"));
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadAVector3f)
+TEST(Test_Persister, SaveAndLoadAVector3f)
 {
   Eigen::Vector3f vector(1.0f, 1.1f, 1.2f);
 
@@ -23,7 +23,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadAVector3f)
   EXPECT_Vector3f_NEAR(vector, loaded, 1E-5f);
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadAVector2f)
+TEST(Test_Persister, SaveAndLoadAVector2f)
 {
   Eigen::Vector2f vector(1.0f, 1.1f);
 
@@ -32,7 +32,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadAVector2f)
   EXPECT_Vector2f_NEAR(vector, loaded, 1E-5f);
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadALabel)
+TEST(Test_Persister, SaveAndLoadALabel)
 {
   Label label(2, "my label 2", Eigen::Vector3f(1, 2, 3));
 
@@ -43,7 +43,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabel)
   EXPECT_Vector3f_NEAR(label.anchorPosition, loaded.anchorPosition, 1E-5f);
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadALabelPointer)
+TEST(Test_Persister, SaveAndLoadALabelPointer)
 {
   auto label = new Label(2, "my label 2", Eigen::Vector3f(1, 2, 3));
 
@@ -57,7 +57,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadALabelPointer)
   delete loaded;
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadAVectorOfLabelPointers)
+TEST(Test_Persister, SaveAndLoadAVectorOfLabelPointers)
 {
   auto label = new Label(1, "my label 1", Eigen::Vector3f(1, 2, 3));
   auto label2 = new Label(2, "my label 2", Eigen::Vector3f(4, 5, 6));
@@ -84,7 +84,7 @@ TEST(Test_QObjectPersistence, SaveAndLoadAVectorOfLabelPointers)
   delete loaded[1];
 }
 
-TEST(Test_QObjectPersistence, SaveAndLoadAMatrix)
+TEST(Test_Persister, SaveAndLoadAMatrix)
 {
   Eigen::Matrix4f matrix;
   matrix << 0.0f, 0.1f, 0.2f, 0.3f, 1.0f, 1.1f, 1.2f, 1.3f, 2.0f, 2.1f, 2.2f,
