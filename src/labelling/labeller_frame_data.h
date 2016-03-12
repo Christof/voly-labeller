@@ -28,9 +28,7 @@ class LabellerFrameData
 
   Eigen::Vector3f project(Eigen::Vector3f vector) const
   {
-    Eigen::Vector4f projected = mul(viewProjection, vector);
-
-    return projected.head<3>() / projected.w();
+    return ::project(viewProjection, vector);
   }
 
   Eigen::Vector2f project2d(Eigen::Vector3f vector) const
