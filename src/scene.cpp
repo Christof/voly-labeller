@@ -380,15 +380,10 @@ void Scene::resize(int width, int height)
 
 RenderData Scene::createRenderData()
 {
-  RenderData renderData;
   auto camera = getCamera();
-  renderData.projectionMatrix = camera->getProjectionMatrix();
-  renderData.viewMatrix = camera->getViewMatrix();
-  renderData.cameraPosition = camera->getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
-  return renderData;
+  return RenderData(camera->getProjectionMatrix(), camera->getViewMatrix(),
+                    camera->getPosition(), Eigen::Vector2f(width, height));
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)
