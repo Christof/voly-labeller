@@ -68,9 +68,7 @@ void ShaderManager::bind(int id, const RenderData &renderData)
   auto shader = shaderPrograms[id];
   shader->bind();
 
-  Eigen::Matrix4f viewProjectionMatrix =
-      renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("viewProjectionMatrix", viewProjectionMatrix);
+  shader->setUniform("viewProjectionMatrix", renderData.viewProjectionMatrix);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
   shader->setUniform("projectionMatrix", renderData.projectionMatrix);
 }

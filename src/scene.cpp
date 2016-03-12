@@ -254,7 +254,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   managers->getObjectManager()->render(renderData);
 
-  clustering.update(renderData.projectionMatrix * renderData.viewMatrix);
+  clustering.update(renderData.viewProjectionMatrix);
   auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
   std::vector<float> zValues;
   std::cout << "zValuesEye: ";
@@ -271,7 +271,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
   haBuffer->setLayerZValues(zValues);
   haBuffer->render(managers, renderData);
 
-  picker->doPick(renderData.projectionMatrix * renderData.viewMatrix);
+  picker->doPick(renderData.viewProjectionMatrix);
 
   fbo->unbind();
 }
@@ -332,8 +332,6 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                        Eigen::Matrix4f modelMatrix)
 {
   RenderData renderData;
-  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
-  renderData.viewMatrix = Eigen::Matrix4f::Identity();
   renderData.modelMatrix = modelMatrix;
 
   quad->getShaderProgram()->bind();
