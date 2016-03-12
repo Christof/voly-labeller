@@ -6,6 +6,7 @@ RenderData::RenderData(Eigen::Matrix4f projectionMatrix,
                        Eigen::Vector2f windowPixelSize)
   : projectionMatrix(projectionMatrix), viewMatrix(viewMatrix),
     cameraPosition(cameraPosition), modelMatrix(Eigen::Matrix4f::Identity()),
-    windowPixelSize(windowPixelSize)
+    windowPixelSize(windowPixelSize),
+    viewProjectionMatrix(projectionMatrix * viewMatrix)
 {
 }
