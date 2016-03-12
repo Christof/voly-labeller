@@ -14,7 +14,7 @@ struct RenderData
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  RenderData() = default;
+  RenderData();
 
   RenderData(Eigen::Matrix4f projectionMatrix, Eigen::Matrix4f viewMatrix,
              Eigen::Vector3f cameraPosition, Eigen::Vector2f windowPixelSize);
