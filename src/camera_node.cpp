@@ -1,4 +1,6 @@
 #include "./camera_node.h"
+#include "./graphics/gl.h"
+#include "./graphics/managers.h"
 
 CameraNode::CameraNode()
 {
