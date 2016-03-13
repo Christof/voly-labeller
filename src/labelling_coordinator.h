@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <memory>
+#include <vector>
 #include "./placement/labeller.h"
 #include "./forces/labeller.h"
 #include "./labelling/labeller_frame_data.h"
