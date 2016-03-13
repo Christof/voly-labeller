@@ -5,7 +5,6 @@
 #include <QtGui/QGuiApplication>
 #include <QCommandLineParser>
 #include <QObject>
-#include "./placement/labeller.h"
 #include "./forces/labeller.h"
 
 class InvokeManager;
@@ -49,7 +48,6 @@ class Application : public QObject
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
-  std::shared_ptr<Placement::Labeller> placementLabeller;
   std::shared_ptr<TextureMapperManager> textureMapperManager;
   std::shared_ptr<TextureMapperManagerController>
       textureMapperManagerController;

@@ -14,6 +14,13 @@ class LabellerFrameData
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  LabellerFrameData()
+    : frameTime(0), projection(Eigen::Matrix4f::Identity()),
+      view(Eigen::Matrix4f::Identity()),
+      viewProjection(Eigen::Matrix4f::Identity())
+  {
+  }
+
   LabellerFrameData(double frameTime, Eigen::Matrix4f projection,
                     Eigen::Matrix4f view)
     : frameTime(frameTime), projection(projection), view(view),
@@ -21,10 +28,10 @@ class LabellerFrameData
   {
   }
 
-  const double frameTime;
-  const Eigen::Matrix4f projection;
-  const Eigen::Matrix4f view;
-  const Eigen::Matrix4f viewProjection;
+  double frameTime;
+  Eigen::Matrix4f projection;
+  Eigen::Matrix4f view;
+  Eigen::Matrix4f viewProjection;
 
   Eigen::Vector3f project(Eigen::Vector3f vector) const
   {
