@@ -16,7 +16,7 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
   srand(9);
   addForce(new CenterForce());
-  addForce(new AnchorForce());
+  // addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
   addForce(new PlacementForce());
