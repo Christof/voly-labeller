@@ -16,7 +16,7 @@ Eigen::Vector2f PlacementForce::calculate(LabelState &label,
       isnan(label.placementPosition2D.y()))
     return Eigen::Vector2f(0, 0);
 
-  Eigen::Vector2f direction =label.placementPosition2D - label.labelPosition2D;
+  Eigen::Vector2f direction = label.placementPosition2D - label.labelPosition2D;
 
   if (direction.norm() < 0.05f)
     return direction;

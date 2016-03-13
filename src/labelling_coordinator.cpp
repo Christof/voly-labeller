@@ -1,6 +1,7 @@
 #include "./labelling_coordinator.h"
 #include <Eigen/Core>
 #include <map>
+#include <vector>
 #include "./labelling/labels_container.h"
 #include "./labelling/clustering.h"
 #include "./labelling/labels.h"
