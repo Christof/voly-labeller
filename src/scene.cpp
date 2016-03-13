@@ -14,7 +14,6 @@
 #include "./camera_controllers.h"
 #include "./nodes.h"
 #include "./camera_node.h"
-#include "./labelling/labeller_frame_data.h"
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
@@ -24,19 +23,16 @@
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
-#include "./placement/constraint_updater.h"
-#include "./placement/persistent_constraint_updater.h"
+#include "./labelling_coordinator.h"
 
 const int LAYER_COUNT = 4;
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<Forces::Labeller> forcesLabeller,
-             std::shared_ptr<Placement::Labeller> placementLabeller,
              std::shared_ptr<TextureMapperManager> textureMapperManager)
 
-  : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    frustumOptimizer(nodes), clustering(labels, LAYER_COUNT - 1),
+  : nodes(nodes), labels(labels), frustumOptimizer(nodes),
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
@@ -45,6 +41,8 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
   fbo = std::make_shared<Graphics::FrameBufferObject>(LAYER_COUNT);
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
+  labellingCoordinator = std::make_shared<LabellingCoordinator>(
+      LAYER_COUNT, forcesLabeller, labels, nodes);
 }
 
 Scene::~Scene()
@@ -96,33 +94,13 @@ void Scene::initialize()
       textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize(), gl, managers->getShaderManager());
 
-  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
-      drawer, textureMapperManager->getBufferSize(),
-      textureMapperManager->getBufferSize());
-  persistentConstraintUpdater =
-      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
-
-  for (int layerIndex = 0; layerIndex < LAYER_COUNT; ++layerIndex)
-  {
-    auto labelsContainer = std::make_shared<LabelsContainer>();
-    labelsInLayer.push_back(labelsContainer);
-    auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
-    labeller->resize(width, height);
-    labeller->initialize(
-        textureMapperManager->getOccupancyTextureMapper(layerIndex),
-        textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
-        textureMapperManager->getApolloniusTextureMapper(layerIndex),
-        textureMapperManager->getConstraintTextureMapper(),
-        persistentConstraintUpdater);
-
-    placementLabellers.push_back(labeller);
-  }
+  labellingCoordinator->initialize(textureMapperManager->getBufferSize(),
+                                   drawer, textureMapperManager, width, height);
 }
 
 void Scene::cleanup()
 {
-  for (auto placementLabeller : placementLabellers)
-    placementLabeller->cleanup();
+  labellingCoordinator->cleanup();
 
   textureMapperManager->cleanup();
 }
@@ -143,7 +121,8 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
-  updateLabelling();
+  labellingCoordinator->update(frameTime, camera->getProjectionMatrix(),
+                               camera->getViewMatrix(), activeLayerNumber);
 }
 
 void Scene::render()
@@ -171,10 +150,7 @@ void Scene::render()
 
   constraintBufferObject->bind();
 
-  LabellerFrameData labellerFrameData(frameTime, camera->getProjectionMatrix(),
-                                      camera->getViewMatrix());
-  for (auto placementLabeller : placementLabellers)
-    placementLabeller->update(labellerFrameData);
+  labellingCoordinator->updatePlacement();
 
   constraintBufferObject->unbind();
 
@@ -194,66 +170,6 @@ void Scene::render()
   nodes->renderLabels(gl, managers, renderData);
 }
 
-void Scene::updateLabelling()
-{
-  persistentConstraintUpdater->clear();
-  std::map<int, Eigen::Vector3f> placementPositions;
-  int layerIndex = 0;
-  for (auto placementLabeller : placementLabellers)
-  {
-    if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
-    {
-      auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
-      placementPositions.insert(newPositionsForLayer.begin(),
-                                newPositionsForLayer.end());
-    }
-
-    layerIndex++;
-  }
-
-  auto camera = getCamera();
-  LabellerFrameData frameData(frameTime, camera->getProjectionMatrix(),
-                              camera->getViewMatrix());
-  if (firstFramesWithoutPlacement && placementPositions.size())
-  {
-    firstFramesWithoutPlacement = false;
-    forcesLabeller->setPositions(frameData, placementPositions);
-  }
-
-  auto newPositions = forcesLabeller->update(frameData, placementPositions);
-
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    labelNode->labelPosition = newPositions[labelNode->label.id];
-  }
-
-  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
-  layerIndex = 0;
-  for (auto &pair : centerWithLabelIds)
-  {
-    auto &container = labelsInLayer[layerIndex];
-    container->clear();
-
-    for (int labelId : pair.second)
-      container->add(labels->getById(labelId));
-
-    layerIndex++;
-  }
-
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    if (newPositions.count(labelNode->label.id))
-    {
-      labelNode->setIsVisible(true);
-      labelNode->labelPosition = newPositions[labelNode->label.id];
-    }
-    else
-    {
-      labelNode->setIsVisible(false);
-    }
-  }
-}
-
 void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 {
   fbo->bind();
@@ -266,19 +182,7 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   managers->getObjectManager()->render(renderData);
 
-  clustering.update(renderData.viewProjectionMatrix);
-  auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
-  std::vector<float> zValues;
-  std::cout << "zValuesEye: ";
-  for (auto pair : clusters)
-  {
-    zValues.push_back(pair.first);
-    std::cout << pair.first << ":";
-    for (auto z : pair.second)
-      std::cout << z << ", ";
-    std::cout << std::endl;
-  }
-  std::cout << std::endl;
+  std::vector<float> zValues = labellingCoordinator->updateClusters();
 
   haBuffer->setLayerZValues(zValues);
   haBuffer->render(managers, renderData);
@@ -380,12 +284,9 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
-  for (auto placementLabeller : placementLabellers)
-    placementLabeller->resize(width, height);
-
   shouldResize = true;
 
-  forcesLabeller->resize(width, height);
+  labellingCoordinator->resize(width, height);
 }
 
 RenderData Scene::createRenderData()

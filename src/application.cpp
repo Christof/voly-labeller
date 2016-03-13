@@ -30,7 +30,6 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
 
   labels = std::make_shared<Labels>();
   forcesLabeller = std::make_shared<Forces::Labeller>(labels);
-  placementLabeller = std::make_shared<Placement::Labeller>(labels);
 
   const int postProcessingTextureSize = 512;
   textureMapperManager =
@@ -38,7 +37,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   textureMapperManagerController =
       std::make_unique<TextureMapperManagerController>(textureMapperManager);
   scene = std::make_shared<Scene>(invokeManager, nodes, labels, forcesLabeller,
-                                  placementLabeller, textureMapperManager);
+                                  textureMapperManager);
 
   window = std::make_unique<Window>(scene);
   sceneController = std::make_unique<SceneController>(scene);
