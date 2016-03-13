@@ -1,4 +1,5 @@
 #include "./label.h"
+#include <string>
 #include "./labeller_frame_data.h"
 
 Label::Label() : Label(-1, "", Eigen::Vector3f())

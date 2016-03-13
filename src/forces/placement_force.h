@@ -2,8 +2,8 @@
 
 #define SRC_FORCES_PLACEMENT_FORCE_H_
 
-#include <vector>
 #include <Eigen/Core>
+#include <vector>
 #include "./force.h"
 
 namespace Forces
