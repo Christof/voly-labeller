@@ -3,6 +3,8 @@
 #define SRC_FORCES_VISUALIZER_NODE_H_
 
 #include <memory>
+#include <map>
+#include <string>
 #include "./node.h"
 #include "./forces/labeller.h"
 #include "./graphics/connector.h"
