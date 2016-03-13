@@ -5,9 +5,13 @@
 #include <Eigen/Core>
 #include <memory>
 #include "./node.h"
-#include "./graphics/gl.h"
-#include "./graphics/managers.h"
 #include "./camera.h"
+
+namespace Grahpics
+{
+class Gl;
+class Managers;
+}
 
 /**
  * \brief Node for a Camera
