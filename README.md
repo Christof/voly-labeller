@@ -52,7 +52,11 @@ make
 - ITK 4.7
 - CUDA 7.0
 - Thrust 1.8
-- Magick++ 8:6.7.7.10-6 (libmagick++-dev)
+- Magick++ 8:6.7.7.10-6
+
+Some of these can be installed by running `scripts/install_dependencies.sh`.
+For ITK 4.7 is no package available, it must be downloaded and compiled separately.
+Boost, CUDA (including THRUST), Qt5.5 and OpenGL 4.5 must also be installed separately.
 
 ## Building
 - gcc 4.9.3
@@ -60,3 +64,20 @@ make
 ## Testing
 - GTest
 - lcov (from [source](https://github.com/linux-test-project/lcov) or at least 1.11)
+
+### GTest
+GTest can be installed by installing the library with `apt-get`:
+
+```
+sudo apt-get install libgtest-dev
+```
+
+Afterwards the sources needs to be compiled and library file needs to be moved:
+
+```
+cd /usr/src/gtest
+sudo cmake .
+sudo make
+sudo mv libg* /usr/lib/
+```
+
