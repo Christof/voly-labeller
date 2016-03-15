@@ -25,24 +25,20 @@
 #include "./constraint_buffer_object.h"
 #include "./labelling_coordinator.h"
 
-const int LAYER_COUNT = 4;
-
-Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
+Scene::Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-             std::shared_ptr<Forces::Labeller> forcesLabeller,
+             std::shared_ptr<LabellingCoordinator> labellingCoordinator,
              std::shared_ptr<TextureMapperManager> textureMapperManager)
 
-  : nodes(nodes), labels(labels), frustumOptimizer(nodes),
-    textureMapperManager(textureMapperManager)
+  : nodes(nodes), labels(labels), labellingCoordinator(labellingCoordinator),
+    frustumOptimizer(nodes), textureMapperManager(textureMapperManager)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, getCamera());
 
-  fbo = std::make_shared<Graphics::FrameBufferObject>(LAYER_COUNT);
+  fbo = std::make_shared<Graphics::FrameBufferObject>(layerCount);
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
-  labellingCoordinator = std::make_shared<LabellingCoordinator>(
-      LAYER_COUNT, forcesLabeller, labels, nodes);
 }
 
 Scene::~Scene()

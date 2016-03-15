@@ -6,20 +6,17 @@
 #include <vector>
 #include "./utils/memory.h"
 #include "./abstract_scene.h"
-#include "./camera.h"
 #include "./frustum_optimizer.h"
-#include "./forces/labeller.h"
 #include "./graphics/screen_quad.h"
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/ha_buffer.h"
 #include "./graphics/object_manager.h"
-#include "./placement/cuda_texture_mapper.h"
 #include "./graphics/managers.h"
-#include "./graphics/standard_texture_2d.h"
 #include "./picker.h"
 
 class Nodes;
 class InvokeManager;
+class Camera;
 class CameraControllers;
 class TextureMapperManager;
 class ConstraintBufferObject;
@@ -36,9 +33,9 @@ class LabellingCoordinator;
 class Scene : public AbstractScene
 {
  public:
-  Scene(std::shared_ptr<InvokeManager> invokeManager,
+  Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
-        std::shared_ptr<Forces::Labeller> forcesLabeller,
+        std::shared_ptr<LabellingCoordinator> labellingCoordinator,
         std::shared_ptr<TextureMapperManager> textureMapperManager);
   ~Scene();
 
