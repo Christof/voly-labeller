@@ -15,6 +15,7 @@
 #include "./labels_model.h"
 #include "./labelling/labels.h"
 #include "./labelling_coordinator.h"
+#include "./labelling_controller.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
 #include "./default_scene_creator.h"
@@ -50,6 +51,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
+  labellingController = std::make_unique<LabellingController>(labellingCoordinator);
 }
 
 Application::~Application()
@@ -126,6 +128,7 @@ void Application::setupWindow()
   context->setContextProperty("scene", sceneController.get());
   context->setContextProperty("labeller", labellerModel.get());
   context->setContextProperty("labels", labelsModel.get());
+  context->setContextProperty("labelling", labellingController.get());
 }
 
 void Application::createAndStartStateMachine()
