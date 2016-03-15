@@ -57,20 +57,8 @@ void LabellingCoordinator::cleanup()
 void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
-  persistentConstraintUpdater->clear();
-  std::map<int, Eigen::Vector3f> placementPositions;
-  int layerIndex = 0;
-  for (auto placementLabeller : placementLabellers)
-  {
-    if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
-    {
-      auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
-      placementPositions.insert(newPositionsForLayer.begin(),
-                                newPositionsForLayer.end());
-    }
-
-    layerIndex++;
-  }
+  std::map<int, Eigen::Vector3f> placementPositions =
+      getPlacementPositions(activeLayerNumber);
 
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
   if (firstFramesWithoutPlacement && placementPositions.size())
@@ -88,7 +76,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   }
 
   auto centerWithLabelIds = clustering.getCentersWithLabelIds();
-  layerIndex = 0;
+  int layerIndex = 0;
   for (auto &pair : centerWithLabelIds)
   {
     auto &container = labelsInLayer[layerIndex];
@@ -146,5 +134,26 @@ void LabellingCoordinator::resize(int width, int height)
     placementLabeller->resize(width, height);
 
   forcesLabeller->resize(width, height);
+}
+
+std::map<int, Eigen::Vector3f>
+LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
+{
+  persistentConstraintUpdater->clear();
+  std::map<int, Eigen::Vector3f> placementPositions;
+  int layerIndex = 0;
+  for (auto placementLabeller : placementLabellers)
+  {
+    if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
+    {
+      auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
+      placementPositions.insert(newPositionsForLayer.begin(),
+                                newPositionsForLayer.end());
+    }
+
+    layerIndex++;
+  }
+
+  return placementPositions;
 }
 
