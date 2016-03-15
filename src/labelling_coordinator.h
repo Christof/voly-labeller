@@ -47,7 +47,7 @@ class LabellingCoordinator
 
   void resize(int width, int height);
 
-  void setForcesEnabled(bool forcesEnabled);
+  bool forcesEnabled = true;
 
  private:
   int layerCount;
@@ -62,7 +62,6 @@ class LabellingCoordinator
   LabellerFrameData labellerFrameData;
   Clustering clustering;
 
-  bool forcesEnabled = true;
 
   std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
   std::map<int, Eigen::Vector3f>

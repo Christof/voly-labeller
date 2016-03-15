@@ -102,11 +102,6 @@ void LabellingCoordinator::resize(int width, int height)
   forcesLabeller->resize(width, height);
 }
 
-void LabellingCoordinator::setForcesEnabled(bool forcesEnabled)
-{
-  this->forcesEnabled = forcesEnabled;
-}
-
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
