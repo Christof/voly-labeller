@@ -75,18 +75,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
     labelNode->labelPosition = newPositions[labelNode->label.id];
   }
 
-  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
-  int layerIndex = 0;
-  for (auto &pair : centerWithLabelIds)
-  {
-    auto &container = labelsInLayer[layerIndex];
-    container->clear();
-
-    for (int labelId : pair.second)
-      container->add(labels->getById(labelId));
-
-    layerIndex++;
-  }
+  distributeLabelsToLayers();
 
   for (auto &labelNode : nodes->getLabelNodes())
   {
@@ -155,5 +144,21 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
   }
 
   return placementPositions;
+}
+
+void LabellingCoordinator::distributeLabelsToLayers()
+{
+  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
+  int layerIndex = 0;
+  for (auto &pair : centerWithLabelIds)
+  {
+    auto &container = labelsInLayer[layerIndex];
+    container->clear();
+
+    for (int labelId : pair.second)
+      container->add(labels->getById(labelId));
+
+    layerIndex++;
+  }
 }
 
