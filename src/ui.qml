@@ -95,6 +95,11 @@ Item {
           shortcut: "Space"
           onTriggered: labeller.toggleUpdatePositions();
         }
+        MenuItem {
+          text: "Toggle forces"
+          shortcut: "F7"
+          onTriggered: labelling.toggleForces();
+        }
       }
       Menu {
         title: "Debug"
