@@ -59,12 +59,13 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 {
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
 
-  auto placementPositions = getPlacementPositions(activeLayerNumber);
-  auto newPositions = getForcesPositions(placementPositions);
+  auto positions = getPlacementPositions(activeLayerNumber);
+  if (forcesEnabled)
+    positions = getForcesPositions(positions);
 
   distributeLabelsToLayers();
 
-  updateLabelPositionsInLabelNodes(newPositions);
+  updateLabelPositionsInLabelNodes(positions);
 }
 
 void LabellingCoordinator::updatePlacement()
@@ -99,6 +100,11 @@ void LabellingCoordinator::resize(int width, int height)
     placementLabeller->resize(width, height);
 
   forcesLabeller->resize(width, height);
+}
+
+void LabellingCoordinator::setForcesEnabled(bool forcesEnabled)
+{
+  this->forcesEnabled = forcesEnabled;
 }
 
 std::map<int, Eigen::Vector3f>
