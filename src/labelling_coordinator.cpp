@@ -57,33 +57,14 @@ void LabellingCoordinator::cleanup()
 void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
-  std::map<int, Eigen::Vector3f> placementPositions =
-      getPlacementPositions(activeLayerNumber);
-
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
-  if (firstFramesWithoutPlacement && placementPositions.size())
-  {
-    firstFramesWithoutPlacement = false;
-    forcesLabeller->setPositions(labellerFrameData, placementPositions);
-  }
 
-  auto newPositions =
-      forcesLabeller->update(labellerFrameData, placementPositions);
+  auto placementPositions = getPlacementPositions(activeLayerNumber);
+  auto newPositions = getForcesPositions(placementPositions);
 
   distributeLabelsToLayers();
 
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    if (newPositions.count(labelNode->label.id))
-    {
-      labelNode->setIsVisible(true);
-      labelNode->labelPosition = newPositions[labelNode->label.id];
-    }
-    else
-    {
-      labelNode->setIsVisible(false);
-    }
-  }
+  updateLabelPositionsInLabelNodes(newPositions);
 }
 
 void LabellingCoordinator::updatePlacement()
@@ -141,6 +122,18 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
   return placementPositions;
 }
 
+std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
+    std::map<int, Eigen::Vector3f> placementPositions)
+{
+  if (firstFramesWithoutPlacement && placementPositions.size())
+  {
+    firstFramesWithoutPlacement = false;
+    forcesLabeller->setPositions(labellerFrameData, placementPositions);
+  }
+
+  return forcesLabeller->update(labellerFrameData, placementPositions);
+}
+
 void LabellingCoordinator::distributeLabelsToLayers()
 {
   auto centerWithLabelIds = clustering.getCentersWithLabelIds();
@@ -154,6 +147,23 @@ void LabellingCoordinator::distributeLabelsToLayers()
       container->add(labels->getById(labelId));
 
     layerIndex++;
+  }
+}
+
+void LabellingCoordinator::updateLabelPositionsInLabelNodes(
+    std::map<int, Eigen::Vector3f> newPositions)
+{
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    if (newPositions.count(labelNode->label.id))
+    {
+      labelNode->setIsVisible(true);
+      labelNode->labelPosition = newPositions[labelNode->label.id];
+    }
+    else
+    {
+      labelNode->setIsVisible(false);
+    }
   }
 }
 

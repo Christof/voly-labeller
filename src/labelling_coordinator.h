@@ -61,7 +61,11 @@ class LabellingCoordinator
   Clustering clustering;
 
   std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
+  std::map<int, Eigen::Vector3f>
+  getForcesPositions(std::map<int, Eigen::Vector3f> placementPositions);
   void distributeLabelsToLayers();
+  void
+  updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_
