@@ -18,9 +18,12 @@ class Nodes;
 class TextureMapperManager;
 
 /**
- * \brief
+ * \brief Coordinates all labelling related classes, i.e. the forces and
+ * placement labellers
  *
- *
+ * Each frame #update must be called in the update phase, #updateClusters
+ * before the HABuffer is used (so that the layer planes are up to date)
+ * and #updatePlacement after everything has been rendered into the FBOs.
  */
 class LabellingCoordinator
 {
