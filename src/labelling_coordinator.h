@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <memory>
+#include <map>
 #include <vector>
 #include "./placement/labeller.h"
 #include "./forces/labeller.h"
@@ -58,6 +59,8 @@ class LabellingCoordinator
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
+
+  std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_
