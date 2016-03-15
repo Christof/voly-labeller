@@ -70,11 +70,6 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   auto newPositions =
       forcesLabeller->update(labellerFrameData, placementPositions);
 
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    labelNode->labelPosition = newPositions[labelNode->label.id];
-  }
-
   distributeLabelsToLayers();
 
   for (auto &labelNode : nodes->getLabelNodes())
