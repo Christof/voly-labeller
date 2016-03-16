@@ -19,7 +19,7 @@ SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
 # based on http://stackoverflow.com/questions/2285185/easiest-way-to-test-for-existence-of-cuda-capable-gpu-from-cmake/2297877#2297877 (Christopher Bruns)
 if(CUDA_FOUND)
 
-  set(CUDA_cuda_compute_capability ${CMAKE_SOURCE_DIR}/cuda_compute_capability.c)
+  set(CUDA_cuda_compute_capability ${CMAKE_SOURCE_DIR}/scripts/cuda_compute_capability.c)
 
   try_run(RUN_RESULT_VAR COMPILE_RESULT_VAR
     ${CMAKE_BINARY_DIR}
