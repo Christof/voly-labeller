@@ -11,11 +11,66 @@ find_package(Qt5Xml 5.5 REQUIRED)
 find_package(CUDA 7.0 REQUIRED)
 set(CUDA_SEPARABLE_COMPILATION ON)
 set(CUDA_VERBOSE_BUILD OFF)
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3;-std=c++11;-gencode arch=compute_30,code=sm_30)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3;-std=c++11)
 SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
+
+#############################
+# Check for GPUs present and their compute capability
+# based on http://stackoverflow.com/questions/2285185/easiest-way-to-test-for-existence-of-cuda-capable-gpu-from-cmake/2297877#2297877 (Christopher Bruns)
+if(CUDA_FOUND)
+
+  set(CUDA_cuda_compute_capability ${CMAKE_SOURCE_DIR}/cuda_compute_capability.c)
+
+  try_run(RUN_RESULT_VAR COMPILE_RESULT_VAR
+    ${CMAKE_BINARY_DIR}
+    ${CUDA_cuda_compute_capability}
+    CMAKE_FLAGS
+    -DINCLUDE_DIRECTORIES:STRING=${CUDA_TOOLKIT_INCLUDE}
+    -DLINK_LIBRARIES:STRING=${CUDA_CUDART_LIBRARY}
+    COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT_VAR
+    RUN_OUTPUT_VARIABLE RUN_OUTPUT_VAR)
+  # COMPILE_RESULT_VAR is TRUE when compile succeeds
+  # RUN_RESULT_VAR is zero when a GPU is found
+  if(COMPILE_RESULT_VAR AND NOT RUN_RESULT_VAR)
+    set(CUDA_HAVE_GPU TRUE CACHE BOOL "Whether CUDA-capable GPU is present")
+    set(LIST_OF_GPU_ARCHS ${RUN_OUTPUT_VAR})
+    list(FIND LIST_OF_GPU_ARCHS "21" found21)
+    if(${found21} GREATER "-1")
+      list(REMOVE_AT LIST_OF_GPU_ARCHS ${found21})
+      list(APPEND LIST_OF_GPU_ARCHS "20")
+    endif()
+    list(REMOVE_DUPLICATES LIST_OF_GPU_ARCHS)
+    set(CUDA_COMPUTE_CAPABILITY ${LIST_OF_GPU_ARCHS} CACHE STRING "Compute capability of CUDA-capable GPUs present")
+    #set(CUDA_GENERATE_CODE "arch=compute_${CUDA_COMPUTE_CAPABILITY},code=sm_${CUDA_COMPUTE_CAPABILITY}" CACHE STRING "Which GPU architectures to generate code for (each arch/code pair will be passed as --generate-code option to nvcc, separate multiple pairs by ;)")
+    mark_as_advanced(CUDA_COMPUTE_CAPABILITY)
+  else()
+    set(CUDA_HAVE_GPU FALSE CACHE BOOL "Whether CUDA-capable GPU is present")
+  endif()
+  message(STATUS "initial cuda arch flags: |${CUDA_ARCH_FLAGS}|")
+  set(CUDA_ARCH_FLAGS )
+  foreach(code ${CUDA_COMPUTE_CAPABILITY})
+    set(CUDA_ARCH_FLAGS ${CUDA_ARCH_FLAGS} "-gencode;arch=compute_${code},code=sm_${code}")
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} "-gencode;arch=compute_${code},code=sm_${code}")
+  endforeach()
+
+  MESSAGE(STATUS "CUDA: automatically determined cuda nvcc flags: ${CUDA_NVCC_FLAGS}")
+  MESSAGE(STATUS "CUDA: arch flags: ${CUDA_ARCH_FLAGS}")
+endif(CUDA_FOUND)
+
+
+if (${CUDA_VERSION} VERSION_GREATER "6")
+  #message(status "Cuda version > 6 found: ${CUDA_VERSION}")
+  message(status "CudaRT libraries ${CUDA_CUDART_LIBRARY} dir:${CUDA_TOOLKIT_ROOT_DIR}")
+  find_library(CUDA_CUDARTDEV_LIBRARY cudadevrt PATHS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib )
+else()
+  set(CUDA_CUDARTDEV_LIBRARY)
+endif()
+list(APPEND CUDA_LIBRARIES ${CUDA_CUDARTDEV_LIBRARY})
+
 add_definitions(-DUSECUDA)
 include_directories(${CUDA_INCLUDE_DIRS})
 list(APPEND LIBRARIES ${CUDA_LIBRARIES})
+
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})
@@ -49,7 +104,8 @@ list(APPEND LIBRARIES
   Qt5::Xml
 )
 
-find_package(Boost 1.59.0 COMPONENTS date_time timer filesystem system serialization REQUIRED)
+set(Boost_USE_STATIC_LIBS   ON)
+find_package(Boost 1.58.0 COMPONENTS date_time timer filesystem system serialization REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Boost_LIBRARIES})
 
