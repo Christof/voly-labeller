@@ -50,8 +50,6 @@ Scene::~Scene()
 
 void Scene::initialize()
 {
-  glAssert(gl->glClearColor(0.9f, 0.9f, 0.8f, 1.0f));
-
   quad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/textureForRenderBuffer.frag");
   screenQuad = std::make_shared<Graphics::ScreenQuad>(
@@ -133,6 +131,7 @@ void Scene::render()
   }
 
   glAssert(gl->glViewport(0, 0, width, height));
+  glAssert(gl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
   RenderData renderData = createRenderData();
