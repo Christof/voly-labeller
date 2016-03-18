@@ -41,6 +41,8 @@ class LabelNode : public Node
 
   Label label;
 
+  int layerIndex = 0;
+
   void setIsVisible(bool isVisible);
 
  private:
