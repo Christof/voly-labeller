@@ -139,8 +139,6 @@ void Scene::render()
 
   renderNodesWithHABufferIntoFBO(renderData);
 
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  renderScreenQuad();
 
   textureMapperManager->update();
 
@@ -151,6 +149,12 @@ void Scene::render()
   constraintBufferObject->unbind();
 
   glAssert(gl->glViewport(0, 0, width, height));
+
+  fbo->bind();
+  glAssert(gl->glDisable(GL_DEPTH_TEST));
+  nodes->renderLabels(gl, managers, renderData);
+  fbo->unbind();
+  renderScreenQuad();
 
   if (showConstraintOverlay)
   {
@@ -163,7 +167,6 @@ void Scene::render()
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 
-  nodes->renderLabels(gl, managers, renderData);
 }
 
 void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
