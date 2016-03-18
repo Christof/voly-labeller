@@ -30,10 +30,6 @@ Connector::Connector(std::vector<Eigen::Vector3f> points,
 {
 }
 
-Connector::~Connector()
-{
-}
-
 ObjectData
 Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                          std::shared_ptr<TextureManager> textureManager,
