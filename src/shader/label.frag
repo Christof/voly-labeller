@@ -26,24 +26,20 @@ void setColorForLayer(int layerIndex, vec4 color)
   {
     outputColor = color;
     outputColor.r = 0;
-    position = vec4(1);
   }
   else if (layerIndex == 1)
   {
     outputColor2 = color;
     outputColor2.g = 0;
-    position2 = vec4(1);
   }
   else if (layerIndex == 2)
   {
     outputColor3 = color;
     outputColor3.b = 0;
-    position3 = vec4(1);
   }
   else
   {
     outputColor4 = color;
-    position4 = vec4(1);
   }
 }
 
