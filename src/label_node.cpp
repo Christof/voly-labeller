@@ -16,7 +16,7 @@ LabelNode::LabelNode(Label label) : label(label)
 
   anchorMesh = importer.import("assets/anchor.dae", 0);
   quad = std::make_shared<Graphics::Quad>(":/shader/label.vert",
-                                          ":/shader/textureImmediate.frag");
+                                          ":/shader/label.frag");
 
   connector = std::make_shared<Graphics::Connector>(
       ":/shader/pass.vert", ":/shader/colorImmediate.frag",
@@ -89,6 +89,7 @@ void LabelNode::initialize(Graphics::Gl *gl,
                               [textureManager, this](void *insertionPoint)
                               {
       auto textureAddress = textureManager->getAddressFor(textureId);
+      textureAddress.reserved = this->layerIndex;
       std::memcpy(insertionPoint, &textureAddress,
                   sizeof(Graphics::TextureAddress));
     });
