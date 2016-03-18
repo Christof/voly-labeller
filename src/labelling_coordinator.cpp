@@ -145,7 +145,10 @@ void LabellingCoordinator::distributeLabelsToLayers()
     container->clear();
 
     for (int labelId : pair.second)
+    {
       container->add(labels->getById(labelId));
+      labelIdToLayerIndex[labelId] = layerIndex;
+    }
 
     layerIndex++;
   }
@@ -160,6 +163,7 @@ void LabellingCoordinator::updateLabelPositionsInLabelNodes(
     {
       labelNode->setIsVisible(true);
       labelNode->labelPosition = newPositions[labelNode->label.id];
+      labelNode->layerIndex = labelIdToLayerIndex[labelNode->label.id];
     }
     else
     {

@@ -58,6 +58,7 @@ class LabellingCoordinator
   std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
+  std::map<int, int> labelIdToLayerIndex;
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
