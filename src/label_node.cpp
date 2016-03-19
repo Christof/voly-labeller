@@ -19,8 +19,8 @@ LabelNode::LabelNode(Label label) : label(label)
                                           ":/shader/label.frag");
 
   connector = std::make_shared<Graphics::Connector>(
-      ":/shader/pass.vert", ":/shader/colorImmediate.frag",
-      Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(1, 0, 0));
+      ":/shader/pass.vert", ":/shader/connector.frag", Eigen::Vector3f(0, 0, 0),
+      Eigen::Vector3f(1, 0, 0));
   connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
 }
 
@@ -94,6 +94,15 @@ void LabelNode::initialize(Graphics::Gl *gl,
                   sizeof(Graphics::TextureAddress));
     });
   }
+
+  if (!labelConnector.isInitialized())
+  {
+    labelConnector = connector->getObjectData();
+    labelConnector.setCustomBuffer(sizeof(int), [this](void *insertionPoint)
+                                   {
+      std::memcpy(insertionPoint, &this->layerIndex, sizeof(int));
+    });
+  }
 }
 
 void LabelNode::renderConnector(Graphics::Gl *gl,
@@ -107,12 +116,12 @@ void LabelNode::renderConnector(Graphics::Gl *gl,
   Eigen::Affine3f connectorTransform(
       Eigen::Translation3f(label.anchorPosition) * rotation *
       Eigen::Scaling(length));
-  renderData.modelMatrix = connectorTransform.matrix();
+  labelConnector.modelMatrix = connectorTransform.matrix();
 
-  auto shaderId = connector->getObjectData().getShaderProgramId();
+  auto shaderId = labelConnector.getShaderProgramId();
   auto shader = managers->getShaderManager()->getShader(shaderId);
   managers->getShaderManager()->bind(shaderId, renderData);
-  connector->renderImmediately(gl, managers, renderData);
+  managers->getObjectManager()->renderImmediately(labelConnector);
 }
 
 void LabelNode::renderAnchor(Graphics::Gl *gl,
