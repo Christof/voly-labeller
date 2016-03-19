@@ -165,7 +165,6 @@ void Scene::render()
     renderDebuggingViews(renderData);
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
-
 }
 
 void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
