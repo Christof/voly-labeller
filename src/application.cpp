@@ -51,7 +51,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
-  labellingController = std::make_unique<LabellingController>(labellingCoordinator);
+  labellingController =
+      std::make_unique<LabellingController>(labellingCoordinator);
 }
 
 Application::~Application()
