@@ -31,13 +31,15 @@ __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 {
-  __host__ __device__ CostEvaluator(int width, int height)
-    : width(width), height(height)
+  __host__ __device__ CostEvaluator(int width, int height,
+      Placement::CostFunctionWeights weights)
+    : width(width), height(height), weights(weights)
   {
   }
 
   int width;
   int height;
+  Placement::CostFunctionWeights weights;
 
   int halfLabelWidth;
   int halfLabelHeight;
@@ -105,8 +107,10 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = occupancyForLabelArea(x, y) + 1e-3f * distanceToAnchor +
-                 1e-1f * favorHorizontalOrVerticalLines(x, y);
+    float cost = weights.occupancy * occupancyForLabelArea(x, y) +
+                 weights.distanceToAnchor * distanceToAnchor +
+                 weights.favorHorizontalOrVerticalLines *
+                     favorHorizontalOrVerticalLines(x, y);
     EvalResult result(x, y, cost);
 
     return result;
@@ -157,7 +161,7 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
 
-  CostEvaluator costEvaluator(textureWidth, textureHeight);
+  CostEvaluator costEvaluator(textureWidth, textureHeight, weights);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =
