@@ -53,6 +53,8 @@ class Labeller
 
   bool useApollonius = false;
 
+  void setCostFunctionWeights(CostFunctionWeights weights);
+
  private:
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
