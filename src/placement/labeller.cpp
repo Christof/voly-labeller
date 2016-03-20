@@ -120,6 +120,11 @@ void Labeller::resize(int width, int height)
     costFunctionCalculator->resize(width, height);
 }
 
+void Labeller::setCostFunctionWeights(CostFunctionWeights weights)
+{
+  costFunctionCalculator->weights = weights;
+}
+
 std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
 {
   return newPositions;

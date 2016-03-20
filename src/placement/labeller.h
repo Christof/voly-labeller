@@ -51,6 +51,8 @@ class Labeller
 
   void cleanup();
 
+  void setCostFunctionWeights(CostFunctionWeights weights);
+
  private:
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
