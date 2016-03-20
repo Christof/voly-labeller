@@ -70,7 +70,7 @@ Item {
         MenuItem {
           text: "Toggle forces info"
           shortcut: "F3"
-          onTriggered: labeller.toggleForcesVisbility();
+          onTriggered: labeller.toggleForcesVisibility();
         }
         MenuItem {
           text: "Toggle labels info"

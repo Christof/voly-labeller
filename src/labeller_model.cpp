@@ -85,7 +85,7 @@ void LabellerModel::toggleUpdatePositions()
   labeller->updatePositions = !labeller->updatePositions;
 }
 
-void LabellerModel::toggleForcesVisbility()
+void LabellerModel::toggleForcesVisibility()
 {
   isVisible = !isVisible;
   emit isVisibleChanged();
