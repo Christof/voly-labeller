@@ -50,8 +50,6 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   cudaTextureObject_t constraints;
   const float *occupancy;
 
-  const float constraintViolationCost = 1e100f;
-
   __device__ float lineLength(int x, int y) const
   {
     float diffX = x - anchorX;
@@ -99,18 +97,15 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     unsigned char constraintValue =
         tex2D<unsigned char>(constraints, x + 0.5f, y + 0.5f);
-    if (constraintValue)
-    {
-      EvalResult result(x, y, constraintViolationCost);
-      return result;
-    }
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = weights.occupancy * occupancyForLabelArea(x, y) +
+    float cost = weights.constraints * constraintValue +
+                 weights.occupancy * occupancyForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
                  weights.favorHorizontalOrVerticalLines *
                      favorHorizontalOrVerticalLines(x, y);
+
     EvalResult result(x, y, cost);
 
     return result;
