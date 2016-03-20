@@ -70,6 +70,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
 void LabellingCoordinator::updatePlacement()
 {
+  persistentConstraintUpdater->clear();
   for (auto placementLabeller : placementLabellers)
     placementLabeller->update(labellerFrameData);
 }
@@ -105,7 +106,6 @@ void LabellingCoordinator::resize(int width, int height)
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
-  persistentConstraintUpdater->clear();
   std::map<int, Eigen::Vector3f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
