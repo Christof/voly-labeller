@@ -36,10 +36,17 @@ class PlacementLabellerModel : public QAbstractTableModel
 
   Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+  Q_PROPERTY(bool isVisible MEMBER isVisible READ getIsVisible NOTIFY
+                 isVisibleChanged)
+
   bool getIsVisible() const;
 
  public slots:
   void changeWeight(int row, QVariant newValue);
+  void toggleVisibility();
+
+ signals:
+  void isVisibleChanged();
 
  private:
   std::shared_ptr<LabellingCoordinator> coordinator;
@@ -48,6 +55,8 @@ class PlacementLabellerModel : public QAbstractTableModel
 
   QString getWeightNameForRowIndex(int rowIndex) const;
   float getWeightValueForRowIndex(int rowIndex) const;
+
+  bool isVisible = false;
 };
 
 #endif  // SRC_PLACEMENT_LABELLER_MODEL_H_

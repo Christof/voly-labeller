@@ -54,6 +54,11 @@ Qt::ItemFlags PlacementLabellerModel::flags(const QModelIndex &index) const
          Qt::ItemIsUserCheckable;
 }
 
+bool PlacementLabellerModel::getIsVisible() const
+{
+  return isVisible;
+}
+
 void PlacementLabellerModel::changeWeight(int row, QVariant newValue)
 {
   bool converted = false;
@@ -76,7 +81,16 @@ void PlacementLabellerModel::changeWeight(int row, QVariant newValue)
       break;
     }
   }
+
+  coordinator->setCostFunctionWeights(weights);
 }
+
+void PlacementLabellerModel::toggleVisibility()
+{
+  isVisible = !isVisible;
+  emit isVisibleChanged();
+}
+
 
 QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
 {
