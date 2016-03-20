@@ -61,6 +61,7 @@ set(SOURCES
   src/picker.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
+  src/placement_labeller_model.cpp
   src/labels_model.cpp
   src/labelling_coordinator.cpp
   src/labelling_controller.cpp
