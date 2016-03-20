@@ -44,7 +44,7 @@ class LabellerModel : public QAbstractTableModel
   void changeEnabled(int row, QVariant newValue);
   void changeWeight(int row, QVariant newValue);
   void toggleUpdatePositions();
-  void toggleForcesVisbility();
+  void toggleForcesVisibility();
 
  signals:
   void isVisibleChanged();
