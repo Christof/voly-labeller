@@ -117,6 +117,13 @@ void LabellingCoordinator::saveOcclusion()
   occlusionCalculator->saveOcclusion();
 }
 
+void LabellingCoordinator::setCostFunctionWeights(
+    Placement::CostFunctionWeights weights)
+{
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->setCostFunctionWeights(weights);
+}
+
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
