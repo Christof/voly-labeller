@@ -9,6 +9,14 @@
 namespace Placement
 {
 
+struct CostFunctionWeights
+{
+  float constraints = 1e2f;
+  float occupancy = 1.0f;
+  float distanceToAnchor = 1e-3f;
+  float favorHorizontalOrVerticalLines = 1e-1f;
+};
+
 /**
  * \brief Calculates cost function for each pixel and returns minimum with
  * corresponding position
@@ -38,6 +46,8 @@ class CostFunctionCalculator
       const thrust::device_vector<float> &integralCosts, int labelId,
       float anchorX, float anchorY, int labelWidthInPixel,
       int labelHeightInPixel);
+
+  CostFunctionWeights weights;
 
  private:
   int width;
