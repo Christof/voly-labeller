@@ -54,6 +54,7 @@ class LabellingCoordinator
   void resize(int width, int height);
 
   void saveOcclusion();
+  void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
   bool forcesEnabled = true;
 
