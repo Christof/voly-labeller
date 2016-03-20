@@ -13,6 +13,7 @@
 #include "./input/scxml_importer.h"
 #include "./mouse_shape_controller.h"
 #include "./labeller_model.h"
+#include "./placement_labeller_model.h"
 #include "./labels_model.h"
 #include "./labelling/labels.h"
 #include "./labelling_coordinator.h"
@@ -50,6 +51,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   window = std::make_unique<Window>(scene);
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
+  placementLabellerModel =
+      std::make_unique<PlacementLabellerModel>(labellingCoordinator);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
@@ -132,6 +135,7 @@ void Application::setupWindow()
                               textureMapperManagerController.get());
   context->setContextProperty("scene", sceneController.get());
   context->setContextProperty("labeller", labellerModel.get());
+  context->setContextProperty("placement", placementLabellerModel.get());
   context->setContextProperty("labels", labelsModel.get());
   context->setContextProperty("labelling", labellingController.get());
 }
