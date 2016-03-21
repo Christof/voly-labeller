@@ -208,7 +208,6 @@ void ConstraintUpdater::drawConnectorShadowRegion(
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
 {
-  std::vector<float> positions;
   if (polygon.size() > 0)
   {
     auto point = polygon[0];
@@ -220,7 +219,5 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
     positions.push_back(point.x());
     positions.push_back(height - point.y());
   }
-
-  drawer->drawElementVector(positions);
 }
 
