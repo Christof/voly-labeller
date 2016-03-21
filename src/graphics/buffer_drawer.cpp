@@ -5,6 +5,7 @@
 #include "./shader_manager.h"
 #include "./vertex_array.h"
 #include "./render_data.h"
+#include "./shader_program.h"
 
 namespace Graphics
 {
@@ -22,7 +23,7 @@ BufferDrawer::BufferDrawer(int width, int height, Gl *gl,
   pixelToNDC = pixelToNDCTransform.matrix();
 }
 
-void BufferDrawer::drawElementVector(std::vector<float> positions)
+void BufferDrawer::drawElementVector(std::vector<float> positions, float weight)
 {
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
@@ -31,6 +32,7 @@ void BufferDrawer::drawElementVector(std::vector<float> positions)
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
+  shaderManager->getShader(shaderId)->setUniform("weight", weight);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 

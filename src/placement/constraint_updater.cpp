@@ -153,10 +153,11 @@ void ConstraintUpdater::drawConstraintRegionFor(
 
   positions.clear();
 
-  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
-                        newLabel);
   drawConnectorShadowRegion(anchorPosition, lastAnchorPosition,
                             lastLabelPosition, newLabel);
+
+  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
+                        newLabel);
 
   auto endTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<float, std::milli> diff = endTime - startTime;
@@ -164,7 +165,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
   qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
                   << diff.count() << "ms";
 
-  drawer->drawElementVector(positions);
+  drawer->drawElementVector(positions, 1.0f);
 }
 
 void ConstraintUpdater::clear()
@@ -172,9 +173,9 @@ void ConstraintUpdater::clear()
   drawer->clear();
 }
 
-void ConstraintUpdater::useConnectorShadowRegion(bool enable)
+void ConstraintUpdater::setConnectorShadowWeight(float weight)
 {
-  isConnectorShadowRegionEnabled = enable;
+  connectorShadowWeight = weight;
 }
 
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
@@ -201,7 +202,7 @@ void ConstraintUpdater::drawConnectorShadowRegion(
     Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
     Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
 {
-  if (!isConnectorShadowRegionEnabled)
+  if (connectorShadowWeight == 0.0f)
     return;
 
   polygon connectorPolygon;
@@ -216,6 +217,12 @@ void ConstraintUpdater::drawConnectorShadowRegion(
   connectorPolygon.outer().push_back(lastLabelPosition);
 
   convolveTwoPolygons(connectorPolygon, newLabel);
+
+  if (connectorShadowWeight != 1.0f)
+  {
+    drawer->drawElementVector(positions, connectorShadowWeight);
+    positions.clear();
+  }
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)

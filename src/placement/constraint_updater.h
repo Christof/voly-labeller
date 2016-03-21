@@ -48,13 +48,13 @@ class ConstraintUpdater
                                Eigen::Vector2i lastLabelSize);
 
   void clear();
-  void useConnectorShadowRegion(bool enable);
+  void setConnectorShadowWeight(float weight);
 
  private:
   std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
-  bool isConnectorShadowRegionEnabled = true;
+  float connectorShadowWeight = 0.1f;
 
   std::vector<float> positions;
 
