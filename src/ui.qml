@@ -428,7 +428,12 @@ Item {
           role: "name"
           title: "Name"
           width: 200
-          delegate: nameDelegate
+          delegate: 
+            Item {
+              Text {
+                text: styleData.value
+              }
+            }
         }
         TableViewColumn {
           role: "weight"
