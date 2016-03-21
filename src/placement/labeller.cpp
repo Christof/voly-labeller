@@ -8,6 +8,7 @@
 #include "./apollonius.h"
 #include "./occupancy_updater.h"
 #include "./constraint_updater.h"
+#include "./persistent_constraint_updater.h"
 #include "../utils/memory.h"
 
 namespace Placement
@@ -15,7 +16,7 @@ namespace Placement
 
 QLoggingCategory plChan("Placement.Labeller");
 
-Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
+Labeller::Labeller(std::shared_ptr<LabelsContainer> labels) : labels(labels)
 {
 }
 
@@ -24,7 +25,7 @@ void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
     std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
-    std::shared_ptr<ConstraintUpdater> constraintUpdater)
+    std::shared_ptr<PersistentConstraintUpdater> constraintUpdater)
 {
   qCInfo(plChan) << "Initialize";
   if (!occupancySummedAreaTable.get())
@@ -54,19 +55,18 @@ void Labeller::cleanup()
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData)
 {
+  if (labels->count() == 0)
+    return std::map<int, Eigen::Vector3f>();
+
   newPositions.clear();
   if (!occupancySummedAreaTable.get())
     return newPositions;
 
   Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
                              distanceTransformTextureMapper->getHeight());
-  insertionOrder = calculateInsertionOrder(frameData, bufferSize);
+  auto insertionOrder = calculateInsertionOrder(frameData, bufferSize);
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
-
-  labelSizesForBuffer.clear();
-  anchors2DForBuffer.clear();
-  labelPositionsForBuffer.clear();
 
   occupancySummedAreaTable->runKernel();
 
@@ -79,20 +79,18 @@ Labeller::update(const LabellerFrameData &frameData)
 
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
-    labelSizesForBuffer[id] = labelSizeForBuffer;
 
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
-    anchors2DForBuffer[id] = anchorForBuffer;
 
-    updateConstraints(i, anchorForBuffer, labelSizeForBuffer);
+  constraintUpdater->updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
         anchorPixels.y(), label.size.x(), label.size.y());
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
-    labelPositionsForBuffer[id] = newPosition;
+    constraintUpdater->setPosition(id, newPosition);
 
     // occupancyUpdater->addLabel(newXPosition, newYPosition,
     //                            labelSizeForBuffer.x(),
@@ -140,6 +138,9 @@ std::vector<int>
 Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
                                   Eigen::Vector2i bufferSize)
 {
+  if (labels->count() == 1)
+    return std::vector<int>{ labels->getLabels()[0].id };
+
   std::vector<Eigen::Vector4f> labelsSeed =
       createLabelSeeds(bufferSize, frameData.viewProjection);
 
@@ -147,21 +148,6 @@ Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
                         labelsSeed, labels->count());
   apollonius.run();
   return apollonius.calculateOrdering();
-}
-
-void Labeller::updateConstraints(size_t currentLabelIndex,
-                                 Eigen::Vector2i anchorForBuffer,
-                                 Eigen::Vector2i labelSizeForBuffer)
-{
-  constraintUpdater->clear();
-  for (size_t insertedLabelIndex = 0; insertedLabelIndex < currentLabelIndex;
-       ++insertedLabelIndex)
-  {
-    int oldId = insertionOrder[insertedLabelIndex];
-    constraintUpdater->drawConstraintRegionFor(
-        anchorForBuffer, labelSizeForBuffer, anchors2DForBuffer[oldId],
-        labelPositionsForBuffer[oldId], labelSizesForBuffer[oldId]);
-  }
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,

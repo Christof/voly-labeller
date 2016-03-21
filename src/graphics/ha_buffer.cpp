@@ -1,6 +1,7 @@
 #include "./ha_buffer.h"
 #include <Eigen/Dense>
 #include <QLoggingCategory>
+#include <vector>
 #include <algorithm>
 #include "./shader_program.h"
 #include "./screen_quad.h"
@@ -8,6 +9,8 @@
 #include "./object_manager.h"
 #include "./volume_manager.h"
 #include "./texture_manager.h"
+#include "./transfer_function_manager.h"
+#include "../math/eigen.h"
 
 namespace Graphics
 {
@@ -139,6 +142,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
     gl->glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   gl->glDepthFunc(GL_ALWAYS);
+  gl->glDisable(GL_BLEND);
 
   syncAndGetCounts();
 
@@ -164,6 +168,11 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   Eigen::Vector3f sampleDistance =
       Eigen::Vector3f(0.49f, 0.49f, 0.49f).cwiseQuotient(textureAtlasSize);
   renderShader->setUniform("sampleDistance", sampleDistance);
+  renderShader->setUniform(
+      "transferFunctionWidth",
+      managers->getTransferFunctionManager()->getTextureWidth());
+
+  setLayeringUniforms(renderShader, renderData);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   managers->getVolumeManager()->fillCustomBuffer(objectData);
@@ -183,6 +192,12 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   qCDebug(channel) << "Render time" << renderTime << "ms";
 
   gl->glDepthFunc(GL_LESS);
+  gl->glEnable(GL_BLEND);
+}
+
+void HABuffer::setLayerZValues(std::vector<float> layerZValues)
+{
+  this->layerZValues = layerZValues;
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
@@ -199,6 +214,30 @@ void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
   shader->setUniform("fragmentData", fragmentDataBuffer);
 }
 
+void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
+                                   const RenderData &renderData)
+{
+  std::vector<Eigen::Vector4f> layerPlanes;
+  for (auto &layerZValue : layerZValues)
+  {
+    Eigen::Vector4f probePointNdc(0.0, 0.0, layerZValue, 1);
+    Eigen::Vector3f probePointEye =
+        project(renderData.projectionMatrix.inverse(), probePointNdc);
+    layerPlanes.push_back(Eigen::Vector4f(0, 0, 1, -probePointEye.z()));
+  }
+
+  std::sort(layerPlanes.begin(), layerPlanes.end(),
+            [](const Eigen::Vector4f &left, const Eigen::Vector4f &right)
+            {
+    return left.w() < right.w();
+  });
+
+  renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
+                                      layerPlanes.size());
+  renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
+                                       layerZValues.size());
+}
+
 void HABuffer::syncAndGetCounts()
 {
   glAssert(gl->glMemoryBarrier(GL_ALL_BARRIER_BITS));
@@ -213,8 +252,7 @@ void HABuffer::syncAndGetCounts()
   }
   else if (numInserted > tableElementCount * 0.8)
   {
-    qCWarning(channel) << "inserted" << numInserted << "/"
-                       << tableElementCount;
+    qCWarning(channel) << "inserted" << numInserted << "/" << tableElementCount;
   }
 
   buildTimer.stop();

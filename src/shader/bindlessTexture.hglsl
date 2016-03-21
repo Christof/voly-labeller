@@ -15,3 +15,10 @@ vec4 Texture(Tex2DAddress addr, vec2 uv)
   return texture(sampler2DArray(addr.Container), texc);
 }
 
+vec4 TexelFetch(Tex2DAddress addr, ivec2 uv)
+{
+  ivec3 texc = ivec3(uv.x * addr.texScale.x, uv.y * addr.texScale.y, addr.Page);
+
+  return texelFetch(sampler2DArray(addr.Container), texc, 0);
+}
+

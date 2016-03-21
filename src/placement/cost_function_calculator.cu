@@ -74,8 +74,8 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   {
     int startX = max(x - halfLabelWidth - 1, 0);
     int startY = max(y - halfLabelWidth - 1, 0);
-    int endX = min(x + halfLabelWidth, width - 1);
-    int endY = min(y + halfLabelWidth, height - 1);
+    int endX = min(x + halfLabelWidth, width - 1);   // NOLINT
+    int endY = min(y + halfLabelWidth, height - 1);  // NOLINT
 
     float lowerRight = occupancy[endY * width + endX];
     float lowerLeft = occupancy[endY * width + startX];
@@ -114,7 +114,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 };
 
 template <typename T>
-struct MinimumCostOperator : public thrust::binary_function<T, T, T>
+struct MinimumCostOperator : public thrust::binary_function<T, T, T>  // NOLINT
 {
   __host__ __device__ T operator()(const T &x, const T &y) const
   {

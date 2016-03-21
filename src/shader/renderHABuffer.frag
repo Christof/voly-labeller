@@ -8,19 +8,29 @@ in vec4 fragmentInputPosition;
 
 layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 position;
+layout(location = 2) out vec4 outputColor2;
+layout(location = 3) out vec4 position2;
+layout(location = 4) out vec4 outputColor3;
+layout(location = 5) out vec4 position3;
+layout(location = 6) out vec4 outputColor4;
+layout(location = 7) out vec4 position4;
 layout(depth_any) out float gl_FragDepth;
 
-uniform vec3 backgroundColor = vec3(1.0, 1.0, 1.0);
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
+uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
+const int layerCount = 4;
+const int planeCount = layerCount - 1;
+uniform vec4 layerPlanes[planeCount];
+uniform float planesZValuesNdc[planeCount];
 
 uniform sampler3D volumeSampler;
 
-const float POSITION_NOT_SET = -2;
+const float DEPTH_NOT_SET = -10.0f;
 
 #define transferFunctionRowCount 64.0f
 
@@ -104,11 +114,11 @@ void updateActiveObjects(inout int objectId, inout int activeObjects)
   }
 }
 
-vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
+vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
 {
   const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
-  vec3 lightDir = normalize(lightPos - startPos_eye);
-  vec3 viewDir = -1.0f * normalize(startPos_eye);
+  vec3 lightDir = normalize(lightPos - currentPos_eye);
+  vec3 viewDir = -1.0f * normalize(currentPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
   float dotNL = max(dot(normalizedGradient, lightDir), 0.0f);
@@ -127,10 +137,9 @@ vec3 calculateLighting(vec4 color, vec3 startPos_eye, vec3 gradient)
 
 vec4 transferFunctionLookUp(int volumeId, float density)
 {
-  float row = volumes[volumeId].transferFunctionRow;
-
-  return Texture(volumes[volumeId].textureAddress,
-                 vec2(density, row / (transferFunctionRowCount - 1.0f)));
+  return TexelFetch(volumes[volumeId].textureAddress,
+                    ivec2(int(density * transferFunctionWidth),
+                          volumes[volumeId].transferFunctionRow));
 }
 
 int calculateNextObjectId(inout uint remainingActiveObjects)
@@ -162,21 +171,88 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   return segmentTextureLength;
 }
 
-void setPositionAndDepth(vec4 positionInEyeSpace)
+vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
 {
-  if (position.w == POSITION_NOT_SET)
+  vec4 ndcPos = projectionMatrix * positionInEyeSpace;
+  return ndcPos / ndcPos.w;
+}
+
+float getDepth(in int layerIndex)
+{
+  if (layerIndex == 0)
+    return position.z;
+  else if (layerIndex == 1)
+    return position2.z;
+  else if (layerIndex == 2)
+    return position3.z;
+  else
+    return position4.z;
+}
+
+void setPositionNdcToEndValue(in int layerIndex)
+{
+  if (layerIndex == 0)
   {
-    vec4 ndcPos = projectionMatrix * positionInEyeSpace;
-    ndcPos = ndcPos / ndcPos.w;
-    float depth = ndcPos.z;
-    gl_FragDepth = depth;
-    position.xyz = ndcPos.xyz;
-    position.w = 1.0f;
+    position = vec4(1);
+  }
+  else if (layerIndex == 1)
+  {
+    position2 = vec4(1);
+  }
+  else if (layerIndex == 2)
+  {
+    position3 = vec4(1);
+  }
+  else
+  {
+    position4 = vec4(1);
   }
 }
 
+void setPositionNdc(in int layerIndex, in vec4 positionNdc)
+{
+  if (gl_FragDepth == DEPTH_NOT_SET)
+    gl_FragDepth = positionNdc.z;
+
+  if (layerIndex == 0)
+  {
+    position = vec4(vec3(positionNdc.z / planesZValuesNdc[0]), 1);
+  }
+  else if (layerIndex == 1)
+  {
+    position2 = vec4(vec3((positionNdc.z - planesZValuesNdc[0]) / (planesZValuesNdc[1] - planesZValuesNdc[0])), 1);
+  }
+  else if (layerIndex == 2)
+  {
+    position3 = vec4(vec3((positionNdc.z - planesZValuesNdc[1]) / (planesZValuesNdc[2] - planesZValuesNdc[1])), 1);
+  }
+  else
+  {
+    position4 = vec4(vec3((positionNdc.z - planesZValuesNdc[2]) / (1.0 - planesZValuesNdc[2])), 1);
+  }
+}
+
+void setPositionAndDepthFor(in int layerIndex, in vec4 positionInEyeSpace)
+{
+  vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
+  setPositionNdc(layerIndex, ndcPos.zzzw);
+  // TODO depth
+}
+
+void setColorForLayer(int layerIndex, vec4 color)
+{
+  if (layerIndex == 0)
+    outputColor = color;
+  else if (layerIndex == 1)
+    outputColor2 = color;
+  else if (layerIndex == 2)
+    outputColor3 = color;
+  else
+    outputColor4 = color;
+}
+
 vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
-    in vec4 startPos_eye)
+    in vec4 currentPos_eye)
 {
   vec4 sampleColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -191,7 +267,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     vec3 textureSamplePos =
       (volumes[currentObjectId].objectToDatasetMatrix *
        volumes[currentObjectId].textureMatrix * inverseViewMatrix *
-       startPos_eye).xyz;
+       currentPos_eye).xyz;
 
     float density = getVolumeSampleDensity(textureSamplePos);
     vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
@@ -200,7 +276,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 
     if (squareGradientLength > 0.05f)
     {
-      currentColor.rgb = calculateLighting(currentColor, startPos_eye.xyz, gradient);
+      currentColor.rgb = calculateLighting(currentColor, currentPos_eye.xyz, gradient);
     }
     currentColor.rgb = clampColor(currentColor.rgb);
 
@@ -212,35 +288,35 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
-    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor)
+    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor, inout float depth)
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
-  int sampleSteps = int(segmentTextureLength * STEP_FACTOR);
+  float sampleSteps = segmentTextureLength * STEP_FACTOR;
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
-  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / float(sampleSteps);
-  vec4 startPos_eye = segmentStartPos_eye;  // + noise offset;
+  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / sampleSteps;
+  vec4 currentPos_eye = segmentStartPos_eye;  // + noise offset;
 
   // sample ray segment
   for (int stepIndex = 0; stepIndex < sampleSteps; stepIndex++)
   {
     vec4 sampleColor = calculateSampleColor(activeObjects,
-        activeObjectCount, startPos_eye);
+        activeObjectCount, currentPos_eye);
 
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
-    if (fragmentColor.a > alphaThresholdForDepth)
+    if (depth == DEPTH_NOT_SET && fragmentColor.a > alphaThresholdForDepth)
     {
-      setPositionAndDepth(startPos_eye);
+      depth = fromEyeToNdcSpace(currentPos_eye).z;
     }
 
     // early ray termination
     if (fragmentColor.a > 0.999)
       break;
 
-    startPos_eye += step_eye;
+    currentPos_eye += step_eye;
   }  // sampling steps
 
   return fragmentColor;
@@ -248,9 +324,6 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
 
 void main()
 {
-  if (gl_SampleMaskIn[0] == 0)
-    discard;
-
   vec2 pos = (fragmentInputPosition.xy * 0.5 + 0.5) * float(screenSize);
 
   if (pos.x >= screenSize || pos.y >= screenSize || pos.x < 0 || pos.y < 0)
@@ -261,8 +334,11 @@ void main()
 
   uvec2 ij = uvec2(pos.xy);
 
-  gl_FragDepth = 1.0;
-  position = vec4(-2, -2, 1, POSITION_NOT_SET);
+  gl_FragDepth = DEPTH_NOT_SET;
+  position = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position2 = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position3 = vec4(1, 0, DEPTH_NOT_SET, 1);
+  position4 = vec4(1, 0, DEPTH_NOT_SET, 1);
 
   uint maxAge = counters[Saddr(ij)];
 
@@ -286,20 +362,34 @@ void main()
       ++age;
   }
 
+  int layerIndex = 0;
+  float endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
+  while (endDistance < 0)
+  {
+    setPositionNdcToEndValue(layerIndex);
+    setColorForLayer(layerIndex, vec4(0));
+    ++layerIndex;
+    endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
+
+    if (layerIndex == planeCount - 1)
+      break;
+  }
+
   for (--age; age < maxAge; age++)  // all fragments
   {
     currentFragment = nextFragment;
     vec4 segmentStartPos_eye = endPos_eye;
+    float startDistance = endDistance;
     vec4 fragmentColor = currentFragment.color;
-    fragmentColor.rgb *= fragmentColor.w;
+    fragmentColor.rgb *= fragmentColor.a;
 
     int objectId = currentFragment.objectId;
     updateActiveObjects(objectId, activeObjects);
     int activeObjectCount = bitCount(activeObjects);
 
-    if (objectId == 0 && fragmentColor.w > alphaThresholdForDepth)
+    if (objectId == 0 && fragmentColor.a > alphaThresholdForDepth)
     {
-      setPositionAndDepth(currentFragment.eyePos);
+      setPositionAndDepthFor(layerIndex, currentFragment.eyePos);
     }
 
     // fetch next Fragment
@@ -314,11 +404,48 @@ void main()
     endPos_eye = nextFragmentReadStatus ?
       nextFragment.eyePos : segmentStartPos_eye;
 
+    endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
+
+    while (startDistance >= 0 && endDistance < 0 && layerIndex < planeCount)
+    {
+      vec3 dir = endPos_eye.xyz - segmentStartPos_eye.xyz;
+      float alpha = -dot(segmentStartPos_eye, layerPlanes[layerIndex]) /
+                    dot(dir, layerPlanes[layerIndex].xyz);
+      vec4 endPosCut_eye = segmentStartPos_eye + alpha * vec4(dir, 0);
+      if (activeObjectCount > 0)
+      {
+        float depth = DEPTH_NOT_SET;
+        fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
+            segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
+        finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+        if (depth == DEPTH_NOT_SET)
+          setPositionNdcToEndValue(layerIndex);
+        else
+          setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
+      }
+      else
+      {
+        setPositionNdcToEndValue(layerIndex);
+      }
+
+      setColorForLayer(layerIndex, finalColor);
+      finalColor = vec4(0);
+      fragmentColor = vec4(0);
+      segmentStartPos_eye = endPosCut_eye;
+
+      ++layerIndex;
+      endDistance = dot(endPos_eye, layerPlanes[layerIndex]);
+    }
+
     if (activeObjectCount > 0)
     {
+      float depth = DEPTH_NOT_SET;
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-          segmentStartPos_eye, endPos_eye, fragmentColor);
+          segmentStartPos_eye, endPos_eye, fragmentColor, depth);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+
+      if (depth != DEPTH_NOT_SET)
+        setPositionNdc(layerIndex, vec4(depth, depth, depth, 1));
     }
     else
     {
@@ -334,17 +461,36 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (nextFragment.color.w > alphaThresholdForDepth)
+    if (finalColor.a > alphaThresholdForDepth &&
+        getDepth(layerIndex) == DEPTH_NOT_SET)
     {
-      setPositionAndDepth(nextFragment.eyePos);
+      setPositionAndDepthFor(layerIndex, nextFragment.eyePos);
+    }
+
+    float endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
+    while (endDistance < 0 && layerIndex < planeCount)
+    {
+      setColorForLayer(layerIndex, finalColor);
+      if (getDepth(layerIndex) == DEPTH_NOT_SET)
+        setPositionNdcToEndValue(layerIndex);
+
+      finalColor = vec4(0);
+      ++layerIndex;
+      endDistance = dot(nextFragment.eyePos, layerPlanes[layerIndex]);
     }
   }
 
-  if (position.w == POSITION_NOT_SET)
-    position.w = 1;
+  setColorForLayer(layerIndex, finalColor);
+  if (getDepth(layerIndex) == DEPTH_NOT_SET)
+    setPositionNdcToEndValue(layerIndex);
 
-  finalColor = clampColor(finalColor);
+  for (++layerIndex; layerIndex < layerCount; ++layerIndex)
+  {
+    setColorForLayer(layerIndex, vec4(0));
+    setPositionNdcToEndValue(layerIndex);
+  }
 
-  outputColor = blend(finalColor, vec4(backgroundColor, 1.0));
+  if (gl_FragDepth == DEPTH_NOT_SET)
+    gl_FragDepth = 1.0;
 }
 

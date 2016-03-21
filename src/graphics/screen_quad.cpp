@@ -24,9 +24,7 @@ void ScreenQuad::initialize(Gl *gl, std::shared_ptr<Managers> managers)
 void ScreenQuad::setUniforms(std::shared_ptr<ShaderProgram> shader,
                              const RenderData &renderData)
 {
-  Eigen::Matrix4f viewProjection =
-      renderData.projectionMatrix * renderData.viewMatrix;
-  shader->setUniform("viewProjectionMatrix", viewProjection);
+  shader->setUniform("viewProjectionMatrix", renderData.viewProjectionMatrix);
   shader->setUniform("viewMatrix", renderData.viewMatrix);
   shader->setUniform("modelMatrix", renderData.modelMatrix);
 }

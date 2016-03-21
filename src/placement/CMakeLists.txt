@@ -15,6 +15,7 @@ set(SOURCES
   labeller.cpp
   cuda_texture_mapper.cpp
   constraint_updater.cpp
+  persistent_constraint_updater.cpp
   )
 
 cuda_add_library(placement-lib ${SOURCES})

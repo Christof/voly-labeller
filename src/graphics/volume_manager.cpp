@@ -127,11 +127,11 @@ void VolumeManager::add3dTexture(int volumeId, Eigen::Vector3i size,
                  << size;
   objectToDatasetMatrices[volumeId] = matrix;
 
-  glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+  gl->glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  gl->glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  gl->glTexParameteri(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+  gl->glTexParameteri(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  gl->glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 }
 
 }  // namespace Graphics

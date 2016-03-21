@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_FRAME_BUFFER_OBJECT_H_
 
 #include <memory>
+#include <vector>
 
 namespace Graphics
 {
@@ -27,7 +28,7 @@ class Gl;
 class FrameBufferObject
 {
  public:
-  FrameBufferObject() = default;
+  explicit FrameBufferObject(int layerCount);
   ~FrameBufferObject();
 
   void initialize(Gl *gl, int width, int height);
@@ -37,23 +38,29 @@ class FrameBufferObject
   void bind();
   void unbind();
 
-  void bindColorTexture(unsigned int textureUnit);
-  void bindPositionTexture(unsigned int textureUnit);
+  void bindColorTexture(int index, unsigned int textureUnit);
+  void bindDepthTexture(int index, unsigned int textureUnit);
+
   void bindDepthTexture(unsigned int textureUnit);
 
-  unsigned int getRenderTextureId();
-  unsigned int getPositionTextureId();
+  unsigned int getColorTextureId(int index);
+  unsigned int getDepthTextureId(int index);
   unsigned int getDepthTextureId();
 
+  int getLayerCount();
+
  private:
+  int layerCount;
   unsigned int framebuffer = 0;
-  unsigned int renderTexture = 0;
-  unsigned int positionTexture = 0;
+  std::vector<unsigned int> colorTextures;
+  std::vector<unsigned int> depthTextures;
   unsigned int depthTexture = 0;
   Gl *gl;
 
-  void resizeAndSetColorAttachment(int width, int height);
-  void resizeAndSetPositionAttachment(int width, int height);
+  void resizeAndSetColorAttachment(int texture, int attachment, int width,
+                                   int height);
+  void resizeAndSetPositionAttachment(int texture, int attachment, int width,
+                                      int height);
   void resizeAndSetDepthAttachment(int width, int height);
   void resizeTexture(int texture, int width, int height, unsigned int component,
                      unsigned int format, unsigned int type);

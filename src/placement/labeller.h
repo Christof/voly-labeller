@@ -6,12 +6,13 @@
 #include <memory>
 #include <vector>
 #include <map>
-#include "../labelling/labels.h"
+#include "../labelling/labels_container.h"
 #include "../labelling/labeller_frame_data.h"
 #include "./cost_function_calculator.h"
 
 class CudaArrayProvider;
 class ConstraintUpdater;
+class PersistentConstraintUpdater;
 
 /**
  * \brief Contains classes for label placement using a global minimization of a
@@ -33,14 +34,14 @@ class SummedAreaTable;
 class Labeller
 {
  public:
-  explicit Labeller(std::shared_ptr<Labels> labels);
+  explicit Labeller(std::shared_ptr<LabelsContainer> labels);
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
-             std::shared_ptr<ConstraintUpdater> constraintUpdater);
+             std::shared_ptr<PersistentConstraintUpdater> constraintUpdater);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
@@ -51,21 +52,16 @@ class Labeller
   void cleanup();
 
  private:
-  std::shared_ptr<Labels> labels;
+  std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
-  std::shared_ptr<ConstraintUpdater> constraintUpdater;
-  std::vector<int> insertionOrder;
+  std::shared_ptr<PersistentConstraintUpdater> constraintUpdater;
 
   Eigen::Vector2i size;
-
-  std::map<int, Eigen::Vector2i> labelSizesForBuffer;
-  std::map<int, Eigen::Vector2i> anchors2DForBuffer;
-  std::map<int, Eigen::Vector2i> labelPositionsForBuffer;
 
   std::map<int, Eigen::Vector3f> newPositions;
 
@@ -73,9 +69,6 @@ class Labeller
                                                 Eigen::Matrix4f viewProjection);
   std::vector<int> calculateInsertionOrder(const LabellerFrameData &frameData,
                                            Eigen::Vector2i bufferSize);
-  void updateConstraints(size_t currentLabelIndex,
-                         Eigen::Vector2i anchorForBuffer,
-                         Eigen::Vector2i labelSizeForBuffer);
   Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
                                 Eigen::Vector2i bufferSize,
                                 Eigen::Matrix4f inverseViewProjection);

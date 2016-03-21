@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <memory>
+#include <vector>
 #include "./render_data.h"
 #include "./gl.h"
 #include "./timer.h"
@@ -70,6 +71,8 @@ class HABuffer
   void render(std::shared_ptr<Graphics::Managers> managers,
               const RenderData &renderData);
 
+  void setLayerZValues(std::vector<float> layerZValues);
+
   bool wireframe = false;
 
  private:
@@ -77,6 +80,8 @@ class HABuffer
   void setUniforms(std::shared_ptr<ShaderProgram> shader);
   void syncAndGetCounts();
   void displayStatistics(const char *label);
+  void setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
+                           const RenderData &renderData);
 
   // vec4 color and vec4 position
   const int FRAGMENT_DATA_SIZE = 36;
@@ -104,6 +109,8 @@ class HABuffer
   Timer clearTimer;
   Timer buildTimer;
   Timer renderTimer;
+
+  std::vector<float> layerZValues;
 };
 
 }  // namespace Graphics

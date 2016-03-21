@@ -36,4 +36,17 @@ inline Eigen::Vector2f ndcToPixels(Eigen::Vector2f ndc, Eigen::Vector2f size)
   return (ndc * 0.5f + Eigen::Vector2f(0.5f, 0.5f)).cwiseProduct(size);
 }
 
+inline Eigen::Vector3f project(const Eigen::Matrix4f &matrix,
+                               const Eigen::Vector4f &vector)
+{
+  Eigen::Vector4f result = matrix * vector;
+  return result.head<3>() / result.w();
+}
+
+inline Eigen::Vector3f project(const Eigen::Matrix4f &matrix,
+                               const Eigen::Vector3f &vector)
+{
+  return project(matrix, toVector4f(vector));
+}
+
 #endif  // SRC_MATH_EIGEN_H_

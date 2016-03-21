@@ -47,6 +47,7 @@ set(SOURCES
   src/scene.cpp
   src/scene_controller.cpp
   src/texture_mapper_manager.cpp
+  src/texture_mappers_for_layer.cpp
   src/texture_mapper_manager_controller.cpp
   src/frustum_optimizer.cpp
   src/camera_controller.cpp
@@ -66,7 +67,7 @@ set(SOURCES
   src/graphics/gl.cpp
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
-  src/graphics/render_data.h
+  src/graphics/render_data.cpp
   src/graphics/renderable.cpp
   src/graphics/quad.cpp
   src/graphics/screen_quad.cpp
