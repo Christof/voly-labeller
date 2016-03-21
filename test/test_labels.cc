@@ -100,3 +100,27 @@ TEST(Test_Labels, GetLabelsReturnsCopyOfAllLabels)
   EXPECT_EQ(label.text, labels.getLabels()[0].text);
 }
 
+TEST(Test_Labels, ClearRemovesAllLabels)
+{
+  Labels labels;
+
+  Label label(1, "Label text", Eigen::Vector3f(1, 2, 3));
+  labels.add(label);
+  Label label2(2, "Other Label text", Eigen::Vector3f(1, 2, 3));
+  labels.add(label2);
+
+  labels.clear();
+
+  EXPECT_EQ(0, labels.count());
+}
+
+TEST(Test_Labels, GetByIdReturnsEmptyLabelForNotExistingId)
+{
+  Labels labels;
+
+  auto label = labels.getById(1);
+
+  EXPECT_EQ(-1, label.id);
+  EXPECT_EQ("", label.text);
+}
+

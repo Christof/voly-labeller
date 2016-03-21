@@ -29,9 +29,8 @@ void BufferDrawer::drawElementVector(std::vector<float> positions)
   vertexArray->addStream(positions, 2);
 
   RenderData renderData;
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
   renderData.viewMatrix = pixelToNDC;
-  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
+  renderData.viewProjectionMatrix = pixelToNDC;
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 

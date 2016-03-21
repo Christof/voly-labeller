@@ -41,8 +41,11 @@ class LabelNode : public Node
 
   Label label;
 
+  void setIsVisible(bool isVisible);
+
  private:
   std::string textureText;
+  bool isVisible;
 
   friend class boost::serialization::access;
   template <class Archive>

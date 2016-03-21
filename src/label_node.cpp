@@ -36,7 +36,8 @@ void LabelNode::render(Graphics::Gl *gl,
     initialize(gl, managers);
   }
 
-  renderAnchor(gl, managers, renderData);
+  if (isVisible)
+    renderAnchor(gl, managers, renderData);
 }
 
 void
@@ -49,8 +50,16 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
     initialize(gl, managers);
   }
 
-  renderConnector(gl, managers, renderData);
-  renderLabel(gl, managers, renderData);
+  if (isVisible)
+  {
+    renderConnector(gl, managers, renderData);
+    renderLabel(gl, managers, renderData);
+  }
+}
+
+void LabelNode::setIsVisible(bool isVisible)
+{
+  this->isVisible = isVisible;
 }
 
 void LabelNode::initialize(Graphics::Gl *gl,

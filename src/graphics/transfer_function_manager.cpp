@@ -41,4 +41,9 @@ TextureAddress TransferFunctionManager::getTextureAddress()
   return textureManager->getAddressFor(textureId);
 }
 
+int TransferFunctionManager::getTextureWidth()
+{
+  return width;
+}
+
 }  // namespace Graphics

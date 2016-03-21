@@ -34,6 +34,8 @@ class TransferFunctionManager
 
   TextureAddress getTextureAddress();
 
+  int getTextureWidth();
+
  private:
   const int width = 4096;
   const int height = 64;

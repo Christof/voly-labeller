@@ -3,6 +3,7 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
+#include <map>
 #include "./graphics/gl.h"
 #include "./input/invoke_manager.h"
 #include "./graphics/render_data.h"
@@ -24,6 +25,9 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./placement/constraint_updater.h"
+#include "./placement/persistent_constraint_updater.h"
+
+const int LAYER_COUNT = 4;
 
 Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -32,13 +36,13 @@ Scene::Scene(std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<TextureMapperManager> textureMapperManager)
 
   : nodes(nodes), labels(labels), forcesLabeller(forcesLabeller),
-    placementLabeller(placementLabeller), frustumOptimizer(nodes),
+    frustumOptimizer(nodes), clustering(labels, LAYER_COUNT - 1),
     textureMapperManager(textureMapperManager)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, getCamera());
 
-  fbo = std::make_shared<Graphics::FrameBufferObject>();
+  fbo = std::make_shared<Graphics::FrameBufferObject>(LAYER_COUNT);
   constraintBufferObject = std::make_shared<ConstraintBufferObject>();
   managers = std::make_shared<Graphics::Managers>();
 }
@@ -84,6 +88,7 @@ void Scene::initialize()
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
+  textureMapperManager->createTextureMappersForLayers(fbo->getLayerCount());
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 
@@ -94,17 +99,31 @@ void Scene::initialize()
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
       drawer, textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize());
+  persistentConstraintUpdater =
+      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
-  placementLabeller->initialize(
-      textureMapperManager->getOccupancyTextureMapper(),
-      textureMapperManager->getDistanceTransformTextureMapper(),
-      textureMapperManager->getApolloniusTextureMapper(),
-      textureMapperManager->getConstraintTextureMapper(), constraintUpdater);
+  for (int layerIndex = 0; layerIndex < LAYER_COUNT; ++layerIndex)
+  {
+    auto labelsContainer = std::make_shared<LabelsContainer>();
+    labelsInLayer.push_back(labelsContainer);
+    auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
+    labeller->resize(width, height);
+    labeller->initialize(
+        textureMapperManager->getOccupancyTextureMapper(layerIndex),
+        textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
+        textureMapperManager->getApolloniusTextureMapper(layerIndex),
+        textureMapperManager->getConstraintTextureMapper(),
+        persistentConstraintUpdater);
+
+    placementLabellers.push_back(labeller);
+  }
 }
 
 void Scene::cleanup()
 {
-  placementLabeller->cleanup();
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->cleanup();
+
   textureMapperManager->cleanup();
 }
 
@@ -121,15 +140,7 @@ void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
-  /*
-  auto newPositions = forcesLabeller->update(LabellerFrameData(
-      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
-      */
-  auto newPositions = placementLabeller->getLastPlacementResult();
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    labelNode->labelPosition = newPositions[labelNode->label.id];
-  }
+  updateLabelling();
 }
 
 void Scene::render()
@@ -160,8 +171,10 @@ void Scene::render()
 
   constraintBufferObject->bind();
 
-  placementLabeller->update(LabellerFrameData(
-      frameTime, camera->getProjectionMatrix(), camera->getViewMatrix()));
+  LabellerFrameData labellerFrameData(frameTime, camera->getProjectionMatrix(),
+                                      camera->getViewMatrix());
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->update(labellerFrameData);
 
   constraintBufferObject->unbind();
 
@@ -181,6 +194,54 @@ void Scene::render()
   nodes->renderLabels(gl, managers, renderData);
 }
 
+void Scene::updateLabelling()
+{
+  /*
+  auto newPositions = forcesLabeller->update(LabellerFrameData(
+      frameTime, camera.getProjectionMatrix(), camera.getViewMatrix()));
+      */
+  persistentConstraintUpdater->clear();
+  std::map<int, Eigen::Vector3f> newPositions;
+  int layerIndex = 0;
+  for (auto placementLabeller : placementLabellers)
+  {
+    if (activeLayerNumber == 0 || activeLayerNumber - 1 == layerIndex)
+    {
+      auto newPositionsForLayer = placementLabeller->getLastPlacementResult();
+      newPositions.insert(newPositionsForLayer.begin(),
+                          newPositionsForLayer.end());
+    }
+
+    layerIndex++;
+  }
+
+  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
+  layerIndex = 0;
+  for (auto &pair : centerWithLabelIds)
+  {
+    auto &container = labelsInLayer[layerIndex];
+    container->clear();
+
+    for (int labelId : pair.second)
+      container->add(labels->getById(labelId));
+
+    layerIndex++;
+  }
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    if (newPositions.count(labelNode->label.id))
+    {
+      labelNode->setIsVisible(true);
+      labelNode->labelPosition = newPositions[labelNode->label.id];
+    }
+    else
+    {
+      labelNode->setIsVisible(false);
+    }
+  }
+}
+
 void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 {
   fbo->bind();
@@ -193,9 +254,24 @@ void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
 
   managers->getObjectManager()->render(renderData);
 
+  clustering.update(renderData.viewProjectionMatrix);
+  auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
+  std::vector<float> zValues;
+  std::cout << "zValuesEye: ";
+  for (auto pair : clusters)
+  {
+    zValues.push_back(pair.first);
+    std::cout << pair.first << ":";
+    for (auto z : pair.second)
+      std::cout << z << ", ";
+    std::cout << std::endl;
+  }
+  std::cout << std::endl;
+
+  haBuffer->setLayerZValues(zValues);
   haBuffer->render(managers, renderData);
 
-  picker->doPick(renderData.projectionMatrix * renderData.viewMatrix);
+  picker->doPick(renderData.viewProjectionMatrix);
 
   fbo->unbind();
 }
@@ -226,19 +302,20 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  textureMapperManager->bindOccupancyTexture();
+  int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
+  textureMapperManager->bindOccupancyTexture(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  textureMapperManager->bindDistanceTransform();
+  textureMapperManager->bindDistanceTransform(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(distanceTransformQuad, transformation.matrix());
 
-  textureMapperManager->bindApollonius();
+  textureMapperManager->bindApollonius(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
@@ -255,8 +332,6 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                        Eigen::Matrix4f modelMatrix)
 {
   RenderData renderData;
-  renderData.projectionMatrix = Eigen::Matrix4f::Identity();
-  renderData.viewMatrix = Eigen::Matrix4f::Identity();
   renderData.modelMatrix = modelMatrix;
 
   quad->getShaderProgram()->bind();
@@ -293,7 +368,8 @@ void Scene::resize(int width, int height)
   this->width = width;
   this->height = height;
 
-  placementLabeller->resize(width, height);
+  for (auto placementLabeller : placementLabellers)
+    placementLabeller->resize(width, height);
 
   shouldResize = true;
 
@@ -302,15 +378,10 @@ void Scene::resize(int width, int height)
 
 RenderData Scene::createRenderData()
 {
-  RenderData renderData;
   auto camera = getCamera();
-  renderData.projectionMatrix = camera->getProjectionMatrix();
-  renderData.viewMatrix = camera->getViewMatrix();
-  renderData.cameraPosition = camera->getPosition();
-  renderData.modelMatrix = Eigen::Matrix4f::Identity();
-  renderData.windowPixelSize = Eigen::Vector2f(width, height);
 
-  return renderData;
+  return RenderData(camera->getProjectionMatrix(), camera->getViewMatrix(),
+                    camera->getPosition(), Eigen::Vector2f(width, height));
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)

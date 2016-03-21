@@ -95,6 +95,19 @@ __global__ void apolloniusStep(cudaTextureObject_t distances, int *data,
   data[index] = currentNearest;
 }
 
+/**
+ * Taken from http://stackoverflow.com/questions/20792445/calculate-rgb-value-for-a-range-of-values-to-create-heat-map
+ */
+__device__ float4 rgb(int maxValue, int value)
+{
+    float ratio = 2.0f * value / maxValue;
+    float b = max(0.0f, 1 - ratio);
+    float r = max(0.0f, ratio - 1);
+    float g = max(0.0f, 1.0f - b - r);
+
+    return make_float4(r, g, b, 1.0);
+}
+
 __global__ void gather(cudaSurfaceObject_t output, int imageSize,
                        int labelCount, int *nearestIndex, int *seedIds,
                        int *seedIndices)
@@ -117,36 +130,9 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     }
   }
 
-  float4 color;
-  switch (labelId)
-  {
-  case 0:
-    color = make_float4(0.0, 0.0, 0.0, 1.0);
-    break;
-  case 1:
-    color = make_float4(1.0, 0.0, 0.0, 1.0);
-    break;
-  case 2:
-    color = make_float4(0.0, 1.0, 0.0, 1.0);
-    break;
-  case 3:
-    color = make_float4(0.0, 0.0, 1.0, 1.0);
-    break;
-  case 4:
-    color = make_float4(1.0, 1.0, 0.0, 1.0);
-    break;
-  case 5:
-    color = make_float4(0.0, 1.0, 1.0, 1.0);
-    break;
-  case 6:
-    color = make_float4(1.0, 0.0, 1.0, 1.0);
-    break;
-  case 7:
-    color = make_float4(1.0, 1.0, 1.0, 1.0);
-    break;
-  default:
-    color = make_float4(0.5, 0.5, 0.5, 1.0);
-  }
+  float4 color = labelId == -1 ?
+    make_float4(1, 1, 1, 1) : rgb(labelCount, labelId);
+
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
 

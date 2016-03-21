@@ -3,22 +3,18 @@
 #define SRC_TEXTURE_MAPPER_MANAGER_H_
 
 #include <memory>
+#include <vector>
 #include "./graphics/frame_buffer_object.h"
-#include "./graphics/standard_texture_2d.h"
 #include "./graphics/gl.h"
 
 class CudaTextureMapper;
-namespace Placement
-{
-class Occupancy;
-class DistanceTransform;
-}
 class ConstraintBufferObject;
+class TextureMappersForLayer;
 
 /**
- * \brief Container for all CudaTextureMapper%s and corresponding textures
+ * \brief Container for all TextureMapperForLayer%s
  *
- * It also provides methods to save a texture to the filesystem as well
+ * It also provides methods to save a textures to the filesystem as well
  * as methods to bind the textures to render them for debugging purposes.
  */
 class TextureMapperManager
@@ -27,6 +23,7 @@ class TextureMapperManager
   explicit TextureMapperManager(int bufferSize);
   ~TextureMapperManager();
 
+  void createTextureMappersForLayers(int layerCount);
   void
   initialize(Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
              std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
@@ -35,13 +32,14 @@ class TextureMapperManager
 
   void update();
 
-  void bindOccupancyTexture();
-  void bindDistanceTransform();
-  void bindApollonius();
+  void bindOccupancyTexture(int layerIndex);
+  void bindDistanceTransform(int layerIndex);
+  void bindApollonius(int layerIndex);
 
-  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
-  std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper>
+  getDistanceTransformTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
 
   void cleanup();
@@ -53,30 +51,9 @@ class TextureMapperManager
   int getBufferSize();
 
  private:
-  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
-  std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
-  std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
-  std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
-  std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
-
-  std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
-  std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
-
-  std::unique_ptr<Placement::Occupancy> occupancy;
-  std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
-  int width;
-  int height;
-
-  bool saveOccupancyInNextFrame = false;
-  bool saveDistanceTransformInNextFrame = false;
-  bool saveApolloniusInNextFrame = false;
-
-  void initializeMappers(
-      std::shared_ptr<Graphics::FrameBufferObject> fbo,
-      std::shared_ptr<ConstraintBufferObject> constraintBufferObject);
+  std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
+  std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

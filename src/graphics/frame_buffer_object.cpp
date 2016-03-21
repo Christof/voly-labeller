@@ -6,8 +6,8 @@
 namespace Graphics
 {
 
-FrameBufferObject::FrameBufferObject()
-  : colorTextures(layerCount), depthTextures(layerCount)
+FrameBufferObject::FrameBufferObject(int layerCount)
+  : layerCount(layerCount), colorTextures(layerCount), depthTextures(layerCount)
 {
 }
 

@@ -2,6 +2,7 @@
 #include "../qimage_drawer_with_updating.h"
 #include "../../src/placement/labeller.h"
 #include "../../src/placement/constraint_updater.h"
+#include "../../src/placement/persistent_constraint_updater.h"
 #include "../../src/labelling/labels.h"
 #include "../../src/utils/image_persister.h"
 #include "../../src/utils/path_helper.h"
@@ -58,11 +59,13 @@ createLabeller(std::shared_ptr<Labels> labels)
       width, height, constraintTextureMapper);
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, width, height);
+  auto persistentConstraintUpdater =
+      std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
   auto labeller = std::make_shared<Placement::Labeller>(labels);
   labeller->initialize(occupancyTextureMapper, distanceTransformTextureMapper,
                        apolloniusTextureMapper, constraintTextureMapper,
-                       constraintUpdater);
+                       persistentConstraintUpdater);
   labeller->resize(1024, 1024);
 
   return labeller;
