@@ -23,7 +23,7 @@ class QImageDrawer : public Drawer
 
   QImageDrawer(int width, int height);
 
-  void drawElementVector(std::vector<float> positions);
+  void drawElementVector(std::vector<float> positions, float weight);
 
   void clear();
 };
