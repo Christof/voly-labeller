@@ -6,6 +6,8 @@
 #include <boost/serialization/nvp.hpp>
 #include <string>
 
+class LabellerFrameData;
+
 /**
  * \brief Holds basic data of a label: id, text, anchor position
  *
@@ -18,33 +20,21 @@ struct Label
    *
    * \warn This should not be used.
    */
-  Label() : Label(-1, "", Eigen::Vector3f())
-  {
-  }
+  Label();
 
   Label(int id, std::string text, Eigen::Vector3f anchorPosition,
-        Eigen::Vector2i size = Eigen::Vector2i(128, 32))
-    : id(id), text(text), anchorPosition(anchorPosition),
-      size(size.cast<float>())
-  {
-  }
+        Eigen::Vector2i size = Eigen::Vector2i(128, 32));
 
   int id;
   std::string text;
   Eigen::Vector3f anchorPosition;
   Eigen::Vector2f size;
 
-  bool operator==(const Label &other) const
-  {
-    return id == other.id && text == other.text &&
-           anchorPosition == other.anchorPosition && size == other.size;
-  }
+  bool operator==(const Label &other) const;
 
-  bool operator!=(const Label &other) const
-  {
-    return id != other.id || text != other.text ||
-           anchorPosition != other.anchorPosition || size != other.size;
-  }
+  bool operator!=(const Label &other) const;
+
+  bool isAnchorInsideFieldOfView(const LabellerFrameData &frameData) const;
 };
 
 namespace boost

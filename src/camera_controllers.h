@@ -3,13 +3,13 @@
 #define SRC_CAMERA_CONTROLLERS_H_
 
 #include <memory>
-#include "./camera.h"
 
 class InvokeManager;
 class CameraController;
 class CameraRotationController;
 class CameraZoomController;
 class CameraMoveController;
+class Camera;
 
 /**
  * \brief Encapsulates all different camera controllers

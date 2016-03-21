@@ -36,7 +36,12 @@ class Labeller
 
   void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
-  std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
+  std::map<int, Eigen::Vector3f>
+  update(const LabellerFrameData &frameData,
+         std::map<int, Eigen::Vector3f> placementPositions);
+
+  void setPositions(const LabellerFrameData &frameData,
+                    std::map<int, Eigen::Vector3f> positions);
 
   std::vector<LabelState> getLabels();
 
@@ -55,6 +60,8 @@ class Labeller
   void setLabel(Labels::Action action, const Label &label);
 
   Eigen::Vector2f size;
+
+  float epsilon = 0.05f;
 };
 }  // namespace Forces
 

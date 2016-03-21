@@ -6,6 +6,7 @@ include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 
 set(SOURCES
   labels_container.cpp
+  label.cpp
   labels.cpp
   clustering.cpp
   )

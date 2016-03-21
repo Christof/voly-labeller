@@ -36,7 +36,6 @@ class Connector : public Renderable
       std::vector<Eigen::Vector3f> points,
       std::string vertexShaderFilename = ":/shader/pass.vert",
       std::string fragmentShaderFilename = ":/shader/color.frag");
-  virtual ~Connector();
 
   Eigen::Vector4f color;
   float lineWidth = 3.0f;

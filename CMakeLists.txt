@@ -61,6 +61,8 @@ set(SOURCES
   src/mouse_shape_controller.h
   src/labeller_model.cpp
   src/labels_model.cpp
+  src/labelling_coordinator.cpp
+  src/labelling_controller.cpp
   src/volume_reader.cpp
   src/default_scene_creator.cpp
   src/constraint_buffer_object.cpp

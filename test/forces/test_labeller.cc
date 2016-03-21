@@ -22,7 +22,12 @@ class TestLabeller : public ::testing::Test
   {
     double frameTime = 1.0;
     return LabellerFrameData(frameTime, Eigen::Matrix4f::Identity(),
-                                     Eigen::Matrix4f::Identity());
+                             Eigen::Matrix4f::Identity());
+  }
+
+  std::map<int, Eigen::Vector3f> getEmptyPlacementResult()
+  {
+    return std::map<int, Eigen::Vector3f>();
   }
 };
 
@@ -30,7 +35,8 @@ TEST_F(TestLabeller, AddedLabelIsUpdated)
 {
   auto oldPosition = labeller->getLabels()[0].labelPosition;
 
-  auto newPositions = labeller->update(getDefaultFrameData());
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
 
   EXPECT_EQ(1, newPositions.size());
   EXPECT_NE(oldPosition.x(), newPositions[label.id].x());
@@ -38,7 +44,8 @@ TEST_F(TestLabeller, AddedLabelIsUpdated)
 
 TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
 {
-  auto newPositions = labeller->update(getDefaultFrameData());
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
 
   EXPECT_Vector3f_NEAR(newPositions[label.id],
                        labeller->getLabels()[0].labelPosition, 1E-5);
@@ -46,7 +53,8 @@ TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
 
 TEST_F(TestLabeller, LabelHasSameDepthValueAsAnchor)
 {
-  auto newPositions = labeller->update(getDefaultFrameData());
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
 
   EXPECT_NEAR(label.anchorPosition.z(), newPositions[label.id].z(), 1E-5);
 }
@@ -54,7 +62,8 @@ TEST_F(TestLabeller, LabelHasSameDepthValueAsAnchor)
 TEST_F(TestLabeller,
        LabelUpdateSetsTheGivenAnchorPositionAndReinitializesTheLabelPosition)
 {
-  auto newPositions = labeller->update(getDefaultFrameData());
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
 
   label.anchorPosition = Eigen::Vector3f(-1, -2, -3);
   labels->update(label);
@@ -69,7 +78,8 @@ TEST_F(TestLabeller,
 
 TEST_F(TestLabeller, LabelUpdateSetsTheCurrentLabelPositionIfAnchorsUnchanged)
 {
-  auto newPositions = labeller->update(getDefaultFrameData());
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
 
   label.text = "Some changed text";
   labels->update(label);

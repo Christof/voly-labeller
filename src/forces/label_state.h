@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <string>
 #include <map>
+#include "../labelling/labeller_frame_data.h"
 
 namespace Forces
 {
@@ -30,15 +31,19 @@ class LabelState
   int id;
   Eigen::Vector3f anchorPosition;
   Eigen::Vector3f labelPosition;
+  Eigen::Vector3f placementPosition = { NAN, NAN, NAN };
   Eigen::Vector2f size;
 
   Eigen::Vector2f anchorPosition2D;
   Eigen::Vector2f labelPosition2D;
+  Eigen::Vector2f placementPosition2D = { NAN, NAN };
   float labelPositionDepth;
 
   std::string text;
 
   std::map<Force *, Eigen::Vector2f> forces;
+
+  void update2dValues(const LabellerFrameData &frameData);
 };
 }  // namespace Forces
 

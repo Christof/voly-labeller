@@ -31,7 +31,7 @@ void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
     }
   }
 
-  near = std::max(0.1f, -max - 0.1f);
+  near = std::max(0.001f, -max - 0.1f);
   far = -min + 0.1f;
 }
 

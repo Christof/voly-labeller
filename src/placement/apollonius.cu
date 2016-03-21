@@ -101,9 +101,9 @@ __global__ void apolloniusStep(cudaTextureObject_t distances, int *data,
 __device__ float4 rgb(int maxValue, int value)
 {
     float ratio = 2.0f * value / maxValue;
-    float b = max(0.0f, 1 - ratio);
-    float r = max(0.0f, ratio - 1);
-    float g = max(0.0f, 1.0f - b - r);
+    float b = max(0.0f, 1 - ratio);  // NOLINT
+    float r = max(0.0f, ratio - 1);  // NOLINT
+    float g = max(0.0f, 1.0f - b - r);  // NOLINT
 
     return make_float4(r, g, b, 1.0);
 }

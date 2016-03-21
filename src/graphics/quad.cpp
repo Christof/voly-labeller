@@ -20,10 +20,6 @@ Quad::Quad() : Quad(":/shader/pass.vert", ":/shader/color.frag")
 {
 }
 
-Quad::~Quad()
-{
-}
-
 ObjectData Quad::createBuffers(std::shared_ptr<ObjectManager> objectManager,
                                std::shared_ptr<TextureManager> textureManager,
                                std::shared_ptr<ShaderManager> shaderManager)

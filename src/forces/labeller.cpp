@@ -8,6 +8,7 @@
 #include "./anchor_force.h"
 #include "./label_collision_force.h"
 #include "./lines_crossing_force.h"
+#include "./placement_force.h"
 
 namespace Forces
 {
@@ -15,9 +16,10 @@ Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
   srand(9);
   addForce(new CenterForce());
-  addForce(new AnchorForce());
+  // addForce(new AnchorForce());
   addForce(new LabelCollisionForce());
   addForce(new LinesCrossingForce());
+  addForce(new PlacementForce());
 
   unsubscribeLabelChanges = labels->subscribe(std::bind(
       &Labeller::setLabel, this, std::placeholders::_1, std::placeholders::_2));
@@ -70,7 +72,8 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
 }
 
 std::map<int, Eigen::Vector3f>
-Labeller::update(const LabellerFrameData &frameData)
+Labeller::update(const LabellerFrameData &frameData,
+                 std::map<int, Eigen::Vector3f> placementPositions)
 {
   std::map<int, Eigen::Vector3f> positions;
 
@@ -81,19 +84,20 @@ Labeller::update(const LabellerFrameData &frameData)
 
   for (auto &label : labelStates)
   {
-    auto anchor2D = frameData.project(label.anchorPosition);
-    label.anchorPosition2D = anchor2D.head<2>();
+    if (placementPositions.count(label.id))
+      label.placementPosition = placementPositions[label.id];
 
-    auto label2D = frameData.project(label.labelPosition);
-    label.labelPosition2D = label2D.head<2>();
-    label.labelPositionDepth = label2D.z();
+    label.update2dValues(frameData);
 
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
       forceOnLabel += force->calculateForce(label, labelStates, frameData);
 
-    if (updatePositions)
-      label.labelPosition2D += forceOnLabel * frameData.frameTime;
+    if (updatePositions && forceOnLabel.norm() > epsilon)
+    {
+      auto delta = forceOnLabel * frameData.frameTime;
+      label.labelPosition2D += delta;
+    }
 
     Eigen::Vector4f reprojected =
         inverseViewProjection * Eigen::Vector4f(label.labelPosition2D.x(),
@@ -109,6 +113,18 @@ Labeller::update(const LabellerFrameData &frameData)
   }
 
   return positions;
+}
+
+void Labeller::setPositions(const LabellerFrameData &frameData,
+                            std::map<int, Eigen::Vector3f> positions)
+{
+  for (auto &label : labelStates)
+  {
+    if (positions.count(label.id))
+      label.labelPosition = positions[label.id];
+
+    label.update2dValues(frameData);
+  }
 }
 
 std::vector<LabelState> Labeller::getLabels()

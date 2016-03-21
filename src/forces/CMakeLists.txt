@@ -8,6 +8,7 @@ set(SOURCES
   label_state.cpp
   force.cpp
   center_force.cpp
+  placement_force.cpp
   anchor_force.cpp
   label_collision_force.cpp
   lines_crossing_force.cpp

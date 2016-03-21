@@ -41,6 +41,8 @@ class LabelNode : public Node
 
   Label label;
 
+  int layerIndex = 0;
+
   void setIsVisible(bool isVisible);
 
  private:
@@ -73,6 +75,7 @@ class LabelNode : public Node
   std::shared_ptr<Graphics::Connector> connector;
   int textureId = -1;
   Graphics::ObjectData labelQuad;
+  Graphics::ObjectData labelConnector;
 };
 
 namespace boost

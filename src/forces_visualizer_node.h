@@ -3,6 +3,8 @@
 #define SRC_FORCES_VISUALIZER_NODE_H_
 
 #include <memory>
+#include <map>
+#include <string>
 #include "./node.h"
 #include "./forces/labeller.h"
 #include "./graphics/connector.h"
@@ -26,9 +28,10 @@ class ForcesVisualizerNode : public Node
  private:
   std::shared_ptr<Forces::Labeller> labeller;
 
-  std::shared_ptr<Graphics::Connector> connector;
+  std::map<std::string, std::shared_ptr<Graphics::Connector>> connectors;
 
-  void renderForce(Eigen::Vector2f labelPosition, Eigen::Vector2f force,
+  void renderForce(std::shared_ptr<Graphics::Connector> connector,
+                   Eigen::Vector2f labelPosition, Eigen::Vector2f force,
                    Graphics::Gl *gl,
                    std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData);
