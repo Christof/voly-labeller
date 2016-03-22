@@ -32,11 +32,12 @@ class Persister
 
   template <typename T> static T load(std::string filename)
   {
-    if (!boost::filesystem::exists(filename))
-      throw std::invalid_argument("The given file '" + filename +
+    std::string path = absolutePathOfProjectRelativePath(filename);
+    if (!boost::filesystem::exists(path))
+      throw std::invalid_argument("The given file '" + path +
                                   "' does not exist.");
 
-    std::ifstream ifs(absolutePathOfProjectRelativePath(filename));
+    std::ifstream ifs(path);
     boost::archive::xml_iarchive ia(ifs);
 
     T result;
