@@ -10,20 +10,20 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   if (x >= width || y >= height)
     return;
 
-  float maxDepth = -1.0f;
-  for (int i = 0; i < widthScale; ++i)
-  {
-    for (int j = 0; j < heightScale; ++j)
-    {
-      float4 position = tex2D<float4>(input, x * widthScale + 0.5f + i,
-                                      y * heightScale + 0.5f + j);
-      if (position.z > maxDepth)
-        maxDepth = position.z;
-    }
-  }
+  float4 leftUpper = tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f);
+  float4 left = tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f);
+  float4 leftLower = tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f);
 
-  float outputValue = 1.0f - maxDepth;
-  surf2Dwrite(outputValue, output, x * sizeof(float), y);
+  float4 upper = tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f);
+  float4 lower = tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f);
+
+  float4 rightUpper = tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f);
+  float4 right = tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f);
+  float4 rightLower = tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f);
+
+  float result = -leftUpper.x - 2.0f * left.x - leftLower.x +
+                 rightUpper.x + 2.0f * right.x + rightLower.x;
+  surf2Dwrite(result, output, x * sizeof(float), y);
 }
 
 namespace Placement
@@ -72,8 +72,8 @@ void Saliency::createSurfaceObjects()
   auto resDesc = inputProvider->getResourceDesc();
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
-  texDesc.addressMode[0] = cudaAddressModeWrap;
-  texDesc.addressMode[1] = cudaAddressModeWrap;
+  texDesc.addressMode[0] = cudaAddressModeBorder;
+  texDesc.addressMode[1] = cudaAddressModeBorder;
   texDesc.filterMode = cudaFilterModeLinear;
   texDesc.readMode = cudaReadModeElementType;
   texDesc.normalizedCoords = 0;
