@@ -12,6 +12,7 @@ set(SOURCES
   occlusion.cu
   occlusion_calculator.cpp
   integral_costs_calculator.cu
+  saliency.cu
   cost_function_calculator.cu
   occupancy_updater.cu
   labeller.cpp
