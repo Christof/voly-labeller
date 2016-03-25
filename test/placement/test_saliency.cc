@@ -22,8 +22,15 @@ TEST(Test_Saliency, Saliency)
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
+  /*
   EXPECT_EQ(1.1f, result[0]);
   EXPECT_EQ(-1.1f, result[1]);
   EXPECT_EQ(1.6f, result[2]);
   EXPECT_EQ(-0.7f, result[3]);
+  */
+
+  EXPECT_EQ(0.9f, result[0]);
+  EXPECT_EQ(1.5f, result[1]);
+  EXPECT_EQ(-1.2f, result[2]);
+  EXPECT_EQ(-0.9f, result[3]);
 }
