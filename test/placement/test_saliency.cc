@@ -27,10 +27,15 @@ TEST(Test_Saliency, Saliency)
   EXPECT_EQ(-1.1f, result[1]);
   EXPECT_EQ(1.6f, result[2]);
   EXPECT_EQ(-0.7f, result[3]);
-  */
 
   EXPECT_EQ(0.9f, result[0]);
   EXPECT_EQ(1.5f, result[1]);
   EXPECT_EQ(-1.2f, result[2]);
   EXPECT_EQ(-0.9f, result[3]);
+  */
+
+  EXPECT_EQ(2.02f, result[0]);
+  EXPECT_EQ(3.46f, result[1]);
+  EXPECT_EQ(4.0f, result[2]);
+  EXPECT_EQ(1.3f, result[3]);
 }
