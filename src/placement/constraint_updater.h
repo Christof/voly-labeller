@@ -55,6 +55,8 @@ class ConstraintUpdater
   int width;
   int height;
   float connectorShadowWeight = 0.1f;
+  float labelShadowColor;
+  float connectorShadowColor;
 
   std::vector<float> positions;
 
