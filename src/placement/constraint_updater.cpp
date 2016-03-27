@@ -165,7 +165,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
   qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
                   << diff.count() << "ms";
 
-  drawer->drawElementVector(positions, 1.0f);
+  drawer->drawElementVector(positions, 0);
 }
 
 void ConstraintUpdater::clear()
@@ -220,7 +220,7 @@ void ConstraintUpdater::drawConnectorShadowRegion(
 
   if (connectorShadowWeight != 1.0f)
   {
-    drawer->drawElementVector(positions, connectorShadowWeight);
+    drawer->drawElementVector(positions, 1);
     positions.clear();
   }
 }

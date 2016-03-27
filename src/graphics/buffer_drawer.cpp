@@ -23,18 +23,22 @@ BufferDrawer::BufferDrawer(int width, int height, Gl *gl,
   pixelToNDC = pixelToNDCTransform.matrix();
 }
 
-void BufferDrawer::drawElementVector(std::vector<float> positions, float weight)
+void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex)
 {
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
   vertexArray->addStream(positions, 2);
 
+  gl->glDisable(GL_BLEND);
+
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-  shaderManager->getShader(shaderId)->setUniform("weight", weight);
+  shaderManager->getShader(shaderId)->setUniform("bitIndex", bitIndex);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
+
+  gl->glEnable(GL_BLEND);
 
   delete vertexArray;
 }
