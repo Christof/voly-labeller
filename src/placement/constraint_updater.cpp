@@ -175,9 +175,9 @@ void ConstraintUpdater::clear()
   drawer->clear();
 }
 
-void ConstraintUpdater::setConnectorShadowWeight(float weight)
+void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
 {
-  connectorShadowWeight = weight;
+  isConnectorShadowEnabled = enabled;
 }
 
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
@@ -204,7 +204,7 @@ void ConstraintUpdater::drawConnectorShadowRegion(
     Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
     Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
 {
-  if (connectorShadowWeight == 0.0f)
+  if (!isConnectorShadowEnabled)
     return;
 
   polygon connectorPolygon;
@@ -220,11 +220,8 @@ void ConstraintUpdater::drawConnectorShadowRegion(
 
   convolveTwoPolygons(connectorPolygon, newLabel);
 
-  if (connectorShadowWeight != 1.0f)
-  {
-    drawer->drawElementVector(positions, connectorShadowColor);
-    positions.clear();
-  }
+  drawer->drawElementVector(positions, connectorShadowColor);
+  positions.clear();
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)

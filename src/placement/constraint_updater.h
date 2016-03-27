@@ -48,13 +48,13 @@ class ConstraintUpdater
                                Eigen::Vector2i lastLabelSize);
 
   void clear();
-  void setConnectorShadowWeight(float weight);
+  void setIsConnectorShadowEnabled(bool enabled);
 
  private:
   std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
-  float connectorShadowWeight = 0.1f;
+  bool isConnectorShadowEnabled = true;
   float labelShadowColor;
   float connectorShadowColor;
 
