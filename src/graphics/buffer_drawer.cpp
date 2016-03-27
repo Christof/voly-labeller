@@ -29,7 +29,12 @@ void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
   vertexArray->addStream(positions, 2);
 
-  gl->glDisable(GL_BLEND);
+  GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
+  gl->glEnable(GL_BLEND);
+  GLint logicOperationMode;
+  gl->glGetIntegerv(GL_LOGIC_OP_MODE, &logicOperationMode);
+  gl->glEnable(GL_COLOR_LOGIC_OP);
+  gl->glLogicOp(GL_OR);
 
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
@@ -38,7 +43,11 @@ void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 
-  gl->glEnable(GL_BLEND);
+  if (isBlendingEnabled)
+    gl->glEnable(GL_BLEND);
+
+  gl->glLogicOp(logicOperationMode);
+  gl->glDisable(GL_COLOR_LOGIC_OP);
 
   delete vertexArray;
 }
