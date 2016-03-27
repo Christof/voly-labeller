@@ -26,11 +26,12 @@ void drawPolygon(QPainter &painter, std::vector<QPointF> &points)
   points.clear();
 }
 
-void QImageDrawer::drawElementVector(std::vector<float> positions, float weight)
+void QImageDrawer::drawElementVector(std::vector<float> positions, char bitIndex)
 {
   QPainter painter;
   painter.begin(image.get());
-  auto color = QColor::fromRgbF(weight, weight, weight, weight);
+  int c = 1 << bitIndex;
+  QColor color(c, c, c, c);
   painter.setBrush(QBrush(color));
   painter.setPen(color);
 

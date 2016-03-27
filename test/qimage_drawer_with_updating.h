@@ -21,16 +21,16 @@ class QImageDrawerWithUpdating : public Graphics::QImageDrawer
   {
   }
 
-  virtual void drawElementVector(std::vector<float> positions, float weight)
+  virtual void drawElementVector(std::vector<float> positions, char bitIndex)
   {
-    Graphics::QImageDrawer::drawElementVector(positions, weight);
+    Graphics::QImageDrawer::drawElementVector(positions, bitIndex);
 
     const unsigned char *data = image->constBits();
     std::vector<unsigned char> newData(image->width() * image->height(), 0.0f);
     for (int i = 0; i < image->byteCount(); ++i)
     {
       newData[i] = data[i] > 0 || texture->getDataAt(i) > 0
-                       ? static_cast<unsigned char>(255 * weight)
+                       ? static_cast<unsigned char>(1 << bitIndex)
                        : 0;
     }
 
