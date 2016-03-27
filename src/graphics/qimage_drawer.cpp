@@ -30,7 +30,7 @@ void QImageDrawer::drawElementVector(std::vector<float> positions, float color)
 {
   QPainter painter;
   painter.begin(image.get());
-  QColor brushColor = QColor::fromRgbF(color, color, color, color);
+  QColor brushColor = QColor::fromRgbF(color, color, color, 1.0f);
   painter.setBrush(QBrush(brushColor));
   painter.setPen(brushColor);
 
