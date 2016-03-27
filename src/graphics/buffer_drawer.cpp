@@ -23,7 +23,7 @@ BufferDrawer::BufferDrawer(int width, int height, Gl *gl,
   pixelToNDC = pixelToNDCTransform.matrix();
 }
 
-void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex)
+void BufferDrawer::drawElementVector(std::vector<float> positions, float color)
 {
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
@@ -39,7 +39,7 @@ void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-  float color = (1 << (7 - bitIndex)) / 255.0f;
+  // move to ConstraintUpdater
   shaderManager->getShader(shaderId)->setUniform("color", color);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();

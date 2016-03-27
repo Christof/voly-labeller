@@ -17,6 +17,8 @@ ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
                                      int width, int height)
   : drawer(drawer), width(width), height(height)
 {
+  labelShadowColor = (1 << (7 - 0)) / 255.0f;
+  connectorShadowColor = (1 << (7 - 1)) / 255.0f;
 }
 
 polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
@@ -165,7 +167,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
   qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
                   << diff.count() << "ms";
 
-  drawer->drawElementVector(positions, 0);
+  drawer->drawElementVector(positions, labelShadowColor);
 }
 
 void ConstraintUpdater::clear()
@@ -220,7 +222,7 @@ void ConstraintUpdater::drawConnectorShadowRegion(
 
   if (connectorShadowWeight != 1.0f)
   {
-    drawer->drawElementVector(positions, 1);
+    drawer->drawElementVector(positions, connectorShadowColor);
     positions.clear();
   }
 }

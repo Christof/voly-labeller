@@ -14,7 +14,7 @@ namespace Graphics
 class Drawer
 {
  public:
-  virtual void drawElementVector(std::vector<float> positions, char bitIndex) = 0;
+  virtual void drawElementVector(std::vector<float> positions, float color) = 0;
   virtual void clear() = 0;
 };
 
