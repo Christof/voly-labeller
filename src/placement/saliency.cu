@@ -10,6 +10,10 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   if (x >= width || y >= height)
     return;
 
+  // TODO (SIR)
+  // - downsampling
+  // - handle colors
+
   float4 leftUpper = tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f);
   float4 left = tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f);
   float4 leftLower = tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f);
