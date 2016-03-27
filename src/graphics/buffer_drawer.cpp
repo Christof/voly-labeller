@@ -39,7 +39,8 @@ void BufferDrawer::drawElementVector(std::vector<float> positions, char bitIndex
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-  shaderManager->getShader(shaderId)->setUniform("bitIndex", bitIndex);
+  float color = (1 << (7 - bitIndex)) / 255.0f;
+  shaderManager->getShader(shaderId)->setUniform("color", color);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 
