@@ -1,13 +1,17 @@
 #include "./constraint_updater.h"
+#include <QLoggingCategory>
 #include <Eigen/Geometry>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/geometries/register/point.hpp>
 #include <vector>
+#include <chrono>
 #include <cmath>
 #include <utility>
 #include <list>
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
+
+QLoggingCategory cuChan("Placement.ConstraintUpdater");
 
 ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
                                      int width, int height)
@@ -141,6 +145,8 @@ void ConstraintUpdater::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
+  auto startTime = std::chrono::high_resolution_clock::now();
+
   int border = 2;
   polygon newLabel = createBoxPolygon(
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
@@ -151,6 +157,12 @@ void ConstraintUpdater::drawConstraintRegionFor(
                         newLabel);
   drawConnectorShadowRegion(anchorPosition, lastAnchorPosition,
                             lastLabelPosition, newLabel);
+
+  auto endTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<float, std::milli> diff = endTime - startTime;
+
+  qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
+                  << diff.count() << "ms";
 
   drawer->drawElementVector(positions);
 }
