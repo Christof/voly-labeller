@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+
 add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)

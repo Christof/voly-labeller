@@ -121,6 +121,10 @@ add_definitions("-DMAGICKCORE_QUANTUM_DEPTH=32")
 add_definitions("-DMAGICKCORE_HDRI_ENABLE=1")
 list(APPEND LIBRARIES ${ImageMagick_LIBRARIES})
 
+find_package(Clipper REQUIRED)
+include_directories(${Clipper_INCLUDE_DIR})
+list(APPEND LIBRARIES ${Clipper_LIBRARIES})
+
 #  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
 set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC  -Wno-unused-local-typedefs")
 
