@@ -1,8 +1,11 @@
 #include "../test.h"
+#include "../image_comparer.h"
 #include <QFile>
 #include "../../src/placement/constraint_updater.h"
 #include "../../src/graphics/qimage_drawer.h"
 
+// TODO refactor test. Extract image comparison logic
+//
 TEST(Test_ConstraintUpdater, DrawWithConnectorShadows)
 {
   int width = 512;
@@ -22,21 +25,8 @@ TEST(Test_ConstraintUpdater, DrawWithConnectorShadows)
                                             lastAnchorPosition,
                                             lastLabelPosition, lastLabelSize);
 
-  drawer->image->save("constraints-with-connectors.png");
-
-  QFile expectedFile("expected-constraints-with-connectors.png");
-  ASSERT_TRUE(expectedFile.exists())
-      << "File 'expected-constraints.png' does not "
-         "exists. Check 'constraints.png' and "
-         "rename it if it is correct.";
-
-  QImage expectedImage(expectedFile.fileName());
-  ASSERT_EQ(expectedImage.width(), drawer->image->width());
-  ASSERT_EQ(expectedImage.height(), drawer->image->height());
-
-  for (int y = 0; y < expectedImage.width(); ++y)
-    for (int x = 0; x < expectedImage.width(); ++x)
-      EXPECT_EQ(expectedImage.pixel(x, y), drawer->image->pixel(x, y));
+  compareImages("expected-constraints-with-connectors.png",
+                "constraints-with-connectors.png", drawer->image.get());
 }
 
 TEST(Test_ConstraintUpdater, DrawWithoutConnectorShadows)
@@ -58,19 +48,7 @@ TEST(Test_ConstraintUpdater, DrawWithoutConnectorShadows)
                                             lastAnchorPosition,
                                             lastLabelPosition, lastLabelSize);
 
-  drawer->image->save("constraints-without-connectors.png");
-
-  QFile expectedFile("expected-constraints-without-connectors.png");
-  ASSERT_TRUE(expectedFile.exists())
-      << "File 'expected-constraints.png' does not "
-         "exists. Check 'constraints.png' and "
-         "rename it if it is correct.";
-
-  QImage expectedImage(expectedFile.fileName());
-  ASSERT_EQ(expectedImage.width(), drawer->image->width());
-  ASSERT_EQ(expectedImage.height(), drawer->image->height());
-
-  for (int y = 0; y < expectedImage.width(); ++y)
-    for (int x = 0; x < expectedImage.width(); ++x)
-      EXPECT_EQ(expectedImage.pixel(x, y), drawer->image->pixel(x, y));
+  compareImages("expected-constraints-without-connectors.png",
+                "constraints-without-connectors.png", drawer->image.get());
 }
+
