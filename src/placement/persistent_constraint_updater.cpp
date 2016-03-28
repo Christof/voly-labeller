@@ -1,6 +1,6 @@
 #include "./persistent_constraint_updater.h"
-#include <chrono>
 #include <QLoggingCategory>
+#include <chrono>
 #include "./constraint_updater.h"
 
 QLoggingCategory pcuChan("Placement.PersistentConstraintUpdater");
