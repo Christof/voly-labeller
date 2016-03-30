@@ -7,6 +7,7 @@
 #include <boost/geometry.hpp>
 #include <vector>
 #include <utility>
+#include <polyclipping/clipper.hpp>
 #include "../graphics/drawer.h"
 
 // ccw, closed polygon
@@ -63,11 +64,11 @@ class ConstraintUpdater
   void drawConnectorShadowRegion(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastAnchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
-                                 const polygon &newLabel);
+                                 const ClipperLib::Path &newLabel);
   void drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                              Eigen::Vector2i lastLabelPosition,
                              Eigen::Vector2i lastLabelSize,
-                             const polygon &newLabel);
+                             const ClipperLib::Path &newLabel);
 
   template <typename edge>
   void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
@@ -79,6 +80,7 @@ class ConstraintUpdater
   void addPolygonToPositions(const Polygon &polygon);
 
   template <class T> void drawPolygon(std::vector<T> polygon);
+  void drawPolygon(ClipperLib::Path polygon);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
