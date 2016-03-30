@@ -3,19 +3,11 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
-#include <boost/polygon/polygon.hpp>
-#include <boost/geometry.hpp>
 #include <vector>
 #include <utility>
+#include <memory>
 #include <polyclipping/clipper.hpp>
 #include "../graphics/drawer.h"
-
-// ccw, closed polygon
-typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> polygon;
-typedef boost::polygon::point_data<int> point;
-typedef boost::polygon::polygon_set_data<int> polygon_set;
-typedef boost::polygon::polygon_data<int> ppolygon;
-typedef std::pair<point, point> edge;
 
 /**
  * \brief Updates the constraint buffer by drawing occupied regions for already
@@ -69,17 +61,6 @@ class ConstraintUpdater
                              Eigen::Vector2i lastLabelPosition,
                              Eigen::Vector2i lastLabelSize,
                              const ClipperLib::Path &newLabel);
-
-  template <typename edge>
-  void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
-  template <typename itrT1, typename itrT2>
-  void convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb, itrT2 be);
-  template <typename Polygon>
-  void convolveTwoPolygons(const Polygon &a, const Polygon &b);
-  template <typename Polygon>
-  void addPolygonToPositions(const Polygon &polygon);
-
-  template <class T> void drawPolygon(std::vector<T> polygon);
   void drawPolygon(ClipperLib::Path polygon);
 };
 
