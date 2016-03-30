@@ -8,6 +8,7 @@
 #include <cmath>
 #include <utility>
 #include <list>
+#include <polyclipping/clipper.hpp>
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
 #include "./placement.h"
@@ -22,17 +23,22 @@ ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
 }
 
-polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
+ClipperLib::IntPoint toClipper(Eigen::Vector2i v)
 {
-  polygon p;
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() - size.x(), center.y() - size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() + size.x(), center.y() - size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() + size.x(), center.y() + size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() - size.x(), center.y() + size.y()));
+  return ClipperLib::IntPoint(v.x(), v.y());
+}
+
+ClipperLib::Path createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
+{
+  ClipperLib::Path p;
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() - size.x(), center.y() - size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() + size.x(), center.y() - size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() + size.x(), center.y() + size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() - size.x(), center.y() + size.y())));
 
   return p;
 }
@@ -151,7 +157,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
   auto startTime = std::chrono::high_resolution_clock::now();
 
   int border = 2;
-  polygon newLabel = createBoxPolygon(
+  ClipperLib::Path newLabel = createBoxPolygon(
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
   positions.clear();
@@ -184,44 +190,64 @@ void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                                               Eigen::Vector2i lastLabelPosition,
                                               Eigen::Vector2i lastLabelSize,
-                                              const polygon &newLabel)
+                                              const ClipperLib::Path &newLabel)
 {
-  polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
+  ClipperLib::Path oldLabel =
+      createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
-  polygon oldLabelExtruded(oldLabel);
-  for (auto point : oldLabel.outer())
+  ClipperLib::Path oldLabelExtruded(oldLabel);
+  for (auto point : oldLabel)
   {
-    Eigen::Vector2i p = anchorPosition + 1000 * (point - anchorPosition);
-    oldLabelExtruded.outer().push_back(p);
+    oldLabelExtruded.push_back(ClipperLib::IntPoint(
+        anchorPosition.x() + 1000 * (point.X - anchorPosition.x()),
+        anchorPosition.y() + 1000 * (point.Y - anchorPosition.y())));
   }
 
-  polygon oldLabelExtrudedConvexHull;
-  boost::geometry::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
+  ClipperLib::Paths shadow;
+  ClipperLib::MinkowskiSum(newLabel, oldLabelExtruded, shadow, false);
 
-  convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
+  ClipperLib::Clipper clipper;
+  clipper.AddPaths(shadow, ClipperLib::PolyType::ptSubject, true);
+
+  ClipperLib::Paths solution;
+  clipper.Execute(ClipperLib::ClipType::ctUnion, solution,
+                  ClipperLib::PolyFillType::pftNonZero);
+  for (auto &polygon : solution)
+    drawPolygon(polygon);
 }
 
 void ConstraintUpdater::drawConnectorShadowRegion(
     Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
-    Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
+    Eigen::Vector2i lastLabelPosition, const ClipperLib::Path &newLabel)
 {
   if (!isConnectorShadowEnabled)
     return;
 
-  polygon connectorPolygon;
+  ClipperLib::Path connectorPolygon;
   Eigen::Vector2i throughLastAnchor =
       anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
   Eigen::Vector2i throughLastLabel =
       anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
 
-  connectorPolygon.outer().push_back(lastAnchorPosition);
-  connectorPolygon.outer().push_back(throughLastAnchor);
-  connectorPolygon.outer().push_back(throughLastLabel);
-  connectorPolygon.outer().push_back(lastLabelPosition);
+  connectorPolygon.push_back(toClipper(lastAnchorPosition));
+  connectorPolygon.push_back(toClipper(throughLastAnchor));
+  connectorPolygon.push_back(toClipper(throughLastLabel));
+  connectorPolygon.push_back(toClipper(lastLabelPosition));
 
-  convolveTwoPolygons(connectorPolygon, newLabel);
+  ClipperLib::Paths shadow;
+  ClipperLib::MinkowskiSum(newLabel, connectorPolygon, shadow, true);
 
+  ClipperLib::Clipper clipper;
+  clipper.AddPaths(shadow, ClipperLib::PolyType::ptSubject, true);
+
+  ClipperLib::Paths solution;
+  clipper.Execute(ClipperLib::ClipType::ctUnion, solution,
+                  ClipperLib::PolyFillType::pftNonZero);
+
+  for (auto &polygon : solution)
+    drawPolygon(polygon);
   drawer->drawElementVector(positions, connectorShadowColor);
+
   positions.clear();
 }
 
@@ -237,6 +263,21 @@ template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
   {
     positions.push_back(point.x());
     positions.push_back(height - point.y());
+  }
+}
+
+void ConstraintUpdater::drawPolygon(ClipperLib::Path polygon)
+{
+  if (polygon.size() > 0)
+  {
+    auto point = polygon[0];
+    positions.push_back(point.X);
+    positions.push_back(height - point.Y);
+  }
+  for (auto point : polygon)
+  {
+    positions.push_back(point.X);
+    positions.push_back(height - point.Y);
   }
 }
 
