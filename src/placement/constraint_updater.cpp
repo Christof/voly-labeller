@@ -85,14 +85,43 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
   ClipperLib::Path oldLabel =
       createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
+  Eigen::Vector2i anchorToOldLabelInteger = lastLabelPosition - anchorPosition;
+  Eigen::Vector2f anchorToOldLabel =
+      anchorToOldLabelInteger.cast<float>().normalized();
+
   ClipperLib::Path oldLabelExtruded(oldLabel);
+  float smallestCosA = 1.0f;
+  Eigen::Vector2i pointForSmallestCosA;
+  float smallestCosB = 1.0f;
+  Eigen::Vector2i pointForSmallestCosB;
   for (auto point : oldLabel)
   {
-    oldLabelExtruded.push_back(ClipperLib::IntPoint(
-        anchorPosition.x() + 1000 * (point.X - anchorPosition.x()),
-        anchorPosition.y() + 1000 * (point.Y - anchorPosition.y())));
+    Eigen::Vector2f probe =
+        Eigen::Vector2f(point.X, point.Y) - anchorPosition.cast<float>();
+    probe.normalize();
+
+    float cosOfAngle = anchorToOldLabel.dot(probe);
+    float perpDot =
+        -anchorToOldLabel.y() * probe.x() + anchorToOldLabel.x() * probe.y();
+    if (perpDot < 0.0f && cosOfAngle < smallestCosA)
+    {
+      smallestCosA = cosOfAngle;
+      pointForSmallestCosA = Eigen::Vector2i(point.X, point.Y);
+    }
+    else if (perpDot >= 0.0f && cosOfAngle < smallestCosB)
+    {
+      smallestCosB = cosOfAngle;
+      pointForSmallestCosB = Eigen::Vector2i(point.X, point.Y);
+    }
   }
 
+  ClipperLib::Path testPath;
+  testPath.push_back(toClipper(anchorPosition));
+  testPath.push_back(toClipper(pointForSmallestCosA));
+  testPath.push_back(toClipper(pointForSmallestCosB));
+
+  drawPolygon(testPath);
+  /*
   ClipperLib::Paths shadow;
   ClipperLib::MinkowskiSum(newLabel, oldLabelExtruded, shadow, false);
 
@@ -104,6 +133,7 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                   ClipperLib::PolyFillType::pftNonZero);
   for (auto &polygon : solution)
     drawPolygon(polygon);
+    */
 }
 
 void ConstraintUpdater::drawConnectorShadowRegion(
