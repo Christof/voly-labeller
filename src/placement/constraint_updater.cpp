@@ -77,6 +77,11 @@ void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
   isConnectorShadowEnabled = enabled;
 }
 
+int squaredDistance(Eigen::Vector2i v)
+{
+  return v.x() * v.x() + v.y() * v.y();
+}
+
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                                               Eigen::Vector2i lastLabelPosition,
                                               Eigen::Vector2i lastLabelSize,
@@ -89,11 +94,14 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
   Eigen::Vector2f anchorToOldLabel =
       anchorToOldLabelInteger.cast<float>().normalized();
 
-  ClipperLib::Path oldLabelExtruded(oldLabel);
   float smallestCosA = 1.0f;
+  int smallestCosAIndex = -1;
   Eigen::Vector2i pointForSmallestCosA;
   float smallestCosB = 1.0f;
+  int smallestCosBIndex = -1;
   Eigen::Vector2i pointForSmallestCosB;
+
+  int index = 0;
   for (auto point : oldLabel)
   {
     Eigen::Vector2f probe =
@@ -107,21 +115,50 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
     {
       smallestCosA = cosOfAngle;
       pointForSmallestCosA = Eigen::Vector2i(point.X, point.Y);
+      smallestCosAIndex = index;
     }
     else if (perpDot >= 0.0f && cosOfAngle < smallestCosB)
     {
       smallestCosB = cosOfAngle;
       pointForSmallestCosB = Eigen::Vector2i(point.X, point.Y);
+      smallestCosBIndex = index;
+    }
+
+    ++index;
+  }
+
+  bool foundCloserPoint = false;
+  Eigen::Vector2i closerPoint;
+  int compareDistance = squaredDistance(pointForSmallestCosA - anchorPosition);
+  for (int i = 0; i < 4; ++i)
+  {
+    if (i == smallestCosAIndex || i == smallestCosBIndex)
+      continue;
+
+    auto point = oldLabel[i];
+    Eigen::Vector2i probe = Eigen::Vector2i(point.X, point.Y) - anchorPosition;
+
+    if (squaredDistance(probe) < compareDistance)
+    {
+      foundCloserPoint = true;
+      closerPoint = Eigen::Vector2i(point.X, point.Y);
+      break;
     }
   }
 
-  ClipperLib::Path testPath;
-  testPath.push_back(toClipper(anchorPosition));
-  testPath.push_back(toClipper(pointForSmallestCosA));
-  testPath.push_back(toClipper(pointForSmallestCosB));
+  ClipperLib::Path oldLabelExtruded;
+  oldLabelExtruded.push_back(toClipper(pointForSmallestCosA));
+  oldLabelExtruded.push_back(toClipper(
+      anchorPosition + 1000 * (pointForSmallestCosA - anchorPosition)));
+  oldLabelExtruded.push_back(toClipper(
+      anchorPosition + 1000 * (pointForSmallestCosB - anchorPosition)));
+  oldLabelExtruded.push_back(toClipper(pointForSmallestCosB));
 
-  drawPolygon(testPath);
-  /*
+  if (foundCloserPoint)
+  {
+    oldLabelExtruded.push_back(toClipper(closerPoint));
+  }
+
   ClipperLib::Paths shadow;
   ClipperLib::MinkowskiSum(newLabel, oldLabelExtruded, shadow, false);
 
@@ -133,7 +170,6 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                   ClipperLib::PolyFillType::pftNonZero);
   for (auto &polygon : solution)
     drawPolygon(polygon);
-    */
 }
 
 void ConstraintUpdater::drawConnectorShadowRegion(
