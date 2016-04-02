@@ -3,7 +3,9 @@
 #include <QLoggingCategory>
 #include <vector>
 #include <map>
+#include <chrono>
 #include "../utils/cuda_array_provider.h"
+#include "../utils/logging.h"
 #include "./summed_area_table.h"
 #include "./apollonius.h"
 #include "./occupancy_updater.h"
@@ -68,7 +70,9 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
+  auto startTime = std::chrono::high_resolution_clock::now();
   occupancySummedAreaTable->runKernel();
+  qCDebug(plChan) << "SAT took" << calculateDurationSince(startTime) << "ms";
 
   for (size_t i = 0; i < insertionOrder.size(); ++i)
   {
@@ -83,7 +87,8 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
 
-  constraintUpdater->updateConstraints(id, anchorForBuffer, labelSizeForBuffer);
+    constraintUpdater->updateConstraints(id, anchorForBuffer,
+                                         labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
         occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
