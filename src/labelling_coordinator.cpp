@@ -81,16 +81,10 @@ std::vector<float> LabellingCoordinator::updateClusters()
   auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
   std::vector<float> zValues;
 
-  std::cout << "zValuesEye: ";
   for (auto pair : clusters)
   {
     zValues.push_back(pair.first);
-    std::cout << pair.first << ":";
-    for (auto z : pair.second)
-      std::cout << z << ", ";
-    std::cout << std::endl;
   }
-  std::cout << std::endl;
 
   return zValues;
 }
