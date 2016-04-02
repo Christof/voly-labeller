@@ -14,6 +14,7 @@ set(SOURCES
   gradient_utils.cpp
   image_persister.h
   memory.h
+  logging.h
   )
 
 add_library(utils OBJECT ${SOURCES})
