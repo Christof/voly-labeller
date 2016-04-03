@@ -42,7 +42,7 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  occupancy->runKernel();
+  // occupancy->runKernel();
 
   if (saveOccupancyInNextFrame)
   {
@@ -104,7 +104,6 @@ void TextureMappersForLayer::cleanup()
   distanceTransform.release();
 
   colorTextureMapper.reset();
-  positionsTextureMapper.reset();
   occupancyTextureMapper.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
@@ -132,10 +131,6 @@ void TextureMappersForLayer::initializeMappers(
       CudaTextureMapper::createReadWriteMapper(
           fbo->getColorTextureId(layerIndex), width, height));
 
-  positionsTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadOnlyMapper(
-          fbo->getDepthTextureId(layerIndex), width, height));
-
   distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
           distanceTransformTexture->getId(),
@@ -152,8 +147,10 @@ void TextureMappersForLayer::initializeMappers(
           apolloniusTexture->getId(), apolloniusTexture->getWidth(),
           apolloniusTexture->getHeight()));
 
+  /*
   occupancy = std::make_unique<Placement::Occupancy>(positionsTextureMapper,
                                                      occupancyTextureMapper);
+                                                     */
 
   distanceTransform = std::make_unique<Placement::DistanceTransform>(
       occupancyTextureMapper, distanceTransformTextureMapper);

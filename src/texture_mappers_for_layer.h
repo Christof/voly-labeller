@@ -50,7 +50,6 @@ class TextureMappersForLayer
 
  private:
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
-  std::shared_ptr<CudaTextureMapper> positionsTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
   std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;

@@ -30,7 +30,7 @@ void Picker::doPick(Eigen::Matrix4f viewProjection)
                    GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
   Eigen::Vector4f positionNDC(pickingPosition.x() * 2.0f / width - 1.0f,
                               pickingPosition.y() * -2.0f / height + 1.0f,
-                              depth, 1.0f);
+                              depth * 2.0f - 1.0f, 1.0f);
 
   Eigen::Vector4f positionWorld = viewProjection.inverse() * positionNDC;
   positionWorld = positionWorld / positionWorld.w();
