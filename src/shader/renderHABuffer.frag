@@ -173,16 +173,14 @@ vec4 fromEyeToNdcSpace(vec4 positionInEyeSpace)
   return ndcPos / ndcPos.w;
 }
 
-void setDepth(float depth)
-{
-  if (gl_FragDepth == DEPTH_NOT_SET)
-    gl_FragDepth = depth;
-}
-
 void setDepthFor(in vec4 positionInEyeSpace)
 {
+  if (gl_FragDepth != DEPTH_NOT_SET)
+    return;
+
   vec4 ndcPos = fromEyeToNdcSpace(positionInEyeSpace);
-  setDepth(ndcPos.z);
+  float depth = 0.5f * ndcPos.z + 0.5f;
+  gl_FragDepth = depth;
 }
 
 void setColorForLayer(int layerIndex, vec4 color)
@@ -234,7 +232,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 }
 
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
-    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor, inout float depth)
+    in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor)
 {
   float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
@@ -253,9 +251,9 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     // sample accumulation
     fragmentColor = fragmentColor + sampleColor * (1.0f - fragmentColor.a);
 
-    if (depth == DEPTH_NOT_SET && fragmentColor.a > alphaThresholdForDepth)
+    if (fragmentColor.a > alphaThresholdForDepth)
     {
-      depth = fromEyeToNdcSpace(currentPos_eye).z;
+      setDepthFor(currentPos_eye);
     }
 
     // early ray termination
@@ -355,12 +353,9 @@ void main()
       vec4 endPosCut_eye = segmentStartPos_eye + alpha * vec4(dir, 0);
       if (activeObjectCount > 0)
       {
-        float depth = DEPTH_NOT_SET;
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-            segmentStartPos_eye, endPosCut_eye, fragmentColor, depth);
+            segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-        if (depth != DEPTH_NOT_SET)
-          setDepth(depth);
       }
 
       setColorForLayer(layerIndex, finalColor);
@@ -374,13 +369,9 @@ void main()
 
     if (activeObjectCount > 0)
     {
-      float depth = DEPTH_NOT_SET;
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
-          segmentStartPos_eye, endPos_eye, fragmentColor, depth);
+          segmentStartPos_eye, endPos_eye, fragmentColor);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
-
-      if (depth != DEPTH_NOT_SET)
-        setDepth(depth);
     }
     else
     {
@@ -396,8 +387,7 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
-    if (finalColor.a > alphaThresholdForDepth &&
-        gl_FragDepth == DEPTH_NOT_SET)
+    if (finalColor.a > alphaThresholdForDepth)
     {
       setDepthFor(nextFragment.eyePos);
     }
@@ -421,6 +411,6 @@ void main()
   }
 
   if (gl_FragDepth == DEPTH_NOT_SET)
-    gl_FragDepth = 1.0;
+    gl_FragDepth = 1.0f;
 }
 
