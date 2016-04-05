@@ -10,20 +10,19 @@ __global__ void occupancyKernel(cudaTextureObject_t positions,
   if (x >= width || y >= height)
     return;
 
-  float maxDepth = -1.0f;
+  float minTransparency = 0.0f;
   for (int i = 0; i < widthScale; ++i)
   {
     for (int j = 0; j < heightScale; ++j)
     {
-      float4 position = tex2D<float4>(positions, x * widthScale + 0.5f + i,
+      float4 color = tex2D<float4>(positions, x * widthScale + 0.5f + i,
                                       y * heightScale + 0.5f + j);
-      if (position.z > maxDepth)
-        maxDepth = position.z;
+      if (color.w > minTransparency)
+        minTransparency = color.w;
     }
   }
 
-  float outputValue = 1.0f - maxDepth;
-  surf2Dwrite(outputValue, output, x * sizeof(float), y);
+  surf2Dwrite(minTransparency, output, x * sizeof(float), y);
 }
 
 namespace Placement
