@@ -42,7 +42,7 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  // occlusion->runKernel();
+  occlusion->runKernel();
 
   if (saveOccupancyInNextFrame)
   {
@@ -147,10 +147,10 @@ void TextureMappersForLayer::initializeMappers(
           apolloniusTexture->getId(), apolloniusTexture->getWidth(),
           apolloniusTexture->getHeight()));
 
-  /*
-  occlusion = std::make_unique<Placement::occlusion>(positionsTextureMapper,
+  auto input = std::vector<std::shared_ptr<CudaArrayProvider>>();
+  input.push_back(colorTextureMapper);
+  occlusion = std::make_unique<Placement::Occlusion>(input,
                                                      occupancyTextureMapper);
-                                                     */
 
   distanceTransform = std::make_unique<Placement::DistanceTransform>(
       occupancyTextureMapper, distanceTransformTextureMapper);
