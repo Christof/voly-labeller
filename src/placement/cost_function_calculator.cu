@@ -134,10 +134,6 @@ CostFunctionCalculator::CostFunctionCalculator(
 {
 }
 
-CostFunctionCalculator::~CostFunctionCalculator()
-{
-}
-
 void CostFunctionCalculator::resize(int width, int height)
 {
   this->width = width;

@@ -30,7 +30,6 @@ class CostFunctionCalculator
  public:
   explicit CostFunctionCalculator(
       std::shared_ptr<CudaArrayProvider> constraintImage);
-  ~CostFunctionCalculator();
 
   void resize(int width, int height);
   void setTextureSize(int width, int height);
