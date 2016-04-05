@@ -10,6 +10,7 @@ set(SOURCES
   distance_transform.cu
   apollonius.cu
   occlusion.cu
+  integral_costs_calculator.cu
   cost_function_calculator.cu
   occupancy_updater.cu
   labeller.cpp
