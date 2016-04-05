@@ -1,4 +1,4 @@
-#include "./occupancy.h"
+#include "./occlusion.h"
 #include "../utils/cuda_helper.h"
 
 __global__ void occupancyKernel(cudaTextureObject_t positions,
@@ -29,13 +29,13 @@ __global__ void occupancyKernel(cudaTextureObject_t positions,
 namespace Placement
 {
 
-Occupancy::Occupancy(std::shared_ptr<CudaArrayProvider> positionProvider,
+Occlusion::Occlusion(std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders,
                      std::shared_ptr<CudaArrayProvider> outputProvider)
-  : positionProvider(positionProvider), outputProvider(outputProvider)
+  : colorProviders(colorProviders), outputProvider(outputProvider)
 {
 }
 
-Occupancy::~Occupancy()
+Occlusion::~Occlusion()
 {
   if (positions)
     cudaDestroyTextureObject(positions);
@@ -43,7 +43,7 @@ Occupancy::~Occupancy()
     cudaDestroySurfaceObject(output);
 }
 
-void Occupancy::runKernel()
+void Occlusion::runKernel()
 {
   if (!positions)
     createSurfaceObjects();
@@ -55,8 +55,8 @@ void Occupancy::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  int widthScale = positionProvider->getWidth() / outputWidth;
-  int heightScale = positionProvider->getHeight() / outputHeight;
+  int widthScale = colorProviders[0]->getWidth() / outputWidth;
+  int heightScale = colorProviders[0]->getHeight() / outputHeight;
 
   occupancyKernel<<<dimGrid, dimBlock>>>(positions, output,
       outputWidth, outputHeight, widthScale, heightScale);
@@ -64,12 +64,12 @@ void Occupancy::runKernel()
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
-void Occupancy::createSurfaceObjects()
+void Occlusion::createSurfaceObjects()
 {
-  positionProvider->map();
+  colorProviders[0]->map();
   outputProvider->map();
 
-  auto resDesc = positionProvider->getResourceDesc();
+  auto resDesc = colorProviders[0]->getResourceDesc();
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
   texDesc.addressMode[0] = cudaAddressModeWrap;
@@ -83,7 +83,7 @@ void Occupancy::createSurfaceObjects()
   auto outputResDesc = outputProvider->getResourceDesc();
   cudaCreateSurfaceObject(&output, &outputResDesc);
 
-  positionProvider->unmap();
+  colorProviders[0]->unmap();
   outputProvider->unmap();
 }
 

@@ -2,7 +2,7 @@
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/distance_transform.h"
-#include "./placement/occupancy.h"
+#include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
 
@@ -42,12 +42,12 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  // occupancy->runKernel();
+  // occlusion->runKernel();
 
   if (saveOccupancyInNextFrame)
   {
     saveOccupancyInNextFrame = false;
-    occupancyTexture->save("occupancy.tiff");
+    occupancyTexture->save("occlusion.tiff");
   }
 
   distanceTransform->run();
@@ -100,7 +100,7 @@ TextureMappersForLayer::getApolloniusTextureMapper()
 
 void TextureMappersForLayer::cleanup()
 {
-  occupancy.release();
+  occlusion.release();
   distanceTransform.release();
 
   colorTextureMapper.reset();
@@ -148,7 +148,7 @@ void TextureMappersForLayer::initializeMappers(
           apolloniusTexture->getHeight()));
 
   /*
-  occupancy = std::make_unique<Placement::Occupancy>(positionsTextureMapper,
+  occlusion = std::make_unique<Placement::occlusion>(positionsTextureMapper,
                                                      occupancyTextureMapper);
                                                      */
 

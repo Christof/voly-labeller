@@ -19,7 +19,6 @@
 #include "./utils/path_helper.h"
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
-#include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"

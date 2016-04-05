@@ -2,7 +2,7 @@
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/distance_transform.h"
-#include "./placement/occupancy.h"
+#include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
 #include "./constraint_buffer_object.h"

@@ -1,10 +1,10 @@
 #include "../test.h"
 #include <Eigen/Core>
 #include <thrust/host_vector.h>
-#include "../../src/placement/occupancy.h"
+#include "../../src/placement/occlusion.h"
 #include "../cuda_array_mapper.h"
 
-TEST(Test_Occupancy, Occupancy)
+TEST(Test_Occlusion, Occlusion)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
@@ -12,12 +12,14 @@ TEST(Test_Occupancy, Occupancy)
                                         Eigen::Vector4f(0, 0, 0, 1),
                                         Eigen::Vector4f(0, 0, -0.5f, 1),
                                         Eigen::Vector4f(0, 0, 1, 1) };
-  auto positionsProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
+  auto colorProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       2, 2, data, channelDesc);
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occupancy(positionsProvider, outputProvider).runKernel();
+  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
+  colorProviders.push_back(colorProvider);
+  Placement::Occlusion(colorProviders, outputProvider).runKernel();
 
   auto result = outputProvider->copyDataFromGpu();
 
@@ -28,7 +30,7 @@ TEST(Test_Occupancy, Occupancy)
   EXPECT_EQ(0.0f, result[3]);
 }
 
-TEST(Test_Occupancy, OccupancyWithSamplingShouldUseMaxDepthValue)
+TEST(Test_Occlusion, OccupancyWithSamplingShouldUseMinAlphaValue)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
@@ -51,12 +53,14 @@ TEST(Test_Occupancy, OccupancyWithSamplingShouldUseMaxDepthValue)
     Eigen::Vector4f(0, 0, -1, 1),    Eigen::Vector4f(0, 0, 0, 1),
     Eigen::Vector4f(0, 0, -0.5f, 1), Eigen::Vector4f(0, 0, -1, 1)
   };
-  auto positionsProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
+  auto colorProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       4, 4, data, channelDesc);
+  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
+  colorProviders.push_back(colorProvider);
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occupancy(positionsProvider, outputProvider).runKernel();
+  Placement::Occlusion(colorProviders, outputProvider).runKernel();
 
   auto result = outputProvider->copyDataFromGpu();
 
