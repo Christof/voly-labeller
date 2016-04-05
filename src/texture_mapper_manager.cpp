@@ -37,6 +37,15 @@ void TextureMapperManager::initialize(
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);
 
+  costsIntegralImage = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
+  costsIntegralImage->initialize(gl);
+
+  costsIntegralImageMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          costsIntegralImage->getId(), costsIntegralImage->getWidth(),
+          costsIntegralImage->getHeight()));
+
   occlusionTexture = std::make_shared<Graphics::StandardTexture2d>(
       bufferSize, bufferSize, GL_R32F);
   occlusionTexture->initialize(gl);
@@ -110,6 +119,8 @@ void TextureMapperManager::cleanup()
     mappers->cleanup();
 
   constraintTextureMapper.reset();
+  costsIntegralImageMapper.reset();
+  occlusionTextureMapper.reset();
 }
 
 void TextureMapperManager::saveOccupancy()

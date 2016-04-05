@@ -58,6 +58,8 @@ class TextureMapperManager
   int bufferSize;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
   std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> costsIntegralImage;
+  std::shared_ptr<CudaTextureMapper> costsIntegralImageMapper;
   std::shared_ptr<Graphics::StandardTexture2d> occlusionTexture;
   std::shared_ptr<CudaTextureMapper> occlusionTextureMapper;
 };
