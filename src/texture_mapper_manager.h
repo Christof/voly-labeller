@@ -10,6 +10,10 @@
 class CudaTextureMapper;
 class ConstraintBufferObject;
 class TextureMappersForLayer;
+namespace Graphics
+{
+class StandardTexture2d;
+}
 
 /**
  * \brief Container for all TextureMapperForLayer%s
@@ -54,6 +58,8 @@ class TextureMapperManager
   int bufferSize;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
   std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> occlusionTexture;
+  std::shared_ptr<CudaTextureMapper> occlusionTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

@@ -5,6 +5,7 @@
 #include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
+#include "./graphics/standard_texture_2d.h"
 #include "./constraint_buffer_object.h"
 #include "./texture_mappers_for_layer.h"
 
@@ -36,11 +37,20 @@ void TextureMapperManager::initialize(
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);
 
+  occlusionTexture = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
+  occlusionTexture->initialize(gl);
+
   constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadOnlyMapper(
           constraintBufferObject->getRenderTextureId(),
           constraintBufferObject->getWidth(),
           constraintBufferObject->getHeight()));
+
+  occlusionTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          occlusionTexture->getId(), occlusionTexture->getWidth(),
+          occlusionTexture->getHeight()));
 }
 
 void TextureMapperManager::resize(int width, int height)
