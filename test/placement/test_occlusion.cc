@@ -35,10 +35,10 @@ TEST(Test_Occlusion, OccupancyWithSamplingShouldUseMaxAlphaValue)
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
   /*
-   *    1    0 -0.5  0.4
-   *  0.5    0 -0.5 -0.5
-   *  0.7    0 -0.5  0.2
-   *   -1    0 -0.5   -1
+   *  0.4    0  0.5  0.4
+   *  0.5  0.6  0.7  0.5
+   *  0.7  0.1  0.3  0.2
+   *    1    0  0.5  0.9
    */
   std::vector<Eigen::Vector4f> data = {
     Eigen::Vector4f(0, 0, 0, 0.4f),     Eigen::Vector4f(0, 0, 0, 0),
