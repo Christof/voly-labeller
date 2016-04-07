@@ -19,10 +19,6 @@ TextureMappersForLayer::~TextureMappersForLayer()
 void TextureMappersForLayer::initialize(
     Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo)
 {
-  occupancyTexture = std::make_shared<Graphics::StandardTexture2d>(
-      bufferSize, bufferSize, GL_R32F);
-  occupancyTexture->initialize(gl);
-
   distanceTransformTexture = std::make_shared<Graphics::StandardTexture2d>(
       bufferSize, bufferSize, GL_R32F);
   distanceTransformTexture->initialize(gl);
@@ -42,15 +38,7 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  occlusion->calculateOcclusion();
-
-  if (saveOccupancyInNextFrame)
-  {
-    saveOccupancyInNextFrame = false;
-    occupancyTexture->save("occlusion.tiff");
-  }
-
-  distanceTransform->run();
+  // distanceTransform->run();
 
   if (saveDistanceTransformInNextFrame)
   {
@@ -65,11 +53,6 @@ void TextureMappersForLayer::update()
   }
 }
 
-void TextureMappersForLayer::bindOccupancyTexture()
-{
-  occupancyTexture->bind();
-}
-
 void TextureMappersForLayer::bindDistanceTransform()
 {
   distanceTransformTexture->bind();
@@ -78,12 +61,6 @@ void TextureMappersForLayer::bindDistanceTransform()
 void TextureMappersForLayer::bindApollonius()
 {
   apolloniusTexture->bind();
-}
-
-std::shared_ptr<CudaTextureMapper>
-TextureMappersForLayer::getOccupancyTextureMapper()
-{
-  return occupancyTextureMapper;
 }
 
 std::shared_ptr<CudaTextureMapper>
@@ -100,18 +77,11 @@ TextureMappersForLayer::getApolloniusTextureMapper()
 
 void TextureMappersForLayer::cleanup()
 {
-  occlusion.release();
-  distanceTransform.release();
+  // distanceTransform.release();
 
   colorTextureMapper.reset();
-  occupancyTextureMapper.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
-}
-
-void TextureMappersForLayer::saveOccupancy()
-{
-  saveOccupancyInNextFrame = true;
 }
 
 void TextureMappersForLayer::saveDistanceTransform()
@@ -137,22 +107,14 @@ void TextureMappersForLayer::initializeMappers(
           distanceTransformTexture->getWidth(),
           distanceTransformTexture->getHeight()));
 
-  occupancyTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteDiscardMapper(
-          occupancyTexture->getId(), occupancyTexture->getWidth(),
-          occupancyTexture->getHeight()));
-
   apolloniusTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
           apolloniusTexture->getId(), apolloniusTexture->getWidth(),
           apolloniusTexture->getHeight()));
 
-  auto input = std::vector<std::shared_ptr<CudaArrayProvider>>();
-  input.push_back(colorTextureMapper);
-  occlusion = std::make_unique<Placement::Occlusion>(input,
-                                                     occupancyTextureMapper);
-
+  /*
   distanceTransform = std::make_unique<Placement::DistanceTransform>(
       occupancyTextureMapper, distanceTransformTextureMapper);
+      */
 }
 

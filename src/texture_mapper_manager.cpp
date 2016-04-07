@@ -74,9 +74,10 @@ void TextureMapperManager::update()
     mappers->update();
 }
 
+// TODO: rename and remove layer parameter
 void TextureMapperManager::bindOccupancyTexture(int layerIndex)
 {
-  mappersForLayers[layerIndex]->bindOccupancyTexture();
+  occlusionTexture->bind();
 }
 
 void TextureMapperManager::bindDistanceTransform(int layerIndex)
@@ -92,7 +93,7 @@ void TextureMapperManager::bindApollonius(int layerIndex)
 std::shared_ptr<CudaTextureMapper>
 TextureMapperManager::getOccupancyTextureMapper(int layerIndex)
 {
-  return mappersForLayers[layerIndex]->getOccupancyTextureMapper();
+  return occlusionTextureMapper;
 }
 
 std::shared_ptr<CudaTextureMapper>
@@ -125,8 +126,7 @@ void TextureMapperManager::cleanup()
 
 void TextureMapperManager::saveOccupancy()
 {
-  for (auto mappers : mappersForLayers)
-    mappers->saveOccupancy();
+  // TODO: implement
 }
 
 void TextureMapperManager::saveDistanceTransform()

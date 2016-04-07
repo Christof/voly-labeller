@@ -34,31 +34,25 @@ class TextureMappersForLayer
 
   void update();
 
-  void bindOccupancyTexture();
   void bindDistanceTransform();
   void bindApollonius();
 
-  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper();
   std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
 
   void cleanup();
 
-  void saveOccupancy();
   void saveDistanceTransform();
   void saveApollonius();
 
  private:
   std::shared_ptr<CudaTextureMapper> colorTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
-  std::shared_ptr<CudaTextureMapper> occupancyTextureMapper;
   std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
 
-  std::shared_ptr<Graphics::StandardTexture2d> occupancyTexture;
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
   std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
 
-  std::unique_ptr<Placement::Occlusion> occlusion;
   std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
   int layerIndex;
