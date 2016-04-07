@@ -17,9 +17,11 @@ class Occlusion
             std::shared_ptr<CudaArrayProvider> outputProvider);
   ~Occlusion();
 
-  void runKernel();
+  void addOcclusion();
+  void calculateOcclusion();
 
  private:
+  void runKernel(bool addToOutputValue);
   std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
   std::shared_ptr<CudaArrayProvider> outputProvider;
   cudaTextureObject_t positions = 0;

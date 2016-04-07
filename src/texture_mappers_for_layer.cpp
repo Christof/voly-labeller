@@ -42,7 +42,7 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  occlusion->runKernel();
+  occlusion->calculateOcclusion();
 
   if (saveOccupancyInNextFrame)
   {
