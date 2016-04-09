@@ -9,6 +9,16 @@
 namespace Placement
 {
 
+/**
+ * \brief Calculate the occlusion by using the alpha value of the color image
+ *
+ * If the output is smaller than the input, the smallest transparency (highest
+ * alpha value) of the sampled region is used.
+ *
+ * The value can either be set directly to the output via #calculateOcclusion,
+ * or added to the current value of the output using #addOcclusion. The later
+ * is used to sum up the occlusions of the layers.
+ */
 class Occlusion
 {
  public:
