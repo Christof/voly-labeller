@@ -5,6 +5,7 @@
 #include "./labelling/labels_container.h"
 #include "./labelling/clustering.h"
 #include "./labelling/labels.h"
+#include "./placement/occlusion_calculator.h"
 #include "./placement/constraint_updater.h"
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
@@ -19,6 +20,8 @@ LabellingCoordinator::LabellingCoordinator(
   : layerCount(layerCount), forcesLabeller(forcesLabeller), labels(labels),
     nodes(nodes), clustering(labels, layerCount - 1)
 {
+  occlusionCalculator =
+      std::make_shared<Placement::OcclusionCalculator>(layerCount);
 }
 
 void LabellingCoordinator::initialize(
@@ -26,6 +29,7 @@ void LabellingCoordinator::initialize(
     std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
     int height)
 {
+  occlusionCalculator->initialize(textureMapperManager);
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
   persistentConstraintUpdater =
@@ -71,8 +75,11 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 void LabellingCoordinator::updatePlacement()
 {
   persistentConstraintUpdater->clear();
-  for (auto placementLabeller : placementLabellers)
-    placementLabeller->update(labellerFrameData);
+  for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
+  {
+    occlusionCalculator->calculateFor(layerIndex);
+    placementLabellers[layerIndex]->update(labellerFrameData);
+  }
 }
 
 std::vector<float> LabellingCoordinator::updateClusters()
