@@ -147,12 +147,12 @@ void CostFunctionCalculator::setTextureSize(int width, int height)
 }
 
 std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
-    const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
+    const thrust::device_vector<float> &integralCosts, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
 {
   createTextureObject();
 
-  assert(textureWidth * textureHeight == occupancySummedAreaTable.size());
+  assert(textureWidth * textureHeight == integralCosts.size());
 
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
@@ -161,7 +161,7 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =
-      thrust::raw_pointer_cast(occupancySummedAreaTable.data());
+      thrust::raw_pointer_cast(integralCosts.data());
   costEvaluator.constraints = constraints;
   costEvaluator.halfLabelWidth = labelWidthInPixel * 0.5f * widthFactor;
   costEvaluator.halfLabelHeight = labelHeightInPixel * 0.5f * heightFactor;

@@ -55,7 +55,7 @@ class Labeller
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<Apollonius> apollonius;
-  std::shared_ptr<SummedAreaTable> occupancySummedAreaTable;
+  std::shared_ptr<SummedAreaTable> integralCosts;
   std::shared_ptr<OccupancyUpdater> occupancyUpdater;
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;

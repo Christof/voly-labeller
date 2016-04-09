@@ -35,7 +35,7 @@ class CostFunctionCalculator
   void setTextureSize(int width, int height);
 
   std::tuple<float, float> calculateForLabel(
-      const thrust::device_vector<float> &occupancySummedAreaTable, int labelId,
+      const thrust::device_vector<float> &integralCosts, int labelId,
       float anchorX, float anchorY, int labelWidthInPixel,
       int labelHeightInPixel);
 
