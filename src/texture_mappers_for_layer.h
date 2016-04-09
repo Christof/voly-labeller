@@ -37,6 +37,7 @@ class TextureMappersForLayer
   void bindDistanceTransform();
   void bindApollonius();
 
+  std::shared_ptr<CudaTextureMapper> getColorTextureMapper();
   std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
 

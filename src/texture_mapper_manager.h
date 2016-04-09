@@ -40,6 +40,8 @@ class TextureMapperManager
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
 
+  std::shared_ptr<CudaTextureMapper>
+  getColorTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getOcclusionTextureMapper();
   std::shared_ptr<CudaTextureMapper>
   getDistanceTransformTextureMapper(int layerIndex);

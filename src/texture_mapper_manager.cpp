@@ -90,6 +90,12 @@ void TextureMapperManager::bindApollonius(int layerIndex)
 }
 
 std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getColorTextureMapper(int layerIndex)
+{
+  return mappersForLayers[layerIndex]->getColorTextureMapper();
+}
+
+std::shared_ptr<CudaTextureMapper>
 TextureMapperManager::getOcclusionTextureMapper()
 {
   return occlusionTextureMapper;
