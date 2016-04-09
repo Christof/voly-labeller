@@ -13,9 +13,9 @@ namespace Placement
 class Occlusion;
 
 /**
- * \brief
+ * \brief Calculates the occlusion for a given layer
  *
- *
+ * The calls to #calculateFor must be in ascending layer index order.
  */
 class OcclusionCalculator
 {

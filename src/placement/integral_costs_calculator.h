@@ -9,9 +9,10 @@ namespace Placement
 {
 
 /**
- * \brief
+ * \brief Computes the weighted sum of the integral costs
  *
- *
+ * The integral costs constist of:
+ * - occlusion
  */
 class IntegralCostsCalculator
 {
