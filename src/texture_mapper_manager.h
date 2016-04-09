@@ -36,11 +36,11 @@ class TextureMapperManager
 
   void update();
 
-  void bindOccupancyTexture(int layerIndex);
+  void bindOcclusionTexture();
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
 
-  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getOcclusionTextureMapper();
   std::shared_ptr<CudaTextureMapper>
   getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
@@ -48,7 +48,7 @@ class TextureMapperManager
 
   void cleanup();
 
-  void saveOccupancy();
+  void saveOcclusion();
   void saveDistanceTransform();
   void saveApollonius();
 

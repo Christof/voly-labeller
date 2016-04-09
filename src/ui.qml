@@ -104,9 +104,9 @@ Item {
       Menu {
         title: "Debug"
         MenuItem {
-          text: "Save occupancy"
+          text: "Save occlusion"
           shortcut: "O"
-          onTriggered: bufferTextures.saveOccupancy();
+          onTriggered: bufferTextures.saveOcclusion();
         }
         MenuItem {
           text: "Save distance transform"

@@ -38,7 +38,7 @@ void LabellingCoordinator::initialize(
     auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
     labeller->resize(width, height);
     labeller->initialize(
-        textureMapperManager->getOccupancyTextureMapper(layerIndex),
+        textureMapperManager->getOcclusionTextureMapper(),
         textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
         textureMapperManager->getApolloniusTextureMapper(layerIndex),
         textureMapperManager->getConstraintTextureMapper(),

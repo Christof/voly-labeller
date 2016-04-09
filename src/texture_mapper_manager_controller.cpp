@@ -7,9 +7,9 @@ TextureMapperManagerController::TextureMapperManagerController(
 {
 }
 
-void TextureMapperManagerController::saveOccupancy()
+void TextureMapperManagerController::saveOcclusion()
 {
-  textureMapperManager->saveOccupancy();
+  textureMapperManager->saveOcclusion();
 }
 
 void TextureMapperManagerController::saveDistanceTransform()
