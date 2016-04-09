@@ -17,9 +17,7 @@ TEST(Test_Occlusion, Occlusion)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
-  colorProviders.push_back(colorProvider);
-  Placement::Occlusion(colorProviders, outputProvider).calculateOcclusion();
+  Placement::Occlusion(colorProvider, outputProvider).calculateOcclusion();
 
   auto result = outputProvider->copyDataFromGpu();
 
@@ -55,12 +53,10 @@ TEST(Test_Occlusion, OccupancyWithSamplingShouldUseMaxAlphaValue)
   };
   auto colorProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
       4, 4, data, channelDesc);
-  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
-  colorProviders.push_back(colorProvider);
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occlusion(colorProviders, outputProvider).calculateOcclusion();
+  Placement::Occlusion(colorProvider, outputProvider).calculateOcclusion();
 
   auto result = outputProvider->copyDataFromGpu();
 
@@ -84,10 +80,7 @@ TEST(Test_Occlusion, AddOcclusion)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
-  colorProviders.push_back(colorProvider);
-
-  Placement::Occlusion occlusion(colorProviders, outputProvider);
+  Placement::Occlusion occlusion(colorProvider, outputProvider);
   occlusion.calculateOcclusion();
   occlusion.addOcclusion();
 

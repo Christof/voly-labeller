@@ -40,9 +40,9 @@ namespace Placement
 {
 
 Occlusion::Occlusion(
-    std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders,
+    std::shared_ptr<CudaArrayProvider> colorProvider,
     std::shared_ptr<CudaArrayProvider> outputProvider)
-  : colorProviders(colorProviders), outputProvider(outputProvider)
+  : colorProvider(colorProvider), outputProvider(outputProvider)
 {
 }
 
@@ -76,8 +76,8 @@ void Occlusion::runKernel(bool addToOutputValue)
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  int widthScale = colorProviders[0]->getWidth() / outputWidth;
-  int heightScale = colorProviders[0]->getHeight() / outputHeight;
+  int widthScale = colorProvider->getWidth() / outputWidth;
+  int heightScale = colorProvider->getHeight() / outputHeight;
 
   occlusionKernel<<<dimGrid, dimBlock>>>(positions, output, addToOutputValue,
                                          outputWidth, outputHeight,
@@ -88,10 +88,10 @@ void Occlusion::runKernel(bool addToOutputValue)
 
 void Occlusion::createSurfaceObjects()
 {
-  colorProviders[0]->map();
+  colorProvider->map();
   outputProvider->map();
 
-  auto resDesc = colorProviders[0]->getResourceDesc();
+  auto resDesc = colorProvider->getResourceDesc();
   struct cudaTextureDesc texDesc;
   memset(&texDesc, 0, sizeof(texDesc));
   texDesc.addressMode[0] = cudaAddressModeWrap;
@@ -105,7 +105,7 @@ void Occlusion::createSurfaceObjects()
   auto outputResDesc = outputProvider->getResourceDesc();
   cudaCreateSurfaceObject(&output, &outputResDesc);
 
-  colorProviders[0]->unmap();
+  colorProvider->unmap();
   outputProvider->unmap();
 }
 

@@ -4,7 +4,6 @@
 
 #include <cuda_runtime.h>
 #include <memory>
-#include <vector>
 #include "../utils/cuda_array_provider.h"
 
 namespace Placement
@@ -13,7 +12,7 @@ namespace Placement
 class Occlusion
 {
  public:
-  Occlusion(std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders,
+  Occlusion(std::shared_ptr<CudaArrayProvider> colorProvider,
             std::shared_ptr<CudaArrayProvider> outputProvider);
   ~Occlusion();
 
@@ -22,7 +21,7 @@ class Occlusion
 
  private:
   void runKernel(bool addToOutputValue);
-  std::vector<std::shared_ptr<CudaArrayProvider>> colorProviders;
+  std::shared_ptr<CudaArrayProvider> colorProvider;
   std::shared_ptr<CudaArrayProvider> outputProvider;
   cudaTextureObject_t positions = 0;
   cudaSurfaceObject_t output = 0;
