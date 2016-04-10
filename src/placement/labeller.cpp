@@ -53,6 +53,8 @@ void Labeller::cleanup()
   apolloniusTextureMapper.reset();
   occupancyUpdater.reset();
   costFunctionCalculator.reset();
+  distanceTransformTextureMapper.reset();
+  apolloniusTextureMapper.reset();
 }
 
 std::map<int, Eigen::Vector3f>

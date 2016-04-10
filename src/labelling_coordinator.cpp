@@ -59,6 +59,8 @@ void LabellingCoordinator::initialize(
 
 void LabellingCoordinator::cleanup()
 {
+  occlusionCalculator.reset();
+  integralCostsCalculator.reset();
   for (auto placementLabeller : placementLabellers)
     placementLabeller->cleanup();
 }
