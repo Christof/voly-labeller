@@ -112,6 +112,11 @@ void LabellingCoordinator::resize(int width, int height)
   forcesLabeller->resize(width, height);
 }
 
+void LabellingCoordinator::saveOcclusion()
+{
+  occlusionCalculator->saveOcclusion();
+}
+
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {

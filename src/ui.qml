@@ -106,7 +106,7 @@ Item {
         MenuItem {
           text: "Save occlusion"
           shortcut: "O"
-          onTriggered: bufferTextures.saveOcclusion();
+          onTriggered: labelling.saveOcclusion();
         }
         MenuItem {
           text: "Save distance transform"

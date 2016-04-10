@@ -25,9 +25,13 @@ class OcclusionCalculator
 
   void calculateFor(int layerIndex);
 
+  void saveOcclusion();
+
  private:
   int layerCount;
   std::vector<std::shared_ptr<Occlusion>> occlusions;
+  std::shared_ptr<TextureMapperManager> textureMapperManager;
+  bool saveOcclusionInNextFrame = false;
 };
 
 }  // namespace Placement

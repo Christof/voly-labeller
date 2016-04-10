@@ -52,6 +52,8 @@ class LabellingCoordinator
 
   void resize(int width, int height);
 
+  void saveOcclusion();
+
   bool forcesEnabled = true;
 
  private:
