@@ -7,7 +7,7 @@
 #include "./node.h"
 #include "./camera.h"
 
-namespace Grahpics
+namespace Graphics
 {
 class Gl;
 class Managers;

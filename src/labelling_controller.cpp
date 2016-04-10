@@ -11,3 +11,8 @@ void LabellingController::toggleForces()
 {
   labellingCoordinator->forcesEnabled = !labellingCoordinator->forcesEnabled;
 }
+
+void LabellingController::saveOcclusion()
+{
+  labellingCoordinator->saveOcclusion();
+}

@@ -20,6 +20,7 @@ class LabellingController : public QObject
 
  public slots:
   void toggleForces();
+  void saveOcclusion();
 
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;

@@ -23,17 +23,18 @@ Labeller::Labeller(std::shared_ptr<LabelsContainer> labels) : labels(labels)
 }
 
 void Labeller::initialize(
-    std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+    std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
     std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
     std::shared_ptr<PersistentConstraintUpdater> constraintUpdater)
 {
   qCInfo(plChan) << "Initialize";
-  if (!occupancySummedAreaTable.get())
-    occupancySummedAreaTable =
-        std::make_shared<SummedAreaTable>(occupancyTextureMapper);
-  occupancyUpdater = std::make_shared<OccupancyUpdater>(occupancyTextureMapper);
+  if (!integralCosts.get())
+    integralCosts =
+        std::make_shared<SummedAreaTable>(integralCostsTextureMapper);
+  occupancyUpdater =
+      std::make_shared<OccupancyUpdater>(integralCostsTextureMapper);
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
@@ -42,16 +43,19 @@ void Labeller::initialize(
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
   costFunctionCalculator->resize(size.x(), size.y());
-  costFunctionCalculator->setTextureSize(occupancyTextureMapper->getWidth(),
-                                         occupancyTextureMapper->getHeight());
+  costFunctionCalculator->setTextureSize(
+      integralCostsTextureMapper->getWidth(),
+      integralCostsTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()
 {
-  occupancySummedAreaTable.reset();
+  integralCosts.reset();
   apolloniusTextureMapper.reset();
   occupancyUpdater.reset();
   costFunctionCalculator.reset();
+  distanceTransformTextureMapper.reset();
+  apolloniusTextureMapper.reset();
 }
 
 std::map<int, Eigen::Vector3f>
@@ -61,7 +65,7 @@ Labeller::update(const LabellerFrameData &frameData)
     return std::map<int, Eigen::Vector3f>();
 
   newPositions.clear();
-  if (!occupancySummedAreaTable.get())
+  if (!integralCosts.get())
     return newPositions;
 
   Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
@@ -71,7 +75,7 @@ Labeller::update(const LabellerFrameData &frameData)
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   auto startTime = std::chrono::high_resolution_clock::now();
-  occupancySummedAreaTable->runKernel();
+  integralCosts->runKernel();
   qCDebug(plChan) << "SAT took" << calculateDurationSince(startTime) << "ms";
 
   for (size_t i = 0; i < insertionOrder.size(); ++i)
@@ -91,7 +95,7 @@ Labeller::update(const LabellerFrameData &frameData)
                                          labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
-        occupancySummedAreaTable->getResults(), label.id, anchorPixels.x(),
+        integralCosts->getResults(), label.id, anchorPixels.x(),
         anchorPixels.y(), label.size.x(), label.size.y());
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));

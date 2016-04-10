@@ -3,6 +3,7 @@
 #define SRC_TEXTURE_MAPPER_MANAGER_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/gl.h"
@@ -10,6 +11,10 @@
 class CudaTextureMapper;
 class ConstraintBufferObject;
 class TextureMappersForLayer;
+namespace Graphics
+{
+class StandardTexture2d;
+}
 
 /**
  * \brief Container for all TextureMapperForLayer%s
@@ -32,19 +37,22 @@ class TextureMapperManager
 
   void update();
 
-  void bindOccupancyTexture(int layerIndex);
+  void bindOcclusionTexture();
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
 
-  std::shared_ptr<CudaTextureMapper> getOccupancyTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper>
+  getColorTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTextureMapper> getOcclusionTextureMapper();
   std::shared_ptr<CudaTextureMapper>
   getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getIntegralCostsTextureMapper();
 
   void cleanup();
 
-  void saveOccupancy();
+  void saveOcclusion(std::string filename);
   void saveDistanceTransform();
   void saveApollonius();
 
@@ -54,6 +62,10 @@ class TextureMapperManager
   int bufferSize;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
   std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> integralCostsImage;
+  std::shared_ptr<CudaTextureMapper> integralCostsTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> occlusionTexture;
+  std::shared_ptr<CudaTextureMapper> occlusionTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

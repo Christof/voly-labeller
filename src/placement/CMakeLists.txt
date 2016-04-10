@@ -9,7 +9,9 @@ set(SOURCES
   summed_area_table.cu
   distance_transform.cu
   apollonius.cu
-  occupancy.cu
+  occlusion.cu
+  occlusion_calculator.cpp
+  integral_costs_calculator.cu
   cost_function_calculator.cu
   occupancy_updater.cu
   labeller.cpp

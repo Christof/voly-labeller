@@ -17,6 +17,11 @@ class LabelsContainer;
 class Labels;
 class Nodes;
 class TextureMapperManager;
+namespace Placement
+{
+class OcclusionCalculator;
+class IntegralCostsCalculator;
+}
 
 /**
  * \brief Coordinates all labelling related classes, i.e. the forces and
@@ -47,6 +52,8 @@ class LabellingCoordinator
 
   void resize(int width, int height);
 
+  void saveOcclusion();
+
   bool forcesEnabled = true;
 
  private:
@@ -55,6 +62,8 @@ class LabellingCoordinator
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Nodes> nodes;
 
+  std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
+  std::shared_ptr<Placement::IntegralCostsCalculator> integralCostsCalculator;
   std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
@@ -62,7 +71,6 @@ class LabellingCoordinator
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
-
 
   std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
   std::map<int, Eigen::Vector3f>

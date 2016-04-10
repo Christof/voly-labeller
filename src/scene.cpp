@@ -19,7 +19,6 @@
 #include "./utils/path_helper.h"
 #include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
-#include "./placement/occupancy.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
@@ -206,13 +205,13 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
-  int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
-  textureMapperManager->bindOccupancyTexture(layerIndex);
+  textureMapperManager->bindOcclusionTexture();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
   renderQuad(quad, transformation.matrix());
 
+  int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
   textureMapperManager->bindDistanceTransform(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *

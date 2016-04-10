@@ -1,10 +1,12 @@
 #include "./texture_mapper_manager.h"
+#include <string>
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/distance_transform.h"
-#include "./placement/occupancy.h"
+#include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
+#include "./graphics/standard_texture_2d.h"
 #include "./constraint_buffer_object.h"
 #include "./texture_mappers_for_layer.h"
 
@@ -36,11 +38,29 @@ void TextureMapperManager::initialize(
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);
 
+  integralCostsImage = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
+  integralCostsImage->initialize(gl);
+
+  integralCostsTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          integralCostsImage->getId(), integralCostsImage->getWidth(),
+          integralCostsImage->getHeight()));
+
+  occlusionTexture = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
+  occlusionTexture->initialize(gl);
+
   constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadOnlyMapper(
           constraintBufferObject->getRenderTextureId(),
           constraintBufferObject->getWidth(),
           constraintBufferObject->getHeight()));
+
+  occlusionTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          occlusionTexture->getId(), occlusionTexture->getWidth(),
+          occlusionTexture->getHeight()));
 }
 
 void TextureMapperManager::resize(int width, int height)
@@ -55,9 +75,9 @@ void TextureMapperManager::update()
     mappers->update();
 }
 
-void TextureMapperManager::bindOccupancyTexture(int layerIndex)
+void TextureMapperManager::bindOcclusionTexture()
 {
-  mappersForLayers[layerIndex]->bindOccupancyTexture();
+  occlusionTexture->bind();
 }
 
 void TextureMapperManager::bindDistanceTransform(int layerIndex)
@@ -71,9 +91,15 @@ void TextureMapperManager::bindApollonius(int layerIndex)
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getOccupancyTextureMapper(int layerIndex)
+TextureMapperManager::getColorTextureMapper(int layerIndex)
 {
-  return mappersForLayers[layerIndex]->getOccupancyTextureMapper();
+  return mappersForLayers[layerIndex]->getColorTextureMapper();
+}
+
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getOcclusionTextureMapper()
+{
+  return occlusionTextureMapper;
 }
 
 std::shared_ptr<CudaTextureMapper>
@@ -94,18 +120,25 @@ TextureMapperManager::getConstraintTextureMapper()
   return constraintTextureMapper;
 }
 
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getIntegralCostsTextureMapper()
+{
+  return integralCostsTextureMapper;
+}
+
 void TextureMapperManager::cleanup()
 {
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
 
   constraintTextureMapper.reset();
+  integralCostsTextureMapper.reset();
+  occlusionTextureMapper.reset();
 }
 
-void TextureMapperManager::saveOccupancy()
+void TextureMapperManager::saveOcclusion(std::string filename)
 {
-  for (auto mappers : mappersForLayers)
-    mappers->saveOccupancy();
+  occlusionTexture->save(filename);
 }
 
 void TextureMapperManager::saveDistanceTransform()

@@ -7,11 +7,6 @@ TextureMapperManagerController::TextureMapperManagerController(
 {
 }
 
-void TextureMapperManagerController::saveOccupancy()
-{
-  textureMapperManager->saveOccupancy();
-}
-
 void TextureMapperManagerController::saveDistanceTransform()
 {
   textureMapperManager->saveDistanceTransform();
