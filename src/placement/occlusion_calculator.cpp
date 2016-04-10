@@ -19,8 +19,8 @@ void OcclusionCalculator::initialize(
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusions.push_back(std::make_shared<Occlusion>(
-          textureMapperManager->getColorTextureMapper(layerIndex),
-          textureMapperManager->getOcclusionTextureMapper()));
+        textureMapperManager->getColorTextureMapper(layerIndex),
+        textureMapperManager->getOcclusionTextureMapper()));
   }
 }
 
@@ -37,7 +37,8 @@ void OcclusionCalculator::calculateFor(int layerIndex)
 
   if (saveOcclusionInNextFrame)
   {
-    textureMapperManager->saveOcclusion("occlusion" + std::to_string(layerIndex) + ".tiff");
+    textureMapperManager->saveOcclusion("occlusion" +
+                                        std::to_string(layerIndex) + ".tiff");
     if (layerIndex == layerCount - 1)
       saveOcclusionInNextFrame = false;
   }

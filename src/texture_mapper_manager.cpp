@@ -1,4 +1,5 @@
 #include "./texture_mapper_manager.h"
+#include <string>
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/distance_transform.h"

@@ -43,8 +43,9 @@ void Labeller::initialize(
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
   costFunctionCalculator->resize(size.x(), size.y());
-  costFunctionCalculator->setTextureSize(integralCostsTextureMapper->getWidth(),
-                                         integralCostsTextureMapper->getHeight());
+  costFunctionCalculator->setTextureSize(
+      integralCostsTextureMapper->getWidth(),
+      integralCostsTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()

@@ -3,6 +3,7 @@
 #define SRC_TEXTURE_MAPPER_MANAGER_H_
 
 #include <memory>
+#include <string>
 #include <vector>
 #include "./graphics/frame_buffer_object.h"
 #include "./graphics/gl.h"
