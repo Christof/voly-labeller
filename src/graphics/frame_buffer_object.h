@@ -39,10 +39,11 @@ class FrameBufferObject
   void unbind();
 
   void bindColorTexture(int index, unsigned int textureUnit);
-
+  void bindAccumulatedLayersTexture(unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
 
   unsigned int getColorTextureId(int index);
+  unsigned int getAccumulatedLayersTextureId();
   unsigned int getDepthTextureId();
 
   int getLayerCount();
@@ -52,6 +53,7 @@ class FrameBufferObject
   unsigned int framebuffer = 0;
   std::vector<unsigned int> colorTextures;
   unsigned int depthTexture = 0;
+  unsigned int accumulatedLayersTexture = 0;
   Gl *gl;
 
   void resizeAndSetColorAttachment(int texture, int attachment, int width,
