@@ -23,7 +23,7 @@ Labeller::Labeller(std::shared_ptr<LabelsContainer> labels) : labels(labels)
 }
 
 void Labeller::initialize(
-    std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+    std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
     std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
@@ -32,8 +32,9 @@ void Labeller::initialize(
   qCInfo(plChan) << "Initialize";
   if (!integralCosts.get())
     integralCosts =
-        std::make_shared<SummedAreaTable>(occupancyTextureMapper);
-  occupancyUpdater = std::make_shared<OccupancyUpdater>(occupancyTextureMapper);
+        std::make_shared<SummedAreaTable>(integralCostsTextureMapper);
+  occupancyUpdater =
+      std::make_shared<OccupancyUpdater>(integralCostsTextureMapper);
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
@@ -42,8 +43,8 @@ void Labeller::initialize(
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
   costFunctionCalculator->resize(size.x(), size.y());
-  costFunctionCalculator->setTextureSize(occupancyTextureMapper->getWidth(),
-                                         occupancyTextureMapper->getHeight());
+  costFunctionCalculator->setTextureSize(integralCostsTextureMapper->getWidth(),
+                                         integralCostsTextureMapper->getHeight());
 }
 
 void Labeller::cleanup()

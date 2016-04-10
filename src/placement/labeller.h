@@ -37,7 +37,7 @@ class Labeller
   explicit Labeller(std::shared_ptr<LabelsContainer> labels);
 
   void
-  initialize(std::shared_ptr<CudaArrayProvider> occupancyTextureMapper,
+  initialize(std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
              std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
