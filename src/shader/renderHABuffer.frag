@@ -10,6 +10,7 @@ layout(location = 0) out vec4 outputColor;
 layout(location = 1) out vec4 outputColor2;
 layout(location = 2) out vec4 outputColor3;
 layout(location = 3) out vec4 outputColor4;
+layout(location = 4) out vec4 accumulatedOutputColor;
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;
@@ -292,7 +293,8 @@ void main()
 
   vec4 endPos_eye;
 
-  vec4 finalColor = vec4(0, 0, 0, 0);
+  vec4 finalColor = vec4(0);
+  accumulatedOutputColor = vec4(0);
 
   uint age = 1;
   while (!nextFragmentReadStatus && age <= maxAge)
@@ -356,6 +358,9 @@ void main()
         fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
             segmentStartPos_eye, endPosCut_eye, fragmentColor);
         finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+        accumulatedOutputColor =
+            accumulatedOutputColor +
+            fragmentColor * (1.0f - accumulatedOutputColor.a);
       }
 
       setColorForLayer(layerIndex, finalColor);
@@ -372,10 +377,14 @@ void main()
       fragmentColor = calculateColorOfVolumes(activeObjects, activeObjectCount,
           segmentStartPos_eye, endPos_eye, fragmentColor);
       finalColor = finalColor + fragmentColor * (1.0f - finalColor.a);
+      accumulatedOutputColor =
+          accumulatedOutputColor +
+          fragmentColor * (1.0f - accumulatedOutputColor.a);
     }
     else
     {
       finalColor = blend(finalColor, currentFragment.color);
+      accumulatedOutputColor = blend(accumulatedOutputColor, currentFragment.color);
     }
 
     if (finalColor.a > 0.999)
@@ -387,6 +396,7 @@ void main()
   if (nextFragmentReadStatus)
   {
     finalColor = blend(finalColor, nextFragment.color);
+    accumulatedOutputColor = blend(accumulatedOutputColor, nextFragment.color);
     if (finalColor.a > alphaThresholdForDepth)
     {
       setDepthFor(nextFragment.eyePos);
