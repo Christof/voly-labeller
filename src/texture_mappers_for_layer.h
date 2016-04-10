@@ -60,7 +60,6 @@ class TextureMappersForLayer
   int width;
   int height;
 
-  bool saveOccupancyInNextFrame = false;
   bool saveDistanceTransformInNextFrame = false;
   bool saveApolloniusInNextFrame = false;
 
