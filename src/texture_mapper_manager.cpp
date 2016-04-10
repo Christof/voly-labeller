@@ -135,9 +135,9 @@ void TextureMapperManager::cleanup()
   occlusionTextureMapper.reset();
 }
 
-void TextureMapperManager::saveOcclusion()
+void TextureMapperManager::saveOcclusion(std::string filename)
 {
-  // TODO: implement
+  occlusionTexture->save(filename);
 }
 
 void TextureMapperManager::saveDistanceTransform()
