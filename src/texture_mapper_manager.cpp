@@ -37,14 +37,14 @@ void TextureMapperManager::initialize(
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);
 
-  costsIntegralImage = std::make_shared<Graphics::StandardTexture2d>(
+  integralCostsImage = std::make_shared<Graphics::StandardTexture2d>(
       bufferSize, bufferSize, GL_R32F);
-  costsIntegralImage->initialize(gl);
+  integralCostsImage->initialize(gl);
 
-  costsIntegralImageMapper = std::shared_ptr<CudaTextureMapper>(
+  integralCostsTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
-          costsIntegralImage->getId(), costsIntegralImage->getWidth(),
-          costsIntegralImage->getHeight()));
+          integralCostsImage->getId(), integralCostsImage->getWidth(),
+          integralCostsImage->getHeight()));
 
   occlusionTexture = std::make_shared<Graphics::StandardTexture2d>(
       bufferSize, bufferSize, GL_R32F);
@@ -119,13 +119,19 @@ TextureMapperManager::getConstraintTextureMapper()
   return constraintTextureMapper;
 }
 
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getIntegralCostsTextureMapper()
+{
+  return integralCostsTextureMapper;
+}
+
 void TextureMapperManager::cleanup()
 {
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
 
   constraintTextureMapper.reset();
-  costsIntegralImageMapper.reset();
+  integralCostsTextureMapper.reset();
   occlusionTextureMapper.reset();
 }
 

@@ -47,6 +47,7 @@ class TextureMapperManager
   getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getConstraintTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getIntegralCostsTextureMapper();
 
   void cleanup();
 
@@ -60,8 +61,8 @@ class TextureMapperManager
   int bufferSize;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
   std::shared_ptr<CudaTextureMapper> constraintTextureMapper;
-  std::shared_ptr<Graphics::StandardTexture2d> costsIntegralImage;
-  std::shared_ptr<CudaTextureMapper> costsIntegralImageMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> integralCostsImage;
+  std::shared_ptr<CudaTextureMapper> integralCostsTextureMapper;
   std::shared_ptr<Graphics::StandardTexture2d> occlusionTexture;
   std::shared_ptr<CudaTextureMapper> occlusionTextureMapper;
 };
