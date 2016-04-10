@@ -16,6 +16,7 @@ FrameBufferObject::~FrameBufferObject()
   glAssert(gl->glDeleteBuffers(1, &framebuffer));
   glAssert(gl->glDeleteBuffers(1, &depthTexture));
   glAssert(gl->glDeleteTextures(layerCount, colorTextures.data()));
+  glAssert(gl->glDeleteTextures(1, &accumulatedLayersTexture));
 }
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
@@ -33,12 +34,16 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
     resizeAndSetColorAttachment(colorTextures[i], GL_COLOR_ATTACHMENT0 + i,
                                 width, height);
 
+  glAssert(gl->glGenTextures(1, &accumulatedLayersTexture));
+  resizeAndSetColorAttachment(accumulatedLayersTexture,
+                              GL_COLOR_ATTACHMENT0 + layerCount, width, height);
+
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
   std::vector<GLenum> drawBuffers(layerCount);
-  for (int i = 0; i < layerCount; ++i)
+  for (int i = 0; i < layerCount + 1; ++i)
     drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
-  glAssert(gl->glDrawBuffers(layerCount, drawBuffers.data()));
+  glAssert(gl->glDrawBuffers(layerCount + 1, drawBuffers.data()));
 
   auto status = gl->glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE)
@@ -79,6 +84,12 @@ void FrameBufferObject::bindColorTexture(int index, unsigned int textureUnit)
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[index]));
 }
 
+void FrameBufferObject::bindAccumulatedLayersTexture(unsigned int textureUnit)
+{
+  glAssert(gl->glActiveTexture(textureUnit));
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, accumulatedLayersTexture));
+}
+
 void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
@@ -117,6 +128,11 @@ void FrameBufferObject::resizeTexture(int texture, int width, int height,
 unsigned int FrameBufferObject::getColorTextureId(int index)
 {
   return colorTextures[index];
+}
+
+unsigned int FrameBufferObject::getAccumulatedLayersTextureId()
+{
+  return accumulatedLayersTexture;
 }
 
 unsigned int FrameBufferObject::getDepthTextureId()
