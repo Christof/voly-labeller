@@ -43,7 +43,6 @@ class FrameBufferObject
   void bindDepthTexture(unsigned int textureUnit);
 
   unsigned int getColorTextureId(int index);
-  unsigned int getDepthTextureId(int index);
   unsigned int getDepthTextureId();
 
   int getLayerCount();
