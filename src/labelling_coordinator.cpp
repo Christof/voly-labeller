@@ -9,6 +9,7 @@
 #include "./placement/constraint_updater.h"
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
+#include "./placement/integral_costs_calculator.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -30,6 +31,10 @@ void LabellingCoordinator::initialize(
     int height)
 {
   occlusionCalculator->initialize(textureMapperManager);
+  integralCostsCalculator =
+      std::make_shared<Placement::IntegralCostsCalculator>(
+          textureMapperManager->getOcclusionTextureMapper(),
+          textureMapperManager->getIntegralCostsTextureMapper());
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
   persistentConstraintUpdater =
@@ -42,7 +47,7 @@ void LabellingCoordinator::initialize(
     auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
     labeller->resize(width, height);
     labeller->initialize(
-        textureMapperManager->getOcclusionTextureMapper(),
+        textureMapperManager->getIntegralCostsTextureMapper(),
         textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
         textureMapperManager->getApolloniusTextureMapper(layerIndex),
         textureMapperManager->getConstraintTextureMapper(),
@@ -78,6 +83,7 @@ void LabellingCoordinator::updatePlacement()
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusionCalculator->calculateFor(layerIndex);
+    integralCostsCalculator->runKernel();
     placementLabellers[layerIndex]->update(labellerFrameData);
   }
 }

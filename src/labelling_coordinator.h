@@ -20,6 +20,7 @@ class TextureMapperManager;
 namespace Placement
 {
 class OcclusionCalculator;
+class IntegralCostsCalculator;
 }
 
 /**
@@ -60,6 +61,7 @@ class LabellingCoordinator
   std::shared_ptr<Nodes> nodes;
 
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
+  std::shared_ptr<Placement::IntegralCostsCalculator> integralCostsCalculator;
   std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
