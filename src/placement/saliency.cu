@@ -1,6 +1,55 @@
 #include "./saliency.h"
 #include "../utils/cuda_helper.h"
 
+__device__ float3 rgbToXyz(float3 rgb)
+{
+  float r, g, b;
+  if (rgb.x <= 0.04045f)
+    r = rgb.x / 12.92f;
+  else
+    r = pow((rgb.x + 0.055f) / 1.055f, 2.4f);
+  if (rgb.y <= 0.04045f)
+    g = rgb.y / 12.92f;
+  else
+    g = pow((rgb.y + 0.055f) / 1.055f, 2.4f);
+  if (rgb.z <= 0.04045f)
+    b = rgb.z / 12.92f;
+  else
+    b = pow((rgb.z + 0.055f) / 1.055f, 2.4f);
+
+  float x = r * 0.4124564f + g * 0.3575761f + b * 0.1804375f;
+  float y = r * 0.2126729f + g * 0.7151522f + b * 0.0721750f;
+  float z = r * 0.0193339f + g * 0.1191920f + b * 0.9503041f;
+
+  return make_float3(x, y, z);
+}
+
+__device__ float f(float t)
+{
+  const float epsilon = 0.008856452f;
+  const float kappa = (29.0f / 6.0f) * (29.0f / 6.0f) / 3.0f;
+
+  if (t > epsilon)
+    return pow(t, 1.0f / 3.0f);
+
+  return kappa * t + 4.0f / 29.0f;
+}
+
+__device__ float3 xyzToLab(float3 xyz)
+{
+  float xr = 0.950456;  // reference white
+  float yr = 1.0;  // reference white
+  float zr = 1.088754;  // reference white
+
+
+  float fx = f(xyz.x / xr);
+  float fy = f(xyz.y / yr);
+  float fz = f(xyz.z / zr);
+
+  return make_float3(116.0f * fy - 16.0f, 500.0f * (fx - fy),
+                     500.0f * (fy - fz));
+}
+
 __global__ void saliencyKernel(cudaTextureObject_t input,
                                cudaSurfaceObject_t output, int width,
                                int height, int widthScale, int heightScale)
