@@ -38,12 +38,14 @@ class TextureMapperManager
   void update();
 
   void bindOcclusionTexture();
+  void bindSaliencyTexture();
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
 
   std::shared_ptr<CudaTextureMapper>
   getColorTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getOcclusionTextureMapper();
+  std::shared_ptr<CudaTextureMapper> getSaliencyTextureMapper();
   std::shared_ptr<CudaTextureMapper>
   getDistanceTransformTextureMapper(int layerIndex);
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper(int layerIndex);
@@ -66,6 +68,8 @@ class TextureMapperManager
   std::shared_ptr<CudaTextureMapper> integralCostsTextureMapper;
   std::shared_ptr<Graphics::StandardTexture2d> occlusionTexture;
   std::shared_ptr<CudaTextureMapper> occlusionTextureMapper;
+  std::shared_ptr<Graphics::StandardTexture2d> saliencyTexture;
+  std::shared_ptr<CudaTextureMapper> saliencyTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_
