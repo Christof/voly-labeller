@@ -10,6 +10,7 @@
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/integral_costs_calculator.h"
+#include "./placement/saliency.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -30,6 +31,10 @@ void LabellingCoordinator::initialize(
     std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
     int height)
 {
+  saliency = std::make_shared<Placement::Saliency>(
+      textureMapperManager->getAccumulatedLayersTextureMapper(),
+      textureMapperManager->getSaliencyTextureMapper());
+
   occlusionCalculator->initialize(textureMapperManager);
   integralCostsCalculator =
       std::make_shared<Placement::IntegralCostsCalculator>(
@@ -60,6 +65,7 @@ void LabellingCoordinator::initialize(
 void LabellingCoordinator::cleanup()
 {
   occlusionCalculator.reset();
+  saliency.reset();
   integralCostsCalculator.reset();
   for (auto placementLabeller : placementLabellers)
     placementLabeller->cleanup();
@@ -69,6 +75,8 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
+
+  saliency->runKernel();
 
   auto positions = getPlacementPositions(activeLayerNumber);
   if (forcesEnabled)
