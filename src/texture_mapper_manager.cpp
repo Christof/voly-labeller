@@ -55,6 +55,10 @@ void TextureMapperManager::initialize(
       bufferSize, bufferSize, GL_R32F);
   saliencyTexture->initialize(gl);
 
+  accumulatedLayersTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadOnlyMapper(
+          fbo->getAccumulatedLayersTextureId(), width, height));
+
   constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadOnlyMapper(
           constraintBufferObject->getRenderTextureId(),
@@ -140,6 +144,12 @@ std::shared_ptr<CudaTextureMapper>
 TextureMapperManager::getConstraintTextureMapper()
 {
   return constraintTextureMapper;
+}
+
+std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getAccumulatedLayersTextureMapper()
+{
+  return accumulatedLayersTextureMapper;
 }
 
 std::shared_ptr<CudaTextureMapper>
