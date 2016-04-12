@@ -47,7 +47,7 @@ __device__ float3 xyzToLab(float3 xyz)
   float fz = f(xyz.z / zr);
 
   return make_float3(116.0f * fy - 16.0f, 500.0f * (fx - fy),
-                     500.0f * (fy - fz));
+                     200.0f * (fy - fz));
 }
 
 __global__ void saliencyKernel(cudaTextureObject_t input,
