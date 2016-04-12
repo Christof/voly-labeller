@@ -17,8 +17,7 @@ TextureMapperManager::TextureMapperManager(int bufferSize)
 
 TextureMapperManager::~TextureMapperManager()
 {
-  for (auto mappers : mappersForLayers)
-    mappers->cleanup();
+  cleanup();
 }
 
 void TextureMapperManager::createTextureMappersForLayers(int layerCount)
