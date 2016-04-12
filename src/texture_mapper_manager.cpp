@@ -74,6 +74,8 @@ void TextureMapperManager::initialize(
 
 void TextureMapperManager::resize(int width, int height)
 {
+  this->width = width;
+  this->height = height;
   for (auto mappers : mappersForLayers)
     mappers->resize(width, height);
 }
