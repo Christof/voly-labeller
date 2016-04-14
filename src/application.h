@@ -10,6 +10,7 @@
 class InvokeManager;
 class Node;
 class Nodes;
+class NodesController;
 class Labels;
 class TextureMapperManager;
 class TextureMapperManagerController;
@@ -47,6 +48,7 @@ class Application : public QObject
   QCommandLineParser parser;
   std::shared_ptr<InvokeManager> invokeManager;
   std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<NodesController> nodesController;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::unique_ptr<LabellingController> labellingController;

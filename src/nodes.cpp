@@ -68,11 +68,6 @@ void Nodes::setCameraNode(std::shared_ptr<CameraNode> node)
   addNode(node);
 }
 
-void Nodes::addSceneNodesFrom(QUrl url)
-{
-  addSceneNodesFrom(url.path().toStdString());
-}
-
 void Nodes::addSceneNodesFrom(std::string filename)
 {
   qDebug() << "Nodes::addSceneNodesFrom" << filename.c_str();
@@ -90,7 +85,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
   }
 }
 
-void Nodes::importFrom(std::string filename)
+void Nodes::importMeshFrom(std::string filename)
 {
   Importer importer;
 
@@ -103,19 +98,10 @@ void Nodes::importFrom(std::string filename)
   }
 }
 
-void Nodes::importFrom(QUrl url)
+void Nodes::importVolume(std::string volumeFilename,
+                         std::string transferFunctionFilename)
 {
-  importFrom(url.path().toStdString());
-}
-
-void Nodes::setVolumeToImport(QUrl url)
-{
-  volumeToImport = url.path().toStdString();
-}
-
-void Nodes::importVolume(QUrl url)
-{
-  addNode(std::make_shared<VolumeNode>(volumeToImport, url.path().toStdString(),
+  addNode(std::make_shared<VolumeNode>(volumeFilename, transferFunctionFilename,
                                        Eigen::Matrix4f::Identity()));
 }
 
@@ -142,11 +128,6 @@ void Nodes::renderLabels(Graphics::Gl *gl,
   {
     labelNode->renderLabelAndConnector(gl, managers, renderData);
   }
-}
-
-void Nodes::saveSceneTo(QUrl url)
-{
-  saveSceneTo(url.path().toStdString());
 }
 
 void Nodes::saveSceneTo(std::string filename)

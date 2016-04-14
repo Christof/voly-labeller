@@ -140,7 +140,7 @@ Item {
         title: "Please choose a file to import"
         nameFilters: [ "Collada files (*.dae)", , "All files (*)" ]
         onAccepted: {
-            nodes.importFrom(fileUrl);
+            nodes.importMeshFrom(fileUrl);
         }
     }
 

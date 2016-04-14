@@ -43,21 +43,12 @@ class Nodes : public QObject
   std::shared_ptr<CameraNode> getCameraNode();
   void setCameraNode(std::shared_ptr<CameraNode> node);
 
- public slots:
   void addSceneNodesFrom(std::string filename);
-  void addSceneNodesFrom(QUrl url);
-
-  void importFrom(std::string filename);
-  void importFrom(QUrl url);
-
-  void setVolumeToImport(QUrl url);
-  void importVolume(QUrl rul);
-
-  void saveSceneTo(QUrl url);
+  void importMeshFrom(std::string filename);
   void saveSceneTo(std::string filename);
-
+  void importVolume(std::string volumeFilename,
+                    std::string transferFunctionFilename);
   void clear();
-
   void toggleBoundingVolumes();
 
   void addNode(std::shared_ptr<Node> node);
