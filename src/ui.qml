@@ -27,9 +27,14 @@ Item {
           onTriggered: addSceneNodesFromDialog.open();
         }
         MenuItem {
-          text: "Import"
+          text: "Import Mesh"
           shortcut: "Ctrl+i"
           onTriggered: importDialog.open();
+        }
+        MenuItem {
+          text: "Import Volume"
+          shortcut: "Ctrl+l"
+          onTriggered: importVolumeDialog.open();
         }
         MenuItem {
           text: "Save"
@@ -133,9 +138,28 @@ Item {
     FileDialog {
         id: importDialog
         title: "Please choose a file to import"
-        nameFilters: [ "Collada files (*.dae)" ]
+        nameFilters: [ "Collada files (*.dae)", , "All files (*)" ]
         onAccepted: {
             nodes.importFrom(fileUrl);
+        }
+    }
+
+    FileDialog {
+        id: importVolumeDialog
+        title: "Please choose a volume to import"
+        nameFilters: [ "Volume files (*.mhd *.mha *.img)", "All files (*)" ]
+        onAccepted: {
+            nodes.setVolumeToImport(fileUrl);
+            importTransferFunctionDialog.open();
+        }
+    }
+
+    FileDialog {
+        id: importTransferFunctionDialog
+        title: "Please choose a transfer function"
+        nameFilters: [ "Transfer function gradient (*.gra)", "All files (*)" ]
+        onAccepted: {
+            nodes.importVolume(fileUrl);
         }
     }
 

@@ -50,6 +50,9 @@ class Nodes : public QObject
   void importFrom(std::string filename);
   void importFrom(QUrl url);
 
+  void setVolumeToImport(QUrl url);
+  void importVolume(QUrl rul);
+
   void saveSceneTo(QUrl url);
   void saveSceneTo(std::string filename);
 
@@ -70,6 +73,8 @@ class Nodes : public QObject
   std::vector<std::shared_ptr<Node>> obbNodes;
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;
+
+  std::string volumeToImport;
 };
 
 #endif  // SRC_NODES_H_

@@ -5,6 +5,7 @@
 #include "./utils/persister.h"
 #include "./importer.h"
 #include "./mesh_node.h"
+#include "./volume_node.h"
 #include "./label_node.h"
 #include "./obb_node.h"
 #include "./camera_node.h"
@@ -105,6 +106,17 @@ void Nodes::importFrom(std::string filename)
 void Nodes::importFrom(QUrl url)
 {
   importFrom(url.path().toStdString());
+}
+
+void Nodes::setVolumeToImport(QUrl url)
+{
+  volumeToImport = url.path().toStdString();
+}
+
+void Nodes::importVolume(QUrl url)
+{
+  addNode(std::make_shared<VolumeNode>(volumeToImport, url.path().toStdString(),
+                                       Eigen::Matrix4f::Identity()));
 }
 
 void Nodes::render(Graphics::Gl *gl,
