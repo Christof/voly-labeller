@@ -2,11 +2,10 @@
 
 #define SRC_NODES_H_
 
-#include <QObject>
-#include <QUrl>
 #include <string>
 #include <vector>
 #include <memory>
+#include <functional>
 #include "./node.h"
 #include "./graphics/render_data.h"
 #include "./graphics/managers.h"
@@ -25,9 +24,8 @@ class CameraNode;
  *
  * Also an asset file can be directly added using Nodes::importFrom.
  */
-class Nodes : public QObject
+class Nodes
 {
-  Q_OBJECT
  public:
   Nodes();
   ~Nodes();
@@ -55,8 +53,8 @@ class Nodes : public QObject
   void addForcesVisualizerNode(std::shared_ptr<Node> node);
   void removeForcesVisualizerNode();
 
- signals:
-  void nodesChanged(std::shared_ptr<Node> changedNode);
+  void
+  setOnNodesChanged(std::function<void(std::shared_ptr<Node>)> onNodesChanged);
 
  private:
   std::vector<std::shared_ptr<Node>> nodes;
@@ -65,7 +63,7 @@ class Nodes : public QObject
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;
 
-  std::string volumeToImport;
+  std::function<void(std::shared_ptr<Node>)> onNodesChanged;
 };
 
 #endif  // SRC_NODES_H_

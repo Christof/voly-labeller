@@ -5,19 +5,20 @@
 #include <QObject>
 #include <QUrl>
 #include <memory>
+#include <string>
 
 class Nodes;
 
 /**
- * \brief
- *
+ * \brief Wrapper around Nodes to provide access to node loading and saving
+ * functions to the UI
  *
  */
 class NodesController : public QObject
 {
   Q_OBJECT
  public:
-  NodesController(std::shared_ptr<Nodes> nodes);
+  explicit NodesController(std::shared_ptr<Nodes> nodes);
 
  public slots:
   void addSceneNodesFrom(QUrl url);

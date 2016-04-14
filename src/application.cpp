@@ -80,8 +80,9 @@ int Application::execute()
 
   forcesLabeller->resize(window->size().width(), window->size().height());
 
-  QObject::connect(nodes.get(), &Nodes::nodesChanged, this,
-                   &Application::onNodesChanged);
+  nodes->setOnNodesChanged([this](std::shared_ptr<Node> node) {
+      this->onNodesChanged(node);
+      });
 
   if (parser.positionalArguments().size())
   {
