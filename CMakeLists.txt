@@ -43,6 +43,7 @@ set(SOURCES
   src/coordinate_system_node.cpp
   src/camera_node.cpp
   src/nodes.cpp
+  src/nodes_controller.cpp
   src/abstract_scene.h
   src/scene.cpp
   src/scene_controller.cpp

@@ -5,6 +5,7 @@
 #include "./utils/persister.h"
 #include "./importer.h"
 #include "./mesh_node.h"
+#include "./volume_node.h"
 #include "./label_node.h"
 #include "./obb_node.h"
 #include "./camera_node.h"
@@ -40,7 +41,8 @@ void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
 
-  emit nodesChanged(node);
+  if (onNodeAdded)
+    onNodeAdded(node);
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)
@@ -67,11 +69,6 @@ void Nodes::setCameraNode(std::shared_ptr<CameraNode> node)
   addNode(node);
 }
 
-void Nodes::addSceneNodesFrom(QUrl url)
-{
-  addSceneNodesFrom(url.path().toStdString());
-}
-
 void Nodes::addSceneNodesFrom(std::string filename)
 {
   qDebug() << "Nodes::addSceneNodesFrom" << filename.c_str();
@@ -89,7 +86,7 @@ void Nodes::addSceneNodesFrom(std::string filename)
   }
 }
 
-void Nodes::importFrom(std::string filename)
+void Nodes::importMeshFrom(std::string filename)
 {
   Importer importer;
 
@@ -102,9 +99,11 @@ void Nodes::importFrom(std::string filename)
   }
 }
 
-void Nodes::importFrom(QUrl url)
+void Nodes::importVolume(std::string volumeFilename,
+                         std::string transferFunctionFilename)
 {
-  importFrom(url.path().toStdString());
+  addNode(std::make_shared<VolumeNode>(volumeFilename, transferFunctionFilename,
+                                       Eigen::Matrix4f::Identity()));
 }
 
 void Nodes::render(Graphics::Gl *gl,
@@ -130,11 +129,6 @@ void Nodes::renderLabels(Graphics::Gl *gl,
   {
     labelNode->renderLabelAndConnector(gl, managers, renderData);
   }
-}
-
-void Nodes::saveSceneTo(QUrl url)
-{
-  saveSceneTo(url.path().toStdString());
 }
 
 void Nodes::saveSceneTo(std::string filename)
@@ -179,5 +173,11 @@ void Nodes::addForcesVisualizerNode(std::shared_ptr<Node> node)
 void Nodes::removeForcesVisualizerNode()
 {
   removeNode(forcesVisualizerNode);
+}
+
+void Nodes::setOnNodeAdded(
+    std::function<void(std::shared_ptr<Node>)> onNodeAdded)
+{
+  this->onNodeAdded = onNodeAdded;
 }
 

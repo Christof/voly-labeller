@@ -6,6 +6,7 @@
 #include "./scene.h"
 #include "./scene_controller.h"
 #include "./nodes.h"
+#include "./nodes_controller.h"
 #include "./label_node.h"
 #include "./input/invoke_manager.h"
 #include "./input/signal_manager.h"
@@ -31,6 +32,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   invokeManager = std::make_shared<InvokeManager>();
 
   nodes = std::make_shared<Nodes>();
+  nodesController = std::make_shared<NodesController>(nodes);
 
   labels = std::make_shared<Labels>();
   forcesLabeller = std::make_shared<Forces::Labeller>(labels);
@@ -78,15 +80,17 @@ int Application::execute()
 
   forcesLabeller->resize(window->size().width(), window->size().height());
 
-  QObject::connect(nodes.get(), &Nodes::nodesChanged, this,
-                   &Application::onNodesChanged);
+  nodes->setOnNodeAdded([this](std::shared_ptr<Node> node)
+                        {
+                          this->onNodeAdded(node);
+                        });
 
   if (parser.positionalArguments().size())
   {
     auto filename = absolutePathToProjectRelativePath(
         QDir(parser.positionalArguments()[0]).absolutePath());
     qInfo() << "import scene:" << filename;
-    nodes->addSceneNodesFrom(filename);
+    nodesController->addSceneNodesFrom(filename);
   }
   else
   {
@@ -123,7 +127,7 @@ void Application::setupWindow()
   window->setResizeMode(QQuickView::SizeRootObjectToView);
   auto context = window->rootContext();
   context->setContextProperty("window", window.get());
-  context->setContextProperty("nodes", nodes.get());
+  context->setContextProperty("nodes", nodesController.get());
   context->setContextProperty("bufferTextures",
                               textureMapperManagerController.get());
   context->setContextProperty("scene", sceneController.get());
@@ -153,7 +157,7 @@ void Application::createAndStartStateMachine()
   stateMachine->start();
 }
 
-void Application::onNodesChanged(std::shared_ptr<Node> node)
+void Application::onNodeAdded(std::shared_ptr<Node> node)
 {
   std::shared_ptr<LabelNode> labelNode =
       std::dynamic_pointer_cast<LabelNode>(node);
