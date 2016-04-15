@@ -162,6 +162,7 @@ void TextureMapperManager::cleanup()
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
 
+  accumulatedLayersTextureMapper.reset();
   constraintTextureMapper.reset();
   integralCostsTextureMapper.reset();
   occlusionTextureMapper.reset();
