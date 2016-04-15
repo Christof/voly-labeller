@@ -1,6 +1,31 @@
 #include "./saliency.h"
 #include "../utils/cuda_helper.h"
 
+inline __host__ __device__ float3 operator+(float3 a, float3 b)
+{
+    return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+inline __host__ __device__ float3 operator-(float3 a, float3 b)
+{
+    return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+inline __host__ __device__ float3 operator-(float3 a)
+{
+    return make_float3(-a.x, -a.y, -a.z);
+}
+
+inline __host__ __device__ float operator*(float3 a, float3 b)
+{
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+inline __host__ __device__ float3 operator*(float a, float3 b)
+{
+    return make_float3(a * b.x, a * b.y, a * b.z);
+}
+
 __device__ float3 rgbToXyz(float3 rgb)
 {
   float r, g, b;
@@ -50,6 +75,11 @@ __device__ float3 xyzToLab(float3 xyz)
                      200.0f * (fy - fz));
 }
 
+__device__ float3 rgbaToLab(float4 rgba)
+{
+  return xyzToLab(rgbToXyz(make_float3(rgba.x, rgba.y, rgba.z)));
+}
+
 __global__ void saliencyKernel(cudaTextureObject_t input,
                                cudaSurfaceObject_t output, int width,
                                int height, int widthScale, int heightScale)
@@ -59,30 +89,28 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   if (xOutput >= width || yOutput >= height)
     return;
 
-  // TODO (SIR)
-  // - downsampling
-  // - handle colors
   float x = xOutput * widthScale;
   float y = yOutput * heightScale;
 
-  float4 leftUpper = tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f);
-  float4 left = tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f);
-  float4 leftLower = tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f);
+  float3 leftUpper = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f));
+  float3 left = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f));
+  float3 leftLower = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f));
 
-  float4 upper = tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f);
-  float4 lower = tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f);
+  float3 upper = rgbaToLab(tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f));
+  float3 lower = rgbaToLab(tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f));
 
-  float4 rightUpper = tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f);
-  float4 right = tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f);
-  float4 rightLower = tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f);
+  float3 rightUpper = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f));
+  float3 right = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f));
+  float3 rightLower = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f));
 
-  float resultX = -leftUpper.x - 2.0f * left.x - leftLower.x +
-                  rightUpper.x + 2.0f * right.x + rightLower.x;
-  float resultY = -leftUpper.x - 2.0f * upper.x - rightUpper.x +
-                 leftLower.x + 2.0f * lower.x + rightLower.x;
+  float3 resultX = -leftUpper - 2.0f * left - leftLower +
+                  rightUpper + 2.0f * right + rightLower;
+  float3 resultY = -leftUpper - 2.0f * upper - rightUpper +
+                 leftLower + 2.0f * lower + rightLower;
 
   float magnitudeSquared = resultX * resultX + resultY * resultY;
-  surf2Dwrite(magnitudeSquared, output, xOutput * sizeof(float), yOutput);
+  surf2Dwrite(1e-5f * magnitudeSquared, output, xOutput * sizeof(float),
+              yOutput);
 }
 
 namespace Placement
