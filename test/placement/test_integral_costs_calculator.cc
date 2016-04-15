@@ -8,17 +8,21 @@ TEST(Test_IntegraclCostsCalculator, IntegralCostsCalculator)
   std::vector<float> occlusionData = { 0.1f, 0.7f, 0.4f, 0.3f };
   auto occlusionProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, occlusionData, cudaCreateChannelDesc<float>());
+
+  std::vector<float> saliencyData = { 0.2f, 0.1f, 0.4f, 0.6f };
+  auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, saliencyData, cudaCreateChannelDesc<float>());
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::IntegralCostsCalculator(occlusionProvider, outputProvider)
-      .runKernel();
+  Placement::IntegralCostsCalculator(occlusionProvider, saliencyProvider,
+                                     outputProvider).runKernel();
 
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_EQ(0.1f, result[0]);
-  EXPECT_EQ(0.7f, result[1]);
-  EXPECT_EQ(0.4f, result[2]);
-  EXPECT_EQ(0.3f, result[3]);
+  EXPECT_FLOAT_EQ(0.3f, result[0]);
+  EXPECT_FLOAT_EQ(0.8f, result[1]);
+  EXPECT_FLOAT_EQ(0.8f, result[2]);
+  EXPECT_FLOAT_EQ(0.9f, result[3]);
 }

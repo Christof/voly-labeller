@@ -19,6 +19,7 @@ class IntegralCostsCalculator
  public:
   IntegralCostsCalculator(
       std::shared_ptr<CudaArrayProvider> occlusionProvider,
+      std::shared_ptr<CudaArrayProvider> saliencyProvider,
       std::shared_ptr<CudaArrayProvider> outputProvider);
   ~IntegralCostsCalculator();
 
@@ -26,9 +27,11 @@ class IntegralCostsCalculator
 
  private:
   std::shared_ptr<CudaArrayProvider> occlusionProvider;
+  std::shared_ptr<CudaArrayProvider> saliencyProvider;
   std::shared_ptr<CudaArrayProvider> outputProvider;
 
   cudaTextureObject_t occlusion = 0;
+  cudaTextureObject_t saliency = 0;
   cudaSurfaceObject_t output = 0;
 
   void createSurfaceObjects();

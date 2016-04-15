@@ -39,6 +39,7 @@ void LabellingCoordinator::initialize(
   integralCostsCalculator =
       std::make_shared<Placement::IntegralCostsCalculator>(
           textureMapperManager->getOcclusionTextureMapper(),
+          textureMapperManager->getSaliencyTextureMapper(),
           textureMapperManager->getIntegralCostsTextureMapper());
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
