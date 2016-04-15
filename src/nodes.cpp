@@ -41,8 +41,8 @@ void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
 
-  if (onNodesChanged)
-    onNodesChanged(node);
+  if (onNodeAdded)
+    onNodeAdded(node);
 }
 
 void Nodes::removeNode(std::shared_ptr<Node> node)
@@ -175,9 +175,9 @@ void Nodes::removeForcesVisualizerNode()
   removeNode(forcesVisualizerNode);
 }
 
-void Nodes::setOnNodesChanged(
-    std::function<void(std::shared_ptr<Node>)> onNodesChanged)
+void Nodes::setOnNodeAdded(
+    std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
-  this->onNodesChanged = onNodesChanged;
+  this->onNodeAdded = onNodeAdded;
 }
 

@@ -80,9 +80,10 @@ int Application::execute()
 
   forcesLabeller->resize(window->size().width(), window->size().height());
 
-  nodes->setOnNodesChanged([this](std::shared_ptr<Node> node) {
-      this->onNodesChanged(node);
-      });
+  nodes->setOnNodeAdded([this](std::shared_ptr<Node> node)
+                        {
+                          this->onNodeAdded(node);
+                        });
 
   if (parser.positionalArguments().size())
   {
@@ -156,7 +157,7 @@ void Application::createAndStartStateMachine()
   stateMachine->start();
 }
 
-void Application::onNodesChanged(std::shared_ptr<Node> node)
+void Application::onNodeAdded(std::shared_ptr<Node> node)
 {
   std::shared_ptr<LabelNode> labelNode =
       std::dynamic_pointer_cast<LabelNode>(node);

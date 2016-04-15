@@ -68,7 +68,7 @@ class Application : public QObject
   void setupWindow();
   void createAndStartStateMachine();
 
-  void onNodesChanged(std::shared_ptr<Node> node);
+  void onNodeAdded(std::shared_ptr<Node> node);
   void onLabelChangedUpdateLabelNodes(Labels::Action action,
                                       const Label &label);
   void onFocesLabellerModelIsVisibleChanged();

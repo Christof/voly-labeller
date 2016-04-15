@@ -54,7 +54,7 @@ class Nodes
   void removeForcesVisualizerNode();
 
   void
-  setOnNodesChanged(std::function<void(std::shared_ptr<Node>)> onNodesChanged);
+  setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded);
 
  private:
   std::vector<std::shared_ptr<Node>> nodes;
@@ -63,7 +63,7 @@ class Nodes
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;
 
-  std::function<void(std::shared_ptr<Node>)> onNodesChanged;
+  std::function<void(std::shared_ptr<Node>)> onNodeAdded;
 };
 
 #endif  // SRC_NODES_H_
