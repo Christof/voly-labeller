@@ -54,14 +54,16 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
                                cudaSurfaceObject_t output, int width,
                                int height, int widthScale, int heightScale)
 {
-  int x = blockIdx.x * blockDim.x + threadIdx.x;
-  int y = blockIdx.y * blockDim.y + threadIdx.y;
-  if (x >= width || y >= height)
+  int xOutput = blockIdx.x * blockDim.x + threadIdx.x;
+  int yOutput = blockIdx.y * blockDim.y + threadIdx.y;
+  if (xOutput >= width || yOutput >= height)
     return;
 
   // TODO (SIR)
   // - downsampling
   // - handle colors
+  float x = xOutput * widthScale;
+  float y = yOutput * heightScale;
 
   float4 leftUpper = tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f);
   float4 left = tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f);
@@ -80,7 +82,7 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
                  leftLower.x + 2.0f * lower.x + rightLower.x;
 
   float magnitudeSquared = resultX * resultX + resultY * resultY;
-  surf2Dwrite(magnitudeSquared, output, x * sizeof(float), y);
+  surf2Dwrite(magnitudeSquared, output, xOutput * sizeof(float), yOutput);
 }
 
 namespace Placement
