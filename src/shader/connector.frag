@@ -5,13 +5,9 @@ in vec4 vertexColor;
 in flat int vertexDrawId;
 
 layout(location = 0) out vec4 outputColor;
-layout(location = 1) out vec4 position;
-layout(location = 2) out vec4 outputColor2;
-layout(location = 3) out vec4 position2;
-layout(location = 4) out vec4 outputColor3;
-layout(location = 5) out vec4 position3;
-layout(location = 6) out vec4 outputColor4;
-layout(location = 7) out vec4 position4;
+layout(location = 1) out vec4 outputColor2;
+layout(location = 2) out vec4 outputColor3;
+layout(location = 3) out vec4 outputColor4;
 layout(depth_any) out float gl_FragDepth;
 
 layout(std430, binding = 1) buffer CB1
