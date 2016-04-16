@@ -25,6 +25,7 @@ class SceneController : public QObject
   void renderSecondLayer();
   void renderThirdLayer();
   void renderFourthLayer();
+  void accumulatedLayers();
 
  private:
   std::shared_ptr<Scene> scene;

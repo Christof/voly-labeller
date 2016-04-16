@@ -48,6 +48,9 @@
     <transition event="KeyboardEvent.UP.4">
       <invoke targettype="scene" src="renderFourthLayer"/>
     </transition>
+    <transition event="KeyboardEvent.UP.9">
+      <invoke targettype="scene" src="accumulatedLayers"/>
+    </transition>
     <transition event="labels.startPicking" target="picking"/>
   </state>
 

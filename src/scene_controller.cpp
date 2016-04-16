@@ -42,3 +42,8 @@ void SceneController::renderFourthLayer()
   scene->setRenderLayer(4);
 }
 
+void SceneController::accumulatedLayers()
+{
+  scene->setRenderLayer(9);
+}
+

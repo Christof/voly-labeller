@@ -265,6 +265,11 @@ void Scene::renderScreenQuad()
 
     gl->glActiveTexture(GL_TEXTURE0);
   }
+  else if (activeLayerNumber == 9)
+  {
+    fbo->bindAccumulatedLayersTexture(GL_TEXTURE0);
+    renderQuad(quad, Eigen::Matrix4f::Identity());
+  }
   else
   {
     fbo->bindColorTexture(activeLayerNumber - 1, GL_TEXTURE0);
