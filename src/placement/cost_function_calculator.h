@@ -15,6 +15,7 @@ struct CostFunctionWeights
   float occupancy = 1.0f;
   float distanceToAnchor = 1e-3f;
   float favorHorizontalOrVerticalLines = 1e-1f;
+  float connectorShadowConstraint = 1e1f;
 };
 
 /**
