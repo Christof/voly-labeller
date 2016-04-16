@@ -31,6 +31,9 @@ __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 {
+  const unsigned char labelShadowValue = (1 << (7 - 0));
+  const unsigned char connectorShadowValue = (1 << (7 - 1));
+
   __host__ __device__ CostEvaluator(int width, int height,
       Placement::CostFunctionWeights weights)
     : width(width), height(height), weights(weights)
@@ -100,7 +103,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = weights.constraints * constraintValue +
+    float cost = weights.constraints * (constraintValue & labelShadowValue) +
                  weights.occupancy * occupancyForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
                  weights.favorHorizontalOrVerticalLines *
