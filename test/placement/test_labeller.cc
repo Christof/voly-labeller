@@ -77,6 +77,14 @@ TEST(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   auto labels = createLabels();
   auto labeller = createLabeller(labels);
 
+  Placement::CostFunctionWeights weights;
+  weights.labelShadowConstraint = 1e2f;
+  weights.occupancy = 1.0f;
+  weights.distanceToAnchor = 1e-3f;
+  weights.favorHorizontalOrVerticalLines = 1e-1f;
+  weights.connectorShadowConstraint = 1e1f;
+  labeller->setCostFunctionWeights(weights);
+
   Eigen::Matrix4f view = Eigen::Matrix4f::Identity();
   view(2, 3) = -1.0f;
   Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
@@ -95,7 +103,7 @@ TEST(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
     Eigen::Vector3f(0.192445f, 0.686766f, 0.034f),
     Eigen::Vector3f(0.338289f, 0.129809f, -0.00699999f),
     Eigen::Vector3f(0.459961f, 0.445242f, 0.058f),
-    Eigen::Vector3f(-0.184551f, 0.60734f, 0.141f),
+    Eigen::Vector3f(0.379167f, 0.446277f, 0.141f),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
