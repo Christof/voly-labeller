@@ -1,12 +1,12 @@
 #include "./constraint_updater.h"
 #include <QLoggingCategory>
 #include <Eigen/Geometry>
+#include <polyclipping/clipper.hpp>
 #include <vector>
 #include <chrono>
 #include <cmath>
 #include <utility>
 #include <list>
-#include <polyclipping/clipper.hpp>
 #include "./placement.h"
 
 QLoggingCategory cuChan("Placement.ConstraintUpdater");
