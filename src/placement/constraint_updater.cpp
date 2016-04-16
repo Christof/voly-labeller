@@ -10,6 +10,7 @@
 #include <list>
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
+#include "./placement.h"
 
 QLoggingCategory cuChan("Placement.ConstraintUpdater");
 
@@ -17,8 +18,8 @@ ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
                                      int width, int height)
   : drawer(drawer), width(width), height(height)
 {
-  labelShadowColor = (1 << (7 - 0)) / 255.0f;
-  connectorShadowColor = (1 << (7 - 1)) / 255.0f;
+  labelShadowColor = Placement::labelShadowValue / 255.0f;
+  connectorShadowColor = Placement::connectorShadowValue / 255.0f;
 }
 
 polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
