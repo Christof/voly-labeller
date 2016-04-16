@@ -3,10 +3,10 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
+#include <polyclipping/clipper.hpp>
 #include <vector>
 #include <utility>
 #include <memory>
-#include <polyclipping/clipper.hpp>
 #include "../graphics/drawer.h"
 
 /**
