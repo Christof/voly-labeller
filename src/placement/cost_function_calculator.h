@@ -5,6 +5,7 @@
 #include <thrust/device_vector.h>
 #include <tuple>
 #include "../utils/cuda_array_provider.h"
+#include "./placement.h"
 
 namespace Placement
 {
