@@ -13,7 +13,7 @@ out vec4 outputColor;
 // Blending equation for in-order traversal
 vec4 blend(vec4 clr, vec4 srf)
 {
-  return clr + (1.0 - clr.a) * vec4(srf.rgb * srf.a, srf.a);
+  return clr + (1.0 - clr.a) * srf;
 }
 
 void main()
