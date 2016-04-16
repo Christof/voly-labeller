@@ -10,6 +10,7 @@
 #include <list>
 BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
 #include "./boost_polygon_concepts.h"
+#include "./placement.h"
 
 QLoggingCategory cuChan("Placement.ConstraintUpdater");
 
@@ -17,6 +18,8 @@ ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
                                      int width, int height)
   : drawer(drawer), width(width), height(height)
 {
+  labelShadowColor = Placement::labelShadowValue / 255.0f;
+  connectorShadowColor = Placement::connectorShadowValue / 255.0f;
 }
 
 polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
@@ -153,10 +156,11 @@ void ConstraintUpdater::drawConstraintRegionFor(
 
   positions.clear();
 
-  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
-                        newLabel);
   drawConnectorShadowRegion(anchorPosition, lastAnchorPosition,
                             lastLabelPosition, newLabel);
+
+  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
+                        newLabel);
 
   auto endTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<float, std::milli> diff = endTime - startTime;
@@ -164,7 +168,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
   qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
                   << diff.count() << "ms";
 
-  drawer->drawElementVector(positions);
+  drawer->drawElementVector(positions, labelShadowColor);
 }
 
 void ConstraintUpdater::clear()
@@ -172,9 +176,9 @@ void ConstraintUpdater::clear()
   drawer->clear();
 }
 
-void ConstraintUpdater::useConnectorShadowRegion(bool enable)
+void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
 {
-  isConnectorShadowRegionEnabled = enable;
+  isConnectorShadowEnabled = enabled;
 }
 
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
@@ -201,7 +205,7 @@ void ConstraintUpdater::drawConnectorShadowRegion(
     Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
     Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
 {
-  if (!isConnectorShadowRegionEnabled)
+  if (!isConnectorShadowEnabled)
     return;
 
   polygon connectorPolygon;
@@ -216,6 +220,9 @@ void ConstraintUpdater::drawConnectorShadowRegion(
   connectorPolygon.outer().push_back(lastLabelPosition);
 
   convolveTwoPolygons(connectorPolygon, newLabel);
+
+  drawer->drawElementVector(positions, connectorShadowColor);
+  positions.clear();
 }
 
 template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)

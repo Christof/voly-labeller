@@ -5,16 +5,18 @@
 #include <thrust/device_vector.h>
 #include <tuple>
 #include "../utils/cuda_array_provider.h"
+#include "./placement.h"
 
 namespace Placement
 {
 
 struct CostFunctionWeights
 {
-  float constraints = 1e2f;
+  float labelShadowConstraint = 1e2f;
   float occupancy = 1.0f;
   float distanceToAnchor = 1e-3f;
   float favorHorizontalOrVerticalLines = 1e-1f;
+  float connectorShadowConstraint = 1e1f;
 };
 
 /**
