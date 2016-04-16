@@ -68,7 +68,7 @@ void PlacementLabellerModel::changeWeight(int row, QVariant newValue)
     switch (row)
     {
     case 0:
-      weights.constraints = value;
+      weights.labelShadowConstraint = value;
       break;
     case 1:
       weights.occupancy = value;
@@ -97,7 +97,7 @@ QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
   switch (rowIndex)
   {
   case 0:
-    return "Constraints";
+    return "Label shadow";
   case 1:
     return "Occupancy";
   case 2:
@@ -114,7 +114,7 @@ float PlacementLabellerModel::getWeightValueForRowIndex(int rowIndex) const
   switch (rowIndex)
   {
   case 0:
-    return weights.constraints;
+    return weights.labelShadowConstraint;
   case 1:
     return weights.occupancy;
   case 2:

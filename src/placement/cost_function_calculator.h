@@ -11,7 +11,7 @@ namespace Placement
 
 struct CostFunctionWeights
 {
-  float constraints = 1e2f;
+  float labelShadowConstraint = 1e2f;
   float occupancy = 1.0f;
   float distanceToAnchor = 1e-3f;
   float favorHorizontalOrVerticalLines = 1e-1f;
