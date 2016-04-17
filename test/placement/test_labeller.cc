@@ -45,7 +45,7 @@ class Test_PlacementLabeller : public ::testing::Test
     auto constraintTextureMapper =
         std::make_shared<CudaArrayMapper<unsigned char>>(
             width, height, constraintImage, byteChannelDesc);
-    auto drawer = std::make_shared<QImageDrawerWithUpdating>(
+    drawer = std::make_shared<QImageDrawerWithUpdating>(
         width, height, constraintTextureMapper);
     auto constraintUpdater =
         std::make_shared<ConstraintUpdater>(drawer, width, height);
@@ -74,6 +74,7 @@ class Test_PlacementLabeller : public ::testing::Test
  public:
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Placement::Labeller> labeller;
+  std::shared_ptr<QImageDrawerWithUpdating> drawer;
 };
 
 TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
@@ -113,11 +114,15 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
     EXPECT_Vector3f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
                          1e-5f);
   }
+
+  drawer->image->save("Test_PlacementLabellerConstraints.png");
 }
 
-TEST(Test_PlacementLabellerWithoutFixture, UpdatesReturnsEmptyMapIfLabellerIsNotInitialized)
+TEST(Test_PlacementLabellerWithoutFixture,
+     UpdatesReturnsEmptyMapIfLabellerIsNotInitialized)
 {
-  auto labeller = std::make_shared<Placement::Labeller>(std::make_shared<Labels>());
+  auto labeller =
+      std::make_shared<Placement::Labeller>(std::make_shared<Labels>());
   LabellerFrameData frameData(0.02f, Eigen::Matrix4f::Identity(),
                               Eigen::Matrix4f::Identity());
 
