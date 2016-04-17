@@ -51,7 +51,7 @@ class Labeller
 
   void cleanup();
 
-  bool useApollonius = true;
+  bool useApollonius = false;
 
  private:
   std::shared_ptr<LabelsContainer> labels;
