@@ -10,8 +10,12 @@ namespace Placement
 {
 
 /**
- * \brief
+ * \brief Calculates a saliency measurement by using a sobel operator
+ * in the CIE Lab color space
  *
+ * Subsampling from the view size to the buffer size is not handled in
+ * a special way. The sobel operator just uses the information from
+ * the color image in the view size.
  *
  */
 class Saliency
