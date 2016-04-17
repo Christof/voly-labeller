@@ -51,6 +51,8 @@ class Labeller
 
   void cleanup();
 
+  bool useApollonius = false;
+
  private:
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
@@ -67,8 +69,9 @@ class Labeller
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
-  std::vector<int> calculateInsertionOrder(const LabellerFrameData &frameData,
-                                           Eigen::Vector2i bufferSize);
+  std::vector<Label>
+  getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
+                             Eigen::Vector2i bufferSize);
   Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
                                 Eigen::Vector2i bufferSize,
                                 Eigen::Matrix4f inverseViewProjection);

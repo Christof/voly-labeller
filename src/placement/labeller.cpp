@@ -70,7 +70,6 @@ Labeller::update(const LabellerFrameData &frameData)
 
   Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
                              distanceTransformTextureMapper->getHeight());
-  auto insertionOrder = calculateInsertionOrder(frameData, bufferSize);
 
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
@@ -78,11 +77,12 @@ Labeller::update(const LabellerFrameData &frameData)
   integralCosts->runKernel();
   qCDebug(plChan) << "SAT took" << calculateDurationSince(startTime) << "ms";
 
-  for (size_t i = 0; i < insertionOrder.size(); ++i)
-  {
-    int id = insertionOrder[i];
+  auto labelsInLayer = useApollonius
+                           ? getLabelsInApolloniusOrder(frameData, bufferSize)
+                           : labels->getLabels();
 
-    auto label = labels->getById(id);
+  for (auto &label : labelsInLayer)
+  {
     auto anchor2D = frameData.project(label.anchorPosition);
 
     Eigen::Vector2i labelSizeForBuffer =
@@ -91,7 +91,7 @@ Labeller::update(const LabellerFrameData &frameData)
     Eigen::Vector2f anchorPixels = toPixel(anchor2D, size);
     Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
 
-    constraintUpdater->updateConstraints(id, anchorForBuffer,
+    constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
     auto newPos = costFunctionCalculator->calculateForLabel(
@@ -99,7 +99,7 @@ Labeller::update(const LabellerFrameData &frameData)
         anchorPixels.y(), label.size.x(), label.size.y());
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
-    constraintUpdater->setPosition(id, newPosition);
+    constraintUpdater->setPosition(label.id, newPosition);
 
     // occupancyUpdater->addLabel(newXPosition, newYPosition,
     //                            labelSizeForBuffer.x(),
@@ -143,12 +143,12 @@ Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
   return result;
 }
 
-std::vector<int>
-Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
-                                  Eigen::Vector2i bufferSize)
+std::vector<Label>
+Labeller::getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
+                                     Eigen::Vector2i bufferSize)
 {
   if (labels->count() == 1)
-    return std::vector<int>{ labels->getLabels()[0].id };
+    return std::vector<Label>{ labels->getLabels()[0] };
 
   std::vector<Eigen::Vector4f> labelsSeed =
       createLabelSeeds(bufferSize, frameData.viewProjection);
@@ -156,7 +156,14 @@ Labeller::calculateInsertionOrder(const LabellerFrameData &frameData,
   Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
                         labelsSeed, labels->count());
   apollonius.run();
-  return apollonius.calculateOrdering();
+
+  std::vector<Label> result;
+  for (int id : apollonius.calculateOrdering())
+  {
+    result.push_back(labels->getById(id));
+  }
+
+  return result;
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,
