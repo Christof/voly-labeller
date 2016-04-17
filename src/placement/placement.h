@@ -2,6 +2,11 @@
 
 #define SRC_PLACEMENT_PLACEMENT_H_
 
+/**
+ * \brief Contains classes for label placement using a global minimization of a
+ * cost function
+ *
+ */
 namespace Placement
 {
 

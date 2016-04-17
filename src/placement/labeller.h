@@ -14,11 +14,6 @@ class CudaArrayProvider;
 class ConstraintUpdater;
 class PersistentConstraintUpdater;
 
-/**
- * \brief Contains classes for label placement using a global minimization of a
- * cost function
- *
- */
 namespace Placement
 {
 
