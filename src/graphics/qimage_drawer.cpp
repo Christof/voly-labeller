@@ -29,7 +29,9 @@ void drawPolygon(QPainter &painter, std::vector<QPointF> &points)
 void QImageDrawer::drawElementVector(std::vector<float> positions, float color)
 {
   QPainter painter;
-  painter.begin(image.get());
+  QImage tempImage(image->width(), image->height(), image->format());
+  tempImage.fill(Qt::GlobalColor::black);
+  painter.begin(&tempImage);
   QColor brushColor = QColor::fromRgbF(color, color, color, 1.0f);
   painter.setBrush(QBrush(brushColor));
   painter.setPen(brushColor);
@@ -54,6 +56,16 @@ void QImageDrawer::drawElementVector(std::vector<float> positions, float color)
   }
   drawPolygon(painter, points);
   painter.end();
+
+  for (int x = 0; x < image->width(); ++x)
+  {
+    for (int y = 0; y < image->height(); ++y)
+    {
+      QRgb imagePixel = image->pixel(x, y);
+      QRgb tempPixel = tempImage.pixel(x, y);
+      image->setPixel(x, y, imagePixel | tempPixel);
+    }
+  }
 }
 
 void QImageDrawer::clear()
