@@ -443,7 +443,7 @@ Item {
         }
         x: 683; y: 51
         width: 333
-        height: 150
+        height: 170
         model: placement
         focus: true
         clip: true
