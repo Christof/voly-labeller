@@ -3,27 +3,27 @@
 
 inline __host__ __device__ float3 operator+(float3 a, float3 b)
 {
-    return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
+  return make_float3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
 
 inline __host__ __device__ float3 operator-(float3 a, float3 b)
 {
-    return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
+  return make_float3(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 
 inline __host__ __device__ float3 operator-(float3 a)
 {
-    return make_float3(-a.x, -a.y, -a.z);
+  return make_float3(-a.x, -a.y, -a.z);
 }
 
 inline __host__ __device__ float operator*(float3 a, float3 b)
 {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+  return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 inline __host__ __device__ float3 operator*(float a, float3 b)
 {
-    return make_float3(a * b.x, a * b.y, a * b.z);
+  return make_float3(a * b.x, a * b.y, a * b.z);
 }
 
 __device__ float3 rgbToXyz(float3 rgb)
@@ -63,9 +63,8 @@ __device__ float f(float t)
 __device__ float3 xyzToLab(float3 xyz)
 {
   float xr = 0.950456;  // reference white
-  float yr = 1.0;  // reference white
+  float yr = 1.0;       // reference white
   float zr = 1.088754;  // reference white
-
 
   float fx = f(xyz.x / xr);
   float fy = f(xyz.y / yr);
@@ -92,21 +91,25 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   float x = xOutput * widthScale;
   float y = yOutput * heightScale;
 
-  float3 leftUpper = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f));
+  float3 leftUpper =
+      rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f));
   float3 left = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f));
-  float3 leftLower = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f));
+  float3 leftLower =
+      rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f));
 
   float3 upper = rgbaToLab(tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f));
   float3 lower = rgbaToLab(tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f));
 
-  float3 rightUpper = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f));
+  float3 rightUpper =
+      rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f));
   float3 right = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f));
-  float3 rightLower = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f));
+  float3 rightLower =
+      rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f));
 
-  float3 resultX = -leftUpper - 2.0f * left - leftLower +
-                  rightUpper + 2.0f * right + rightLower;
-  float3 resultY = -leftUpper - 2.0f * upper - rightUpper +
-                 leftLower + 2.0f * lower + rightLower;
+  float3 resultX = -leftUpper - 2.0f * left - leftLower + rightUpper +
+                   2.0f * right + rightLower;
+  float3 resultY = -leftUpper - 2.0f * upper - rightUpper + leftLower +
+                   2.0f * lower + rightLower;
 
   float magnitudeSquared = resultX * resultX + resultY * resultY;
   surf2Dwrite(1e-5f * magnitudeSquared, output, xOutput * sizeof(float),
@@ -145,8 +148,8 @@ void Saliency::runKernel()
   int widthScale = inputProvider->getWidth() / outputWidth;
   int heightScale = inputProvider->getHeight() / outputHeight;
 
-  saliencyKernel<<<dimGrid, dimBlock>>>
-      (input, output, outputWidth, outputHeight, widthScale, heightScale);
+  saliencyKernel<<<dimGrid, dimBlock>>>(input, output,
+      outputWidth, outputHeight, widthScale, heightScale);
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }
