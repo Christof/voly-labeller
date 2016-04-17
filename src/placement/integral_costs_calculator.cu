@@ -3,6 +3,8 @@
 
 __global__ void sumWeightedCosts(cudaTextureObject_t occlusion,
                                  float occlusionWeight,
+                                 cudaTextureObject_t saliency,
+                                 float saliencyWeight,
                                  cudaSurfaceObject_t output, int width,
                                  int height)
 {
@@ -12,8 +14,10 @@ __global__ void sumWeightedCosts(cudaTextureObject_t occlusion,
     return;
 
   float occlusionValue = tex2D<float>(occlusion, x + 0.5f, y + 0.5f);
+  float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
 
-  float sum = occlusionWeight * occlusionValue;
+  float sum = occlusionWeight * occlusionValue +
+    saliencyWeight * saliencyValue;
 
   surf2Dwrite(sum, output, x * sizeof(float), y);
 }
@@ -23,8 +27,10 @@ namespace Placement
 
 IntegralCostsCalculator::IntegralCostsCalculator(
     std::shared_ptr<CudaArrayProvider> occlusionProvider,
+    std::shared_ptr<CudaArrayProvider> saliencyProvider,
     std::shared_ptr<CudaArrayProvider> outputProvider)
-  : occlusionProvider(occlusionProvider), outputProvider(outputProvider)
+  : occlusionProvider(occlusionProvider), saliencyProvider(saliencyProvider),
+    outputProvider(outputProvider)
 {
 }
 
@@ -32,6 +38,8 @@ IntegralCostsCalculator::~IntegralCostsCalculator()
 {
   if (occlusion)
     cudaDestroyTextureObject(occlusion);
+  if (saliency)
+    cudaDestroyTextureObject(saliency);
   if (output)
     cudaDestroySurfaceObject(output);
 }
@@ -49,9 +57,11 @@ void IntegralCostsCalculator::runKernel()
                1);
 
   float occlusionWeight = 1.0f;
+  float saliencyWeight = 1.0f;
 
-  sumWeightedCosts << <dimGrid, dimBlock>>>
-      (occlusion, occlusionWeight, output, outputWidth, outputHeight);
+  sumWeightedCosts<<<dimGrid, dimBlock>>>(occlusion, occlusionWeight,
+                                          saliency, saliencyWeight, output,
+                                          outputWidth, outputHeight);
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }
@@ -59,6 +69,7 @@ void IntegralCostsCalculator::runKernel()
 void IntegralCostsCalculator::createSurfaceObjects()
 {
   occlusionProvider->map();
+  saliencyProvider->map();
   outputProvider->map();
 
   auto resDesc = occlusionProvider->getResourceDesc();
@@ -72,10 +83,14 @@ void IntegralCostsCalculator::createSurfaceObjects()
 
   cudaCreateTextureObject(&occlusion, &resDesc, &texDesc, NULL);
 
+  auto saliencyResDesc = saliencyProvider->getResourceDesc();
+  cudaCreateTextureObject(&saliency, &saliencyResDesc, &texDesc, NULL);
+
   auto outputResDesc = outputProvider->getResourceDesc();
   cudaCreateSurfaceObject(&output, &outputResDesc);
 
   occlusionProvider->unmap();
+  saliencyProvider->unmap();
   outputProvider->unmap();
 }
 

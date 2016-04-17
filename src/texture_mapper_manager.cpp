@@ -17,8 +17,7 @@ TextureMapperManager::TextureMapperManager(int bufferSize)
 
 TextureMapperManager::~TextureMapperManager()
 {
-  for (auto mappers : mappersForLayers)
-    mappers->cleanup();
+  cleanup();
 }
 
 void TextureMapperManager::createTextureMappersForLayers(int layerCount)
@@ -51,6 +50,14 @@ void TextureMapperManager::initialize(
       bufferSize, bufferSize, GL_R32F);
   occlusionTexture->initialize(gl);
 
+  saliencyTexture = std::make_shared<Graphics::StandardTexture2d>(
+      bufferSize, bufferSize, GL_R32F);
+  saliencyTexture->initialize(gl);
+
+  accumulatedLayersTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadOnlyMapper(
+          fbo->getAccumulatedLayersTextureId(), width, height));
+
   constraintTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadOnlyMapper(
           constraintBufferObject->getRenderTextureId(),
@@ -61,10 +68,17 @@ void TextureMapperManager::initialize(
       CudaTextureMapper::createReadWriteDiscardMapper(
           occlusionTexture->getId(), occlusionTexture->getWidth(),
           occlusionTexture->getHeight()));
+
+  saliencyTextureMapper = std::shared_ptr<CudaTextureMapper>(
+      CudaTextureMapper::createReadWriteDiscardMapper(
+          saliencyTexture->getId(), saliencyTexture->getWidth(),
+          saliencyTexture->getHeight()));
 }
 
 void TextureMapperManager::resize(int width, int height)
 {
+  this->width = width;
+  this->height = height;
   for (auto mappers : mappersForLayers)
     mappers->resize(width, height);
 }
@@ -78,6 +92,11 @@ void TextureMapperManager::update()
 void TextureMapperManager::bindOcclusionTexture()
 {
   occlusionTexture->bind();
+}
+
+void TextureMapperManager::bindSaliencyTexture()
+{
+  saliencyTexture->bind();
 }
 
 void TextureMapperManager::bindDistanceTransform(int layerIndex)
@@ -103,6 +122,12 @@ TextureMapperManager::getOcclusionTextureMapper()
 }
 
 std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getSaliencyTextureMapper()
+{
+  return saliencyTextureMapper;
+}
+
+std::shared_ptr<CudaTextureMapper>
 TextureMapperManager::getDistanceTransformTextureMapper(int layerIndex)
 {
   return mappersForLayers[layerIndex]->getDistanceTransformTextureMapper();
@@ -121,6 +146,12 @@ TextureMapperManager::getConstraintTextureMapper()
 }
 
 std::shared_ptr<CudaTextureMapper>
+TextureMapperManager::getAccumulatedLayersTextureMapper()
+{
+  return accumulatedLayersTextureMapper;
+}
+
+std::shared_ptr<CudaTextureMapper>
 TextureMapperManager::getIntegralCostsTextureMapper()
 {
   return integralCostsTextureMapper;
@@ -131,9 +162,11 @@ void TextureMapperManager::cleanup()
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
 
+  accumulatedLayersTextureMapper.reset();
   constraintTextureMapper.reset();
   integralCostsTextureMapper.reset();
   occlusionTextureMapper.reset();
+  saliencyTextureMapper.reset();
 }
 
 void TextureMapperManager::saveOcclusion(std::string filename)
