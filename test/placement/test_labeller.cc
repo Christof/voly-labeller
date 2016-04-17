@@ -18,11 +18,11 @@ class Test_PlacementLabeller : public ::testing::Test
     cudaChannelFormatDesc floatChannelDesc =
         cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
 
-    auto occupancyImage =
+    auto integralCostsImage =
         ImagePersister::loadR32F(absolutePathOfProjectRelativePath(
-            std::string("assets/tests/placement-labeller/occupancy.tiff")));
-    auto occupancyTextureMapper = std::make_shared<CudaArrayMapper<float>>(
-        width, height, occupancyImage, floatChannelDesc);
+            std::string("assets/tests/placement-labeller/integralCosts.tiff")));
+    auto integralCostsTextureMapper = std::make_shared<CudaArrayMapper<float>>(
+        width, height, integralCostsImage, floatChannelDesc);
 
     auto distanceTransformImage =
         ImagePersister::loadR32F(absolutePathOfProjectRelativePath(std::string(
@@ -53,7 +53,7 @@ class Test_PlacementLabeller : public ::testing::Test
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
     labeller = std::make_shared<Placement::Labeller>(labels);
-    labeller->initialize(occupancyTextureMapper, distanceTransformTextureMapper,
+    labeller->initialize(integralCostsTextureMapper, distanceTransformTextureMapper,
                          apolloniusTextureMapper, constraintTextureMapper,
                          persistentConstraintUpdater);
     labeller->resize(1024, 1024);
