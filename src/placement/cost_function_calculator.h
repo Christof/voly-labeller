@@ -17,6 +17,7 @@ struct CostFunctionWeights
   float distanceToAnchor = 1e-3f;
   float favorHorizontalOrVerticalLines = 1e-1f;
   float connectorShadowConstraint = 1e1f;
+  float anchorConstraint = 1e2f;
 };
 
 /**

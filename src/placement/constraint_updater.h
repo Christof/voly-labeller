@@ -50,6 +50,7 @@ class ConstraintUpdater
   bool isConnectorShadowEnabled = true;
   float labelShadowColor;
   float connectorShadowColor;
+  float anchorConstraintColor;
 
   std::vector<float> positions;
 
@@ -61,6 +62,9 @@ class ConstraintUpdater
                              Eigen::Vector2i lastLabelPosition,
                              Eigen::Vector2i lastLabelSize,
                              const ClipperLib::Path &newLabel);
+  void drawAnchorRegion(Eigen::Vector2i anchorPosition,
+                        Eigen::Vector2i labelSize);
+
   void drawPolygon(ClipperLib::Path polygon);
 };
 

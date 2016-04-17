@@ -17,6 +17,7 @@ ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
 {
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
+  anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
 }
 
 ClipperLib::IntPoint toClipper(Eigen::Vector2i v)
@@ -65,6 +66,8 @@ void ConstraintUpdater::drawConstraintRegionFor(
                   << diff.count() << "ms";
 
   drawer->drawElementVector(positions, labelShadowColor);
+
+  drawAnchorRegion(anchorPosition, labelSize);
 }
 
 void ConstraintUpdater::clear()
@@ -205,6 +208,14 @@ void ConstraintUpdater::drawConnectorShadowRegion(
   drawer->drawElementVector(positions, connectorShadowColor);
 
   positions.clear();
+}
+
+void ConstraintUpdater::drawAnchorRegion(Eigen::Vector2i anchorPosition,
+                                         Eigen::Vector2i labelSize)
+{
+  positions.clear();
+  drawPolygon(createBoxPolygon(anchorPosition, 2 * labelSize));
+  drawer->drawElementVector(positions, anchorConstraintColor);
 }
 
 void ConstraintUpdater::drawPolygon(ClipperLib::Path polygon)
