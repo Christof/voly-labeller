@@ -35,10 +35,12 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   __host__ __device__ CostEvaluator(int width, int height,
                                     Placement::CostFunctionWeights weights,
                                     unsigned char labelShadowValue,
-                                    unsigned int connectorShadowValue)
+                                    unsigned char connectorShadowValue,
+                                    unsigned char anchorConstraintValue)
     : width(width), height(height), weights(weights),
       labelShadowValue(labelShadowValue),
-      connectorShadowValue(connectorShadowValue)
+      connectorShadowValue(connectorShadowValue),
+      anchorConstraintValue(anchorConstraintValue)
   {
   }
 
@@ -47,6 +49,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   Placement::CostFunctionWeights weights;
   const unsigned char labelShadowValue;
   const unsigned char connectorShadowValue;
+  const unsigned char anchorConstraintValue;
 
   int halfLabelWidth;
   int halfLabelHeight;
@@ -109,9 +112,11 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     unsigned char labelShadow = constraintValue & labelShadowValue;
     unsigned char connectorShadow = constraintValue & connectorShadowValue;
+    unsigned char anchorConstraint = constraintValue & anchorConstraintValue;
 
     float cost = weights.labelShadowConstraint * labelShadow +
                  weights.connectorShadowConstraint * connectorShadow +
+                 weights.anchorConstraint * anchorConstraint +
                  weights.occupancy * occupancyForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
                  weights.favorHorizontalOrVerticalLines *
@@ -169,7 +174,8 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
 
   CostEvaluator costEvaluator(textureWidth, textureHeight, weights,
                               Placement::labelShadowValue,
-                              Placement::connectorShadowValue);
+                              Placement::connectorShadowValue,
+                              Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =
