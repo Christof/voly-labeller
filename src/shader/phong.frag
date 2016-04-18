@@ -40,7 +40,7 @@ FragmentData computeData()
                   material.specularColor.rgb;
   color.rgb += specular;
   // color.rg = outTextureCoordinate;
-  color.a = 0.5;
+  // color.a = 0.5;
 
   FragmentData data;
   data.color = color;
