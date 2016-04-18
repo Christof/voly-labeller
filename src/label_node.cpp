@@ -129,7 +129,7 @@ void LabelNode::renderAnchor(Graphics::Gl *gl,
                              RenderData renderData)
 {
   Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
-                                 Eigen::Scaling(0.005f));
+                                 Eigen::Scaling(0.01f));
   renderData.modelMatrix = modelTransform.matrix();
 
   anchorMesh->render(gl, managers, renderData);
