@@ -126,7 +126,7 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   std::vector<float> nor(normalData, normalData + vertexCount * 3);
   std::vector<float> tex(textureCoordinateData,
                          textureCoordinateData + vertexCount * 2);
-  std::vector<float> col(vertexCount * 4, 0.8f);
+  std::vector<float> col(vertexCount * 4, 1.0f);
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId = hasTexture
