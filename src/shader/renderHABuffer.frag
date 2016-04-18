@@ -24,6 +24,7 @@ const int layerCount = 4;
 const int planeCount = layerCount - 1;
 uniform vec4 layerPlanes[planeCount];
 uniform float planesZValuesNdc[planeCount];
+uniform vec3 lightPos_eye = vec3(0.0f, 1.0f, -1.0f);
 
 uniform sampler3D volumeSampler;
 
@@ -113,8 +114,7 @@ void updateActiveObjects(inout int objectId, inout int activeObjects)
 
 vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
 {
-  const vec3 lightPos = vec3(0.0f, 0.0f, 0.0f);
-  vec3 lightDir = normalize(lightPos - currentPos_eye);
+  vec3 lightDir = normalize(lightPos_eye - currentPos_eye);
   vec3 viewDir = -1.0f * normalize(currentPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
