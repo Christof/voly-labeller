@@ -10,7 +10,7 @@ in vec2 outTextureCoordinate;
 in flat int outDrawId;
 in vec3 cameraDirection;
 
-uniform vec3 lightPosition = vec3(2.0f, 10.0f, 0.0f);
+uniform vec3 lightPos_eye = vec3(0.0f, 1.0f, -1.0f);
 
 struct PhongMaterial
 {
@@ -27,7 +27,7 @@ layout(std140, binding = 1) buffer CB1
 
 FragmentData computeData()
 {
-  vec3 dir = normalize(outPosition.xyz - lightPosition);
+  vec3 dir = normalize(outEyePosition.xyz - lightPos_eye);
   vec3 reflectionDir = normalize(-reflect(dir, outNormal));
   vec4 color = outColor;
   PhongMaterial material = phongMaterial[outDrawId];
