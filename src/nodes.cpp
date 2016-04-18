@@ -145,6 +145,8 @@ void Nodes::clear()
 {
   nodes.clear();
   obbNodes.clear();
+
+  addNode(cameraNode);
 }
 
 void Nodes::toggleBoundingVolumes()
