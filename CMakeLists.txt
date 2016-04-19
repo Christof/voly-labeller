@@ -11,6 +11,11 @@ add_subdirectory(src/labelling)
 add_subdirectory(src/forces)
 add_subdirectory(src/placement)
 
+if (WIN32)
+  include_directories(${PROJECT_SOURCE_DIR}/msincludes)
+endif()
+add_subdirectory(src/VolyVideoModule)
+
 option(test "Build all tests." ON)
 if(test)
   enable_testing()
