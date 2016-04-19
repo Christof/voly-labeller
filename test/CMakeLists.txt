@@ -27,6 +27,7 @@ target_link_libraries(tests
   ${CMAKE_THREAD_LIBS_INIT}
   ${LIBRARIES}
   placement-lib
+  volyvideomodule
   -lpthread
   )
 

@@ -9,12 +9,14 @@
 #include <QtQuick/QQuickView>
 #include <QElapsedTimer>
 #include <QSet>
+#include <QTimer>
 #include <memory>
 #include "./graphics/gl.h"
 
 class AbstractScene;
 class QStateMachine;
 class QOpenGLDebugLogger;
+class FFMPEGRecorder;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -32,7 +34,7 @@ class Window : public QQuickView
 
   std::shared_ptr<QStateMachine> stateMachine;
 
- signals:
+signals:
   void averageFrameTimeUpdated();
   void uiGotFocus();
   void uiLostFocus();
@@ -66,6 +68,16 @@ class Window : public QQuickView
   int framesInSecond = 0;
   double runningTime = 0;
   double avgFrameTime = 0;
+
+  FFMPEGRecorder *videoRecorder;
+  unsigned char *pixelBuffer;
+  bool isRecording;
+  QTimer *videoTimer;
+  void createVideoRecorder(int xs, int ys, const char *filename,
+                           const double fps);
+  void startRecording();
+  void stopRecording();
+  void updateVideoTimer();
 };
 
 #endif  // SRC_WINDOW_H_

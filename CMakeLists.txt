@@ -156,7 +156,7 @@ cuda_add_executable(voly-labeller
   ${ALL_TARGET_OBJECTS}
   )
 
-target_link_libraries(voly-labeller ${LIBRARIES} ${ALL_TARGET_LIBRARIES} placement-lib ${CUDA_CUDARTDEV_LIBRARY})
+target_link_libraries(voly-labeller ${LIBRARIES} ${ALL_TARGET_LIBRARIES} placement-lib ${CUDA_CUDARTDEV_LIBRARY} volyvideomodule)
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)

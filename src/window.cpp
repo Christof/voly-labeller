@@ -9,6 +9,7 @@
 #include <QLoggingCategory>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
+#include "./VolyVideoModule/ffmpegrecorder.h"
 
 QLoggingCategory openGlChan("OpenGl");
 
@@ -170,6 +171,45 @@ void Window::uiFocusChanged(bool hasFocus)
     emit uiGotFocus();
   else
     emit uiLostFocus();
+}
+
+void Window::createVideoRecorder(int xs, int ys, const char *filename,
+                                 const double fps)
+{
+  if (videoRecorder)
+  {
+    videoRecorder->stopRecording();
+    delete videoRecorder;
+    delete[] pixelBuffer;
+  }
+
+  // mpeg supports even frame sizes only!
+  int m_vxsize = (xs % 2 == 0) ? xs : xs - 1;
+  int m_vysize = (ys % 2 == 0) ? ys : ys - 1;
+  pixelBuffer = new unsigned char[m_vxsize * m_vysize * 3];
+  videoRecorder =
+      new FFMPEGRecorder(m_vxsize, m_vysize, 1, true, filename, fps);
+
+  videoRecorder->startRecording();
+  videoTimer = new QTimer(this);
+  connect(videoTimer, &QTimer::timeout, this, &Window::updateVideoTimer);
+}
+
+void Window::startRecording()
+{
+  isRecording = true;
+  videoTimer->start(40);
+}
+
+void Window::stopRecording()
+{
+  isRecording = false;
+  videoTimer->stop();
+}
+
+void Window::updateVideoTimer()
+{
+  videoRecorder->queueFrame(pixelBuffer);
 }
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)
