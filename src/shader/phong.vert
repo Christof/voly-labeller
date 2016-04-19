@@ -27,7 +27,7 @@ void main()
   outPosition = viewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
-  outNormal = mul(viewMatrix * modelMatrix, normal).xyz;
+  outNormal = normalize(mul(viewMatrix * modelMatrix, normal).xyz);
   outTextureCoordinate = texCoord;
   outDrawId = drawId;
   cameraDirection = vec3(viewMatrix[2][0], viewMatrix[2][1], viewMatrix[2][2]);
