@@ -116,6 +116,8 @@ void Window::render()
   // resetOpenGLState();
 
   QQuickView::update();
+
+  captureVideoFrame();
 }
 
 void Window::resizeOpenGL()
@@ -184,11 +186,11 @@ void Window::createVideoRecorder(int xs, int ys, const char *filename,
   }
 
   // mpeg supports even frame sizes only!
-  int m_vxsize = (xs % 2 == 0) ? xs : xs - 1;
-  int m_vysize = (ys % 2 == 0) ? ys : ys - 1;
-  pixelBuffer = new unsigned char[m_vxsize * m_vysize * 3];
+  videoWidth = (xs % 2 == 0) ? xs : xs - 1;
+  videoHeight = (ys % 2 == 0) ? ys : ys - 1;
+  pixelBuffer = new unsigned char[videoWidth * videoHeight * 3];
   videoRecorder =
-      new FFMPEGRecorder(m_vxsize, m_vysize, 1, true, filename, fps);
+      new FFMPEGRecorder(videoWidth, videoHeight, 1, true, filename, fps);
 
   videoRecorder->startRecording();
   videoTimer = new QTimer(this);
@@ -210,6 +212,15 @@ void Window::stopRecording()
 void Window::updateVideoTimer()
 {
   videoRecorder->queueFrame(pixelBuffer);
+}
+
+void Window::captureVideoFrame()
+{
+  if (videoRecorder && pixelBuffer && isRecording)
+  {
+    gl->glReadPixels(0, 0, videoWidth, videoHeight, GL_RGB, GL_UNSIGNED_BYTE,
+                     pixelBuffer);
+  }
 }
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)

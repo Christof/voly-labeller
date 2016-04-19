@@ -73,11 +73,14 @@ signals:
   unsigned char *pixelBuffer;
   bool isRecording;
   QTimer *videoTimer;
+  int videoWidth;
+  int videoHeight;
   void createVideoRecorder(int xs, int ys, const char *filename,
                            const double fps);
   void startRecording();
   void stopRecording();
   void updateVideoTimer();
+  void captureVideoFrame();
 };
 
 #endif  // SRC_WINDOW_H_
