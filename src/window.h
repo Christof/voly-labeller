@@ -71,7 +71,7 @@ signals:
 
   FFMPEGRecorder *videoRecorder;
   unsigned char *pixelBuffer;
-  bool isRecording;
+  bool isRecording = false;
   QTimer *videoTimer;
   int videoWidth;
   int videoHeight;
