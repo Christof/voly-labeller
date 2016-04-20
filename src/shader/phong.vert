@@ -15,7 +15,6 @@ out vec4 outPosition;
 out vec4 outEyePosition;
 out vec2 outTextureCoordinate;
 out int outDrawId;
-out vec3 cameraDirection;
 
 #include "vertexHelper.hglsl"
 
@@ -31,5 +30,4 @@ void main()
       normalize(mul(transpose(inverse(viewMatrix * modelMatrix)), normal).xyz);
   outTextureCoordinate = texCoord;
   outDrawId = drawId;
-  cameraDirection = vec3(viewMatrix[2][0], viewMatrix[2][1], viewMatrix[2][2]);
 }
