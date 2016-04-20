@@ -26,7 +26,8 @@ VolumeReader::VolumeReader(std::string filename)
   max = calculator->GetMaximum();
   min = calculator->GetMinimum();
 
-  if (isCT())
+  bool isCT = min < 0;
+  if (isCT)
     normalizeToCT(imageIterator);
   else
     normalizeTo01(imageIterator);
@@ -62,12 +63,6 @@ Eigen::Vector3f VolumeReader::getSpacing()
 Eigen::Vector3f VolumeReader::getPhysicalSize()
 {
   return physicalSize;
-}
-
-bool VolumeReader::isCT()
-{
-  auto size = getSize();
-  return size.x() == 512 && size.y() == 512;
 }
 
 void

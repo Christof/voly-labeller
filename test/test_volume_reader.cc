@@ -10,8 +10,6 @@ TEST(IntegrationTest_VolumeReader, TestReadingOfCTData)
   EXPECT_EQ(512, size.y());
   EXPECT_EQ(460, size.z());
 
-  EXPECT_TRUE(reader.isCT());
-
   EXPECT_Vector3f_NEAR(Eigen::Vector3f(0.0004882f, 0.0004882f, 0.0007f),
                        reader.getSpacing(), 1E-7);
 

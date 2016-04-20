@@ -25,7 +25,6 @@ class VolumeReader
   Eigen::Matrix4f getTransformationMatrix();
   Eigen::Vector3f getSpacing();
   Eigen::Vector3f getPhysicalSize();
-  bool isCT();
 
  private:
   ImageType::Pointer image;
