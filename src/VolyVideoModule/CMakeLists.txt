@@ -6,6 +6,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.11)
 # Here we specify some basic settings, like cmake policies, cmake path extension from env vars and win32 specific settings
 # INCLUDE(${CMAKE_SOURCE_DIR}/cmake/BasicCMakeSetup.cmake NO_POLICY_SCOPE)
 
+set(CMAKE_AUTOMOC ON)
+
 find_package(Qt5Core REQUIRED)
 
 set(FFMPEG_LIBRARIES )
@@ -82,13 +84,12 @@ add_definitions("-D__STDC_CONSTANT_MACROS")
 
 #message("${FFMPEG_avcodec_LIBRARY} ${FFMPEG_avutil_LIBRARY} ${FFMPEG_swscale_LIBRARY
 
-add_library(volyvideomodule SHARED ${VOLY_VIDEO_MODULE_HEADERS} ${VOLY_VIDEO_MODULE_SOURCES} ${VOLY_VIDEO_MODULE_MOC_SRC})
+add_library(volyvideomodule ${VOLY_VIDEO_MODULE_HEADERS} ${VOLY_VIDEO_MODULE_SOURCES} ${VOLY_VIDEO_MODULE_MOC_SRC})
 target_link_libraries(volyvideomodule
   Qt5::Core
   ${FFMPEG_avcodec_LIBRARY}
   ${FFMPEG_avutil_LIBRARY}
   ${FFMPEG_swscale_LIBRARY}
-
 )
 
 if(MSVC)
