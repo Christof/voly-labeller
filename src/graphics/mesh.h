@@ -30,6 +30,7 @@ struct PhongMaterial
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
+  Eigen::Matrix4f normal;
   float shininess;
 };
 
@@ -44,6 +45,9 @@ class Mesh : public Renderable
   virtual ~Mesh();
 
   Math::Obb obb;
+
+  virtual void render(Gl *gl, std::shared_ptr<Managers> managers,
+                      const RenderData &renderData);
 
  protected:
   virtual ObjectData
@@ -67,6 +71,7 @@ class Mesh : public Renderable
 
   bool hasTexture;
   std::string textureFilePath;
+  Eigen::Matrix4f normalMatrix = Eigen::Matrix4f::Identity();
 };
 
 }  // namespace Graphics

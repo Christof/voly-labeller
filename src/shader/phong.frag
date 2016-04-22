@@ -16,12 +16,14 @@ struct PhongMaterial
   vec4 ambientColor;
   vec4 diffuseColor;
   vec4 specularColor;
+  mat4 normalMatrix;
   float shininess;
 };
 
 layout(std140, binding = 1) buffer CB1
 {
   PhongMaterial phongMaterial[];
+  //mat4 normalMatrix[];
 };
 
 FragmentData computeData()

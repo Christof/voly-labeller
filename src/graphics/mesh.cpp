@@ -1,4 +1,5 @@
 #include "./mesh.h"
+#include <Eigen/Geometry>
 #include <QDebug>
 #include <QLoggingCategory>
 #include <string>
@@ -108,6 +109,22 @@ Mesh::~Mesh()
   delete[] textureCoordinateData;
 }
 
+void Mesh::render(Gl *gl, std::shared_ptr<Managers> managers,
+                  const RenderData &renderData)
+{
+  if (!hasTexture)
+  {
+    Eigen::Matrix4f modelViewMatrix =
+        objectData.modelMatrix * renderData.viewMatrix;
+    normalMatrix = modelViewMatrix.inverse().transpose();
+    normalMatrix(3, 0) = 0.0f;
+    normalMatrix(3, 1) = 0.0f;
+    normalMatrix(3, 2) = 0.0f;
+  }
+
+  Renderable::render(gl, managers, renderData);
+}
+
 void Mesh::createObb()
 {
   Eigen::MatrixXf data(3, vertexCount);
@@ -151,10 +168,17 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
   else
   {
-    objectData.setCustomBuffer(sizeof(PhongMaterial),
-                               [this](void *insertionPoint)
+    int customBufferSize = sizeof(PhongMaterial);// + sizeof(Eigen::Matrix4f);
+    std::cout << "PhongSize " << sizeof(PhongMaterial) << " MatrixSize " << sizeof(Eigen::Matrix4f) << " sum " << customBufferSize << std::endl;
+    objectData.setCustomBuffer(customBufferSize, [this](void *insertionPoint)
                                {
+                               this->phongMaterial.normal = this->normalMatrix;
       std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
+      std::cout << this->normalMatrix << std::endl;
+      /*
+      std::memcpy(static_cast<char *>(insertionPoint) + sizeof(PhongMaterial),
+                  &this->normalMatrix, sizeof(Eigen::Matrix4f));
+                  */
     });
   }
 

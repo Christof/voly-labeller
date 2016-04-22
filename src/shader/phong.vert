@@ -18,6 +18,21 @@ out int outDrawId;
 
 #include "vertexHelper.hglsl"
 
+struct PhongMaterial
+{
+  vec4 ambientColor;
+  vec4 diffuseColor;
+  vec4 specularColor;
+  mat4 normalMatrix;
+  float shininess;
+};
+
+layout(std140, binding = 1) buffer CB1
+{
+  PhongMaterial phongMaterial[];
+  //mat4 normalMatrix[];
+};
+
 void main()
 {
   mat4 modelMatrix = getModelMatrix(drawId);
@@ -26,8 +41,8 @@ void main()
   outPosition = viewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
-  outNormal =
-      normalize(mul(transpose(inverse(viewMatrix * modelMatrix)), normal).xyz);
-  outTextureCoordinate = texCoord;
   outDrawId = drawId;
+  outNormal = mul(phongMaterial[drawId].normalMatrix, normal).xyz;
+      //normalize(mul(transpose(inverse(viewMatrix * modelMatrix)), normal).xyz);
+  outTextureCoordinate = texCoord;
 }
