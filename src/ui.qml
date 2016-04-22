@@ -231,13 +231,32 @@ Item {
       id: textDelegate
 
       Item {
-        TextInput {
-          anchors.fill: parent
-          maximumLength: 6
-          text: styleData.value
-          color: model ? model.forceColor : "black"
-          onTextChanged: {
-            if (labeller) labeller.changeWeight(styleData.row, text);
+        Row {
+          TextInput {
+            id: weightInput
+            maximumLength: 6
+            width: 50
+            validator: DoubleValidator {
+              bottom: 0
+              top: 10
+            }
+            text: styleData.value
+            color: model ? model.forceColor : "black"
+            onTextChanged: {
+              weightSlider.value = text;
+              if (labeller) labeller.changeWeight(styleData.row, text);
+            }
+          }
+          Slider {
+            id: weightSlider
+            width: 200
+            minimumValue: 0
+            maximumValue: 10
+            value: styleData.value
+            onValueChanged: {
+              weightInput.text = value;
+              if (labeller) labeller.changeWeight(styleData.row, value);
+            }
           }
         }
       }
@@ -271,11 +290,12 @@ Item {
       TableViewColumn {
         role: "weight"
         title: "Weight"
-        width: 98
+        width: 250
         delegate: textDelegate
       }
       x: 10; y: 36
-      width: 400
+      width: 564
+      height: 150
       model: labeller
       focus: true
       clip: true
