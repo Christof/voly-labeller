@@ -30,8 +30,8 @@ struct PhongMaterial
   Eigen::Vector4f ambientColor;
   Eigen::Vector4f diffuseColor;
   Eigen::Vector4f specularColor;
-  Eigen::Matrix4f normal;
   float shininess;
+  Eigen::Matrix4f normal;
 };
 
 /**

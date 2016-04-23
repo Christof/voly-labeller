@@ -16,14 +16,18 @@ struct PhongMaterial
   vec4 ambientColor;
   vec4 diffuseColor;
   vec4 specularColor;
-  mat4 normalMatrix;
   float shininess;
+};
+
+struct CustomBuffer
+{
+  PhongMaterial material;
+  mat4 normalMatrix;
 };
 
 layout(std140, binding = 1) buffer CB1
 {
-  PhongMaterial phongMaterial[];
-  //mat4 normalMatrix[];
+  CustomBuffer customBuffer[];
 };
 
 FragmentData computeData()
@@ -32,7 +36,7 @@ FragmentData computeData()
   vec3 reflectionDir = normalize(reflect(dir, outNormal));
   vec3 cameraDir = normalize(outEyePosition.xyz);
   vec4 color = outColor;
-  PhongMaterial material = phongMaterial[outDrawId];
+  PhongMaterial material = customBuffer[outDrawId].material;
   // display normals for debugging
   // color.rgb = outNormal * 0.5f + vec3(0.5f, 0.5f, 0.5f);
   color.rgb = material.diffuseColor.rgb * max(dot(dir, outNormal), 0.0f) +

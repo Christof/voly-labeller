@@ -23,14 +23,18 @@ struct PhongMaterial
   vec4 ambientColor;
   vec4 diffuseColor;
   vec4 specularColor;
-  mat4 normalMatrix;
   float shininess;
+};
+
+struct CustomBuffer
+{
+  PhongMaterial material;
+  mat4 normalMatrix;
 };
 
 layout(std140, binding = 1) buffer CB1
 {
-  PhongMaterial phongMaterial[];
-  //mat4 normalMatrix[];
+  CustomBuffer customBuffer[];
 };
 
 void main()
@@ -42,6 +46,6 @@ void main()
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
   outDrawId = drawId;
-  outNormal = normalize((phongMaterial[drawId].normalMatrix * vec4(normal, 0)).xyz);
+  outNormal = normalize((customBuffer[drawId].normalMatrix * vec4(normal, 0)).xyz);
   outTextureCoordinate = texCoord;
 }
