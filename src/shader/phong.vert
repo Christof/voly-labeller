@@ -42,7 +42,6 @@ void main()
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
   outDrawId = drawId;
-  outNormal = mul(phongMaterial[drawId].normalMatrix, normal).xyz;
-      //normalize(mul(transpose(inverse(viewMatrix * modelMatrix)), normal).xyz);
+  outNormal = normalize((phongMaterial[drawId].normalMatrix * vec4(normal, 0)).xyz);
   outTextureCoordinate = texCoord;
 }
