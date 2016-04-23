@@ -104,8 +104,8 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   std::vector<Eigen::Vector3f> expectedPositions = {
     Eigen::Vector3f(0.192445f, 0.686766f, 0.034f),
     Eigen::Vector3f(0.338289f, 0.129809f, -0.00699999f),
-    Eigen::Vector3f(0.459961f, 0.445242f, 0.058f),
-    Eigen::Vector3f(0.379167f, 0.446277f, 0.141f),
+    Eigen::Vector3f(0.735934f, 0.423164f, 0.058f),
+    Eigen::Vector3f(0.348969f, 0.483187f, 0.141f),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
