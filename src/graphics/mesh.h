@@ -45,6 +45,9 @@ class Mesh : public Renderable
 
   Math::Obb obb;
 
+  virtual void render(Gl *gl, std::shared_ptr<Managers> managers,
+                      const RenderData &renderData);
+
  protected:
   virtual ObjectData
   createBuffers(std::shared_ptr<ObjectManager> objectManager,
@@ -52,6 +55,12 @@ class Mesh : public Renderable
                 std::shared_ptr<ShaderManager> shaderManager);
 
  private:
+  struct CustomBuffer
+  {
+    PhongMaterial material;
+    Eigen::Matrix4f normalMatrix;
+  };
+
   void createObb();
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
@@ -67,6 +76,7 @@ class Mesh : public Renderable
 
   bool hasTexture;
   std::string textureFilePath;
+  Eigen::Matrix4f normalMatrix = Eigen::Matrix4f::Identity();
 };
 
 }  // namespace Graphics

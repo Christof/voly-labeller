@@ -8,9 +8,8 @@ in vec4 outPosition;
 in vec4 outEyePosition;
 in vec2 outTextureCoordinate;
 in flat int outDrawId;
-in vec3 cameraDirection;
 
-uniform vec3 lightPosition = vec3(2.0f, 10.0f, 0.0f);
+uniform vec3 lightPos_eye = vec3(0.0f, 1.0f, -1.0f);
 
 struct PhongMaterial
 {
@@ -20,27 +19,34 @@ struct PhongMaterial
   float shininess;
 };
 
+struct CustomBuffer
+{
+  PhongMaterial material;
+  mat4 normalMatrix;
+};
+
 layout(std140, binding = 1) buffer CB1
 {
-  PhongMaterial phongMaterial[];
+  CustomBuffer customBuffer[];
 };
 
 FragmentData computeData()
 {
-  vec3 dir = normalize(outPosition.xyz - lightPosition);
-  vec3 reflectionDir = normalize(-reflect(dir, outNormal));
+  vec3 dir = normalize(lightPos_eye - outEyePosition.xyz);
+  vec3 reflectionDir = normalize(reflect(dir, outNormal));
+  vec3 cameraDir = normalize(outEyePosition.xyz);
   vec4 color = outColor;
-  PhongMaterial material = phongMaterial[outDrawId];
+  PhongMaterial material = customBuffer[outDrawId].material;
   // display normals for debugging
   // color.rgb = outNormal * 0.5f + vec3(0.5f, 0.5f, 0.5f);
   color.rgb = material.diffuseColor.rgb * max(dot(dir, outNormal), 0.0f) +
               material.ambientColor.rgb;
-  vec3 specular = pow(max(dot(reflectionDir, -cameraDirection), 0.0),
+  vec3 specular = pow(max(dot(reflectionDir, cameraDir), 0.0),
                       0.3 * material.shininess) *
                   material.specularColor.rgb;
   color.rgb += specular;
   // color.rg = outTextureCoordinate;
-  color.a = 0.5;
+  // color.a = 0.5;
 
   FragmentData data;
   data.color = color;

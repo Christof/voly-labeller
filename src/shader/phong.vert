@@ -15,9 +15,27 @@ out vec4 outPosition;
 out vec4 outEyePosition;
 out vec2 outTextureCoordinate;
 out int outDrawId;
-out vec3 cameraDirection;
 
 #include "vertexHelper.hglsl"
+
+struct PhongMaterial
+{
+  vec4 ambientColor;
+  vec4 diffuseColor;
+  vec4 specularColor;
+  float shininess;
+};
+
+struct CustomBuffer
+{
+  PhongMaterial material;
+  mat4 normalMatrix;
+};
+
+layout(std140, binding = 1) buffer CB1
+{
+  CustomBuffer customBuffer[];
+};
 
 void main()
 {
@@ -27,8 +45,7 @@ void main()
   outPosition = viewProjectionMatrix * modelMatrix * vec4(pos, 1.0f);
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
-  outNormal = mul(modelMatrix, normal).xyz;
-  outTextureCoordinate = texCoord;
   outDrawId = drawId;
-  cameraDirection = vec3(viewMatrix[2][0], viewMatrix[2][1], viewMatrix[2][2]);
+  outNormal = normalize((customBuffer[drawId].normalMatrix * vec4(normal, 0)).xyz);
+  outTextureCoordinate = texCoord;
 }
