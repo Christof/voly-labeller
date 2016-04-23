@@ -115,11 +115,8 @@ void Mesh::render(Gl *gl, std::shared_ptr<Managers> managers,
   if (!hasTexture)
   {
     Eigen::Matrix4f modelViewMatrix =
-        objectData.modelMatrix * renderData.viewMatrix;
+        renderData.viewMatrix * objectData.modelMatrix;
     normalMatrix = modelViewMatrix.inverse().transpose();
-    normalMatrix(3, 0) = 0.0f;
-    normalMatrix(3, 1) = 0.0f;
-    normalMatrix(3, 2) = 0.0f;
   }
 
   Renderable::render(gl, managers, renderData);
