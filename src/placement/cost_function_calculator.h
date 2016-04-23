@@ -10,6 +10,9 @@
 namespace Placement
 {
 
+/**
+ * \brief Weights for cost function terms
+ */
 struct CostFunctionWeights
 {
   float labelShadowConstraint = 1e2f;
