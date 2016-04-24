@@ -38,7 +38,7 @@ class VideoRecorder : public QObject
   std::unique_ptr<FFMPEGRecorder> videoRecorder;
   std::vector<unsigned char> pixelBuffer;
   bool isRecording = false;
-  QTimer *videoTimer;
+  std::unique_ptr<QTimer> videoTimer;
   int videoWidth;
   int videoHeight;
   Graphics::Gl *gl;

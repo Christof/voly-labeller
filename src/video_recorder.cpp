@@ -11,9 +11,8 @@ VideoRecorder::~VideoRecorder()
   if (isRecording)
     stopRecording();
 
-  disconnect(videoTimer, &QTimer::timeout, this,
+  disconnect(videoTimer.get(), &QTimer::timeout, this,
              &VideoRecorder::updateVideoTimer);
-  delete videoTimer;
 }
 
 void VideoRecorder::initialize(Graphics::Gl *gl)
@@ -38,8 +37,9 @@ void VideoRecorder::createVideoRecorder(int xs, int ys, const char *filename,
                                                    true, filename, fps);
 
   videoRecorder->startRecording();
-  videoTimer = new QTimer(this);
-  connect(videoTimer, &QTimer::timeout, this, &VideoRecorder::updateVideoTimer);
+  videoTimer = std::make_unique<QTimer>(this);
+  connect(videoTimer.get(), &QTimer::timeout, this,
+          &VideoRecorder::updateVideoTimer);
 }
 
 void VideoRecorder::startRecording()
