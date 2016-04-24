@@ -9,7 +9,7 @@
 #include <QLoggingCategory>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
-#include "./VolyVideoModule/ffmpegrecorder.h"
+#include "./video_recorder.h"
 
 QLoggingCategory openGlChan("OpenGl");
 
@@ -83,8 +83,10 @@ void Window::initializeOpenGL()
   glAssert(gl->glDisable(GL_BLEND));
   glAssert(gl->glDepthMask(GL_FALSE));
 
-  createVideoRecorder(1024, 1024, "test.mpeg", 24);
-  startRecording();
+  videoRecorder = std::make_shared<VideoRecorder>();
+  videoRecorder->initialize(gl);
+  videoRecorder->createVideoRecorder(1024, 1024, "test.mpeg", 24);
+  videoRecorder->startRecording();
 }
 
 void Window::onInvalidated()
@@ -120,7 +122,7 @@ void Window::render()
 
   QQuickView::update();
 
-  captureVideoFrame();
+  videoRecorder->captureVideoFrame();
 }
 
 void Window::resizeOpenGL()
@@ -176,54 +178,6 @@ void Window::uiFocusChanged(bool hasFocus)
     emit uiGotFocus();
   else
     emit uiLostFocus();
-}
-
-void Window::createVideoRecorder(int xs, int ys, const char *filename,
-                                 const double fps)
-{
-  if (videoRecorder)
-  {
-    videoRecorder->stopRecording();
-    delete videoRecorder;
-    delete[] pixelBuffer;
-  }
-
-  // mpeg supports even frame sizes only!
-  videoWidth = (xs % 2 == 0) ? xs : xs - 1;
-  videoHeight = (ys % 2 == 0) ? ys : ys - 1;
-  pixelBuffer = new unsigned char[videoWidth * videoHeight * 3];
-  videoRecorder =
-      new FFMPEGRecorder(videoWidth, videoHeight, 1, true, filename, fps);
-
-  videoRecorder->startRecording();
-  videoTimer = new QTimer(this);
-  connect(videoTimer, &QTimer::timeout, this, &Window::updateVideoTimer);
-}
-
-void Window::startRecording()
-{
-  isRecording = true;
-  videoTimer->start(40);
-}
-
-void Window::stopRecording()
-{
-  isRecording = false;
-  videoTimer->stop();
-}
-
-void Window::updateVideoTimer()
-{
-  videoRecorder->queueFrame(pixelBuffer);
-}
-
-void Window::captureVideoFrame()
-{
-  if (videoRecorder && pixelBuffer && isRecording)
-  {
-    gl->glReadPixels(0, 0, videoWidth, videoHeight, GL_RGB, GL_UNSIGNED_BYTE,
-                     pixelBuffer);
-  }
 }
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)
