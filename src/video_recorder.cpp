@@ -2,7 +2,6 @@
 #include <QTimer>
 #include <QLoggingCategory>
 #include "./graphics/gl.h"
-#include "./VolyVideoModule/ffmpegrecorder.h"
 
 QLoggingCategory videoRecorderChan("VideoRecorder");
 
@@ -11,6 +10,10 @@ VideoRecorder::~VideoRecorder()
   qCInfo(videoRecorderChan) << "Destructor";
   if (isRecording)
     stopRecording();
+
+  disconnect(videoTimer, &QTimer::timeout, this,
+             &VideoRecorder::updateVideoTimer);
+  delete videoTimer;
 }
 
 void VideoRecorder::initialize(Graphics::Gl *gl)
@@ -22,19 +25,17 @@ void VideoRecorder::createVideoRecorder(int xs, int ys, const char *filename,
                                         const double fps)
 {
   qCInfo(videoRecorderChan) << "Create recorder" << filename;
-  if (videoRecorder)
+  if (videoRecorder.get())
   {
     videoRecorder->stopRecording();
-    delete videoRecorder;
-    delete[] pixelBuffer;
   }
 
   // mpeg supports even frame sizes only!
   videoWidth = (xs % 2 == 0) ? xs : xs - 1;
   videoHeight = (ys % 2 == 0) ? ys : ys - 1;
-  pixelBuffer = new unsigned char[videoWidth * videoHeight * 3];
-  videoRecorder =
-      new FFMPEGRecorder(videoWidth, videoHeight, 1, true, filename, fps);
+  pixelBuffer.resize(videoWidth * videoHeight * 3);
+  videoRecorder = std::make_unique<FFMPEGRecorder>(videoWidth, videoHeight, 1,
+                                                   true, filename, fps);
 
   videoRecorder->startRecording();
   videoTimer = new QTimer(this);
@@ -55,15 +56,15 @@ void VideoRecorder::stopRecording()
 
 void VideoRecorder::updateVideoTimer()
 {
-  videoRecorder->queueFrame(pixelBuffer);
+  videoRecorder->queueFrame(pixelBuffer.data());
 }
 
 void VideoRecorder::captureVideoFrame()
 {
-  if (videoRecorder && pixelBuffer && isRecording)
+  if (videoRecorder && isRecording)
   {
     gl->glReadPixels(0, 0, videoWidth, videoHeight, GL_RGB, GL_UNSIGNED_BYTE,
-                     pixelBuffer);
+                     pixelBuffer.data());
   }
 }
 

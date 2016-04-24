@@ -4,6 +4,8 @@
 
 #include <QObject>
 #include <QTimer>
+#include "./utils/memory.h"
+#include "./VolyVideoModule/ffmpegrecorder.h"
 
 class FFMPEGRecorder;
 namespace Graphics
@@ -33,8 +35,8 @@ class VideoRecorder : public QObject
   void captureVideoFrame();
 
  private:
-  FFMPEGRecorder *videoRecorder;
-  unsigned char *pixelBuffer;
+  std::unique_ptr<FFMPEGRecorder> videoRecorder;
+  std::vector<unsigned char> pixelBuffer;
   bool isRecording = false;
   QTimer *videoTimer;
   int videoWidth;
