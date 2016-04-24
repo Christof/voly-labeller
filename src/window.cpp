@@ -82,6 +82,9 @@ void Window::initializeOpenGL()
   glAssert(gl->glDisable(GL_STENCIL_TEST));
   glAssert(gl->glDisable(GL_BLEND));
   glAssert(gl->glDepthMask(GL_FALSE));
+
+  createVideoRecorder(1024, 1024, "test.mpeg", 24);
+  startRecording();
 }
 
 void Window::onInvalidated()
