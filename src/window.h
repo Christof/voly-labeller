@@ -28,7 +28,9 @@ class Window : public QQuickView
   Q_PROPERTY(double averageFrameTime MEMBER avgFrameTime NOTIFY
                  averageFrameTimeUpdated)
  public:
-  explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
+  explicit Window(std::shared_ptr<AbstractScene> scene,
+                  std::shared_ptr<VideoRecorder> videoRecorder,
+                  QWindow *parent = 0);
   ~Window();
 
   std::shared_ptr<QStateMachine> stateMachine;

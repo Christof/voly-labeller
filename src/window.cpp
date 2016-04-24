@@ -13,8 +13,9 @@
 
 QLoggingCategory openGlChan("OpenGl");
 
-Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
-  : QQuickView(parent), scene(scene)
+Window::Window(std::shared_ptr<AbstractScene> scene,
+               std::shared_ptr<VideoRecorder> videoRecorder, QWindow *parent)
+  : QQuickView(parent), scene(scene), videoRecorder(videoRecorder)
 {
   setClearBeforeRendering(false);
 
@@ -83,7 +84,6 @@ void Window::initializeOpenGL()
   glAssert(gl->glDisable(GL_BLEND));
   glAssert(gl->glDepthMask(GL_FALSE));
 
-  videoRecorder = std::make_shared<VideoRecorder>();
   videoRecorder->initialize(gl);
   videoRecorder->createVideoRecorder(1024, 1024, "test.mpeg", 24);
   videoRecorder->startRecording();
@@ -93,6 +93,7 @@ void Window::onInvalidated()
 {
   qCInfo(openGlChan) << "on invalidated: delete logger";
   scene->cleanup();
+  videoRecorder->stopRecording();
   delete logger;
 }
 
