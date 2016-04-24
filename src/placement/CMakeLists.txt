@@ -22,4 +22,4 @@ set(SOURCES
   )
 
 cuda_add_library(placement-lib ${SOURCES})
-target_link_libraries(placement-lib ${CUDA_LIBRARIES})
+target_link_libraries(placement-lib ${CUDA_LIBRARIES} ${Clipper_LIBRARIES})

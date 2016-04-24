@@ -70,7 +70,7 @@ Item {
         MenuItem {
           text: "Toggle forces info"
           shortcut: "F3"
-          onTriggered: labeller.toggleForcesVisbility();
+          onTriggered: labeller.toggleForcesVisibility();
         }
         MenuItem {
           text: "Toggle labels info"
@@ -83,8 +83,13 @@ Item {
           onTriggered: scene.toggleBufferViews();
         }
         MenuItem {
-          text: "Toggle constraint overlay"
+          text: "Toggle placement info"
           shortcut: "F6"
+          onTriggered: placement.toggleVisibility();
+        }
+        MenuItem {
+          text: "Toggle constraint overlay"
+          shortcut: "F7"
           onTriggered: scene.toggleConstraintOverlay();
         }
         MenuItem {
@@ -102,7 +107,7 @@ Item {
         }
         MenuItem {
           text: "Toggle forces"
-          shortcut: "F7"
+          shortcut: "F8"
           onTriggered: labelling.toggleForces();
         }
       }
@@ -330,6 +335,7 @@ Item {
         }
       }
     }
+
     Column {
       id: labelsItem
       x: 10
@@ -385,6 +391,64 @@ Item {
         clip: true
       }
     }
+
+      Component {
+        id: weightDelegate
+        Item {
+          width: 400; height: 30
+          Row {
+            Text {
+              text: name
+              width: 200
+              focus: true
+            }
+            TextEdit { text: weight }
+          }
+        }
+      }
+
+      Component {
+        id: costFunctionWeightDelegate
+
+        Item {
+          TextInput {
+            anchors.fill: parent
+            maximumLength: 6
+            text: styleData.value
+            onTextChanged: {
+              if (placement) placement.changeWeight(styleData.row, text);
+            }
+          }
+        }
+      }
+
+      TableView {
+        visible: placement.isVisible
+        TableViewColumn {
+          role: "name"
+          title: "Name"
+          width: 200
+          delegate: 
+            Item {
+              Text {
+                text: styleData.value
+              }
+            }
+        }
+        TableViewColumn {
+          role: "weight"
+          title: "Weight"
+          width: 98
+          delegate: costFunctionWeightDelegate
+        }
+        x: 683; y: 51
+        width: 333
+        height: 170
+        model: placement
+        focus: true
+        clip: true
+      }
+
 
     Label {
         id: averageFrameTimeLabel

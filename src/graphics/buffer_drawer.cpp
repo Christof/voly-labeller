@@ -5,6 +5,7 @@
 #include "./shader_manager.h"
 #include "./vertex_array.h"
 #include "./render_data.h"
+#include "./shader_program.h"
 
 namespace Graphics
 {
@@ -22,17 +23,32 @@ BufferDrawer::BufferDrawer(int width, int height, Gl *gl,
   pixelToNDC = pixelToNDCTransform.matrix();
 }
 
-void BufferDrawer::drawElementVector(std::vector<float> positions)
+void BufferDrawer::drawElementVector(std::vector<float> positions, float color)
 {
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_TRIANGLE_FAN, 2);
   vertexArray->addStream(positions, 2);
 
+  GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
+  gl->glEnable(GL_BLEND);
+  GLint logicOperationMode;
+  gl->glGetIntegerv(GL_LOGIC_OP_MODE, &logicOperationMode);
+  gl->glEnable(GL_COLOR_LOGIC_OP);
+  gl->glLogicOp(GL_OR);
+
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
+  // move to ConstraintUpdater
+  shaderManager->getShader(shaderId)->setUniform("color", color);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
+
+  if (isBlendingEnabled)
+    gl->glEnable(GL_BLEND);
+
+  gl->glLogicOp(logicOperationMode);
+  gl->glDisable(GL_COLOR_LOGIC_OP);
 
   delete vertexArray;
 }

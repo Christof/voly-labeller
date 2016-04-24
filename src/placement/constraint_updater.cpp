@@ -1,139 +1,43 @@
 #include "./constraint_updater.h"
+#include <QLoggingCategory>
 #include <Eigen/Geometry>
-#include <boost/geometry/geometries/point.hpp>
-#include <boost/geometry/geometries/register/point.hpp>
+#include <polyclipping/clipper.hpp>
 #include <vector>
+#include <chrono>
 #include <cmath>
 #include <utility>
 #include <list>
-BOOST_GEOMETRY_REGISTER_POINT_2D(Eigen::Vector2i, int, cs::cartesian, x(), y())
-#include "./boost_polygon_concepts.h"
+#include "./placement.h"
+
+QLoggingCategory cuChan("Placement.ConstraintUpdater");
 
 ConstraintUpdater::ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer,
                                      int width, int height)
   : drawer(drawer), width(width), height(height)
 {
+  labelShadowColor = Placement::labelShadowValue / 255.0f;
+  connectorShadowColor = Placement::connectorShadowValue / 255.0f;
+  anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
 }
 
-polygon createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
+ClipperLib::IntPoint toClipper(Eigen::Vector2i v)
 {
-  polygon p;
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() - size.x(), center.y() - size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() + size.x(), center.y() - size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() + size.x(), center.y() + size.y()));
-  p.outer().push_back(
-      Eigen::Vector2i(center.x() - size.x(), center.y() + size.y()));
+  return ClipperLib::IntPoint(v.x(), v.y());
+}
+
+ClipperLib::Path createBoxPolygon(Eigen::Vector2i center, Eigen::Vector2i size)
+{
+  ClipperLib::Path p;
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() - size.x(), center.y() - size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() + size.x(), center.y() - size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() + size.x(), center.y() + size.y())));
+  p.push_back(
+      toClipper(Eigen::Vector2i(center.x() - size.x(), center.y() + size.y())));
 
   return p;
-}
-
-template <typename edge>
-void ConstraintUpdater::convolveTwoSegements(polygon &polygon, const edge &a,
-                                             const edge &b)
-{
-  auto p = a.first;
-  boost::polygon::convolve(p, b.second);
-  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
-
-  p = a.first;
-  boost::polygon::convolve(p, b.first);
-  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
-
-  p = a.second;
-  boost::polygon::convolve(p, b.first);
-  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
-
-  p = a.second;
-  boost::polygon::convolve(p, b.second);
-  polygon.outer().push_back(Eigen::Vector2i(p.x(), p.y()));
-}
-
-template <typename itrT1, typename itrT2>
-void ConstraintUpdater::convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb,
-                                                  itrT2 be)
-{
-  if (ab == ae || bb == be)
-    return;
-
-  polygon poly;
-  auto prev_a = *ab;
-  ++ab;
-  for (; ab != ae; ++ab)
-  {
-    auto prev_b = *bb;
-    itrT2 tmpb = bb;
-    ++tmpb;
-    for (; tmpb != be; ++tmpb)
-    {
-      convolveTwoSegements(poly, std::make_pair(prev_b, *tmpb),
-                           std::make_pair(prev_a, *ab));
-      prev_b = *tmpb;
-    }
-    prev_a = *ab;
-  }
-
-  polygon convexHull;
-  boost::geometry::convex_hull(poly, convexHull);
-  drawPolygon(convexHull.outer());
-}
-
-template <typename Polygon>
-void ConstraintUpdater::convolveTwoPolygons(const Polygon &a, const Polygon &b)
-{
-  convolveTwoPointSequences(
-      boost::polygon::begin_points(a), boost::polygon::end_points(a),
-      boost::polygon::begin_points(b), boost::polygon::end_points(b));
-
-  Polygon tmp_poly = a;
-  addPolygonToPositions(
-      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(b))));
-  tmp_poly = b;
-  addPolygonToPositions(
-      boost::polygon::convolve(tmp_poly, *(boost::polygon::begin_points(a))));
-}
-
-bool hasSmallerAngle(float dir1X, float dir1Y, float dir2X, float dir2Y)
-{
-  float angle1 = std::atan2(dir1Y, dir1X);
-  float angle2 = std::atan2(dir2Y, dir2X);
-
-  return angle1 <= angle2;
-}
-
-template <typename Polygon>
-void ConstraintUpdater::addPolygonToPositions(const Polygon &polygon)
-{
-  auto iteratorBegin = boost::polygon::begin_points(polygon);
-  float referenceX = iteratorBegin->x();
-  positions.push_back(referenceX);
-  float referenceY = iteratorBegin->y();
-  positions.push_back(height - referenceY);
-  positions.push_back(referenceX);
-  positions.push_back(height - referenceY);
-
-  std::list<std::pair<float, float>> temp;
-  for (auto iterator = ++iteratorBegin;
-       iterator != boost::polygon::end_points(polygon); ++iterator)
-  {
-    float diffX = iterator->x() - referenceX;
-    float diffY = iterator->y() - referenceY;
-    auto inner = temp.begin();
-    while (inner != temp.end() &&
-           hasSmallerAngle(inner->first - referenceX,
-                           inner->second - referenceY, diffX, diffY))
-      ++inner;
-
-    temp.insert(inner, 1, std::make_pair(iterator->x(), iterator->y()));
-  }
-
-  for (auto iterator = temp.cbegin(); iterator != temp.cend(); ++iterator)
-  {
-    positions.push_back(iterator->first);
-    positions.push_back(height - iterator->second);
-  }
 }
 
 void ConstraintUpdater::drawConstraintRegionFor(
@@ -141,18 +45,29 @@ void ConstraintUpdater::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
+  auto startTime = std::chrono::high_resolution_clock::now();
+
   int border = 2;
-  polygon newLabel = createBoxPolygon(
+  ClipperLib::Path newLabel = createBoxPolygon(
       Eigen::Vector2i(0, 0), labelSize / 2 + Eigen::Vector2i(border, border));
 
   positions.clear();
 
-  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
-                        newLabel);
   drawConnectorShadowRegion(anchorPosition, lastAnchorPosition,
                             lastLabelPosition, newLabel);
 
-  drawer->drawElementVector(positions);
+  drawLabelShadowRegion(anchorPosition, lastLabelPosition, lastLabelSize,
+                        newLabel);
+
+  auto endTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<float, std::milli> diff = endTime - startTime;
+
+  qCDebug(cuChan) << "drawConstraintRegionFor without drawing took"
+                  << diff.count() << "ms";
+
+  drawer->drawElementVector(positions, labelShadowColor);
+
+  drawAnchorRegion(anchorPosition, labelSize);
 }
 
 void ConstraintUpdater::clear()
@@ -160,67 +75,161 @@ void ConstraintUpdater::clear()
   drawer->clear();
 }
 
-void ConstraintUpdater::useConnectorShadowRegion(bool enable)
+void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
 {
-  isConnectorShadowRegionEnabled = enable;
+  isConnectorShadowEnabled = enabled;
+}
+
+int squaredDistance(Eigen::Vector2i v)
+{
+  return v.x() * v.x() + v.y() * v.y();
 }
 
 void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                                               Eigen::Vector2i lastLabelPosition,
                                               Eigen::Vector2i lastLabelSize,
-                                              const polygon &newLabel)
+                                              const ClipperLib::Path &newLabel)
 {
-  polygon oldLabel = createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
+  ClipperLib::Path oldLabel =
+      createBoxPolygon(lastLabelPosition, lastLabelSize / 2);
 
-  polygon oldLabelExtruded(oldLabel);
-  for (auto point : oldLabel.outer())
+  Eigen::Vector2i anchorToOldLabelInteger = lastLabelPosition - anchorPosition;
+  Eigen::Vector2f anchorToOldLabel =
+      anchorToOldLabelInteger.cast<float>().normalized();
+
+  float smallestCosA = 1.0f;
+  int smallestCosAIndex = -1;
+  Eigen::Vector2i pointForSmallestCosA;
+  float smallestCosB = 1.0f;
+  int smallestCosBIndex = -1;
+  Eigen::Vector2i pointForSmallestCosB;
+
+  int index = 0;
+  for (auto point : oldLabel)
   {
-    Eigen::Vector2i p = anchorPosition + 1000 * (point - anchorPosition);
-    oldLabelExtruded.outer().push_back(p);
+    Eigen::Vector2f probe =
+        Eigen::Vector2f(point.X, point.Y) - anchorPosition.cast<float>();
+    probe.normalize();
+
+    float cosOfAngle = anchorToOldLabel.dot(probe);
+    float perpDot =
+        -anchorToOldLabel.y() * probe.x() + anchorToOldLabel.x() * probe.y();
+    if (perpDot < 0.0f && cosOfAngle < smallestCosA)
+    {
+      smallestCosA = cosOfAngle;
+      pointForSmallestCosA = Eigen::Vector2i(point.X, point.Y);
+      smallestCosAIndex = index;
+    }
+    else if (perpDot >= 0.0f && cosOfAngle < smallestCosB)
+    {
+      smallestCosB = cosOfAngle;
+      pointForSmallestCosB = Eigen::Vector2i(point.X, point.Y);
+      smallestCosBIndex = index;
+    }
+
+    ++index;
   }
 
-  polygon oldLabelExtrudedConvexHull;
-  boost::geometry::convex_hull(oldLabelExtruded, oldLabelExtrudedConvexHull);
+  bool foundCloserPoint = false;
+  Eigen::Vector2i closerPoint;
+  int compareDistance = squaredDistance(pointForSmallestCosA - anchorPosition);
+  for (int i = 0; i < 4; ++i)
+  {
+    if (i == smallestCosAIndex || i == smallestCosBIndex)
+      continue;
 
-  convolveTwoPolygons(oldLabelExtrudedConvexHull, newLabel);
+    auto point = oldLabel[i];
+    Eigen::Vector2i probe = Eigen::Vector2i(point.X, point.Y) - anchorPosition;
+
+    if (squaredDistance(probe) < compareDistance)
+    {
+      foundCloserPoint = true;
+      closerPoint = Eigen::Vector2i(point.X, point.Y);
+      break;
+    }
+  }
+
+  ClipperLib::Path oldLabelExtruded;
+  oldLabelExtruded.push_back(toClipper(pointForSmallestCosA));
+  oldLabelExtruded.push_back(toClipper(
+      anchorPosition + 1000 * (pointForSmallestCosA - anchorPosition)));
+  oldLabelExtruded.push_back(toClipper(
+      anchorPosition + 1000 * (pointForSmallestCosB - anchorPosition)));
+  oldLabelExtruded.push_back(toClipper(pointForSmallestCosB));
+
+  if (foundCloserPoint)
+  {
+    oldLabelExtruded.push_back(toClipper(closerPoint));
+  }
+
+  ClipperLib::Paths shadow;
+  ClipperLib::MinkowskiSum(newLabel, oldLabelExtruded, shadow, false);
+
+  ClipperLib::Clipper clipper;
+  clipper.AddPaths(shadow, ClipperLib::PolyType::ptSubject, true);
+
+  ClipperLib::Paths solution;
+  clipper.Execute(ClipperLib::ClipType::ctUnion, solution,
+                  ClipperLib::PolyFillType::pftNonZero);
+  for (auto &polygon : solution)
+    drawPolygon(polygon);
 }
 
 void ConstraintUpdater::drawConnectorShadowRegion(
     Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
-    Eigen::Vector2i lastLabelPosition, const polygon &newLabel)
+    Eigen::Vector2i lastLabelPosition, const ClipperLib::Path &newLabel)
 {
-  if (!isConnectorShadowRegionEnabled)
+  if (!isConnectorShadowEnabled)
     return;
 
-  polygon connectorPolygon;
+  ClipperLib::Path connectorPolygon;
   Eigen::Vector2i throughLastAnchor =
       anchorPosition + 1000 * (lastAnchorPosition - anchorPosition);
   Eigen::Vector2i throughLastLabel =
       anchorPosition + 1000 * (lastLabelPosition - anchorPosition);
 
-  connectorPolygon.outer().push_back(lastAnchorPosition);
-  connectorPolygon.outer().push_back(throughLastAnchor);
-  connectorPolygon.outer().push_back(throughLastLabel);
-  connectorPolygon.outer().push_back(lastLabelPosition);
+  connectorPolygon.push_back(toClipper(lastAnchorPosition));
+  connectorPolygon.push_back(toClipper(throughLastAnchor));
+  connectorPolygon.push_back(toClipper(throughLastLabel));
+  connectorPolygon.push_back(toClipper(lastLabelPosition));
 
-  convolveTwoPolygons(connectorPolygon, newLabel);
+  ClipperLib::Paths shadow;
+  ClipperLib::MinkowskiSum(newLabel, connectorPolygon, shadow, true);
+
+  ClipperLib::Clipper clipper;
+  clipper.AddPaths(shadow, ClipperLib::PolyType::ptSubject, true);
+
+  ClipperLib::Paths solution;
+  clipper.Execute(ClipperLib::ClipType::ctUnion, solution,
+                  ClipperLib::PolyFillType::pftNonZero);
+
+  for (auto &polygon : solution)
+    drawPolygon(polygon);
+  drawer->drawElementVector(positions, connectorShadowColor);
+
+  positions.clear();
 }
 
-template <class T> void ConstraintUpdater::drawPolygon(std::vector<T> polygon)
+void ConstraintUpdater::drawAnchorRegion(Eigen::Vector2i anchorPosition,
+                                         Eigen::Vector2i labelSize)
 {
-  std::vector<float> positions;
+  positions.clear();
+  drawPolygon(createBoxPolygon(anchorPosition, 2 * labelSize));
+  drawer->drawElementVector(positions, anchorConstraintColor);
+}
+
+void ConstraintUpdater::drawPolygon(ClipperLib::Path polygon)
+{
   if (polygon.size() > 0)
   {
     auto point = polygon[0];
-    positions.push_back(point.x());
-    positions.push_back(height - point.y());
+    positions.push_back(point.X);
+    positions.push_back(height - point.Y);
   }
   for (auto point : polygon)
   {
-    positions.push_back(point.x());
-    positions.push_back(height - point.y());
+    positions.push_back(point.X);
+    positions.push_back(height - point.Y);
   }
-
-  drawer->drawElementVector(positions);
 }
 

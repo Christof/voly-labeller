@@ -5,9 +5,23 @@
 #include <thrust/device_vector.h>
 #include <tuple>
 #include "../utils/cuda_array_provider.h"
+#include "./placement.h"
 
 namespace Placement
 {
+
+/**
+ * \brief Weights for cost function terms
+ */
+struct CostFunctionWeights
+{
+  float labelShadowConstraint = 1e2f;
+  float occupancy = 1.0f;
+  float distanceToAnchor = 1e-3f;
+  float favorHorizontalOrVerticalLines = 1e-1f;
+  float connectorShadowConstraint = 1e1f;
+  float anchorConstraint = 1e2f;
+};
 
 /**
  * \brief Calculates cost function for each pixel and returns minimum with
@@ -38,6 +52,8 @@ class CostFunctionCalculator
       const thrust::device_vector<float> &integralCosts, int labelId,
       float anchorX, float anchorY, int labelWidthInPixel,
       int labelHeightInPixel);
+
+  CostFunctionWeights weights;
 
  private:
   int width;

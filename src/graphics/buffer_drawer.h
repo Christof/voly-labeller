@@ -24,7 +24,7 @@ class BufferDrawer : public Drawer
   BufferDrawer(int width, int height, Gl *gl,
                std::shared_ptr<ShaderManager> shaderManager);
 
-  void drawElementVector(std::vector<float> positions);
+  void drawElementVector(std::vector<float> positions, float color);
   void clear();
 
  private:

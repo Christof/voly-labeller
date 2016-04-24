@@ -14,11 +14,6 @@ class CudaArrayProvider;
 class ConstraintUpdater;
 class PersistentConstraintUpdater;
 
-/**
- * \brief Contains classes for label placement using a global minimization of a
- * cost function
- *
- */
 namespace Placement
 {
 
@@ -52,6 +47,8 @@ class Labeller
   void cleanup();
 
   bool useApollonius = false;
+
+  void setCostFunctionWeights(CostFunctionWeights weights);
 
  private:
   std::shared_ptr<LabelsContainer> labels;

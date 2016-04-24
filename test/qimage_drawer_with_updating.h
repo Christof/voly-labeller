@@ -21,15 +21,17 @@ class QImageDrawerWithUpdating : public Graphics::QImageDrawer
   {
   }
 
-  virtual void drawElementVector(std::vector<float> positions)
+  virtual void drawElementVector(std::vector<float> positions, float color)
   {
-    Graphics::QImageDrawer::drawElementVector(positions);
+    Graphics::QImageDrawer::drawElementVector(positions, color);
 
     const unsigned char *data = image->constBits();
     std::vector<unsigned char> newData(image->width() * image->height(), 0.0f);
     for (int i = 0; i < image->byteCount(); ++i)
     {
-      newData[i] = data[i] > 0 || texture->getDataAt(i) > 0 ? 255 : 0;
+      newData[i] = data[i] > 0 || texture->getDataAt(i) > 0
+                       ? static_cast<unsigned char>(color * 255)
+                       : 0;
     }
 
     texture->updateData(newData);

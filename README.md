@@ -53,10 +53,29 @@ make
 - CUDA 7.0
 - Thrust 1.8
 - Magick++ 8:6.7.7.10-6
+- Clipper 6.2.1
 
 Some of these can be installed by running `scripts/install_dependencies.sh`.
 For ITK 4.7 is no package available, it must be downloaded and compiled separately.
 Boost, CUDA (including THRUST), Qt5.5 and OpenGL 4.5 must also be installed separately.
+
+### Clipper
+Clipper can be downloaded [here](http://www.angusj.com/delphi/clipper.php).
+The `CMakeLists.txt` must be modified. This line
+
+```CMake
+INSTALL (TARGETS polyclipping LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+```
+
+must be replaced with:
+
+```CMake
+INSTALL (TARGETS polyclipping
+  LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+  ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+```
+
+And it must be configured with `-DBUILD_SHARED_LIBS=OFF`.
 
 ## Building
 - gcc 4.9.3

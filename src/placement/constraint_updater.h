@@ -3,18 +3,11 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
-#include <boost/polygon/polygon.hpp>
-#include <boost/geometry.hpp>
+#include <polyclipping/clipper.hpp>
 #include <vector>
 #include <utility>
+#include <memory>
 #include "../graphics/drawer.h"
-
-// ccw, closed polygon
-typedef boost::geometry::model::polygon<Eigen::Vector2i, false, true> polygon;
-typedef boost::polygon::point_data<int> point;
-typedef boost::polygon::polygon_set_data<int> polygon_set;
-typedef boost::polygon::polygon_data<int> ppolygon;
-typedef std::pair<point, point> edge;
 
 /**
  * \brief Updates the constraint buffer by drawing occupied regions for already
@@ -48,35 +41,31 @@ class ConstraintUpdater
                                Eigen::Vector2i lastLabelSize);
 
   void clear();
-  void useConnectorShadowRegion(bool enable);
+  void setIsConnectorShadowEnabled(bool enabled);
 
  private:
   std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
-  bool isConnectorShadowRegionEnabled = true;
+  bool isConnectorShadowEnabled = true;
+  float labelShadowColor;
+  float connectorShadowColor;
+  float anchorConstraintColor;
 
   std::vector<float> positions;
 
   void drawConnectorShadowRegion(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastAnchorPosition,
                                  Eigen::Vector2i lastLabelPosition,
-                                 const polygon &newLabel);
+                                 const ClipperLib::Path &newLabel);
   void drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
                              Eigen::Vector2i lastLabelPosition,
                              Eigen::Vector2i lastLabelSize,
-                             const polygon &newLabel);
+                             const ClipperLib::Path &newLabel);
+  void drawAnchorRegion(Eigen::Vector2i anchorPosition,
+                        Eigen::Vector2i labelSize);
 
-  template <typename edge>
-  void convolveTwoSegements(polygon &polygon, const edge &a, const edge &b);
-  template <typename itrT1, typename itrT2>
-  void convolveTwoPointSequences(itrT1 ab, itrT1 ae, itrT2 bb, itrT2 be);
-  template <typename Polygon>
-  void convolveTwoPolygons(const Polygon &a, const Polygon &b);
-  template <typename Polygon>
-  void addPolygonToPositions(const Polygon &polygon);
-
-  template <class T> void drawPolygon(std::vector<T> polygon);
+  void drawPolygon(ClipperLib::Path polygon);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_

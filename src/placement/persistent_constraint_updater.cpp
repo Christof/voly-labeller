@@ -1,5 +1,9 @@
 #include "./persistent_constraint_updater.h"
+#include <QLoggingCategory>
+#include <chrono>
 #include "./constraint_updater.h"
+
+QLoggingCategory pcuChan("Placement.PersistentConstraintUpdater");
 
 PersistentConstraintUpdater::PersistentConstraintUpdater(
     std::shared_ptr<ConstraintUpdater> constraintUpdater)
@@ -11,6 +15,7 @@ void PersistentConstraintUpdater::updateConstraints(
     int labelId, Eigen::Vector2i anchorForBuffer,
     Eigen::Vector2i labelSizeForBuffer)
 {
+  auto startTime = std::chrono::high_resolution_clock::now();
   constraintUpdater->clear();
 
   for (auto &placedLabelPair : placedLabels)
@@ -23,6 +28,11 @@ void PersistentConstraintUpdater::updateConstraints(
 
   placedLabels[labelId] = PlacedLabelInfo{ labelSizeForBuffer, anchorForBuffer,
                                            Eigen::Vector2i(-1, -1) };
+
+  auto endTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<float, std::milli> diff = endTime - startTime;
+
+  qCInfo(pcuChan) << "updateConstraints took" << diff.count() << "ms";
 }
 
 void PersistentConstraintUpdater::setPosition(int labelId,

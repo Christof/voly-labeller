@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(voly-labeller)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+
 add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
@@ -61,6 +63,7 @@ set(SOURCES
   src/picker.cpp
   src/mouse_shape_controller.h
   src/labeller_model.cpp
+  src/placement_labeller_model.cpp
   src/labels_model.cpp
   src/labelling_coordinator.cpp
   src/labelling_controller.cpp
@@ -130,7 +133,7 @@ add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all -
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
 # Analyzers
 add_custom_target(lint python ${CMAKE_CURRENT_SOURCE_DIR}/scripts/cpplint.py --root=${CMAKE_CURRENT_SOURCE_DIR}
-  --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int,-whitespace/indent
+  --filter=-whitespace/braces,-legal/copyright,-readability/streams,-runtime/references,-runtime/int,-whitespace/indent,-build/c++11
   ${CMAKE_CURRENT_SOURCE_DIR}/src/*.* ${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.*)
 add_custom_target(cppcheck cppcheck ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all VERBATIM)
 

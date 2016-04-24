@@ -2,6 +2,7 @@
 #include <thrust/transform_reduce.h>
 #include <limits>
 #include <tuple>
+#include "./placement.h"
 
 struct EvalResult
 {
@@ -31,13 +32,24 @@ __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 {
-  __host__ __device__ CostEvaluator(int width, int height)
-    : width(width), height(height)
+  __host__ __device__ CostEvaluator(int width, int height,
+                                    Placement::CostFunctionWeights weights,
+                                    unsigned char labelShadowValue,
+                                    unsigned char connectorShadowValue,
+                                    unsigned char anchorConstraintValue)
+    : width(width), height(height), weights(weights),
+      labelShadowValue(labelShadowValue),
+      connectorShadowValue(connectorShadowValue),
+      anchorConstraintValue(anchorConstraintValue)
   {
   }
 
   int width;
   int height;
+  Placement::CostFunctionWeights weights;
+  const unsigned char labelShadowValue;
+  const unsigned char connectorShadowValue;
+  const unsigned char anchorConstraintValue;
 
   int halfLabelWidth;
   int halfLabelHeight;
@@ -47,8 +59,6 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
   cudaTextureObject_t constraints;
   const float *occupancy;
-
-  const float constraintViolationCost = 1e100f;
 
   __device__ float lineLength(int x, int y) const
   {
@@ -97,16 +107,21 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     unsigned char constraintValue =
         tex2D<unsigned char>(constraints, x + 0.5f, y + 0.5f);
-    if (constraintValue)
-    {
-      EvalResult result(x, y, constraintViolationCost);
-      return result;
-    }
 
     float distanceToAnchor = lineLength(x, y);
 
-    float cost = occupancyForLabelArea(x, y) + 1e-3f * distanceToAnchor +
-                 1e-1f * favorHorizontalOrVerticalLines(x, y);
+    unsigned char labelShadow = constraintValue & labelShadowValue;
+    unsigned char connectorShadow = constraintValue & connectorShadowValue;
+    unsigned char anchorConstraint = constraintValue & anchorConstraintValue;
+
+    float cost = weights.labelShadowConstraint * labelShadow +
+                 weights.connectorShadowConstraint * connectorShadow +
+                 weights.anchorConstraint * anchorConstraint +
+                 weights.occupancy * occupancyForLabelArea(x, y) +
+                 weights.distanceToAnchor * distanceToAnchor +
+                 weights.favorHorizontalOrVerticalLines *
+                     favorHorizontalOrVerticalLines(x, y);
+
     EvalResult result(x, y, cost);
 
     return result;
@@ -157,7 +172,10 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
 
-  CostEvaluator costEvaluator(textureWidth, textureHeight);
+  CostEvaluator costEvaluator(textureWidth, textureHeight, weights,
+                              Placement::labelShadowValue,
+                              Placement::connectorShadowValue,
+                              Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
   costEvaluator.occupancy =

@@ -1,27 +1,28 @@
-#ifndef SRC_LABELLER_MODEL_H_
+#ifndef SRC_PLACEMENT_LABELLER_MODEL_H_
 
-#define SRC_LABELLER_MODEL_H_
+#define SRC_PLACEMENT_LABELLER_MODEL_H_
 
 #include <QAbstractTableModel>
 #include <memory>
-#include "./forces/labeller.h"
+#include "./placement/cost_function_calculator.h"
+
+class LabellingCoordinator;
 
 /**
- * \brief Model to display and edit forces of a Forces::Labeller
+ * \brief Model to change weights and settings of placement labeller
  *
  */
-class LabellerModel : public QAbstractTableModel
+class PlacementLabellerModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  explicit LabellerModel(std::shared_ptr<Forces::Labeller> labeller);
+  explicit PlacementLabellerModel(
+      std::shared_ptr<LabellingCoordinator> coordinator);
 
-  enum ForceRoles
+  enum WeightRoles
   {
     NameRole = Qt::UserRole + 1,
     WeightRole,
-    EnabledRole,
-    ColorRole
   };
 
   QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
@@ -41,17 +42,21 @@ class LabellerModel : public QAbstractTableModel
   bool getIsVisible() const;
 
  public slots:
-  void changeEnabled(int row, QVariant newValue);
   void changeWeight(int row, QVariant newValue);
-  void toggleUpdatePositions();
-  void toggleForcesVisibility();
+  void toggleVisibility();
 
  signals:
   void isVisibleChanged();
 
  private:
-  std::shared_ptr<Forces::Labeller> labeller;
+  std::shared_ptr<LabellingCoordinator> coordinator;
+
+  Placement::CostFunctionWeights weights;
+
+  QString getWeightNameForRowIndex(int rowIndex) const;
+  float getWeightValueForRowIndex(int rowIndex) const;
+
   bool isVisible = false;
 };
 
-#endif  // SRC_LABELLER_MODEL_H_
+#endif  // SRC_PLACEMENT_LABELLER_MODEL_H_
