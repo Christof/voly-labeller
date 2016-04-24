@@ -37,7 +37,7 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  customBuffer.initialize(gl, 12 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  customBuffer.initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
