@@ -106,7 +106,7 @@
 	<item>
 		<px class_id="8" class_name="VolumeNode" tracking_level="1" version="0" object_id="_4">
 			<volumePath>assets/datasets/dice.mha</volumePath>
-			<transferFunctionPath>assets/transferfunctions/dice2.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/dice4.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>1.800000000e+01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
