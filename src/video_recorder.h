@@ -22,19 +22,20 @@ class VideoRecorder : public QObject
 {
   Q_OBJECT
  public:
-  VideoRecorder() = default;
+  VideoRecorder(double fps = 24);
   virtual ~VideoRecorder();
 
   void initialize(Graphics::Gl *gl);
+  void resize(int width, int height);
 
-  void createVideoRecorder(int xs, int ys, const char *filename,
-                           const double fps);
+  void createNewVideo(const char *filename);
   void startRecording();
   void stopRecording();
   void updateVideoTimer();
   void captureVideoFrame();
 
  private:
+  double fps;
   std::unique_ptr<FFMPEGRecorder> videoRecorder;
   std::vector<unsigned char> pixelBuffer;
   bool isRecording = false;

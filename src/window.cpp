@@ -85,7 +85,8 @@ void Window::initializeOpenGL()
   glAssert(gl->glDepthMask(GL_FALSE));
 
   videoRecorder->initialize(gl);
-  videoRecorder->createVideoRecorder(1024, 1024, "test.mpeg", 24);
+  videoRecorder->resize(this->width(), this->height());
+  videoRecorder->createNewVideo("test.mpeg");
   videoRecorder->startRecording();
 }
 

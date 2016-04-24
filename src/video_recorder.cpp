@@ -5,6 +5,10 @@
 
 QLoggingCategory videoRecorderChan("VideoRecorder");
 
+VideoRecorder::VideoRecorder(double fps) : fps(fps)
+{
+}
+
 VideoRecorder::~VideoRecorder()
 {
   qCInfo(videoRecorderChan) << "Destructor";
@@ -20,8 +24,16 @@ void VideoRecorder::initialize(Graphics::Gl *gl)
   this->gl = gl;
 }
 
-void VideoRecorder::createVideoRecorder(int xs, int ys, const char *filename,
-                                        const double fps)
+void VideoRecorder::resize(int width, int height)
+{
+  stopRecording();
+
+  // mpeg supports even frame sizes only!
+  videoWidth = (width % 2 == 0) ? width : width - 1;
+  videoHeight = (height % 2 == 0) ? height : height - 1;
+}
+
+void VideoRecorder::createNewVideo(const char *filename)
 {
   qCInfo(videoRecorderChan) << "Create recorder" << filename;
   if (videoRecorder.get())
@@ -29,9 +41,6 @@ void VideoRecorder::createVideoRecorder(int xs, int ys, const char *filename,
     videoRecorder->stopRecording();
   }
 
-  // mpeg supports even frame sizes only!
-  videoWidth = (xs % 2 == 0) ? xs : xs - 1;
-  videoHeight = (ys % 2 == 0) ? ys : ys - 1;
   pixelBuffer.resize(videoWidth * videoHeight * 3);
   videoRecorder = std::make_unique<FFMPEGRecorder>(videoWidth, videoHeight, 1,
                                                    true, filename, fps);
@@ -50,6 +59,9 @@ void VideoRecorder::startRecording()
 
 void VideoRecorder::stopRecording()
 {
+  if (!isRecording)
+    return;
+
   isRecording = false;
   videoTimer->stop();
 }
