@@ -1,10 +1,14 @@
 #include "./video_recorder.h"
 #include <QTimer>
+#include <QLoggingCategory>
 #include "./graphics/gl.h"
 #include "./VolyVideoModule/ffmpegrecorder.h"
 
+QLoggingCategory videoRecorderChan("VideoRecorder");
+
 VideoRecorder::~VideoRecorder()
 {
+  qCInfo(videoRecorderChan) << "Destructor";
   if (isRecording)
     stopRecording();
 }
@@ -17,6 +21,7 @@ void VideoRecorder::initialize(Graphics::Gl *gl)
 void VideoRecorder::createVideoRecorder(int xs, int ys, const char *filename,
                                         const double fps)
 {
+  qCInfo(videoRecorderChan) << "Create recorder" << filename;
   if (videoRecorder)
   {
     videoRecorder->stopRecording();
