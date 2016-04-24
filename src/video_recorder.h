@@ -32,7 +32,7 @@ class VideoRecorder : public QObject
   void initialize(Graphics::Gl *gl);
   void resize(int width, int height);
 
-  void createNewVideo(const char *filename);
+  void createNewVideo(std::string filename);
   void startRecording();
   void stopRecording();
   void captureVideoFrame();

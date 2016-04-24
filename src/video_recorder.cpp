@@ -33,9 +33,9 @@ void VideoRecorder::resize(int width, int height)
   videoHeight = (height % 2 == 0) ? height : height - 1;
 }
 
-void VideoRecorder::createNewVideo(const char *filename)
+void VideoRecorder::createNewVideo(std::string filename)
 {
-  qCInfo(videoRecorderChan) << "Create recorder" << filename;
+  qCInfo(videoRecorderChan) << "Create recorder" << filename.c_str();
   if (videoRecorder.get())
   {
     videoRecorder->stopRecording();
