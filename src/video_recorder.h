@@ -35,7 +35,6 @@ class VideoRecorder : public QObject
   void createNewVideo(const char *filename);
   void startRecording();
   void stopRecording();
-  void updateVideoTimer();
   void captureVideoFrame();
 
  private:
@@ -47,6 +46,8 @@ class VideoRecorder : public QObject
   int videoWidth;
   int videoHeight;
   Graphics::Gl *gl;
+
+  void updateVideoTimer();
 };
 
 #endif  // SRC_VIDEO_RECORDER_H_
