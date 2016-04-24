@@ -14,9 +14,13 @@ class Gl;
 }
 
 /**
- * \brief
+ * \brief Provides methods to create a video recording, start and stop it
  *
+ * Internaliy it uses the VolyVideoModule, which uses ffmpeg to save videos.
  *
+ * The #initialize and #resize methods must called once before using it.
+ * #captureVideoFrame must be called once per frame when the completely rendered
+ * image is in the back buffer.
  */
 class VideoRecorder : public QObject
 {
