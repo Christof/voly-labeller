@@ -18,6 +18,8 @@ void VideoRecorderController::startNewVideo()
 
   videoRecorder->createNewVideo(filename.toStdString());
   videoRecorder->startRecording();
+
+  emit recordingStateSwitched();
 }
 
 QString VideoRecorderController::getToggleText()
