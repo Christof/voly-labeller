@@ -32,7 +32,7 @@ void PersistentConstraintUpdater::updateConstraints(
   auto endTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<float, std::milli> diff = endTime - startTime;
 
-  qCInfo(pcuChan) << "updateConstraints took" << diff.count() << "ms";
+  qCDebug(pcuChan) << "updateConstraints took" << diff.count() << "ms";
 }
 
 void PersistentConstraintUpdater::setPosition(int labelId,
