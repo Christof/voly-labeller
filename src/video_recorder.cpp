@@ -15,8 +15,9 @@ VideoRecorder::~VideoRecorder()
   if (isRecording)
     stopRecording();
 
-  disconnect(videoTimer.get(), &QTimer::timeout, this,
-             &VideoRecorder::updateVideoTimer);
+  if (videoTimer.get())
+    disconnect(videoTimer.get(), &QTimer::timeout, this,
+               &VideoRecorder::updateVideoTimer);
 }
 
 void VideoRecorder::initialize(Graphics::Gl *gl)
