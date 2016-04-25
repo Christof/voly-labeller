@@ -8,9 +8,11 @@ VideoRecorderController::VideoRecorderController(
 {
   connect(this, SIGNAL(toggleRecording()), this,
           SLOT(toggleRecordingInMainThread()), Qt::QueuedConnection);
+  connect(this, SIGNAL(startNewVideo()), this,
+          SLOT(startNewVideoInMainThread()), Qt::QueuedConnection);
 }
 
-void VideoRecorderController::startNewVideo()
+void VideoRecorderController::startNewVideoInMainThread()
 {
   const QDateTime now = QDateTime::currentDateTime();
   const QString timestamp = now.toString(QLatin1String("yyyy-MM-dd-hhmmsszzz"));

@@ -23,18 +23,19 @@ class VideoRecorderController : public QObject
   VideoRecorderController(std::shared_ptr<VideoRecorder> videoRecorder);
 
  public slots:
-  void startNewVideo();
   QString getToggleText();
   bool getCanToggleRecording();
 
 signals:
   void toggleRecording();
+  void startNewVideo();
   void recordingStateSwitched();
 
  private:
   std::shared_ptr<VideoRecorder> videoRecorder;
  private slots:
   void toggleRecordingInMainThread();
+  void startNewVideoInMainThread();
 };
 
 #endif  // VIDEO_RECORDER_CONTROLLER_H_
