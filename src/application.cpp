@@ -22,6 +22,7 @@
 #include "./forces_visualizer_node.h"
 #include "./default_scene_creator.h"
 #include "./video_recorder.h"
+#include "./video_recorder_controller.h"
 #include "./texture_mapper_manager.h"
 #include "./texture_mapper_manager_controller.h"
 #include "./utils/memory.h"
@@ -50,6 +51,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
                                   labellingCoordinator, textureMapperManager);
 
   videoRecorder = std::make_shared<VideoRecorder>();
+  videoRecorderController =
+      std::make_unique<VideoRecorderController>(videoRecorder);
   window = std::make_unique<Window>(scene, videoRecorder);
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
@@ -140,6 +143,7 @@ void Application::setupWindow()
   context->setContextProperty("placement", placementLabellerModel.get());
   context->setContextProperty("labels", labelsModel.get());
   context->setContextProperty("labelling", labellingController.get());
+  context->setContextProperty("videoRecorder", videoRecorderController.get());
 }
 
 void Application::createAndStartStateMachine()
