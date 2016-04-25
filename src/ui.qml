@@ -126,7 +126,7 @@ FocusScope
             onTriggered: videoRecorder.startNewVideo();
           }
           MenuItem {
-            text: "Toggle recording"
+            text: videoRecorder.toggleRecordingText
             shortcut: "T"
             onTriggered: videoRecorder.toggleRecording();
           }

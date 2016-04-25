@@ -20,6 +20,14 @@ void VideoRecorderController::startNewVideo()
   videoRecorder->startRecording();
 }
 
+QString VideoRecorderController::getToggleText()
+{
+  if (videoRecorder->getIsRecording())
+    return "Stop recording";
+
+  return "Start recording";
+}
+
 void VideoRecorderController::toggleRecordingInMainThread()
 {
   if (videoRecorder->getIsRecording())
@@ -30,4 +38,7 @@ void VideoRecorderController::toggleRecordingInMainThread()
   {
     videoRecorder->startRecording();
   }
+
+  emit recordingStateSwitched();
 }
+
