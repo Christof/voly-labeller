@@ -86,8 +86,6 @@ void Window::initializeOpenGL()
 
   videoRecorder->initialize(gl);
   videoRecorder->resize(this->width(), this->height());
-  videoRecorder->createNewVideo("test.mpeg");
-  videoRecorder->startRecording();
 }
 
 void Window::onInvalidated()
