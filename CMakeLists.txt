@@ -76,6 +76,7 @@ set(SOURCES
   src/default_scene_creator.cpp
   src/constraint_buffer_object.cpp
   src/video_recorder.cpp
+  src/video_recorder_controller.cpp
   src/graphics/gl.cpp
   src/graphics/shader_program.cpp
   src/graphics/buffer.cpp
