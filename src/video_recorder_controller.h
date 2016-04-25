@@ -17,12 +17,15 @@ class VideoRecorderController : public QObject
   Q_OBJECT
   Q_PROPERTY(QString toggleRecordingText READ getToggleText NOTIFY
                  recordingStateSwitched)
+  Q_PROPERTY(bool canToggleRecording READ getCanToggleRecording NOTIFY
+                 recordingStateSwitched)
  public:
   VideoRecorderController(std::shared_ptr<VideoRecorder> videoRecorder);
 
  public slots:
   void startNewVideo();
   QString getToggleText();
+  bool getCanToggleRecording();
 
 signals:
   void toggleRecording();

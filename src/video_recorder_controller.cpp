@@ -30,6 +30,11 @@ QString VideoRecorderController::getToggleText()
   return "Start recording";
 }
 
+bool VideoRecorderController::getCanToggleRecording()
+{
+  return videoRecorder->getHasActiveRecording();
+}
+
 void VideoRecorderController::toggleRecordingInMainThread()
 {
   if (videoRecorder->getIsRecording())

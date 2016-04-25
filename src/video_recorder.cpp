@@ -86,3 +86,8 @@ bool VideoRecorder::getIsRecording()
   return isRecording;
 }
 
+bool VideoRecorder::getHasActiveRecording()
+{
+  return videoRecorder.get() != nullptr;
+}
+
