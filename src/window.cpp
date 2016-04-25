@@ -92,7 +92,6 @@ void Window::onInvalidated()
 {
   qCInfo(openGlChan) << "on invalidated: delete logger";
   scene->cleanup();
-  videoRecorder->stopRecording();
   delete logger;
 }
 
