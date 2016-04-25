@@ -40,6 +40,8 @@ void VideoRecorder::createNewVideo(std::string filename)
   if (videoRecorder.get())
   {
     videoRecorder->stopRecording();
+    disconnect(videoTimer.get(), &QTimer::timeout, this,
+               &VideoRecorder::updateVideoTimer);
   }
 
   pixelBuffer.resize(videoWidth * videoHeight * 3);
