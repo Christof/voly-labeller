@@ -21,6 +21,7 @@ class VideoRecorderController : public QObject
                  recordingStateSwitched)
  public:
   VideoRecorderController(std::shared_ptr<VideoRecorder> videoRecorder);
+  ~VideoRecorderController();
 
  public slots:
   QString getToggleText();
