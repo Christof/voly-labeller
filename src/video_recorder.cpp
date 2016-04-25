@@ -80,3 +80,8 @@ void VideoRecorder::captureVideoFrame()
   }
 }
 
+bool VideoRecorder::getIsRecording()
+{
+  return isRecording;
+}
+

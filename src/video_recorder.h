@@ -36,6 +36,7 @@ class VideoRecorder : public QObject
   void startRecording();
   void stopRecording();
   void captureVideoFrame();
+  bool getIsRecording();
 
  private:
   double fps;
