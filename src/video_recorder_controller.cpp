@@ -6,6 +6,8 @@ VideoRecorderController::VideoRecorderController(
     std::shared_ptr<VideoRecorder> videoRecorder)
   : videoRecorder(videoRecorder)
 {
+  connect(this, SIGNAL(toggleRecording()), this,
+          SLOT(toggleRecordingInMainThread()), Qt::QueuedConnection);
 }
 
 void VideoRecorderController::startNewVideo()
@@ -18,7 +20,7 @@ void VideoRecorderController::startNewVideo()
   videoRecorder->startRecording();
 }
 
-void VideoRecorderController::toggleRecording()
+void VideoRecorderController::toggleRecordingInMainThread()
 {
   if (videoRecorder->getIsRecording())
   {
