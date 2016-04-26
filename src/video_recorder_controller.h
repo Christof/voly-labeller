@@ -8,8 +8,7 @@
 class VideoRecorder;
 
 /**
- * \brief
- *
+ * \brief Provides a facade for the UI to the VideoRecorder.
  *
  */
 class VideoRecorderController : public QObject
