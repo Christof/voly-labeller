@@ -205,7 +205,7 @@ int ShaderProgram::getLocation(const char *name)
 
   int location = shaderProgram.uniformLocation(name);
   if (location < 0)
-    qWarning() << "Uniform" << name << "not found in" << getName().c_str();
+    qInfo() << "Uniform" << name << "not found in" << getName().c_str();
 
   locationCache[name] = location;
 
