@@ -1,11 +1,13 @@
 #include "./gl.h"
 #include <QDebug>
+#include <QList>
 #include <QOpenGLPaintDevice>
 
 namespace Graphics
 {
 
-QLoggingCategory openGlChan("OpenGl");
+//QLoggingCategory openGlChan("OpenGl");
+Q_LOGGING_CATEGORY(openGlChan, "OpenGL");
 
 Gl::Gl()
 {
@@ -27,12 +29,20 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
   initializeOpenGLFunctions();
   glCheckError();
 
+  qCInfo(openGlChan) << "Initialize OpenGL Extensions"<< (QOpenGLContext::currentContext() == context);
+  
+
+  //QList<QByteArray> extensions = context->extensions().toList();
+  //std::sort(extensions.begin(), extensions.end());
+  //Q_FOREACH(const QByteArray &extension, extensions) qDebug() << "     " << extension;
+  /*
   bool hasShaderBufferLoad = context->hasExtension("GL_NV_shader_buffer_load");
-  qCWarning(openGlChan) << "Has GL_NV_shader_buffer_load:"
+  qCInfo(openGlChan) << "Has GL_NV_shader_buffer_load:"
                         << hasShaderBufferLoad;
   shaderBufferLoad = new QOpenGLExtension_NV_shader_buffer_load();
   shaderBufferLoad->initializeOpenGLFunctions();
   glCheckError();
+  
 
   bool hasBindlessTexture = context->hasExtension("GL_NV_bindless_texture");
   qCWarning(openGlChan) << "Has GL_NV_bindless_texture:" << hasBindlessTexture;
@@ -45,7 +55,7 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
 
   glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
       context->getProcAddress("glTexturePageCommitmentEXT"));
-
+*/
   paintDevice = new QOpenGLPaintDevice();
   setSize(size);
 }
