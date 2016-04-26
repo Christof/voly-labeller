@@ -37,9 +37,9 @@ void VideoRecorderController::startNewVideoInMainThread()
 QString VideoRecorderController::getToggleText()
 {
   if (videoRecorder->getIsRecording())
-    return "Stop recording";
+    return "Pause recording";
 
-  return "Start recording";
+  return "Resume recording";
 }
 
 bool VideoRecorderController::getCanToggleRecording()

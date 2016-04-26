@@ -119,7 +119,7 @@ FocusScope
           }
         }
         Menu {
-          title: "Screen capture"
+          title: "Video recorder"
           MenuItem {
             text: "Start new recording"
             shortcut: "C"
