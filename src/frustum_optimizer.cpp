@@ -9,8 +9,8 @@ FrustumOptimizer::FrustumOptimizer(std::shared_ptr<Nodes> nodes) : nodes(nodes)
 
 void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
 {
-  float min = std::numeric_limits<float>::max();
-  float max = -min;
+  float fmin = std::numeric_limits<float>::max();
+  float fmax = -fmin;
   for (auto node : nodes->getNodes())
   {
     auto obb = node->getObb();
@@ -23,25 +23,25 @@ void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
 
       Eigen::Vector4f transformed = mul(viewMatrix, point);
 
-      if (transformed.z() < min)
-        min = transformed.z();
+      if (transformed.z() < fmin)
+        fmin = transformed.z();
 
-      if (transformed.z() > max)
-        max = transformed.z();
+      if (transformed.z() > fmax)
+        fmax = transformed.z();
     }
   }
 
-  near = std::max(0.001f, -max - 0.1f);
-  far = -min + 0.1f;
+  m_near = std::max(0.001f, -fmax - 0.1f);
+  m_far = -fmin + 0.1f;
 }
 
 float FrustumOptimizer::getNear()
 {
-  return near;
+  return m_near;
 }
 
 float FrustumOptimizer::getFar()
 {
-  return far;
+  return m_far;
 }
 
