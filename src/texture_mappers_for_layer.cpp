@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4267 4996)
+#endif
+
 #include "./texture_mappers_for_layer.h"
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"

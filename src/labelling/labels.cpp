@@ -4,7 +4,7 @@
 std::function<void()>
 Labels::subscribe(std::function<void(Action action, const Label &)> subscriber)
 {
-  int erasePosition = subscribers.size();
+  int erasePosition = static_cast<int>(subscribers.size());
   subscribers.push_back(subscriber);
 
   return [this, erasePosition]()

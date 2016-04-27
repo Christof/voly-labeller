@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4522)
+#endif
+
 #include "./volume_node.h"
 #include <Eigen/Geometry>
 #include <string>

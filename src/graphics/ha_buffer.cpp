@@ -233,9 +233,9 @@ void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
   });
 
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
-                                      layerPlanes.size());
+                                      static_cast<int>(layerPlanes.size()));
   renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
-                                       layerZValues.size());
+                                       static_cast<int>(layerZValues.size()));
 }
 
 void HABuffer::syncAndGetCounts()

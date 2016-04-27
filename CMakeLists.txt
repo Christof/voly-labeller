@@ -116,18 +116,43 @@ file(GLOB SHADER src/shader/*)
 
 add_library(voly-labeller-lib OBJECT ${SOURCES})
 
+set(ALL_TARGET_OBJECTS)
+set(ALL_TARGET_LIBRARIES)
+
+if (MSVC)
+  set(ALL_TARGET_OBJECTS
+    ${ALL_TARGET_OBJECTS}
+	$<TARGET_OBJECTS:voly-labeller-lib>
+	)
+  set(ALL_TARGET_LIBRARIES
+    ${ALL_TARGET_LIBRARIES}
+	#voly-labeller-lib
+	input
+	utils
+	labelling
+	forces
+	math
+	)
+else()
+  set(ALL_TARGET_OBJECTS
+    ${ALL_TARGET_OBJECTS}
+	$<TARGET_OBJECTS:voly-labeller-lib>
+    $<TARGET_OBJECTS:input>
+    $<TARGET_OBJECTS:utils>
+    $<TARGET_OBJECTS:labelling>
+    $<TARGET_OBJECTS:forces>
+    $<TARGET_OBJECTS:math>
+	)
+endif()
+
 cuda_add_executable(voly-labeller
   src/main.cpp
   ${SHADER}
-  $<TARGET_OBJECTS:voly-labeller-lib>
-  $<TARGET_OBJECTS:input>
-  $<TARGET_OBJECTS:utils>
-  $<TARGET_OBJECTS:labelling>
-  $<TARGET_OBJECTS:forces>
-  $<TARGET_OBJECTS:math>
+  ${ALL_TARGET_OBJECTS}
   )
 
-target_link_libraries(voly-labeller ${LIBRARIES} placement-lib)
+
+target_link_libraries(voly-labeller ${LIBRARIES} ${ALL_TARGET_LIBRARIES} placement-lib)
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
@@ -164,3 +189,111 @@ add_custom_target(profile_${PROJECT_NAME}
   COMMAND LD_PRELOAD=/usr/local/lib/libprofiler.so CPUPROFILE=${profile} ${executable} \${PARAMS} && pprof ${executable} ${profile} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 add_custom_target(callgrind_${PROJECT_NAME}
   COMMAND pprof --callgrind ${executable} ${profile} > ${profile}.callgrind && kcachegrind ${profile}.callgrind WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+
+# Installing - Visual Studio
+if (MSVC)
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP ON)
+  include(InstallRequiredSystemLibraries)
+  install(FILES
+    ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
+    DESTINATION "."
+    COMPONENT Runtime
+  )
+  
+  GET_FILENAME_COMPONENT(CUDA_DIR [HKEY_LOCAL_MACHINE\\SOFTWARE\\NVIDIA\ Corporation\\GPU\ Computing\ Toolkit\\CUDA\\v7.5;InstallDir] REALPATH CACHE)
+  if(VOLY_WIN32)
+    set(machine_type "x86")
+  elseif(VOLY_WIN64)
+    set(machine_type "x64")
+  endif()
+
+  if(NOT EXISTS ${CUDA_DIR})
+    message(" CUDA Toolkit directory not found: ${CUDA_DIR}")
+  else()
+  MESSAGE("  - ${CUDA_DIR}/bin/cudart64_75.dll")
+    INSTALL(FILES "${CUDA_DIR}/bin/cudart64_75.dll" 
+	  DESTINATION "." 
+	  COMPONENT Runtime
+	)
+  endif()
+  get_target_property(QtCore_location Qt5::Core LOCATION)
+  get_target_property(QtWidgets_location Qt5::Widgets LOCATION)
+  get_target_property(QtOpenGL_location Qt5::OpenGL LOCATION)
+  get_target_property(QtGui_location Qt5::Gui LOCATION)
+  get_target_property(QtXml_location Qt5::Xml LOCATION)
+  get_target_property(QtNetwork_location Qt5::Network LOCATION)
+  get_target_property(QtQml_location Qt5::Qml LOCATION)
+  get_target_property(QtQuick_location Qt5::Quick LOCATION)
+  
+  get_target_property(QtCore_locationd Qt5::Core LOCATION_DEBUG)
+  get_target_property(QtWidgets_locationd Qt5::Widgets LOCATION_DEBUG)
+  get_target_property(QtOpenGL_locationd Qt5::OpenGL LOCATION_DEBUG)
+  get_target_property(QtGui_locationd Qt5::Gui LOCATION_DEBUG)
+  get_target_property(QtXml_locationd Qt5::Xml LOCATION_DEBUG)
+  get_target_property(QtNetwork_locationd Qt5::Network LOCATION_DEBUG)
+  get_target_property(QtQml_locationd Qt5::Qml LOCATION_DEBUG)
+  get_target_property(QtQuick_locationd Qt5::Quick LOCATION_DEBUG)
+  
+  get_filename_component(Qt5_DLL_Path ${QtCore_location} PATH)
+  get_filename_component(Qt5_plugin_Path "${Qt5_DLL_Path}/../plugins/platforms/" ABSOLUTE PATH)
+  get_filename_component(Qt5_imageformats_Path "${Qt5_DLL_Path}/../plugins/imageformats/" ABSOLUTE PATH)
+  message("Qt5 plugin path: ${Qt5_plugin_Path}")
+  
+  set(Qt5_Dependency_DLLS
+    "${Qt5_DLL_Path}/icuin54.dll"
+	"${Qt5_DLL_Path}/icuuc54.dll"
+	"${Qt5_DLL_Path}/icudt54.dll"
+  )
+  set(Qt5_Platforms_Dependency_DLLS
+	"${Qt5_plugin_Path}/qwindows.dll"
+	"${Qt5_plugin_Path}/qwindowsd.dll"
+  )
+  set(Qt5_Imageformats_Dependency_DLLS
+	"${Qt5_imageformats_Path}/qgif.dll"
+	"${Qt5_imageformats_Path}/qico.dll"
+	"${Qt5_imageformats_Path}/qjpeg.dll"
+	"${Qt5_imageformats_Path}/qtiff.dll"
+  )
+  install(TARGETS voly-labeller
+    RUNTIME DESTINATION "."
+  )
+  
+  install(FILES
+    ${QtCore_location} ${QtCore_locationd} 
+    ${QtWidgets_location} ${QtWidgets_locationd}
+    ${QtOpenGL_location} ${QtOpenGL_locationd}
+    ${QtGui_location} ${QtGui_locationd}
+    ${QtXml_location} ${QtXml_locationd}
+	${QtNetwork_location} ${QtNetwork_locationd} 
+	${QtQml_location} ${QtQml_locationd}
+	${QtQuick_location} ${QtQuick_locationd}
+	${Qt5_Dependency_DLLS}
+    DESTINATION "."
+  )
+  install(FILES
+    ${Qt5_Platforms_Dependency_DLLS}
+	DESTINATION "platforms"
+  )
+  
+  install(FILES
+    ${Qt5_Imageformats_Dependency_DLLS}
+	DESTINATION "imageformats"
+  )
+  
+  install(FILES ${assimp_INCLUDE_DIRS}/../bin64/assimp.dll 
+    DESTINATION "." 
+  )
+  
+  install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE} 
+    DESTINATION "." 
+	FILES_MATCHING
+	PATTERN "*.dll"
+  )
+  
+  install(DIRECTORY ${ITK_DIR}/bin/Release/ 
+    DESTINATION "."
+    FILES_MATCHING
+	PATTERN "*.dll"	
+  )
+  
+endif()

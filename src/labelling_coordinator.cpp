@@ -1,8 +1,14 @@
+#if _WIN32
+#pragma warning (disable: 4267 4996)
+#endif
+
+#include <QtOpenGLExtensions>
+
 #include "./labelling_coordinator.h"
 #include <Eigen/Core>
 #include <map>
 #include <vector>
-#include "./labelling/labels_container.h"
+//#include "./labelling/labels_container.h"
 #include "./labelling/clustering.h"
 #include "./labelling/labels.h"
 #include "./placement/occlusion_calculator.h"

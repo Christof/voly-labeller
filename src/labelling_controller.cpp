@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4267 4996)
+#endif
+
 #include "./labelling_controller.h"
 #include "./labelling_coordinator.h"
 

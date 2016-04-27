@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4996 4267)
+#endif
+
 #include "./placement_labeller_model.h"
 #include "./labelling_coordinator.h"
 

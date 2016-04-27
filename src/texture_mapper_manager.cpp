@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4996 4267)
+#endif
+
 #include "./texture_mapper_manager.h"
 #include <string>
 #include "./utils/memory.h"

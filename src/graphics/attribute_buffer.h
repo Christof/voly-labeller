@@ -47,7 +47,7 @@ class AttributeBuffer
     assert(offset + (values.size() / componentCount) <= count);
 
     const uint byteSize =
-        values.size() * componentSize;  // no Size, because vector is flat
+        static_cast<uint>(values.size()) * componentSize;  // no Size, because vector is flat
     const uint byteOffset = offset * elementSize();
 
     glAssert(gl->glNamedBufferSubData(id, byteOffset, byteSize, values.data()));

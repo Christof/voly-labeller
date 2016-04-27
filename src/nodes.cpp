@@ -94,7 +94,7 @@ void Nodes::importMeshFrom(std::string filename)
 
   for (size_t i = 0; i < meshes.size(); ++i)
   {
-    auto transformation = importer.getTransformationFor(filename, i);
+    auto transformation = importer.getTransformationFor(filename, static_cast<int>(i));
     addNode(std::make_shared<MeshNode>(filename, i, meshes[i], transformation));
   }
 }

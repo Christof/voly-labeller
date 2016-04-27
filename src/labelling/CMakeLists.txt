@@ -11,4 +11,8 @@ set(SOURCES
   clustering.cpp
   )
 
-add_library(labelling OBJECT ${SOURCES})
+if(MSVC)
+  add_library(labelling STATIC ${SOURCES}) 
+else()
+  add_library(labelling OBJECT ${SOURCES})
+endif()

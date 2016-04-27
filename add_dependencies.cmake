@@ -11,8 +11,18 @@ find_package(Qt5Xml 5.5 REQUIRED)
 find_package(CUDA 7.0 REQUIRED)
 set(CUDA_SEPARABLE_COMPILATION ON)
 set(CUDA_VERBOSE_BUILD OFF)
+if(UNIX)
 set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};-O3;-std=c++11)
-SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
+else()
+  if(MSVC)
+    add_compile_options(/FS)
+  endif()
+endif()
+if(MSVC)
+  SET(CUDA_PROPAGATE_HOST_FLAGS ON)
+else()
+  SET(CUDA_PROPAGATE_HOST_FLAGS OFF)
+endif()
 
 #############################
 # Check for GPUs present and their compute capability
@@ -58,14 +68,16 @@ if(CUDA_FOUND)
 endif(CUDA_FOUND)
 
 
-if (${CUDA_VERSION} VERSION_GREATER "6")
+if(UNIX)
+  if (${CUDA_VERSION} VERSION_GREATER "6")
   #message(status "Cuda version > 6 found: ${CUDA_VERSION}")
-  message(status "CudaRT libraries ${CUDA_CUDART_LIBRARY} dir:${CUDA_TOOLKIT_ROOT_DIR}")
+  #message(status "CudaRT libraries ${CUDA_CUDART_LIBRARY} dir:${CUDA_TOOLKIT_ROOT_DIR}")
   find_library(CUDA_CUDARTDEV_LIBRARY cudadevrt PATHS ${CUDA_TOOLKIT_ROOT_DIR} PATH_SUFFIXES lib64 lib )
-else()
-  set(CUDA_CUDARTDEV_LIBRARY)
+  else()
+    set(CUDA_CUDARTDEV_LIBRARY)
+  endif()
+  list(APPEND CUDA_LIBRARIES ${CUDA_CUDARTDEV_LIBRARY})
 endif()
-list(APPEND CUDA_LIBRARIES ${CUDA_CUDARTDEV_LIBRARY})
 
 add_definitions(-DUSECUDA)
 include_directories(${CUDA_INCLUDE_DIRS})
@@ -78,14 +90,58 @@ link_directories(${OpenGL_LIBRARY_DIRS})
 add_definitions(${OpenGL_DEFINITIONS})
 list(APPEND LIBRARIES ${OPENGL_LIBRARIES})
 
-find_package(PkgConfig)
-pkg_check_modules(EIGEN3 REQUIRED eigen3)
-include_directories(${EIGEN3_INCLUDE_DIRS})
+if(UNIX)
+  #find_package(PkgConfig)
+  #pkg_check_modules(EIGEN3 REQUIRED eigen3)
+  #include_directories(${EIGEN3_INCLUDE_DIRS})
+else()
+   set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN_INCLUDE_DIR}" )
+  if(NOT EIGEN3_INCLUDE_DIR)
+    message(FATAL_ERROR "Please point the environment variable EIGEN_INCLUDE_DIR to the include directory of your Eigen installation.")
+  else()
+    message(STATUS "Eigen3 include files found in: ${EIGEN3_INCLUDE_DIR}")
+  endif()
+  include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
+
+
 list(APPEND LIBRARIES ${OPENGL_LIBRARIES})
 
-pkg_check_modules(ASSIMP REQUIRED assimp)
-include_directories(${ASSIMP_INCLUDE_DIRS})
-list(APPEND LIBRARIES ${ASSIMP_LIBRARIES})
+if(UNIX)
+  #pkg_check_modules(ASSIMP REQUIRED assimp)
+  #include_directories(${ASSIMP_INCLUDE_DIRS})
+  #list(APPEND LIBRARIES ${ASSIMP_LIBRARIES})
+else()
+  set(ASSIMP_DIR $ENV{ASSIMP_ROOT})
+  #message(STATUS "ASSIMP_DIR: ${ASSIMP_DIR}")
+  FIND_PATH(
+    assimp_INCLUDE_DIRS
+    NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h
+    PATHS ${ASSIMP_DIR} 
+    PATH_SUFFIXES include 
+	)
+
+  FIND_LIBRARY(
+    assimp_LIBRARIES
+    NAMES assimp
+    PATHS ${ASSIMP_DIR}
+	PATH_SUFFIXES lib lib64 lib32)
+
+  IF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
+    SET(assimp_FOUND TRUE)
+  ENDIF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
+
+  IF (assimp_FOUND)
+    IF (NOT assimp_FIND_QUIETLY)
+      MESSAGE(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
+    ENDIF (NOT assimp_FIND_QUIETLY)
+	set(ASSIMP_INCLUDE_DIRS ${assimp_INCLUDE_DIRS})
+	set(ASSIMP_LIBRARIES ${assimp_LIBRARIES})
+  ELSE (assimp_FOUND)
+    MESSAGE(FATAL_ERROR "Could not find asset importer library")
+  ENDIF (assimp_FOUND)
+endif()
+#message(STATUS "Assimp includes: ${ASSIMP_INCLUDE_DIRS}")
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
@@ -117,16 +173,24 @@ list(APPEND LIBRARIES ${ITK_LIBRARIES})
 
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 include_directories(${ImageMagick_INCLUDE_DIRS})
-add_definitions("-DMAGICKCORE_QUANTUM_DEPTH=32")
-add_definitions("-DMAGICKCORE_HDRI_ENABLE=1")
+if(UNIX)
+  # are not added by find_package
+  add_definitions("-DMAGICKCORE_QUANTUM_DEPTH=32")
+  add_definitions("-DMAGICKCORE_HDRI_ENABLE=1")
+endif()
 list(APPEND LIBRARIES ${ImageMagick_LIBRARIES})
 
 find_package(Clipper REQUIRED)
 include_directories(${Clipper_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Clipper_LIBRARIES})
 
-#  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC  -Wno-unused-local-typedefs")
+if(MSVC)
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /arch:AVX2 /FS /MP /openmp")
+  add_definitions("-D_USE_MATH_DEFINES")
+else()
+  #  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
+  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC  -Wno-unused-local-typedefs")
+endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(CMAKE_AUTORCC ON) needs cmake 3.2.1

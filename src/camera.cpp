@@ -5,8 +5,14 @@
 #include <iostream>
 
 Camera::Camera()
-  : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
-    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0)
+  : 
+  origin(0.0f, 0.0f, 0.0f), 
+  position(0.0f, 0.0f, -1.0f),
+  direction(0.0f, 0.0f, 1.0f),
+  up(0.0f, 1.0f, 0.0f),
+  radius(1.0f), 
+  azimuth(static_cast<float>(-M_PI / 2.0)), 
+  declination(0.0f)
 {
   projection = createProjection(fieldOfView, aspectRatio, near, far);
   // projection = createOrthographicProjection(aspectRatio, near, far);
@@ -38,11 +44,11 @@ Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
 {
   double tanHalfFovy = tan(fov / 2.0);
   Eigen::Matrix4f result = Eigen::Matrix4f::Zero();
-  result(0, 0) = 1.0 / (aspectRatio * tanHalfFovy);
-  result(1, 1) = 1.0 / (tanHalfFovy);
+  result(0, 0) = static_cast<float>(1.0 / (aspectRatio * tanHalfFovy));
+  result(1, 1) = static_cast<float>(1.0 / (tanHalfFovy));
   result(2, 2) = -(farPlane + nearPlane) / (farPlane - nearPlane);
   result(3, 2) = -1.0;
-  result(2, 3) = -(2.0 * farPlane * nearPlane) / (farPlane - nearPlane);
+  result(2, 3) = static_cast<float>(-(2.0 * farPlane * nearPlane) / (farPlane - nearPlane));
 
   return result;
 }
@@ -126,7 +132,7 @@ void Camera::update()
                              sin(azimuth) * cos(declination)) *
                  radius;
   direction = (origin - position).normalized();
-  float upDeclination = declination - M_PI / 2.0f;
+  float upDeclination = declination - static_cast<float>(M_PI / 2.0);
   up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
                         sin(azimuth) * cos(upDeclination)).normalized();
 

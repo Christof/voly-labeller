@@ -9,4 +9,8 @@ set(SOURCES
   obb.cpp
   )
 
-add_library(math OBJECT ${SOURCES})
+if(MSVC)
+  add_library(math STATIC ${SOURCES}) 
+else()
+  add_library(math OBJECT ${SOURCES})
+endif()

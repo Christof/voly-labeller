@@ -40,7 +40,7 @@ void VertexArray::draw()
 
   if (data.size() > 0)
     gl->glDrawArrays(primitiveMode, 0,
-                     data[0]->getSize() / positionElementsCount);
+                     static_cast<uint>(data[0]->getSize()) / positionElementsCount);
 
   for (unsigned int cnt = 0; cnt < data.size(); cnt++)
     gl->glDisableVertexAttribArray(cnt);

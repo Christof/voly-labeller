@@ -11,4 +11,8 @@ set(SOURCES
   event_transition.cpp
   )
 
-add_library(input OBJECT ${SOURCES})
+if(MSVC)
+  add_library(input STATIC ${SOURCES}) 
+else()
+  add_library(input OBJECT ${SOURCES})
+endif()

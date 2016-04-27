@@ -5,18 +5,31 @@
 #  Clipper_LIBRARIES - The libraries needed to use Clipper
 #  Clipper_DEFINITIONS - Compiler switches required for using Clipper
 
-find_package(PkgConfig)
-pkg_check_modules(PC_Clipper QUIET polyclipping.pc)
-set(Clipper_DEFINITIONS ${PC_Clipper_CFLAGS_OTHER})
+if (UNIX)
+  find_package(PkgConfig)
+  pkg_check_modules(PC_Clipper QUIET polyclipping.pc)
+  set(Clipper_DEFINITIONS ${PC_Clipper_CFLAGS_OTHER})
+endif()
+  
+  MESSAGE(STATUS "clipper dir: $ENV{CLIPPER_DIR}" )
 
-find_path(Clipper_INCLUDE_DIR polyclipping/clipper.hpp
-  HINTS ${PC_Clipper_INCLUDEDIR} ${PC_Clipper_INCLUDE_DIRS}
-  PATH_SUFFIXES libpolyclipping)
+  find_path(Clipper_INCLUDE_DIR polyclipping/clipper.hpp
+    HINTS 
+	${PC_Clipper_INCLUDEDIR} ${PC_Clipper_INCLUDE_DIRS}
+    $ENV{CLIPPER_DIR}
+	$ENV{CLIPPER_ROOT}
+    PATH_SUFFIXES include libpolyclipping
+  )
 
-find_library(Clipper_LIBRARY NAMES polyclipping libpolyclipping
-  HINTS ${PC_Clipper_LIBDIR} ${PC_Clipper_LIBRARY_DIRS} )
+  find_library(Clipper_LIBRARY NAMES polyclipping libpolyclipping
+    HINTS 
+	${PC_Clipper_LIBDIR} ${PC_Clipper_LIBRARY_DIRS}
+    $ENV{CLIPPER_DIR}
+	$ENV{CLIPPER_ROOT}	
+	PATH_SUFFIXES lib 
+  )
 
-include(FindPackageHandleStandardArgs)
+  include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set Clipper_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(Clipper  DEFAULT_MSG

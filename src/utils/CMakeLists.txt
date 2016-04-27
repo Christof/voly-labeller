@@ -17,4 +17,8 @@ set(SOURCES
   logging.h
   )
 
-add_library(utils OBJECT ${SOURCES})
+if(MSVC)
+  add_library(utils STATIC ${SOURCES}) 
+else()
+  add_library(utils OBJECT ${SOURCES})
+endif()

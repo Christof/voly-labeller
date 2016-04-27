@@ -1,5 +1,5 @@
-#include "./cuda_texture_mapper.h"
 #include <QtOpenGLExtensions>
+#include "./cuda_texture_mapper.h"
 
 CudaTextureMapper::CudaTextureMapper(unsigned int textureId, int width,
                                      int height, unsigned int flags)

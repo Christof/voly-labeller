@@ -21,7 +21,7 @@ TextureManager::~TextureManager()
 
 int TextureManager::addTexture(std::string path)
 {
-  int id = textures.size();
+  int id = static_cast<int>(textures.size());
 
   textures.push_back(newTexture2d(path));
 
@@ -30,7 +30,7 @@ int TextureManager::addTexture(std::string path)
 
 int TextureManager::addTexture(QImage *image)
 {
-  int id = textures.size();
+  int id = static_cast<int>(textures.size());
 
   textures.push_back(newTexture2d(image));
 
@@ -39,7 +39,7 @@ int TextureManager::addTexture(QImage *image)
 
 int TextureManager::addTexture(float *data, int width, int height)
 {
-  int id = textures.size();
+  int id = static_cast<int>(textures.size());
 
   textures.push_back(newTexture2d(data, width, height));
 
