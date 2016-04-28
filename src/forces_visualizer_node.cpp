@@ -21,6 +21,7 @@ void ForcesVisualizerNode::render(Graphics::Gl *gl,
       if (!connectors.count(force->name))
       {
         auto connector = std::make_shared<Graphics::Connector>(
+            ":/shader/passColorImmediate.vert", ":/shader/colorImmediate.frag",
             Eigen::Vector3f(0, 0, 0), Eigen::Vector3f(1, 0, 0));
         connector->zOffset = -0.02f;
         connector->color.head<3>() = forcePair.first->color;
@@ -51,6 +52,10 @@ void ForcesVisualizerNode::renderForce(
                            renderData.projectionMatrix.inverse() *
                            connectorTransform.matrix();
 
-  connector->render(gl, managers, renderData);
+  auto shaderId = connector->getObjectData().getShaderProgramId();
+  if (shaderId > 0)
+    managers->getShaderManager()->bind(shaderId, renderData);
+
+  connector->renderImmediately(gl, managers, renderData);
 }
 

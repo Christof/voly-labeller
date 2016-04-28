@@ -129,6 +129,11 @@ void Nodes::renderLabels(Graphics::Gl *gl,
   {
     labelNode->renderLabelAndConnector(gl, managers, renderData);
   }
+
+  if (forcesVisualizerNode.get())
+  {
+    forcesVisualizerNode->render(gl, managers, renderData);
+  }
 }
 
 void Nodes::saveSceneTo(std::string filename)
@@ -168,13 +173,12 @@ void Nodes::toggleBoundingVolumes()
 
 void Nodes::addForcesVisualizerNode(std::shared_ptr<Node> node)
 {
-  addNode(node);
   forcesVisualizerNode = node;
 }
 
 void Nodes::removeForcesVisualizerNode()
 {
-  removeNode(forcesVisualizerNode);
+  forcesVisualizerNode.reset();
 }
 
 void Nodes::setOnNodeAdded(
