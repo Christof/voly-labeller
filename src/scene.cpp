@@ -152,6 +152,7 @@ void Scene::render()
   nodes->renderLabels(gl, managers, renderData);
   fbo->unbind();
   renderScreenQuad();
+  nodes->renderOverlays(gl, managers, renderData);
 
   if (showConstraintOverlay)
   {
