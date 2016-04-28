@@ -129,7 +129,12 @@ void Nodes::renderLabels(Graphics::Gl *gl,
   {
     labelNode->renderLabelAndConnector(gl, managers, renderData);
   }
+}
 
+void Nodes::renderOverlays(Graphics::Gl *gl,
+                           std::shared_ptr<Graphics::Managers> managers,
+                           RenderData renderData)
+{
   if (forcesVisualizerNode.get())
   {
     forcesVisualizerNode->render(gl, managers, renderData);
@@ -181,8 +186,8 @@ void Nodes::removeForcesVisualizerNode()
   forcesVisualizerNode.reset();
 }
 
-void Nodes::setOnNodeAdded(
-    std::function<void(std::shared_ptr<Node>)> onNodeAdded)
+void
+Nodes::setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
   this->onNodeAdded = onNodeAdded;
 }
