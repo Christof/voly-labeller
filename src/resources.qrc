@@ -13,6 +13,7 @@
         <file>shader/buildHABuffer.hglsl</file>
         <file>shader/texture.frag</file>
         <file>shader/pass.vert</file>
+        <file>shader/passColorImmediate.vert</file>
         <file>shader/color.frag</file>
         <file>shader/colorImmediate.frag</file>
         <file>shader/label.frag</file>
