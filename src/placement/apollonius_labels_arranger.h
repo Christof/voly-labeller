@@ -5,8 +5,7 @@
 #include <Eigen/Core>
 #include <memory>
 #include <vector>
-#include "../labelling/labels_container.h"
-#include "../labelling/labeller_frame_data.h"
+#include "./labels_arranger.h"
 
 class CudaArrayProvider;
 
@@ -18,7 +17,7 @@ namespace Placement
  *
  *
  */
-class ApolloniusLabelsArranger
+class ApolloniusLabelsArranger : public LabelsArranger
 {
  public:
   ApolloniusLabelsArranger() = default;
@@ -28,8 +27,9 @@ class ApolloniusLabelsArranger
   initialize(std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper);
 
-  std::vector<Label> calculateOrder(const LabellerFrameData &frameData,
-                                    std::shared_ptr<LabelsContainer> labels);
+  virtual std::vector<Label>
+  getArrangement(const LabellerFrameData &frameData,
+                 std::shared_ptr<LabelsContainer> labels);
 
  private:
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;

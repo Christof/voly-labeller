@@ -13,7 +13,7 @@ void ApolloniusLabelsArranger::initialize(
   this->apolloniusTextureMapper = apolloniusTextureMapper;
 }
 
-std::vector<Label> ApolloniusLabelsArranger::calculateOrder(
+std::vector<Label> ApolloniusLabelsArranger::getArrangement(
     const LabellerFrameData &frameData, std::shared_ptr<LabelsContainer> labels)
 {
   if (labels->count() == 1)
