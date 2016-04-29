@@ -8,6 +8,8 @@
 
 QDebug operator<<(QDebug dbg, const Eigen::Vector2f &vector);
 
+QDebug operator<<(QDebug dbg, const Eigen::Vector2i &vector);
+
 QDebug operator<<(QDebug dbg, const Eigen::Vector3f &vector);
 
 QDebug operator<<(QDebug dbg, const Eigen::Vector3i &vector);
