@@ -18,6 +18,7 @@ set(SOURCES
   cuda_texture_mapper.cpp
   constraint_updater.cpp
   persistent_constraint_updater.cpp
+  labels_arranger.h
   apollonius_labels_arranger.cpp
   )
 
