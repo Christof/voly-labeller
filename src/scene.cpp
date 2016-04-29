@@ -137,9 +137,15 @@ void Scene::render()
   glAssert(gl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  RenderData renderData = createRenderData();
+  RenderData newRenderData = createRenderData();
+  bool isIdle =
+      newRenderData.viewProjectionMatrix == renderData.viewProjectionMatrix;
+  if (isIdle)
+    qInfo() << "Idle";
 
-  renderNodesWithHABufferIntoFBO(renderData);
+  renderData = newRenderData;
+
+  renderNodesWithHABufferIntoFBO();
 
   textureMapperManager->update();
 
@@ -170,7 +176,7 @@ void Scene::render()
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 }
 
-void Scene::renderNodesWithHABufferIntoFBO(const RenderData &renderData)
+void Scene::renderNodesWithHABufferIntoFBO()
 {
   fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
