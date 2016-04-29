@@ -19,6 +19,7 @@ set(SOURCES
   constraint_updater.cpp
   persistent_constraint_updater.cpp
   labels_arranger.h
+  insertion_order_labels_arranger.cpp
   apollonius_labels_arranger.cpp
   )
 
