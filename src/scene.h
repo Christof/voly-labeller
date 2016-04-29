@@ -79,7 +79,7 @@ class Scene : public AbstractScene
 
   void updateLabelling();
 
-  void renderNodesWithHABufferIntoFBO(const RenderData &renderData);
+  void renderNodesWithHABufferIntoFBO();
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
   void renderScreenQuad();
@@ -89,6 +89,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Camera> getCamera();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
+  RenderData renderData;
 };
 
 #endif  // SRC_SCENE_H_
