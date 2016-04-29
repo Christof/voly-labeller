@@ -8,7 +8,6 @@
 #include "../utils/logging.h"
 #include "./summed_area_table.h"
 #include "./apollonius.h"
-#include "./occupancy_updater.h"
 #include "./constraint_updater.h"
 #include "./persistent_constraint_updater.h"
 #include "../utils/memory.h"
@@ -33,8 +32,6 @@ void Labeller::initialize(
   if (!integralCosts.get())
     integralCosts =
         std::make_shared<SummedAreaTable>(integralCostsTextureMapper);
-  occupancyUpdater =
-      std::make_shared<OccupancyUpdater>(integralCostsTextureMapper);
 
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
@@ -52,7 +49,6 @@ void Labeller::cleanup()
 {
   integralCosts.reset();
   apolloniusTextureMapper.reset();
-  occupancyUpdater.reset();
   costFunctionCalculator.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
@@ -100,10 +96,6 @@ Labeller::update(const LabellerFrameData &frameData)
 
     Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
     constraintUpdater->setPosition(label.id, newPosition);
-
-    // occupancyUpdater->addLabel(newXPosition, newYPosition,
-    //                            labelSizeForBuffer.x(),
-    //                            labelSizeForBuffer.y());
 
     newPositions[label.id] = reprojectTo3d(newPosition, anchor2D.z(),
                                            bufferSize, inverseViewProjection);
