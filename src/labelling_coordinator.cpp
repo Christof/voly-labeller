@@ -15,6 +15,8 @@
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/integral_costs_calculator.h"
 #include "./placement/saliency.h"
+#include "./placement/labels_arranger.h"
+#include "./placement/insertion_order_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -50,6 +52,8 @@ void LabellingCoordinator::initialize(
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
+  labelsArranger = std::make_shared<Placement::InsertionOrderLabelsArranger>();
+
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     auto labelsContainer = std::make_shared<LabelsContainer>();
@@ -58,10 +62,9 @@ void LabellingCoordinator::initialize(
     labeller->resize(width, height);
     labeller->initialize(
         textureMapperManager->getIntegralCostsTextureMapper(),
-        textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
-        textureMapperManager->getApolloniusTextureMapper(layerIndex),
         textureMapperManager->getConstraintTextureMapper(),
         persistentConstraintUpdater);
+    labeller->setLabelsArranger(labelsArranger);
 
     placementLabellers.push_back(labeller);
   }

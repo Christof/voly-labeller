@@ -22,6 +22,7 @@ namespace Placement
 class OcclusionCalculator;
 class IntegralCostsCalculator;
 class Saliency;
+class LabelsArranger;
 }
 
 /**
@@ -63,6 +64,7 @@ class LabellingCoordinator
   std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<Placement::LabelsArranger> labelsArranger;
 
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
   std::shared_ptr<Placement::Saliency> saliency;

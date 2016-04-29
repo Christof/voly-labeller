@@ -18,6 +18,7 @@ namespace Placement
 {
 
 class SummedAreaTable;
+class LabelsArranger;
 
 /**
  * \brief Places labels according to an energy minimization of a cost function
@@ -31,8 +32,6 @@ class Labeller
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
-             std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
              std::shared_ptr<PersistentConstraintUpdater> constraintUpdater);
 
@@ -44,19 +43,19 @@ class Labeller
 
   void cleanup();
 
-  bool useApollonius = false;
-
   void setCostFunctionWeights(CostFunctionWeights weights);
+
+  void setLabelsArranger(std::shared_ptr<LabelsArranger> labelsArranger);
 
  private:
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
   std::shared_ptr<SummedAreaTable> integralCosts;
-  std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
-  std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
   std::shared_ptr<PersistentConstraintUpdater> constraintUpdater;
+  std::shared_ptr<LabelsArranger> labelsArranger;
 
   Eigen::Vector2i size;
+  Eigen::Vector2i bufferSize;
 
   std::map<int, Eigen::Vector3f> newPositions;
 
