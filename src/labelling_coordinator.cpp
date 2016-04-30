@@ -95,7 +95,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   updateLabelPositionsInLabelNodes(positions);
 }
 
-void LabellingCoordinator::updatePlacement()
+void LabellingCoordinator::updatePlacement(bool isIdle)
 {
   persistentConstraintUpdater->clear();
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)

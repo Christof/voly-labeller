@@ -49,7 +49,7 @@ class LabellingCoordinator
 
   void update(double frameTime, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
-  void updatePlacement();
+  void updatePlacement(bool isIdle);
   std::vector<float> updateClusters();
 
   void resize(int width, int height);

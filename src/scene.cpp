@@ -151,7 +151,7 @@ void Scene::render()
 
   constraintBufferObject->bind();
 
-  labellingCoordinator->updatePlacement();
+  labellingCoordinator->updatePlacement(isIdle);
 
   constraintBufferObject->unbind();
 
