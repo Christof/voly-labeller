@@ -44,6 +44,9 @@ inline void glCheckErrorFunction(std::string file, int line)
 #define glCheckError() glCheckErrorFunction(__FILE__, __LINE__)
 
 #else  // No debug
+namespace Graphics
+{
+
 #define glAssert(code) code;
 #define glCheckError()
 #endif

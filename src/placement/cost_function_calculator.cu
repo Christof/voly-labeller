@@ -1,8 +1,13 @@
+#if _WIN32
+#pragma warning (disable: 4267 4244)
+#endif
+
 #include "./cost_function_calculator.h"
 #include <thrust/transform_reduce.h>
 #include <limits>
 #include <tuple>
 #include "./placement.h"
+
 
 struct EvalResult
 {
@@ -21,7 +26,9 @@ struct EvalResult
 
   bool operator<(const EvalResult &other)
   {
-    return thrust::min<float>(this->cost, other.cost);
+    //return thrust::min<float>(this->cost, other.cost);
+    // FIXME: the line above does not seem to be correct!
+    return (this->cost < other.cost);
   }
 };
 
@@ -181,8 +188,8 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   costEvaluator.occupancy =
       thrust::raw_pointer_cast(integralCosts.data());
   costEvaluator.constraints = constraints;
-  costEvaluator.halfLabelWidth = labelWidthInPixel * 0.5f * widthFactor;
-  costEvaluator.halfLabelHeight = labelHeightInPixel * 0.5f * heightFactor;
+  costEvaluator.halfLabelWidth = static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
+  costEvaluator.halfLabelHeight = static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;

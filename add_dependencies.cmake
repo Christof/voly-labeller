@@ -1,5 +1,27 @@
 set(LIBRARIES)
 
+if( MSVC )
+  # in order to prevent DLL hell, each of the DLLs have to be suffixed with the major version and msvc prefix
+  if( MSVC70 OR MSVC71 )
+    set(MSVC_PREFIX "vc70")
+  elseif( MSVC80 )
+    set(MSVC_PREFIX "vc80")
+  elseif( MSVC90 )
+    set(MSVC_PREFIX "vc90")
+  elseif( MSVC10 )
+    set(MSVC_PREFIX "vc100")
+  elseif( MSVC11 )
+    set(MSVC_PREFIX "vc110")
+  elseif( MSVC12 )
+    set(MSVC_PREFIX "vc120")
+  elseif( MSVC14 )
+    set(MSVC_PREFIX "vc140")
+  else()
+    set(MSVC_PREFIX "vc130")
+  endif()
+endif()
+
+
 find_package(Qt5Core 5.5 REQUIRED)
 find_package(Qt5Gui 5.5 REQUIRED)
 find_package(Qt5Widgets 5.5 REQUIRED)
@@ -107,6 +129,7 @@ endif()
 
 list(APPEND LIBRARIES ${OPENGL_LIBRARIES})
 
+
 if(UNIX)
   pkg_check_modules(ASSIMP REQUIRED assimp)
   include_directories(${ASSIMP_INCLUDE_DIRS})
@@ -120,28 +143,53 @@ else()
     PATHS ${ASSIMP_DIR} 
     PATH_SUFFIXES include 
 	)
-
+  
   FIND_LIBRARY(
-    assimp_LIBRARIES
-    NAMES assimp
+    assimp_LIBRARIES_DEBUG
+    NAMES assimp assimp-${MSVC_PREFIX}-mtd
     PATHS ${ASSIMP_DIR}
 	PATH_SUFFIXES lib lib64 lib32)
-
-  IF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
+	
+  FIND_LIBRARY(
+    assimp_LIBRARIES_RELEASE
+    NAMES assimp assimp-${MSVC_PREFIX}-mt
+    PATHS ${ASSIMP_DIR}
+	PATH_SUFFIXES lib lib64 lib32)
+	
+  FIND_FILE(assimp_DLL_DEBUG
+    NAMES assimp.dll assimp-${MSVC_PREFIX}-mtd.dll
+	PATHS ${ASSIMP_DIR}
+	PATH_SUFFIXES bin
+    )
+  FIND_FILE(assimp_DLL_RELEASE
+    NAMES assimp.dll assimp-${MSVC_PREFIX}-mt.dll
+	PATHS ${ASSIMP_DIR}
+	PATH_SUFFIXES bin
+    )
+	
+  IF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES_DEBUG AND assimp_LIBRARIES_RELEASE)
     SET(assimp_FOUND TRUE)
-  ENDIF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
+  ENDIF ()
 
   IF (assimp_FOUND)
     IF (NOT assimp_FIND_QUIETLY)
       MESSAGE(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
     ENDIF (NOT assimp_FIND_QUIETLY)
 	set(ASSIMP_INCLUDE_DIRS ${assimp_INCLUDE_DIRS})
-	set(ASSIMP_LIBRARIES ${assimp_LIBRARIES})
+	set(ASSIMP_LIBRARIES_DEBUG ${assimp_LIBRARIES_DEBUG})
+	set(ASSIMP_LIBRARIES_RELEASE ${assimp_LIBRARIES_RELEASE})
+	set(ASSIMP_LIBRARIES ${assimp_LIBRARIES_RELEASE})
+	get_filename_component(ASSIMP_LIBRARIES_DIR ${assimp_DLL_RELEASE} DIRECTORY)
+	
   ELSE (assimp_FOUND)
     MESSAGE(FATAL_ERROR "Could not find asset importer library")
   ENDIF (assimp_FOUND)
 endif()
-#message(STATUS "Assimp includes: ${ASSIMP_INCLUDE_DIRS}")
+
+message(STATUS "Assimp include DIR: ${ASSIMP_INCLUDE_DIRS}")
+message(STATUS "Assimp library DIR: ${ASSIMP_LIBRARIES_DIR}")
+include_directories(${ASSIMP_INCLUDE_DIRS})
+list(APPEND LIBRARIES ${ASSIMP_LIBRARIES})
 
 include_directories(${Qt5Core_INCLUDE_DIRS})
 include_directories(${Qt5Widgets_INCLUDE_DIRS})
@@ -167,8 +215,11 @@ list(APPEND LIBRARIES ${Boost_LIBRARIES})
 
 find_package(ITK 4.5 REQUIRED)
 include(${ITK_USE_FILE})
+if(MSVC)
+else()
 add_definitions("-DVCL_CAN_STATIC_CONST_INIT_FLOAT=0")
 add_definitions("-DVCL_NEEDS_INLINE_INSTANTIATION=0")
+endif()
 list(APPEND LIBRARIES ${ITK_LIBRARIES})
 
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)

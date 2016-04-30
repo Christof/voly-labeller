@@ -2,6 +2,9 @@
 
 #define SRC_WINDOW_H_
 
+#include <QOpenGLFunctions_4_5_Core>
+#include <QtOpenGLExtensions>
+
 #include <QWindow>
 #include <QtQuick/QQuickView>
 #include <QElapsedTimer>

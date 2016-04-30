@@ -17,6 +17,16 @@
  */
 void setupLogging()
 {
+#if _WIN32
+  qputenv("QT_MESSAGE_PATTERN",
+    QString("%{time [yyyy'-'MM'-'dd' "
+    "'hh':'mm':'ss]} "
+    "- %{threadid} "
+    "%{if-category}%{category}: %{endif}%{message}"
+    "%{if-warning}\n\t%{file}:%{line}\n\t%{endif}"
+    "%{if-critical}\n\t%{file}:%{line}\n\t%{endif}"
+    ).toUtf8());
+#else
   qputenv("QT_MESSAGE_PATTERN",
           QString("%{time [yyyy'-'MM'-'dd' "
                   "'hh':'mm':'ss]} "
@@ -30,8 +40,10 @@ void setupLogging()
                   "separator=\"\n\t\"}%{endif}"
                   "%{if-critical}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
                   "separator=\"\n\t\"}%{endif}\033[0m").toUtf8());
+#endif
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
+
 }
 
 void setupCuda()
@@ -55,6 +67,7 @@ void setupCuda()
 
 int main(int argc, char **argv)
 {
+
   setupLogging();
 
   setupCuda();

@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4996 4267)
+#pragma warning (disable: 4996 4267 4996)
 #endif
 
 #include "./placement_labeller_model.h"

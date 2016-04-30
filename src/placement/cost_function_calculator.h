@@ -7,6 +7,10 @@
 #include "../utils/cuda_array_provider.h"
 #include "./placement.h"
 
+#if _WIN32
+#pragma warning (disable: 4267)
+#endif
+
 namespace Placement
 {
 

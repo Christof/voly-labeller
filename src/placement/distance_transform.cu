@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4244 4267)
+#endif
+
 #include "./distance_transform.h"
 #include <thrust/device_vector.h>
 #include <thrust/device_ptr.h>

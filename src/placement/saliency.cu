@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning (disable: 4244)
+#endif
+
 #include "./saliency.h"
 #include "../utils/cuda_helper.h"
 

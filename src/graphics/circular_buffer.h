@@ -5,6 +5,8 @@
 #include "./gl.h"
 #include "./mapped_buffer.h"
 
+#include <cassert>
+
 namespace Graphics
 {
 

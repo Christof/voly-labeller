@@ -280,8 +280,11 @@ if (MSVC)
 	DESTINATION "imageformats"
   )
   
-  install(FILES ${assimp_INCLUDE_DIRS}/../bin64/assimp.dll 
+  message(STATUS "lib dir assimp: ${ASSIMP_LIBRARIES_DIR}")
+  install(DIRECTORY ${ASSIMP_LIBRARIES_DIR}/
     DESTINATION "." 
+	FILES_MATCHING
+	PATTERN "*.dll"
   )
   
   install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE} 
@@ -290,7 +293,7 @@ if (MSVC)
 	PATTERN "*.dll"
   )
   
-  install(DIRECTORY ${ITK_DIR}/bin/Release/ 
+  install(DIRECTORY ${ITK_DIR}/../../../bin/
     DESTINATION "."
     FILES_MATCHING
 	PATTERN "*.dll"	
