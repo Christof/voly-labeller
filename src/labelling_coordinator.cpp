@@ -17,6 +17,7 @@
 #include "./placement/saliency.h"
 #include "./placement/labels_arranger.h"
 #include "./placement/insertion_order_labels_arranger.h"
+#include "./placement/randomized_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -52,7 +53,10 @@ void LabellingCoordinator::initialize(
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
-  labelsArranger = std::make_shared<Placement::InsertionOrderLabelsArranger>();
+  insertionOrderLabelsArranger =
+      std::make_shared<Placement::InsertionOrderLabelsArranger>();
+  randomizedLabelsArranger =
+      std::make_shared<Placement::RandomizedLabelsArranger>();
 
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
@@ -60,11 +64,10 @@ void LabellingCoordinator::initialize(
     labelsInLayer.push_back(labelsContainer);
     auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
     labeller->resize(width, height);
-    labeller->initialize(
-        textureMapperManager->getIntegralCostsTextureMapper(),
-        textureMapperManager->getConstraintTextureMapper(),
-        persistentConstraintUpdater);
-    labeller->setLabelsArranger(labelsArranger);
+    labeller->initialize(textureMapperManager->getIntegralCostsTextureMapper(),
+                         textureMapperManager->getConstraintTextureMapper(),
+                         persistentConstraintUpdater);
+    labeller->setLabelsArranger(insertionOrderLabelsArranger);
 
     placementLabellers.push_back(labeller);
   }
@@ -102,6 +105,9 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
   {
     occlusionCalculator->calculateFor(layerIndex);
     integralCostsCalculator->runKernel();
+
+    placementLabellers[layerIndex]->setLabelsArranger(isIdle ?
+        randomizedLabelsArranger : insertionOrderLabelsArranger);
     placementLabellers[layerIndex]->update(labellerFrameData);
   }
 }
