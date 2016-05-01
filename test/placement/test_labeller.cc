@@ -84,6 +84,8 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   auto newPositions = labeller->update(frameData);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
+  EXPECT_FLOAT_EQ(0.76581049f, labeller->getLastSumOfCosts());
+
   labeller->cleanup();
 
   ASSERT_EQ(labels->count(), newPositions.size());
