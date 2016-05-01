@@ -38,6 +38,7 @@ class Labeller
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
   std::map<int, Eigen::Vector3f> getLastPlacementResult();
+  float getLastSumOfCosts();
 
   void resize(int width, int height);
 
@@ -58,6 +59,7 @@ class Labeller
   Eigen::Vector2i bufferSize;
 
   std::map<int, Eigen::Vector3f> newPositions;
+  float costSum;
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
