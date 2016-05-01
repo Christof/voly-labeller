@@ -82,14 +82,13 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
-    auto newPos = costFunctionCalculator->calculateForLabel(
+    auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
         anchorPixels.y(), label.size.x(), label.size.y());
 
-    Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
-    constraintUpdater->setPosition(label.id, newPosition);
+    constraintUpdater->setPosition(label.id, result.position);
 
-    newPositions[label.id] = reprojectTo3d(newPosition, anchor2D.z(),
+    newPositions[label.id] = reprojectTo3d(result.position, anchor2D.z(),
                                            bufferSize, inverseViewProjection);
   }
 
