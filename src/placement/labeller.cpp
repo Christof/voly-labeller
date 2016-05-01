@@ -67,6 +67,7 @@ Labeller::update(const LabellerFrameData &frameData)
   integralCosts->runKernel();
   qCDebug(plChan) << "SAT took" << calculateDurationSince(startTime) << "ms";
 
+  costSum = 0.0f;
   auto labelsInLayer = labelsArranger->getArrangement(frameData, labels);
 
   for (auto &label : labelsInLayer)
@@ -87,6 +88,7 @@ Labeller::update(const LabellerFrameData &frameData)
         anchorPixels.y(), label.size.x(), label.size.y());
 
     constraintUpdater->setPosition(label.id, result.position);
+    costSum += result.cost;
 
     newPositions[label.id] = reprojectTo3d(result.position, anchor2D.z(),
                                            bufferSize, inverseViewProjection);
@@ -116,6 +118,11 @@ void Labeller::setLabelsArranger(std::shared_ptr<LabelsArranger> labelsArranger)
 std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
 {
   return newPositions;
+}
+
+float Labeller::getLastSumOfCosts()
+{
+  return costSum;
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,
