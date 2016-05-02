@@ -100,15 +100,33 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
 void LabellingCoordinator::updatePlacement(bool isIdle)
 {
+  float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusionCalculator->calculateFor(layerIndex);
     integralCostsCalculator->runKernel();
 
-    placementLabellers[layerIndex]->setLabelsArranger(isIdle ?
-        randomizedLabelsArranger : insertionOrderLabelsArranger);
-    placementLabellers[layerIndex]->update(labellerFrameData);
+    auto labeller = placementLabellers[layerIndex];
+    labeller->setLabelsArranger(isIdle ? randomizedLabelsArranger
+                                       : insertionOrderLabelsArranger);
+    labeller->update(labellerFrameData);
+    newSumOfCosts += labeller->getLastSumOfCosts();
+  }
+
+  if (isIdle)
+  {
+    std::cout << "Old costs: " << sumOfCosts << "\tnew costs:" << newSumOfCosts << std::endl;
+  }
+
+  if (isIdle && newSumOfCosts > sumOfCosts)
+  {
+    preserveLastResult = true;
+  }
+  else
+  {
+    preserveLastResult = false;
+    sumOfCosts = newSumOfCosts;
   }
 }
 
@@ -149,6 +167,9 @@ void LabellingCoordinator::setCostFunctionWeights(
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
+  if (preserveLastResult)
+    return lastPlacementResult;
+
   std::map<int, Eigen::Vector3f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
@@ -162,6 +183,8 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 
     layerIndex++;
   }
+
+  lastPlacementResult = placementPositions;
 
   return placementPositions;
 }
