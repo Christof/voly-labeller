@@ -8,8 +8,7 @@ namespace Placement
 {
 
 /**
- * \brief
- *
+ * \brief Returns the labels in an randomized order
  *
  */
 class RandomizedLabelsArranger : public LabelsArranger
