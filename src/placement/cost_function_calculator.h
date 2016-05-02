@@ -28,6 +28,13 @@ struct CostFunctionWeights
   float anchorConstraint = 1e2f;
 };
 
+/**
+ * \brief Result of a cost function calculation
+ *
+ * This consists of:
+ * - The position of the label
+ * - The cost associated with this position (which is the minimum)
+ */
 struct CostFunctionResult
 {
   Eigen::Vector2i position;
