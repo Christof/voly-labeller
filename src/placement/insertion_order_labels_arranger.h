@@ -8,8 +8,7 @@ namespace Placement
 {
 
 /**
- * \brief
- *
+ * \brief Returns the labels by insertion order
  *
  */
 class InsertionOrderLabelsArranger : public LabelsArranger

@@ -11,9 +11,10 @@ namespace Placement
 {
 
 /**
- * \brief
+ * \brief Interface for classes which determine the insertion order of labels
  *
- *
+ * The labels are given by a LabelsContainer
+ * and a vector of Label\s is returned.
  */
 class LabelsArranger
 {

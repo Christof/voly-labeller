@@ -13,8 +13,7 @@ namespace Placement
 {
 
 /**
- * \brief
- *
+ * \brief Returns the labels in an order defined by the apollonius graph
  *
  */
 class ApolloniusLabelsArranger : public LabelsArranger
