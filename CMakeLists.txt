@@ -152,7 +152,7 @@ cuda_add_executable(voly-labeller
   )
 
 
-target_link_libraries(voly-labeller ${LIBRARIES} ${ALL_TARGET_LIBRARIES} placement-lib)
+target_link_libraries(voly-labeller ${LIBRARIES} ${ALL_TARGET_LIBRARIES} placement-lib ${CUDA_DIR}/lib/x64/cudadevrt.lib)
 
 add_custom_target(valgrind valgrind -v --leak-check=full --show-leak-kinds=all --tool=memcheck --suppressions=../config/valgrind_suppressions.txt ./voly-labeller)
 add_custom_target(helgrind valgrind -v --tool=helgrind ./voly-labeller)
@@ -285,6 +285,10 @@ if (MSVC)
     DESTINATION "." 
 	FILES_MATCHING
 	PATTERN "*.dll"
+  )
+
+  install(FILES ${Clipper_INCLUDE_DIRS}/../bin/polyclipping.dll 
+    DESTINATION "." 
   )
   
   install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE} 

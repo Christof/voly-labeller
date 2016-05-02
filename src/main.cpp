@@ -17,15 +17,19 @@
  */
 void setupLogging()
 {
-#if _WIN32
+#ifdef WIN32
+  // No backtrace, no colors
   qputenv("QT_MESSAGE_PATTERN",
-    QString("%{time [yyyy'-'MM'-'dd' "
-    "'hh':'mm':'ss]} "
-    "- %{threadid} "
-    "%{if-category}%{category}: %{endif}%{message}"
-    "%{if-warning}\n\t%{file}:%{line}\n\t%{endif}"
-    "%{if-critical}\n\t%{file}:%{line}\n\t%{endif}"
-    ).toUtf8());
+          QString("%{time [yyyy'-'MM'-'dd' "
+                  "'hh':'mm':'ss]} "
+                  "%{if-fatal}%{endif}"
+                  "%{if-critical}%{endif}"
+                  "%{if-warning}%{endif}"
+                  "%{if-info}%{endif}"
+                  "- %{threadid} "
+                  "%{if-category}%{category}: %{endif}%{message}"
+                  "%{if-warning}\n\t%{file}:%{line}%{endif}"
+                  "%{if-critical}\n\t%{file}:%{line} %{endif}").toUtf8());
 #else
   qputenv("QT_MESSAGE_PATTERN",
           QString("%{time [yyyy'-'MM'-'dd' "
@@ -43,7 +47,6 @@ void setupLogging()
 #endif
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
-
 }
 
 void setupCuda()

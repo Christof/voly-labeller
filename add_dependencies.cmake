@@ -135,7 +135,7 @@ if(UNIX)
   include_directories(${ASSIMP_INCLUDE_DIRS})
   list(APPEND LIBRARIES ${ASSIMP_LIBRARIES})
 else()
-  set(ASSIMP_DIR $ENV{ASSIMP_ROOT})
+  set(ASSIMP_DIR $ENV{ASSIMP_ROOT} $ENV{ASSIMP_DIR})
   #message(STATUS "ASSIMP_DIR: ${ASSIMP_DIR}")
   FIND_PATH(
     assimp_INCLUDE_DIRS
@@ -235,9 +235,36 @@ find_package(Clipper REQUIRED)
 include_directories(${Clipper_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Clipper_LIBRARIES})
 
-if(MSVC)
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /arch:AVX2 /FS /MP /openmp")
-  add_definitions("-D_USE_MATH_DEFINES")
+if(MSVC) 
+	try_run(CPU_TEST_RUN_RESULT_VAR CPU_TEST_COMPILE_RESULT_VAR
+		${CMAKE_BINARY_DIR}
+		${CMAKE_SOURCE_DIR}/scripts/cpu_test.cpp
+		RUN_OUTPUT_VARIABLE CPU_TEST_OUTPUT
+	)
+    #message(STATUS "CPU_TEST_RUN_RESULT_VAR: ${CPU_TEST_RUN_RESULT_VAR}")
+	#message(STATUS "CPU_TEST_OUTPUT: ${CPU_TEST_OUTPUT}")
+	
+	list(FIND CPU_TEST_OUTPUT "SSE2" HAS_SSE2)	
+	list(FIND CPU_TEST_OUTPUT "USE_AVX" HAS_AVX)
+	if (${HAS_SSE2} GREATER -1) 
+	set(HAS_SSE2 true) 
+	else() 
+	set(HAS_SSE2 false) 
+	endif()
+	if (${HAS_AVX} GREATER -1) 
+	set(HAS_AVX true) 
+	else() 
+	set(HAS_AVX false) 
+	endif()
+
+	#message(STATUS "SSE2: ${HAS_SSE2}   USE_AVX: ${HAS_AVX}")
+	if (HAS_AVX)
+	    message(STATUS "Has AVX") 
+		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /arch:AVX2 /FS /MP /openmp")
+	else()
+		set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /FS /MP /openmp")
+	endif()
+	add_definitions("-D_USE_MATH_DEFINES")
 else()
   #  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
   set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC  -Wno-unused-local-typedefs")
