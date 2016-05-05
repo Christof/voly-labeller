@@ -11,13 +11,27 @@ VideoRecorder::VideoRecorder(double fps) : fps(fps)
 
 VideoRecorder::~VideoRecorder()
 {
-  qCInfo(videoRecorderChan) << "Destructor";
+  qCInfo(videoRecorderChan) << "Destructor"
+                            << "isRecording:" << isRecording;
   if (isRecording)
     stopRecording();
 
   if (videoTimer.get())
     disconnect(videoTimer.get(), &QTimer::timeout, this,
                &VideoRecorder::updateVideoTimer);
+
+  if (videoRecorder.get())
+  {
+    videoRecorder->stopRecording();
+    qCInfo(videoRecorderChan)
+        << "number of elapsed frames:" << videoRecorder->nbFramesElapsed();
+    qCInfo(videoRecorderChan)
+        << "number of stored frames:" << videoRecorder->nbFramesStored();
+    qCInfo(videoRecorderChan) << "number of frames lost in capture:"
+                              << videoRecorder->nbFramesLostInCapture();
+    qCInfo(videoRecorderChan) << "number of frames lost in encoding:"
+                              << videoRecorder->nbFramesLostInEncoding();
+  }
 }
 
 void VideoRecorder::initialize(Graphics::Gl *gl)
