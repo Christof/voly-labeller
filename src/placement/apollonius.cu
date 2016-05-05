@@ -11,7 +11,6 @@
 #include <thrust/unique.h>
 #include <vector>
 #include "../utils/cuda_helper.h"
-#include <qglobal.h>
 
 __global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
                      float4 *seedBuffer, int *computePtr, int *idPtr,
