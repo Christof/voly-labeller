@@ -5,17 +5,13 @@
 #include <iostream>
 
 Camera::Camera()
-  : 
-  origin(0.0f, 0.0f, 0.0f), 
-  position(0.0f, 0.0f, -1.0f),
-  direction(0.0f, 0.0f, 1.0f),
-  up(0.0f, 1.0f, 0.0f),
-  radius(1.0f), 
-  azimuth(static_cast<float>(-M_PI / 2.0)), 
-  declination(0.0f)
+  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, -1.0f),
+    direction(0.0f, 0.0f, 1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
+    azimuth(static_cast<float>(-M_PI / 2.0)), declination(0.0f)
 {
-  projection = createProjection(fieldOfView, aspectRatio, near, far);
-  // projection = createOrthographicProjection(aspectRatio, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
+  // projection = createOrthographicProjection(aspectRatio, nearPlane,
+  // farPlane);
 
   update();
 }
@@ -48,7 +44,8 @@ Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
   result(1, 1) = static_cast<float>(1.0 / (tanHalfFovy));
   result(2, 2) = -(farPlane + nearPlane) / (farPlane - nearPlane);
   result(3, 2) = -1.0;
-  result(2, 3) = static_cast<float>(-(2.0 * farPlane * nearPlane) / (farPlane - nearPlane));
+  result(2, 3) = static_cast<float>(-(2.0 * farPlane * nearPlane) /
+                                    (farPlane - nearPlane));
 
   return result;
 }
@@ -176,12 +173,12 @@ void Camera::resize(float width, float height)
   projection = createProjection(fieldOfView, aspectRatio, 0.1f, 100.0f);
 }
 
-void Camera::updateNearAndFarPlanes(float near, float far)
+void Camera::updateNearAndFarPlanes(float nearPlane, float farPlane)
 {
-  this->near = near;
-  this->far = far;
+  this->nearPlane = nearPlane;
+  this->farPlane = farPlane;
 
-  projection = createProjection(fieldOfView, aspectRatio, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
 }
 
 bool Camera::needsResizing()

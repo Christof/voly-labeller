@@ -36,13 +36,13 @@ class Camera
 
   void resize(float width, float height);
 
-  void updateNearAndFarPlanes(float near, float far);
+  void updateNearAndFarPlanes(float nearPlane, float farPlane);
 
   bool needsResizing();
 
  private:
-  float m_near = 0.1f;
-  float m_far = 5.0f;
+  float nearPlane = 0.1f;
+  float farPlane = 5.0f;
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
 

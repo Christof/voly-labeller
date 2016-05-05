@@ -31,17 +31,17 @@ void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
     }
   }
 
-  m_near = std::max(0.001f, -fmax - 0.1f);
-  m_far = -fmin + 0.1f;
+  nearPlane = std::max(0.001f, -fmax - 0.1f);
+  farPlane = -fmin + 0.1f;
 }
 
 float FrustumOptimizer::getNear()
 {
-  return m_near;
+  return nearPlane;
 }
 
 float FrustumOptimizer::getFar()
 {
-  return m_far;
+  return farPlane;
 }
 
