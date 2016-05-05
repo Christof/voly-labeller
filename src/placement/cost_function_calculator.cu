@@ -23,13 +23,6 @@ struct EvalResult
   int x, y;
 
   float cost;
-
-  bool operator<(const EvalResult &other)
-  {
-    //return thrust::min<float>(this->cost, other.cost);
-    // FIXME: the line above does not seem to be correct!
-    return (this->cost < other.cost);
-  }
 };
 
 __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
