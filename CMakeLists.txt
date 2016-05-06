@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS_ADDRESS "${CMAKE_CXX_FLAGS} -O1 -g -fsanitize=address -fsani
   "Flags used by the C++ compiler during address sanitization builds." FORCE)
 
 set(CMAKE_CXX_FLAGS_COV "${CMAKE_CXX_FLAGS} -O0 -g --coverage -fprofile-arcs -ftest-coverage" CACHE STRING
-    "Flags used by the C++ compiler during coverage builds for GCC." FORCE)
+  "Flags used by the C++ compiler during coverage builds for GCC." FORCE)
 
 set(SOURCES
   src/application.cpp
@@ -122,27 +122,27 @@ set(ALL_TARGET_LIBRARIES)
 if (MSVC)
   set(ALL_TARGET_OBJECTS
     ${ALL_TARGET_OBJECTS}
-	$<TARGET_OBJECTS:voly-labeller-lib>
-	)
+    $<TARGET_OBJECTS:voly-labeller-lib>
+    )
   set(ALL_TARGET_LIBRARIES
     ${ALL_TARGET_LIBRARIES}
-	#voly-labeller-lib
-	input
-	utils
-	labelling
-	forces
-	math
-	)
+    #voly-labeller-lib
+    input
+    utils
+    labelling
+    forces
+    math
+    )
 else()
   set(ALL_TARGET_OBJECTS
     ${ALL_TARGET_OBJECTS}
-	$<TARGET_OBJECTS:voly-labeller-lib>
+    $<TARGET_OBJECTS:voly-labeller-lib>
     $<TARGET_OBJECTS:input>
     $<TARGET_OBJECTS:utils>
     $<TARGET_OBJECTS:labelling>
     $<TARGET_OBJECTS:forces>
     $<TARGET_OBJECTS:math>
-	)
+    )
 endif()
 
 cuda_add_executable(voly-labeller
@@ -198,8 +198,8 @@ if (MSVC)
     ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS}
     DESTINATION "."
     COMPONENT Runtime
-  )
-  
+    )
+
   GET_FILENAME_COMPONENT(CUDA_DIR [HKEY_LOCAL_MACHINE\\SOFTWARE\\NVIDIA\ Corporation\\GPU\ Computing\ Toolkit\\CUDA\\v7.5;InstallDir] REALPATH CACHE)
   if(VOLY_WIN32)
     set(machine_type "x86")
@@ -210,11 +210,11 @@ if (MSVC)
   if(NOT EXISTS ${CUDA_DIR})
     message(" CUDA Toolkit directory not found: ${CUDA_DIR}")
   else()
-  MESSAGE("  - ${CUDA_DIR}/bin/cudart64_75.dll")
-    INSTALL(FILES "${CUDA_DIR}/bin/cudart64_75.dll" 
-	  DESTINATION "." 
-	  COMPONENT Runtime
-	)
+    MESSAGE("  - ${CUDA_DIR}/bin/cudart64_75.dll")
+    INSTALL(FILES "${CUDA_DIR}/bin/cudart64_75.dll"
+      DESTINATION "."
+      COMPONENT Runtime
+      )
   endif()
   get_target_property(QtCore_location Qt5::Core LOCATION)
   get_target_property(QtWidgets_location Qt5::Widgets LOCATION)
@@ -224,7 +224,7 @@ if (MSVC)
   get_target_property(QtNetwork_location Qt5::Network LOCATION)
   get_target_property(QtQml_location Qt5::Qml LOCATION)
   get_target_property(QtQuick_location Qt5::Quick LOCATION)
-  
+
   get_target_property(QtCore_locationd Qt5::Core LOCATION_DEBUG)
   get_target_property(QtWidgets_locationd Qt5::Widgets LOCATION_DEBUG)
   get_target_property(QtOpenGL_locationd Qt5::OpenGL LOCATION_DEBUG)
@@ -233,74 +233,74 @@ if (MSVC)
   get_target_property(QtNetwork_locationd Qt5::Network LOCATION_DEBUG)
   get_target_property(QtQml_locationd Qt5::Qml LOCATION_DEBUG)
   get_target_property(QtQuick_locationd Qt5::Quick LOCATION_DEBUG)
-  
+
   get_filename_component(Qt5_DLL_Path ${QtCore_location} PATH)
   get_filename_component(Qt5_plugin_Path "${Qt5_DLL_Path}/../plugins/platforms/" ABSOLUTE PATH)
   get_filename_component(Qt5_imageformats_Path "${Qt5_DLL_Path}/../plugins/imageformats/" ABSOLUTE PATH)
   message("Qt5 plugin path: ${Qt5_plugin_Path}")
-  
+
   set(Qt5_Dependency_DLLS
     "${Qt5_DLL_Path}/icuin54.dll"
-	"${Qt5_DLL_Path}/icuuc54.dll"
-	"${Qt5_DLL_Path}/icudt54.dll"
-  )
+    "${Qt5_DLL_Path}/icuuc54.dll"
+    "${Qt5_DLL_Path}/icudt54.dll"
+    )
   set(Qt5_Platforms_Dependency_DLLS
-	"${Qt5_plugin_Path}/qwindows.dll"
-	"${Qt5_plugin_Path}/qwindowsd.dll"
-  )
+    "${Qt5_plugin_Path}/qwindows.dll"
+    "${Qt5_plugin_Path}/qwindowsd.dll"
+    )
   set(Qt5_Imageformats_Dependency_DLLS
-	"${Qt5_imageformats_Path}/qgif.dll"
-	"${Qt5_imageformats_Path}/qico.dll"
-	"${Qt5_imageformats_Path}/qjpeg.dll"
-	"${Qt5_imageformats_Path}/qtiff.dll"
-  )
+    "${Qt5_imageformats_Path}/qgif.dll"
+    "${Qt5_imageformats_Path}/qico.dll"
+    "${Qt5_imageformats_Path}/qjpeg.dll"
+    "${Qt5_imageformats_Path}/qtiff.dll"
+    )
   install(TARGETS voly-labeller
     RUNTIME DESTINATION "."
-  )
-  
+    )
+
   install(FILES
-    ${QtCore_location} ${QtCore_locationd} 
+    ${QtCore_location} ${QtCore_locationd}
     ${QtWidgets_location} ${QtWidgets_locationd}
     ${QtOpenGL_location} ${QtOpenGL_locationd}
     ${QtGui_location} ${QtGui_locationd}
     ${QtXml_location} ${QtXml_locationd}
-	${QtNetwork_location} ${QtNetwork_locationd} 
-	${QtQml_location} ${QtQml_locationd}
-	${QtQuick_location} ${QtQuick_locationd}
-	${Qt5_Dependency_DLLS}
+    ${QtNetwork_location} ${QtNetwork_locationd}
+    ${QtQml_location} ${QtQml_locationd}
+    ${QtQuick_location} ${QtQuick_locationd}
+    ${Qt5_Dependency_DLLS}
     DESTINATION "."
-  )
+    )
   install(FILES
     ${Qt5_Platforms_Dependency_DLLS}
-	DESTINATION "platforms"
-  )
-  
+    DESTINATION "platforms"
+    )
+
   install(FILES
     ${Qt5_Imageformats_Dependency_DLLS}
-	DESTINATION "imageformats"
-  )
-  
+    DESTINATION "imageformats"
+    )
+
   message(STATUS "lib dir assimp: ${ASSIMP_LIBRARIES_DIR}")
   install(DIRECTORY ${ASSIMP_LIBRARIES_DIR}/
-    DESTINATION "." 
-	FILES_MATCHING
-	PATTERN "*.dll"
-  )
+    DESTINATION "."
+    FILES_MATCHING
+    PATTERN "*.dll"
+    )
 
-  install(FILES ${Clipper_INCLUDE_DIRS}/../bin/polyclipping.dll 
-    DESTINATION "." 
-  )
-  
-  install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE} 
-    DESTINATION "." 
-	FILES_MATCHING
-	PATTERN "*.dll"
-  )
-  
+  install(FILES ${Clipper_INCLUDE_DIRS}/../bin/polyclipping.dll
+    DESTINATION "."
+    )
+
+  install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE}
+    DESTINATION "."
+    FILES_MATCHING
+    PATTERN "*.dll"
+    )
+
   install(DIRECTORY ${ITK_DIR}/../../../bin/
     DESTINATION "."
     FILES_MATCHING
-	PATTERN "*.dll"	
-  )
-  
+    PATTERN "*.dll"
+    )
+
 endif()
