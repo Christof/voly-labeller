@@ -51,8 +51,9 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
 
   return ObjectData(nextFreeId++, bufferInformation.vertexBufferOffset,
-                    bufferInformation.indexBufferOffset, static_cast<int>(indices.size()),
-                    shaderProgramId, primitiveType);
+                    bufferInformation.indexBufferOffset,
+                    static_cast<int>(indices.size()), shaderProgramId,
+                    primitiveType);
 }
 
 ObjectData ObjectManager::cloneForDifferentShader(const ObjectData &object,

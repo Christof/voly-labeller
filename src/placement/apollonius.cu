@@ -103,7 +103,8 @@ __global__ void apolloniusStep(cudaTextureObject_t distances, int *data,
 }
 
 /**
- * Taken from http://stackoverflow.com/questions/20792445/calculate-rgb-value-for-a-range-of-values-to-create-heat-map
+ * Taken from http://stackoverflow.com/questions/20792445/
+ * calculate-rgb-value-for-a-range-of-values-to-create-heat-map
  */
 __device__ float4 rgb(int maxValue, int value)
 {
@@ -257,7 +258,8 @@ namespace Placement
     cudaCreateSurfaceObject(&outputSurface, &resDesc);
 
     dimBlock = dim3(32, 32, 1);
-    dimGrid = dim3(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
+    dimGrid = dim3(divUp(imageSize, dimBlock.x),
+        divUp(imageSize, dimBlock.y), 1);
 
     runSeedKernel();
     runStepsKernels();

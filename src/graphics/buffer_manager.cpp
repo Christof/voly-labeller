@@ -93,7 +93,8 @@ BufferInformation BufferManager::addObject(const std::vector<float> &vertices,
              static_cast<float>(texCoordBuffer.getComponentCount()));
 
   BufferInformation bufferInformation;
-  int vertexCount = static_cast<int>(vertices.size() / positionBuffer.getComponentCount());
+  int vertexCount =
+      static_cast<int>(vertices.size() / positionBuffer.getComponentCount());
 
   bool verticesReserved = vertexBufferManager.reserve(
       vertexCount, bufferInformation.vertexBufferOffset);

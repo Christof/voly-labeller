@@ -8,7 +8,6 @@
 #include <tuple>
 #include "./placement.h"
 
-
 struct EvalResult
 {
   __host__ __device__ EvalResult()
@@ -172,17 +171,17 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
 
-  CostEvaluator costEvaluator(textureWidth, textureHeight, weights,
-                              Placement::labelShadowValue,
-                              Placement::connectorShadowValue,
-                              Placement::anchorConstraintValue);
+  CostEvaluator costEvaluator(
+      textureWidth, textureHeight, weights, Placement::labelShadowValue,
+      Placement::connectorShadowValue, Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
-  costEvaluator.occupancy =
-      thrust::raw_pointer_cast(integralCosts.data());
+  costEvaluator.occupancy = thrust::raw_pointer_cast(integralCosts.data());
   costEvaluator.constraints = constraints;
-  costEvaluator.halfLabelWidth = static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
-  costEvaluator.halfLabelHeight = static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
+  costEvaluator.halfLabelWidth =
+      static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
+  costEvaluator.halfLabelHeight =
+      static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;
