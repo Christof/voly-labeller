@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4522 4996 4267)
+#pragma warning(disable : 4522 4996 4267)
 #endif
 
 #include "./scene.h"
@@ -211,15 +211,15 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   renderQuad(quad, transformation.matrix());
 
   fbo->bindDepthTexture(GL_TEXTURE0);
-  transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8f, -0.8f, 0.0f)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
+  transformation = Eigen::Affine3f(
+      Eigen::Translation3f(Eigen::Vector3f(-0.8f, -0.8f, 0.0f)) *
+      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   textureMapperManager->bindOcclusionTexture();
-  transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4f, -0.8f, 0.0f)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
+  transformation = Eigen::Affine3f(
+      Eigen::Translation3f(Eigen::Vector3f(-0.4f, -0.8f, 0.0f)) *
+      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;

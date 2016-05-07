@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4522)
+#pragma warning(disable : 4522)
 #endif
 
 #include "./volume_manager.h"

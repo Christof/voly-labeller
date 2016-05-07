@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4267 4996)
+#pragma warning(disable : 4267 4996)
 #endif
 #if _WIN32
 // does not compile

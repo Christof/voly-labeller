@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4267 4244)
+#pragma warning(disable : 4267 4244)
 #endif
 
 #include "./cost_function_calculator.h"

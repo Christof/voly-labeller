@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4244 4267)
+#pragma warning(disable : 4244 4267)
 #endif
 
 #include "./distance_transform.h"

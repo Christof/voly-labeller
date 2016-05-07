@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4267)
+#pragma warning(disable : 4267)
 #endif
 
 #include "./to_gray.h"

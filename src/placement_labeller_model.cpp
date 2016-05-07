@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4996 4267 4996)
+#pragma warning(disable : 4996 4267)
 #endif
 
 #include "./placement_labeller_model.h"
@@ -100,7 +100,6 @@ void PlacementLabellerModel::toggleVisibility()
   isVisible = !isVisible;
   emit isVisibleChanged();
 }
-
 
 QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
 {

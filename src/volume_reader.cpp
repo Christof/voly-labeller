@@ -1,5 +1,5 @@
 #if _WIN32
-#pragma warning (disable: 4996)
+#pragma warning(disable : 4996)
 #endif
 
 #include "./volume_reader.h"
