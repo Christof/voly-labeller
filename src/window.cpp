@@ -63,7 +63,7 @@ void Window::initializeOpenGL()
 
   gl = new Graphics::Gl();
   gl->initialize(context, size());
-  
+
   logger = new QOpenGLDebugLogger(context);
   connect(context, &QOpenGLContext::aboutToBeDestroyed, this,
           &Window::contextAboutToBeDestroyed, Qt::DirectConnection);
