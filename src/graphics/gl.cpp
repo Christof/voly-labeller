@@ -6,7 +6,6 @@
 namespace Graphics
 {
 
-// QLoggingCategory openGlChan("OpenGl");
 Q_LOGGING_CATEGORY(openGlChan, "OpenGL");
 
 Gl::Gl()
