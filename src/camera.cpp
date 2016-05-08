@@ -38,14 +38,13 @@ Camera::~Camera()
 Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
                                          float nearPlane, float farPlane)
 {
-  double tanHalfFovy = tan(fov / 2.0);
+  float tanHalfFovy = tan(fov / 2.0f);
   Eigen::Matrix4f result = Eigen::Matrix4f::Zero();
-  result(0, 0) = static_cast<float>(1.0 / (aspectRatio * tanHalfFovy));
-  result(1, 1) = static_cast<float>(1.0 / (tanHalfFovy));
+  result(0, 0) = 1.0f / (aspectRatio * tanHalfFovy);
+  result(1, 1) = 1.0f / (tanHalfFovy);
   result(2, 2) = -(farPlane + nearPlane) / (farPlane - nearPlane);
-  result(3, 2) = -1.0;
-  result(2, 3) = static_cast<float>(-(2.0 * farPlane * nearPlane) /
-                                    (farPlane - nearPlane));
+  result(3, 2) = -1.0f;
+  result(2, 3) = -(2.0f * farPlane * nearPlane) / (farPlane - nearPlane);
 
   return result;
 }
