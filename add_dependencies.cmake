@@ -218,22 +218,6 @@ find_package(Boost 1.58.0 COMPONENTS date_time timer filesystem system serializa
 include_directories(${Boost_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Boost_LIBRARIES})
 
-find_package(ITK 4.5 REQUIRED)
-include(${ITK_USE_FILE})
-if(MSVC)
-else()
-  if(CMAKE_COMPILER_IS_GNUCC)
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
-      add_definitions("-DVCL_CAN_STATIC_CONST_INIT_FLOAT=0")
-    endif()
-  endif()
-
-  add_definitions("-DVCL_NEEDS_INLINE_INSTANTIATION=0")
-  add_definitions("-D_MWAITXINTRIN_H_INCLUDED")
-  add_definitions("-D_FORCE_INLINES")
-endif()
-list(APPEND LIBRARIES ${ITK_LIBRARIES})
-
 find_package(ImageMagick REQUIRED COMPONENTS Magick++)
 include_directories(${ImageMagick_INCLUDE_DIRS})
 if(UNIX)
@@ -247,40 +231,7 @@ find_package(Clipper REQUIRED)
 include_directories(${Clipper_INCLUDE_DIR})
 list(APPEND LIBRARIES ${Clipper_LIBRARIES})
 
-if(MSVC)
-  try_run(CPU_TEST_RUN_RESULT_VAR CPU_TEST_COMPILE_RESULT_VAR
-    ${CMAKE_BINARY_DIR}
-    ${CMAKE_SOURCE_DIR}/scripts/cpu_test.cpp
-    RUN_OUTPUT_VARIABLE CPU_TEST_OUTPUT
-    )
-  #message(STATUS "CPU_TEST_RUN_RESULT_VAR: ${CPU_TEST_RUN_RESULT_VAR}")
-  #message(STATUS "CPU_TEST_OUTPUT: ${CPU_TEST_OUTPUT}")
-
-  list(FIND CPU_TEST_OUTPUT "SSE2" HAS_SSE2)
-  list(FIND CPU_TEST_OUTPUT "USE_AVX" HAS_AVX)
-  if (${HAS_SSE2} GREATER -1)
-    set(HAS_SSE2 true)
-  else()
-    set(HAS_SSE2 false)
-  endif()
-  if (${HAS_AVX} GREATER -1)
-    set(HAS_AVX true)
-  else()
-    set(HAS_AVX false)
-  endif()
-
-  #message(STATUS "SSE2: ${HAS_SSE2}   USE_AVX: ${HAS_AVX}")
-  if (HAS_AVX)
-    message(STATUS "Has AVX")
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /arch:AVX2 /FS /MP /openmp")
-  else()
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /FS /MP /openmp")
-  endif()
-  add_definitions("-D_USE_MATH_DEFINES")
-else()
-  #  -Wno-unused-local-typedefs is just because of ITK 4.5 with 4.7 it is not necessary any more
-  set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC  -Wno-unused-local-typedefs")
-endif()
+set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Werror -g -fPIC")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(CMAKE_AUTORCC ON) needs cmake 3.2.1

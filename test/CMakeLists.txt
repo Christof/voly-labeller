@@ -12,6 +12,8 @@ set(CMAKE_AUTOMOC ON)
 
 qt5_add_resources(RESOURCES ../src/resources.qrc)
 
+include("${CMAKE_SOURCE_DIR}/add_itk.cmake")
+
 file(GLOB_RECURSE TESTS ${CMAKE_CURRENT_SOURCE_DIR}**/*.c*)
 cuda_add_executable(tests ${TESTS} ${SOURCES}
   $<TARGET_OBJECTS:voly-labeller-lib>
@@ -26,6 +28,7 @@ target_link_libraries(tests
   ${GTEST_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${LIBRARIES}
+  ${ITK_LIBRARIES}
   placement-lib
   volyvideomodule
   -lpthread
