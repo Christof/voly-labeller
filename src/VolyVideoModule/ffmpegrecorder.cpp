@@ -8,13 +8,12 @@
 #pragma warning(disable: 4267)
 #endif
 
-FFMPEGRecorder::FFMPEGRecorder(int width,int height, int channels, bool splithorizontal, const std::string &fn, const double fps) :
+FFMPEGRecorder::FFMPEGRecorder(int width,int height, int channels, const std::string &fn, const double fps) :
   good(false),
   initialized(false),
   error_message("not initialized"),
   video_width(width),
   video_height(height),
-  video_splithorizontal(splithorizontal),
   m_file_name(""),
   m_channels(channels)
 
@@ -78,7 +77,7 @@ bool FFMPEGRecorder::startRecording()
     }
 
     qDebug() <<" starting recording" << video_width << "x" << video_height;
-    mpeg_file.push_back(new ffmpeg_encoder(video_width, video_height, video_splithorizontal, fnx .c_str(), m_fps));
+    mpeg_file.push_back(new ffmpeg_encoder(video_width, video_height, fnx .c_str(), m_fps));
   }
 
   nb_frames_elapsed=0;

@@ -12,7 +12,7 @@ struct SwsContext;
 class VOLYVIDEOMODULE_API ffmpeg_encoder
 {
 public:
-  ffmpeg_encoder(int width, int height, bool splithorizontal, const QString &filename, const double fps);
+  ffmpeg_encoder(int width, int height, const QString &filename, const double fps);
   virtual ~ffmpeg_encoder();
 
   void addFrame(unsigned char* buffer);
@@ -21,7 +21,6 @@ public:
 private:
   int m_width;
   int m_height;
-  bool m_splithorizontal;
   QString m_filename;
   int m_framecount;
   AVCodec * m_codec;

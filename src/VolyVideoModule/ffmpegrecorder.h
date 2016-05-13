@@ -19,7 +19,7 @@ public:
   // enumerations
   enum DvrStatus { DVR_READY, DVR_RECORDING, DVR_RECORD_DONE, DVR_STOP_ASKED };
 
-  FFMPEGRecorder(int width, int height, int channels, bool splithorizontal, const std::string &fn, const double fps = 25.0);
+  FFMPEGRecorder(int width, int height, int channels, const std::string &fn, const double fps = 25.0);
   ~FFMPEGRecorder();
 
   bool isGood() const { return good; }

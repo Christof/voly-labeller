@@ -17,10 +17,9 @@ extern "C" {
 
 bool ffmpeg_encoder::isStaticInit = false;
 
-ffmpeg_encoder::ffmpeg_encoder(int width, int height, bool splithorizontal, const QString &filename, const double fps) :
+ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, const double fps) :
     m_width(width),
     m_height(height),
-    m_splithorizontal(splithorizontal),
     m_filename(filename),
     m_framecount(0),
     m_codec(NULL),

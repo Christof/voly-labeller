@@ -59,8 +59,9 @@ void VideoRecorder::createNewVideo(std::string filename)
   }
 
   pixelBuffer.resize(videoWidth * videoHeight * 3);
-  videoRecorder = std::make_unique<FFMPEGRecorder>(videoWidth, videoHeight, 1,
-                                                   true, filename, fps);
+  const int channels = 1;
+  videoRecorder = std::make_unique<FFMPEGRecorder>(
+      videoWidth, videoHeight, channels, filename, fps);
 
   videoRecorder->startRecording();
   videoTimer = std::make_unique<QTimer>(this);
