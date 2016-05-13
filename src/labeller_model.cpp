@@ -21,7 +21,7 @@ QHash<int, QByteArray> LabellerModel::roleNames() const
 int LabellerModel::rowCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
-  return labeller->forces.size();
+  return static_cast<int>(labeller->forces.size());
 }
 
 int LabellerModel::columnCount(const QModelIndex &parent) const

@@ -5,11 +5,13 @@
 #include <iostream>
 
 Camera::Camera()
-  : origin(0, 0, 0), position(0, 0, -1), direction(0, 0, 1), up(0, 1, 0),
-    radius(1.0f), azimuth(-M_PI / 2.0f), declination(0)
+  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, -1.0f),
+    direction(0.0f, 0.0f, 1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
+    azimuth(static_cast<float>(-M_PI / 2.0)), declination(0.0f)
 {
-  projection = createProjection(fieldOfView, aspectRatio, near, far);
-  // projection = createOrthographicProjection(aspectRatio, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
+  // projection = createOrthographicProjection(aspectRatio, nearPlane,
+  // farPlane);
 
   update();
 }
@@ -36,13 +38,13 @@ Camera::~Camera()
 Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
                                          float nearPlane, float farPlane)
 {
-  double tanHalfFovy = tan(fov / 2.0);
+  float tanHalfFovy = tan(fov / 2.0f);
   Eigen::Matrix4f result = Eigen::Matrix4f::Zero();
-  result(0, 0) = 1.0 / (aspectRatio * tanHalfFovy);
-  result(1, 1) = 1.0 / (tanHalfFovy);
+  result(0, 0) = 1.0f / (aspectRatio * tanHalfFovy);
+  result(1, 1) = 1.0f / (tanHalfFovy);
   result(2, 2) = -(farPlane + nearPlane) / (farPlane - nearPlane);
-  result(3, 2) = -1.0;
-  result(2, 3) = -(2.0 * farPlane * nearPlane) / (farPlane - nearPlane);
+  result(3, 2) = -1.0f;
+  result(2, 3) = -(2.0f * farPlane * nearPlane) / (farPlane - nearPlane);
 
   return result;
 }
@@ -126,7 +128,7 @@ void Camera::update()
                              sin(azimuth) * cos(declination)) *
                  radius;
   direction = (origin - position).normalized();
-  float upDeclination = declination - M_PI / 2.0f;
+  float upDeclination = declination - static_cast<float>(M_PI / 2.0);
   up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
                         sin(azimuth) * cos(upDeclination)).normalized();
 
@@ -170,12 +172,12 @@ void Camera::resize(float width, float height)
   projection = createProjection(fieldOfView, aspectRatio, 0.1f, 100.0f);
 }
 
-void Camera::updateNearAndFarPlanes(float near, float far)
+void Camera::updateNearAndFarPlanes(float nearPlane, float farPlane)
 {
-  this->near = near;
-  this->far = far;
+  this->nearPlane = nearPlane;
+  this->farPlane = farPlane;
 
-  projection = createProjection(fieldOfView, aspectRatio, near, far);
+  projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
 }
 
 bool Camera::needsResizing()

@@ -36,13 +36,13 @@ class Camera
 
   void resize(float width, float height);
 
-  void updateNearAndFarPlanes(float near, float far);
+  void updateNearAndFarPlanes(float nearPlane, float farPlane);
 
   bool needsResizing();
 
  private:
-  float near = 0.1f;
-  float far = 5.0f;
+  float nearPlane = 0.1f;
+  float farPlane = 5.0f;
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
 
@@ -55,7 +55,7 @@ class Camera
   float azimuth;
   float declination;
 
-  float fieldOfView = 0.5 * M_PI;
+  float fieldOfView = static_cast<float>(0.5f * M_PI);
   float aspectRatio = 0.0f;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,

@@ -7,6 +7,10 @@
 #include "../utils/cuda_array_provider.h"
 #include "./placement.h"
 
+#if _WIN32
+#pragma warning(disable : 4267)
+#endif
+
 namespace Placement
 {
 
@@ -48,10 +52,10 @@ class CostFunctionCalculator
   void resize(int width, int height);
   void setTextureSize(int width, int height);
 
-  std::tuple<float, float> calculateForLabel(
-      const thrust::device_vector<float> &integralCosts, int labelId,
-      float anchorX, float anchorY, int labelWidthInPixel,
-      int labelHeightInPixel);
+  std::tuple<float, float>
+  calculateForLabel(const thrust::device_vector<float> &integralCosts,
+                    int labelId, float anchorX, float anchorY,
+                    int labelWidthInPixel, int labelHeightInPixel);
 
   CostFunctionWeights weights;
 

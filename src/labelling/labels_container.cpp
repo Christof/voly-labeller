@@ -16,7 +16,7 @@ Label LabelsContainer::getById(int id)
 
 int LabelsContainer::count()
 {
-  return labels.size();
+  return static_cast<int>(labels.size());
 }
 
 void LabelsContainer::clear()

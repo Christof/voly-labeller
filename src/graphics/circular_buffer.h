@@ -2,6 +2,7 @@
 
 #define SRC_GRAPHICS_CIRCULAR_BUFFER_H_
 
+#include <cassert>
 #include "./gl.h"
 #include "./mapped_buffer.h"
 

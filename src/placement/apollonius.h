@@ -1,6 +1,9 @@
 #ifndef SRC_PLACEMENT_APOLLONIUS_H_
 
 #define SRC_PLACEMENT_APOLLONIUS_H_
+#if _WIN32
+// disabled
+#else
 
 #include <thrust/device_vector.h>
 #include <Eigen/Core>
@@ -79,4 +82,6 @@ class Apollonius
 };
 
 }  // namespace Placement
+#endif
+
 #endif  // SRC_PLACEMENT_APOLLONIUS_H_

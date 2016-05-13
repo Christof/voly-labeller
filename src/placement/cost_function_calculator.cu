@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning(disable : 4267 4244)
+#endif
+
 #include "./cost_function_calculator.h"
 #include <thrust/transform_reduce.h>
 #include <limits>
@@ -18,11 +22,6 @@ struct EvalResult
   int x, y;
 
   float cost;
-
-  bool operator<(const EvalResult &other)
-  {
-    return thrust::min<float>(this->cost, other.cost);
-  }
 };
 
 __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
@@ -172,17 +171,17 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
 
-  CostEvaluator costEvaluator(textureWidth, textureHeight, weights,
-                              Placement::labelShadowValue,
-                              Placement::connectorShadowValue,
-                              Placement::anchorConstraintValue);
+  CostEvaluator costEvaluator(
+      textureWidth, textureHeight, weights, Placement::labelShadowValue,
+      Placement::connectorShadowValue, Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
-  costEvaluator.occupancy =
-      thrust::raw_pointer_cast(integralCosts.data());
+  costEvaluator.occupancy = thrust::raw_pointer_cast(integralCosts.data());
   costEvaluator.constraints = constraints;
-  costEvaluator.halfLabelWidth = labelWidthInPixel * 0.5f * widthFactor;
-  costEvaluator.halfLabelHeight = labelHeightInPixel * 0.5f * heightFactor;
+  costEvaluator.halfLabelWidth =
+      static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
+  costEvaluator.halfLabelHeight =
+      static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;

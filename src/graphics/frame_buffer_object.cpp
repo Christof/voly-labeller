@@ -40,7 +40,7 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
-  std::vector<GLenum> drawBuffers(layerCount);
+  std::vector<GLenum> drawBuffers(layerCount + 1);
   for (int i = 0; i < layerCount + 1; ++i)
     drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
   glAssert(gl->glDrawBuffers(layerCount + 1, drawBuffers.data()));

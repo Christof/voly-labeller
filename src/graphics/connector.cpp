@@ -51,7 +51,7 @@ Connector::createBuffers(std::shared_ptr<ObjectManager> objectManager,
     colors.push_back(color.z());
     colors.push_back(color.w());
 
-    indices.push_back(i);
+    indices.push_back(static_cast<int>(i));
   }
 
   int shaderProgramId =

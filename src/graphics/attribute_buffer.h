@@ -11,7 +11,8 @@ namespace Graphics
 /**
  * \brief %Buffer to store vertex attributes like positions, normals or colors
  *
- * The buffer must be initialized once using the AttributeBuffer::initialize method.
+ * The buffer must be initialized once using the AttributeBuffer::initialize
+ * method.
  * Before it is used AttributeBuffer::bindAttrib or bindAttribDivisor must be
  * called. To copy data into the buffer AttributeBuffer::setData is used.
  */
@@ -46,8 +47,8 @@ class AttributeBuffer
     assert(sizeof(T) == componentSize);
     assert(offset + (values.size() / componentCount) <= count);
 
-    const uint byteSize =
-        values.size() * componentSize;  // no Size, because vector is flat
+    const uint byteSize = static_cast<uint>(values.size()) *
+                          componentSize;  // no Size, because vector is flat
     const uint byteOffset = offset * elementSize();
 
     glAssert(gl->glNamedBufferSubData(id, byteOffset, byteSize, values.data()));

@@ -58,7 +58,8 @@ void Window::initializeOpenGL()
 {
   qCInfo(openGlChan) << "initializeOpenGL";
   context = openglContext();
-  context->makeCurrent(this);
+  bool success = context->makeCurrent(this);
+  qCInfo(openGlChan) << "success: " << success;
 
   gl = new Graphics::Gl();
   gl->initialize(context, size());

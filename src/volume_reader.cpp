@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning(disable : 4996)
+#endif
+
 #include "./volume_reader.h"
 #include <string>
 #include <itkImageFileReader.h>

@@ -47,10 +47,10 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
   renderTimer.initialize(gl);
 }
 
-void HABuffer::updateNearAndFarPlanes(float near, float far)
+void HABuffer::updateNearAndFarPlanes(float nearvalue, float farvalue)
 {
-  zNear = near;
-  zFar = far;
+  zNear = nearvalue;
+  zFar = farvalue;
 }
 
 void HABuffer::initializeBufferHash()
@@ -233,9 +233,9 @@ void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
   });
 
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
-                                      layerPlanes.size());
+                                      static_cast<int>(layerPlanes.size()));
   renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
-                                       layerZValues.size());
+                                       static_cast<int>(layerZValues.size()));
 }
 
 void HABuffer::syncAndGetCounts()

@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning(disable : 4267)
+#endif
+
 #include "./to_gray.h"
 #include "../utils/cuda_helper.h"
 

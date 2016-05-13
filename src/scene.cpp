@@ -1,3 +1,7 @@
+#if _WIN32
+#pragma warning(disable : 4522 4996 4267)
+#endif
+
 #include "./scene.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -194,47 +198,47 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   {
     fbo->bindColorTexture(i, GL_TEXTURE0);
     auto transformation = Eigen::Affine3f(
-        Eigen::Translation3f(Eigen::Vector3f(-0.8 + 0.4 * i, -0.4, 0)) *
-        Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+        Eigen::Translation3f(Eigen::Vector3f(-0.8f + 0.4f * i, -0.4f, 0)) *
+        Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
     renderQuad(quad, transformation.matrix());
   }
 
   fbo->bindAccumulatedLayersTexture(GL_TEXTURE0);
   auto transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(
-                          -0.8 + 0.4 * fbo->getLayerCount(), -0.4, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+                          -0.8f + 0.4f * fbo->getLayerCount(), -0.4f, 0.0f)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   fbo->bindDepthTexture(GL_TEXTURE0);
-  transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.8, -0.8, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  transformation = Eigen::Affine3f(
+      Eigen::Translation3f(Eigen::Vector3f(-0.8f, -0.8f, 0.0f)) *
+      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   textureMapperManager->bindOcclusionTexture();
-  transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(-0.4, -0.8, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+  transformation = Eigen::Affine3f(
+      Eigen::Translation3f(Eigen::Vector3f(-0.4f, -0.8f, 0.0f)) *
+      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
   textureMapperManager->bindSaliencyTexture();
   transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0, -0.8, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0f, -0.8f, 0.0f)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(distanceTransformQuad, transformation.matrix());
 
   textureMapperManager->bindApollonius(layerIndex);
   transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4, -0.8, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4f, -0.8f, 0.0f)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
   constraintBufferObject->bindTexture(GL_TEXTURE0);
   transformation =
-      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8, -0.8, 0)) *
-                      Eigen::Scaling(Eigen::Vector3f(0.2, 0.2, 1)));
+      Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.8f, -0.8f, 0.0f)) *
+                      Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 }
 

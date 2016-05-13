@@ -1,3 +1,4 @@
+#include <QtOpenGLExtensions>
 #include <QDebug>
 #include <cuda_runtime.h>
 #include <cuda_gl_interop.h>
@@ -15,6 +16,20 @@
  */
 void setupLogging()
 {
+#ifdef WIN32
+  // No backtrace, no colors
+  qputenv("QT_MESSAGE_PATTERN",
+          QString("%{time [yyyy'-'MM'-'dd' "
+                  "'hh':'mm':'ss]} "
+                  "%{if-fatal}%{endif}"
+                  "%{if-critical}%{endif}"
+                  "%{if-warning}%{endif}"
+                  "%{if-info}%{endif}"
+                  "- %{threadid} "
+                  "%{if-category}%{category}: %{endif}%{message}"
+                  "%{if-warning}\n\t%{file}:%{line}%{endif}"
+                  "%{if-critical}\n\t%{file}:%{line} %{endif}").toUtf8());
+#else
   qputenv("QT_MESSAGE_PATTERN",
           QString("%{time [yyyy'-'MM'-'dd' "
                   "'hh':'mm':'ss]} "
@@ -28,6 +43,7 @@ void setupLogging()
                   "separator=\"\n\t\"}%{endif}"
                   "%{if-critical}\n\t%{file}:%{line}\n\t%{backtrace depth=3 "
                   "separator=\"\n\t\"}%{endif}\033[0m").toUtf8());
+#endif
   if (qgetenv("QT_LOGGING_CONF").size() == 0)
     qputenv("QT_LOGGING_CONF", "../config/logging.ini");
 }

@@ -51,8 +51,9 @@ ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
       bufferManager->addObject(vertices, normals, colors, texCoords, indices);
 
   return ObjectData(nextFreeId++, bufferInformation.vertexBufferOffset,
-                    bufferInformation.indexBufferOffset, indices.size(),
-                    shaderProgramId, primitiveType);
+                    bufferInformation.indexBufferOffset,
+                    static_cast<int>(indices.size()), shaderProgramId,
+                    primitiveType);
 }
 
 ObjectData ObjectManager::cloneForDifferentShader(const ObjectData &object,
@@ -117,7 +118,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   bufferManager->bind();
 
   // prepare per object buffers
-  uint objectCount = objects.size();
+  uint objectCount = static_cast<uint>(objects.size());
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
   int customBufferSize = objects[0].getCustomBufferSize() * objectCount;

@@ -14,5 +14,9 @@ set(SOURCES
   lines_crossing_force.cpp
   labeller.cpp
   )
-
-add_library(forces OBJECT ${SOURCES})
+  
+if(MSVC)
+  add_library(forces STATIC ${SOURCES}) 
+else()
+  add_library(forces OBJECT ${SOURCES})
+endif()

@@ -1,3 +1,6 @@
+#if _WIN32
+#pragma warning(disable : 4267 4996)
+#endif
 #include "./labeller.h"
 #include <Eigen/Geometry>
 #include <QLoggingCategory>
@@ -7,7 +10,10 @@
 #include "../utils/cuda_array_provider.h"
 #include "../utils/logging.h"
 #include "./summed_area_table.h"
+#if _WIN32
+#else
 #include "./apollonius.h"
+#endif
 #include "./constraint_updater.h"
 #include "./persistent_constraint_updater.h"
 #include "../utils/memory.h"
@@ -144,6 +150,9 @@ std::vector<Label>
 Labeller::getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
                                      Eigen::Vector2i bufferSize)
 {
+#if _WIN32
+  return std::vector<Label>(labels->getLabels());
+#else
   if (labels->count() == 1)
     return std::vector<Label>{ labels->getLabels()[0] };
 
@@ -159,8 +168,8 @@ Labeller::getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
   {
     result.push_back(labels->getById(id));
   }
-
   return result;
+#endif
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,

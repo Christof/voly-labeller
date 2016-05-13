@@ -23,8 +23,8 @@ class FrustumOptimizer
 
  private:
   std::shared_ptr<Nodes> nodes;
-  float near;
-  float far;
+  float nearPlane;
+  float farPlane;
 };
 
 #endif  // SRC_FRUSTUM_OPTIMIZER_H_

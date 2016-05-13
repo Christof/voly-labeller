@@ -10,9 +10,9 @@
 namespace Placement
 {
 
-constexpr unsigned char labelShadowValue = 1 << (7 - 0);
-constexpr unsigned char connectorShadowValue = 1 << (7 - 1);
-constexpr unsigned char anchorConstraintValue = 1 << (7 - 2);
+const unsigned char labelShadowValue = 1 << (7 - 0);
+const unsigned char connectorShadowValue = 1 << (7 - 1);
+const unsigned char anchorConstraintValue = 1 << (7 - 2);
 
 }  // namespace Placement
 
