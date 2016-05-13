@@ -287,9 +287,9 @@ if (MSVC)
     PATTERN "*.dll"
     )
 
-  install(FILES ${Clipper_INCLUDE_DIRS}/../bin/polyclipping.dll
-    DESTINATION "."
-    )
+  #install(FILES ${Clipper_INCLUDE_DIRS}/../bin/polyclipping.dll
+  #  DESTINATION "."
+  #  )
 
   install(DIRECTORY ${BOOST_LIBRARY_DIR_RELEASE}
     DESTINATION "."
