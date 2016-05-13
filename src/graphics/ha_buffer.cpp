@@ -47,10 +47,10 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
   renderTimer.initialize(gl);
 }
 
-void HABuffer::updateNearAndFarPlanes(float near, float far)
+void HABuffer::updateNearAndFarPlanes(float nearvalue, float farvalue)
 {
-  zNear = near;
-  zFar = far;
+  zNear = nearvalue;
+  zFar = farvalue;
 }
 
 void HABuffer::initializeBufferHash()

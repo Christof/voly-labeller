@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_BUFFER_HOLE_MANAGER_H_
 
 #include <map>
+#include "./gl.h"
 
 namespace Graphics
 {
