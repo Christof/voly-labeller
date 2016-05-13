@@ -145,7 +145,7 @@ ffmpeg_encoder::~ffmpeg_encoder()
     //m_out_size = avcodec_encode_video2(m_context, m_outbuf);
     m_out_size = avcodec_encode_video(m_context, m_outbuf, m_outbuf_size, NULL);
     printf("write frame %3d (size=%5d)\n", m_framecount, m_out_size);
-    size_t a = fwrite(m_outbuf, 1, m_out_size, m_file);
+    fwrite(m_outbuf, 1, m_out_size, m_file);
   }
 
  /* add sequence end code to have a real mpeg file */
@@ -153,7 +153,7 @@ ffmpeg_encoder::~ffmpeg_encoder()
   m_outbuf[1] = 0x00;
   m_outbuf[2] = 0x01;
   m_outbuf[3] = 0xb7;
-  size_t a = fwrite(m_outbuf, 1, 4, m_file);
+  fwrite(m_outbuf, 1, 4, m_file);
   fclose(m_file);
   delete [] m_picture_buf;
   delete [] m_outbuf;
@@ -181,7 +181,7 @@ void ffmpeg_encoder::addFrame(unsigned char* buffer)
 
   //printf("encoding frame %3d (size=%5d)\n", m_framecount, m_out_size);
 
-  size_t a = fwrite(m_outbuf, 1, m_out_size, m_file);
+  fwrite(m_outbuf, 1, m_out_size, m_file);
 
   m_framecount++;
 }
