@@ -32,7 +32,6 @@ private:
   unsigned char *m_outbuf;
 
   unsigned char *m_picture_buf;
-  int m_picture_stride[3];
 
   unsigned char *m_rgb_src[3];
   int m_rgb_stride[3];
