@@ -2,12 +2,22 @@ import QtQuick 2.1
 import QtQuick.Controls 1.2
 import QtQuick.Dialogs 1.0
 
+  FocusScope
+  {
+      id: scope
+      x: root.x; y: root.y
+      width: root.width; height: root.height
+      onActiveFocusChanged: { statusLabel.text = "Active focus: "+ scope.activeFocus }
+      onFocusChanged: { statusLabel.text = "Focus: "+ scope.activeFocus }
+
 Item {
   id: root
   x: 0
   y: 0
   width: 1024
   height: 1024
+
+
 
   function toggleVisibility() {
       root.visible = !root.visible;
@@ -129,6 +139,21 @@ Item {
           onTriggered: bufferTextures.saveApollonius();
         }
       }
+    }
+
+    Label {
+        id: statusLabel
+        width: 300
+        height: 50
+        x: 500
+        y: 50
+    }
+
+    MouseArea {
+        id: mouseArea1
+        anchors.fill: parent
+        onClicked: { scope.focus = false; }
+        onFocusChanged: { statusLabel.text = 'Focus' + mouseArea1.focus; }
     }
 
     FileDialog {
@@ -481,6 +506,6 @@ Item {
         anchors.topMargin: 28
         horizontalAlignment: Text.AlignRight
     }
-
+  }
   }
 }
