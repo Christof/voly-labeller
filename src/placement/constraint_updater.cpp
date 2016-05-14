@@ -99,10 +99,10 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
 
   float smallestCosA = 1.0f;
   int smallestCosAIndex = -1;
-  Eigen::Vector2i pointForSmallestCosA;
+  Eigen::Vector2i pointForSmallestCosA(0, 0);
   float smallestCosB = 1.0f;
   int smallestCosBIndex = -1;
-  Eigen::Vector2i pointForSmallestCosB;
+  Eigen::Vector2i pointForSmallestCosB(0, 0);
 
   int index = 0;
   for (auto point : oldLabel)
@@ -131,7 +131,7 @@ void ConstraintUpdater::drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
   }
 
   bool foundCloserPoint = false;
-  Eigen::Vector2i closerPoint;
+  Eigen::Vector2i closerPoint(0, 0);
   int compareDistance = squaredDistance(pointForSmallestCosA - anchorPosition);
   for (int i = 0; i < 4; ++i)
   {
