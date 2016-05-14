@@ -151,6 +151,7 @@ void Application::createAndStartStateMachine()
   invokeManager->addHandler("picking", pickingController.get());
   invokeManager->addHandler("scene", sceneController.get());
   signalManager->addSender("KeyboardEventSender", window.get());
+  signalManager->addSender("window", window.get());
   signalManager->addSender("labels", labelsModel.get());
 
   stateMachine = importer.import();

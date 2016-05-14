@@ -163,6 +163,15 @@ void Window::updateAverageFrameTime(double frameTime)
   }
 }
 
+void Window::uiFocusChanged(bool hasFocus)
+{
+  qCWarning(openGlChan) << "uiFocusChanged" << hasFocus;
+  if (hasFocus)
+    emit uiGotFocus();
+  else
+    emit uiLostFocus();
+}
+
 void Window::onMessageLogged(QOpenGLDebugMessage message)
 {
   // Ignore buffer detailed info which cannot be fixed

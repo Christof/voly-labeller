@@ -34,6 +34,8 @@ class Window : public QQuickView
 
  signals:
   void averageFrameTimeUpdated();
+  void uiGotFocus();
+  void uiLostFocus();
 
  protected slots:
   void resizeOpenGL();
@@ -43,6 +45,8 @@ class Window : public QQuickView
   void toggleFullscreen();
   void contextAboutToBeDestroyed();
   void onInvalidated();
+
+  void uiFocusChanged(bool hasFocus);
 
  private:
   QSurfaceFormat createSurfaceFormat();

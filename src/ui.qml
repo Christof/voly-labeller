@@ -7,7 +7,7 @@ FocusScope
   id: scope
   x: root.x; y: root.y
   width: root.width; height: root.height
-  onActiveFocusChanged: { statusLabel.text = "Active focus: "+ scope.activeFocus }
+  onActiveFocusChanged: { statusLabel.text = "Active focus: "+ scope.activeFocus; window.uiFocusChanged(scope.activeFocus); }
 
   Item {
     id: root
