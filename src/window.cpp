@@ -3,7 +3,6 @@
 #include <QOpenGLDebugLogger>
 #include <QDebug>
 #include <QCoreApplication>
-#include <QKeyEvent>
 #include <QStateMachine>
 #include <QAbstractState>
 #include <QAbstractTransition>
@@ -84,18 +83,6 @@ void Window::initializeOpenGL()
   glAssert(gl->glDepthMask(GL_FALSE));
 }
 
-void Window::keyReleaseEvent(QKeyEvent *event)
-{
-  QQuickView::keyReleaseEvent(event);
-  keysPressed -= static_cast<Qt::Key>(event->key());
-}
-
-void Window::keyPressEvent(QKeyEvent *event)
-{
-  QQuickView::keyPressEvent(event);
-  keysPressed += static_cast<Qt::Key>(event->key());
-}
-
 void Window::onInvalidated()
 {
   qCInfo(openGlChan) << "on invalidated: delete logger";
@@ -147,7 +134,7 @@ void Window::update()
   double frameTime = timer.restart() / 1000.0;
   updateAverageFrameTime(frameTime);
 
-  scene->update(frameTime, keysPressed);
+  scene->update(frameTime);
 }
 
 void Window::toggleFullscreen()

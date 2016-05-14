@@ -102,7 +102,7 @@ void Scene::cleanup()
   textureMapperManager->cleanup();
 }
 
-void Scene::update(double frameTime, QSet<Qt::Key> keysPressed)
+void Scene::update(double frameTime)
 {
   auto camera = getCamera();
 

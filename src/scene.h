@@ -41,7 +41,7 @@ class Scene : public AbstractScene
 
   virtual void initialize();
   virtual void cleanup();
-  virtual void update(double frameTime, QSet<Qt::Key> keysPressed);
+  virtual void update(double frameTime);
   virtual void render();
   virtual void resize(int width, int height);
 

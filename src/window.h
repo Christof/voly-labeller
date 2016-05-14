@@ -44,10 +44,6 @@ class Window : public QQuickView
   void contextAboutToBeDestroyed();
   void onInvalidated();
 
- protected:
-  void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
-  void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
-
  private:
   QSurfaceFormat createSurfaceFormat();
   void onMessageLogged(QOpenGLDebugMessage message);
