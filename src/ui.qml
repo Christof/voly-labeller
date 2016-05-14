@@ -7,7 +7,7 @@ FocusScope
   id: scope
   x: root.x; y: root.y
   width: root.width; height: root.height
-  onActiveFocusChanged: { statusLabel.text = "Active focus: "+ scope.activeFocus; window.uiFocusChanged(scope.activeFocus); }
+  onActiveFocusChanged: { window.uiFocusChanged(scope.activeFocus); }
 
   Item {
     id: root
@@ -136,14 +136,6 @@ FocusScope
             onTriggered: bufferTextures.saveApollonius();
           }
         }
-      }
-
-      Label {
-          id: statusLabel
-          width: 300
-          height: 50
-          x: 500
-          y: 50
       }
 
       MouseArea {
