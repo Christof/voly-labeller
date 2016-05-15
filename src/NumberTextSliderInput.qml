@@ -5,6 +5,7 @@ Item {
   id: root
   signal inputValueChanged(real value)
   property real value
+  property color color
 
   TextInput {
     x: 10
@@ -18,7 +19,7 @@ Item {
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     horizontalAlignment: Qt.AlignRight
     text: root.value
-    color: model ? model.forceColor : "black"
+    color: root.color
     onTextChanged: {
       weightSlider.value = text;
       root.inputValueChanged(text);

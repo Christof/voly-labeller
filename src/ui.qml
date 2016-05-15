@@ -260,6 +260,12 @@ FocusScope
             property: "value"
             value: styleData.value
           }
+
+          Binding {
+            target: numberTextDelegate.item
+            property: "color"
+            value: model ? model.forceColor : "black"
+          }
         }
       }
       Component {
