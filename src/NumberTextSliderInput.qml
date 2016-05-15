@@ -2,6 +2,9 @@ import QtQuick 2.1
 import QtQuick.Controls 1.2
 
 Item {
+  id: root
+  signal inputValueChanged(real value)
+
   TextInput {
     x: 10
     id: weightInput
@@ -17,7 +20,7 @@ Item {
     color: model ? model.forceColor : "black"
     onTextChanged: {
       weightSlider.value = text;
-      if (labeller) labeller.changeWeight(styleData.row, text);
+      root.inputValueChanged(text);
     }
   }
   Slider {
@@ -29,7 +32,7 @@ Item {
     value: styleData.value
     onValueChanged: {
       weightInput.text = value;
-      if (labeller) labeller.changeWeight(styleData.row, value);
+      root.inputValueChanged(value);
     }
   }
 }

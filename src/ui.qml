@@ -242,9 +242,18 @@ FocusScope
 
       Component {
         id: textDelegate
-        Loader {
-          id: numberTextDelegate
-          source: "NumberTextSliderInput.qml"
+        Item {
+          Loader {
+            id: numberTextDelegate
+            source: "NumberTextSliderInput.qml"
+          }
+
+          Connections {
+            target: numberTextDelegate.item
+            onInputValueChanged: {
+              if (labeller) labeller.changeWeight(styleData.row, value);
+            }
+          }
         }
       }
       Component {
