@@ -4,6 +4,7 @@ import QtQuick.Controls 1.2
 Item {
   id: root
   signal inputValueChanged(real value)
+  property real value
 
   TextInput {
     x: 10
@@ -16,7 +17,7 @@ Item {
     }
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     horizontalAlignment: Qt.AlignRight
-    text: styleData.value
+    text: root.value
     color: model ? model.forceColor : "black"
     onTextChanged: {
       weightSlider.value = text;
@@ -29,7 +30,7 @@ Item {
     x: 66
     minimumValue: 0
     maximumValue: 10
-    value: styleData.value
+    value: root.value
     onValueChanged: {
       weightInput.text = value;
       root.inputValueChanged(value);

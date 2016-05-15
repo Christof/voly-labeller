@@ -254,6 +254,12 @@ FocusScope
               if (labeller) labeller.changeWeight(styleData.row, value);
             }
           }
+
+          Binding {
+            target: numberTextDelegate.item
+            property: "value"
+            value: styleData.value
+          }
         }
       }
       Component {
