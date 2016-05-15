@@ -160,7 +160,6 @@ void Application::createAndStartStateMachine()
   window->stateMachine = stateMachine;
 
   stateMachine->start();
-
 }
 
 void Application::onNodeAdded(std::shared_ptr<Node> node)
