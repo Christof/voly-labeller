@@ -5,7 +5,7 @@ Item {
   id: root
   signal inputValueChanged(real value)
   property real value
-  property color color
+  property color color: "black"
   property real minValue: 0
   property real maxValue: 10
 
@@ -29,7 +29,7 @@ Item {
   }
   Slider {
     id: weightSlider
-    width: 180
+    width: 150
     x: 66
     minimumValue: root.minValue
     maximumValue: root.maxValue
