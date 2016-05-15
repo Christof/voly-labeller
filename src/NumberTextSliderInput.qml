@@ -6,6 +6,8 @@ Item {
   signal inputValueChanged(real value)
   property real value
   property color color
+  property real minValue: 0
+  property real maxValue: 10
 
   TextInput {
     x: 10
@@ -13,8 +15,8 @@ Item {
     maximumLength: 6
     width: 50
     validator: DoubleValidator {
-      bottom: 0
-      top: 10
+      bottom: root.minValue
+      top: root.maxValue
     }
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     horizontalAlignment: Qt.AlignRight
@@ -29,8 +31,8 @@ Item {
     id: weightSlider
     width: 180
     x: 66
-    minimumValue: 0
-    maximumValue: 10
+    minimumValue: root.minValue
+    maximumValue: root.maxValue
     value: root.value
     onValueChanged: {
       weightInput.text = value;
