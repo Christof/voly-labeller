@@ -296,11 +296,11 @@ FocusScope
         TableViewColumn {
           role: "weight"
           title: "Weight"
-          width: 250
+          width: 220
           delegate: textDelegate
         }
         x: 10; y: 36
-        width: 564
+        width: 530
         height: 150
         model: labeller
         focus: true
@@ -435,15 +435,23 @@ FocusScope
 
         Component {
           id: costFunctionWeightDelegate
-
           Item {
-            TextInput {
-              anchors.fill: parent
-              maximumLength: 6
-              text: styleData.value
-              onTextChanged: {
-                if (placement) placement.changeWeight(styleData.row, text);
+            Loader {
+              id: numberTextDelegate
+              source: "NumberTextSliderInput.qml"
+            }
+
+            Connections {
+              target: numberTextDelegate.item
+              onInputValueChanged: {
+                if (placement) placement.changeWeight(styleData.row, value);
               }
+            }
+
+            Binding {
+              target: numberTextDelegate.item
+              property: "value"
+              value: styleData.value
             }
           }
         }
@@ -464,11 +472,11 @@ FocusScope
           TableViewColumn {
             role: "weight"
             title: "Weight"
-            width: 98
+            width: 220
             delegate: costFunctionWeightDelegate
           }
-          x: 683; y: 51
-          width: 333
+          x: 570; y: 51
+          width: 430
           height: 170
           model: placement
           focus: true
