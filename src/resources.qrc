@@ -30,6 +30,7 @@
         <file>shader/textureImmediate.frag</file>
         <file>shader/constraint.vert</file>
         <file>shader/transparentOverlay.frag</file>
+        <file>NumberTextSliderInput.qml</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
