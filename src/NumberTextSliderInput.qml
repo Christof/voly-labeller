@@ -31,6 +31,7 @@ Item {
     id: weightSlider
     width: 150
     x: 66
+    activeFocusOnPress: true
     minimumValue: root.minValue
     maximumValue: root.maxValue
     value: root.value
