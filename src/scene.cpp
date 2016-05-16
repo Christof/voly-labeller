@@ -140,8 +140,6 @@ void Scene::render()
   RenderData newRenderData = createRenderData();
   bool isIdle =
       newRenderData.viewProjectionMatrix == renderData.viewProjectionMatrix;
-  if (isIdle)
-    qInfo() << "Idle";
 
   renderData = newRenderData;
 
