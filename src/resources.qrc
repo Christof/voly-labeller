@@ -31,6 +31,7 @@
         <file>shader/constraint.vert</file>
         <file>shader/transparentOverlay.frag</file>
         <file>NumberTextSliderInput.qml</file>
+        <file>ForcesTableView.qml</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
