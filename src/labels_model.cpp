@@ -99,6 +99,12 @@ void LabelsModel::toggleLabelsInfoVisbility()
 
 void LabelsModel::resetModel()
 {
+  if (ignoreNextLabelUpdate)
+  {
+    ignoreNextLabelUpdate = false;
+    return;
+  }
+
   beginResetModel();
   endResetModel();
 }
@@ -110,6 +116,7 @@ void LabelsModel::changeText(int row, QString text)
 
   auto label = labels->getLabels()[row];
   label.text = text.toStdString();
+  ignoreNextLabelUpdate = true;
   labels->update(label);
 }
 
@@ -120,6 +127,7 @@ void LabelsModel::changeSizeX(int row, float sizeX)
 
   auto label = labels->getLabels()[row];
   label.size.x() = sizeX;
+  ignoreNextLabelUpdate = true;
   labels->update(label);
 }
 
@@ -130,6 +138,7 @@ void LabelsModel::changeSizeY(int row, float sizeY)
 
   auto label = labels->getLabels()[row];
   label.size.y() = sizeY;
+  ignoreNextLabelUpdate = true;
   labels->update(label);
 }
 

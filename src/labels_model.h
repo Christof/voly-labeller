@@ -68,6 +68,7 @@ class LabelsModel : public QAbstractTableModel
   std::shared_ptr<PickingController> pickingController;
   bool isVisible = false;
   std::function<void()> unsubscribeLabelChanges;
+  volatile bool ignoreNextLabelUpdate = false;
 };
 
 #endif  // SRC_LABELS_MODEL_H_

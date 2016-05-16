@@ -2,7 +2,6 @@
 
 #define SRC_ABSTRACT_SCENE_H_
 
-#include <QKeyEvent>
 #include "./graphics/gl.h"
 
 class QOpenGLContext;
@@ -37,7 +36,7 @@ class AbstractScene
   virtual void initialize() = 0;
   virtual void cleanup() = 0;
 
-  virtual void update(double frameTime, QSet<Qt::Key> keysPressed) = 0;
+  virtual void update(double frameTime) = 0;
 
   virtual void render() = 0;
 

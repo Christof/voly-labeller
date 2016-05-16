@@ -34,6 +34,8 @@ class Window : public QQuickView
 
  signals:
   void averageFrameTimeUpdated();
+  void uiGotFocus();
+  void uiLostFocus();
 
  protected slots:
   void resizeOpenGL();
@@ -44,9 +46,7 @@ class Window : public QQuickView
   void contextAboutToBeDestroyed();
   void onInvalidated();
 
- protected:
-  void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
-  void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+  void uiFocusChanged(bool hasFocus);
 
  private:
   QSurfaceFormat createSurfaceFormat();

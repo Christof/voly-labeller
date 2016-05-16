@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scxml xmlns="http://www.coin3d.org/scxml/coin/1.0" initialstate="idle">
   <state id="idle">
+    <transition event="window.uiGotFocus" target="qt-ui"/>
     <transition event="KeyboardEvent.DOWN.W">
       <invoke targettype="cam" src="moveForward"/>
     </transition>
@@ -54,6 +55,11 @@
     <transition event="labels.startPicking" target="picking"/>
   </state>
 
+  <state id="qt-ui">
+    <transition event="window.uiLostFocus" target="idle"/>
+    <transition event="labels.startPicking" target="picking"/>
+  </state>
+
   <state id="picking">
     <onentry>
       <invoke targettype="mouseShape" src="startPicking"/>
@@ -74,6 +80,7 @@
       <invoke targettype="cameraRotation" src="startDragging"/>
     </initial>
     <state id="rotate-move">
+      <transition event="window.uiGotFocus" target="qt-ui"/>
       <transition event="Event.MouseMove">
         <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
