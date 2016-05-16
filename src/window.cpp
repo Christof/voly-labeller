@@ -165,7 +165,7 @@ void Window::updateAverageFrameTime(double frameTime)
 
 void Window::uiFocusChanged(bool hasFocus)
 {
-  qCWarning(openGlChan) << "uiFocusChanged" << hasFocus;
+  qCDebug(openGlChan) << "uiFocusChanged" << hasFocus;
   if (hasFocus)
     emit uiGotFocus();
   else
