@@ -1,4 +1,5 @@
 #include "./insertion_order_labels_arranger.h"
+#include <vector>
 
 namespace Placement
 {

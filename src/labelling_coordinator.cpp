@@ -116,7 +116,8 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
 
   if (isIdle)
   {
-    std::cout << "Old costs: " << sumOfCosts << "\tnew costs:" << newSumOfCosts << std::endl;
+    std::cout << "Old costs: " << sumOfCosts << "\tnew costs:" << newSumOfCosts
+              << std::endl;
   }
 
   if (isIdle && newSumOfCosts > sumOfCosts)

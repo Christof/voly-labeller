@@ -2,6 +2,7 @@
 
 #define SRC_PLACEMENT_INSERTION_ORDER_LABELS_ARRANGER_H_
 
+#include <vector>
 #include "./labels_arranger.h"
 
 namespace Placement
