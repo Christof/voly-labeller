@@ -119,6 +119,19 @@ FocusScope
           }
         }
         Menu {
+          title: "Screen capture"
+          MenuItem {
+            text: "Start new recording"
+            shortcut: "C"
+            onTriggered: videoRecorder.startNewVideo();
+          }
+          MenuItem {
+            text: "Toggle recording"
+            shortcut: "T"
+            onTriggered: videoRecorder.toggleRecording();
+          }
+        }
+        Menu {
           title: "Debug"
           MenuItem {
             text: "Save occlusion"
