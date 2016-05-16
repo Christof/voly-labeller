@@ -33,6 +33,7 @@
         <file>NumberTextSliderInput.qml</file>
         <file>ForcesTableView.qml</file>
         <file>LabelsTableView.qml</file>
+        <file>PlacementWeightsTableView.qml</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
