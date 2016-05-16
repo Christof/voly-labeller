@@ -1,4 +1,5 @@
 #include "./apollonius_labels_arranger.h"
+#include <vector>
 #include "../utils/cuda_array_provider.h"
 #include "./apollonius.h"
 
