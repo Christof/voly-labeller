@@ -18,6 +18,7 @@
 #include "./placement/labels_arranger.h"
 #include "./placement/insertion_order_labels_arranger.h"
 #include "./placement/randomized_labels_arranger.h"
+#include "./placement/apollonius_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -67,7 +68,17 @@ void LabellingCoordinator::initialize(
     labeller->initialize(textureMapperManager->getIntegralCostsTextureMapper(),
                          textureMapperManager->getConstraintTextureMapper(),
                          persistentConstraintUpdater);
-    labeller->setLabelsArranger(insertionOrderLabelsArranger);
+
+    auto apolloniusLabelsArranger =
+        std::make_shared<Placement::ApolloniusLabelsArranger>();
+    apolloniusLabelsArranger->initialize(
+        textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
+        textureMapperManager->getOcclusionTextureMapper(),
+        textureMapperManager->getApolloniusTextureMapper(layerIndex));
+    apolloniusLabelsArrangers.push_back(apolloniusLabelsArranger);
+
+    labeller->setLabelsArranger(apolloniusLabelsArranger);
+    // labeller->setLabelsArranger(insertionOrderLabelsArranger);
 
     placementLabellers.push_back(labeller);
   }
@@ -109,8 +120,9 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
     integralCostsCalculator->runKernel();
 
     auto labeller = placementLabellers[layerIndex];
-    labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
-                                       : insertionOrderLabelsArranger);
+    labeller->setLabelsArranger(optimize
+                                    ? randomizedLabelsArranger
+                                    : apolloniusLabelsArrangers[layerIndex]);
     labeller->update(labellerFrameData);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
