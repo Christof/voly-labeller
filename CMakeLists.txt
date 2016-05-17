@@ -14,7 +14,7 @@ add_subdirectory(src/placement)
 if (WIN32)
   include_directories(${PROJECT_SOURCE_DIR}/msincludes)
 endif()
-add_subdirectory(src/VolyVideoModule)
+add_subdirectory(external/VolyVideoModule)
 
 option(test "Build all tests." ON)
 if(test)

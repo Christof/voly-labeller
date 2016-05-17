@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QLoggingCategory>
 #include "./graphics/gl.h"
+#include "../external/VolyVideoModule/ffmpegrecorder.h"
 
 QLoggingCategory videoRecorderChan("VideoRecorder");
 

@@ -5,7 +5,6 @@
 #include <QObject>
 #include <QTimer>
 #include "./utils/memory.h"
-#include "./VolyVideoModule/ffmpegrecorder.h"
 
 class FFMPEGRecorder;
 namespace Graphics
