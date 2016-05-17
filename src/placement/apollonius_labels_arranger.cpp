@@ -45,6 +45,13 @@ std::vector<Label> ApolloniusLabelsArranger::getArrangement(
   return result;
 }
 
+void ApolloniusLabelsArranger::cleanup()
+{
+  distanceTransformTextureMapper.reset();
+  occlusionTextureMapper.reset();
+  apolloniusTextureMapper.reset();
+}
+
 std::vector<Eigen::Vector4f> ApolloniusLabelsArranger::createLabelSeeds(
     Eigen::Vector2i size, Eigen::Matrix4f viewProjection,
     std::shared_ptr<LabelsContainer> labels)

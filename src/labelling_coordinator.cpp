@@ -89,6 +89,10 @@ void LabellingCoordinator::cleanup()
   occlusionCalculator.reset();
   saliency.reset();
   integralCostsCalculator.reset();
+
+  for (auto apolloniusLabelsArranger : apolloniusLabelsArrangers)
+    apolloniusLabelsArranger->cleanup();
+
   for (auto placementLabeller : placementLabellers)
     placementLabeller->cleanup();
 }

@@ -30,6 +30,8 @@ class ApolloniusLabelsArranger : public LabelsArranger
   getArrangement(const LabellerFrameData &frameData,
                  std::shared_ptr<LabelsContainer> labels);
 
+  void cleanup();
+
  private:
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
   std::shared_ptr<CudaArrayProvider> occlusionTextureMapper;

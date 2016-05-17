@@ -23,6 +23,7 @@ class OcclusionCalculator;
 class IntegralCostsCalculator;
 class Saliency;
 class LabelsArranger;
+class ApolloniusLabelsArranger;
 }
 
 /**
@@ -67,7 +68,7 @@ class LabellingCoordinator
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Placement::LabelsArranger> insertionOrderLabelsArranger;
   std::shared_ptr<Placement::LabelsArranger> randomizedLabelsArranger;
-  std::vector<std::shared_ptr<Placement::LabelsArranger>>
+  std::vector<std::shared_ptr<Placement::ApolloniusLabelsArranger>>
       apolloniusLabelsArrangers;
 
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
