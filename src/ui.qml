@@ -117,6 +117,11 @@ FocusScope
             shortcut: "F8"
             onTriggered: labelling.toggleForces();
           }
+          MenuItem {
+            text: "Toggle optimization on idle"
+            shortcut: "F9"
+            onTriggered: labelling.toggleOptimizeOnIdle();
+          }
         }
         Menu {
           title: "Video recorder"

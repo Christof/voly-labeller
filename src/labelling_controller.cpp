@@ -16,6 +16,11 @@ void LabellingController::toggleForces()
   labellingCoordinator->forcesEnabled = !labellingCoordinator->forcesEnabled;
 }
 
+void LabellingController::toggleOptimizeOnIdle()
+{
+  labellingCoordinator->optimizeOnIdle = !labellingCoordinator->optimizeOnIdle;
+}
+
 void LabellingController::saveOcclusion()
 {
   labellingCoordinator->saveOcclusion();
