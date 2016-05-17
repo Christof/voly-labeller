@@ -58,6 +58,7 @@ class LabellingCoordinator
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
   bool forcesEnabled = true;
+  bool optimizeOnIdle = false;
 
  private:
   int layerCount;
