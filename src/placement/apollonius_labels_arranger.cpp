@@ -2,21 +2,28 @@
 #include <vector>
 #include "../utils/cuda_array_provider.h"
 #include "./apollonius.h"
+#include "./distance_transform.h"
 
 namespace Placement
 {
 
 void ApolloniusLabelsArranger::initialize(
     std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
+    std::shared_ptr<CudaArrayProvider> occlusionTextureMapper,
     std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper)
 {
   this->distanceTransformTextureMapper = distanceTransformTextureMapper;
+  this->occlusionTextureMapper = occlusionTextureMapper;
   this->apolloniusTextureMapper = apolloniusTextureMapper;
 }
 
 std::vector<Label> ApolloniusLabelsArranger::getArrangement(
     const LabellerFrameData &frameData, std::shared_ptr<LabelsContainer> labels)
 {
+  DistanceTransform distanceTransform(occlusionTextureMapper,
+                                      distanceTransformTextureMapper);
+  distanceTransform.run();
+
   if (labels->count() == 1)
     return std::vector<Label>{ labels->getLabels()[0] };
 

@@ -23,6 +23,7 @@ class ApolloniusLabelsArranger : public LabelsArranger
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
+             std::shared_ptr<CudaArrayProvider> occlusionTextureMapper,
              std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper);
 
   virtual std::vector<Label>
@@ -31,6 +32,7 @@ class ApolloniusLabelsArranger : public LabelsArranger
 
  private:
   std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
+  std::shared_ptr<CudaArrayProvider> occlusionTextureMapper;
   std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
 
   std::vector<Eigen::Vector4f>
