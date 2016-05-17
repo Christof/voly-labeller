@@ -1,6 +1,7 @@
 #include "./video_recorder.h"
 #include <QTimer>
 #include <QLoggingCategory>
+#include <string>
 #include "./graphics/gl.h"
 #include "../external/VolyVideoModule/ffmpegrecorder.h"
 
@@ -61,8 +62,8 @@ void VideoRecorder::createNewVideo(std::string filename)
 
   pixelBuffer.resize(videoWidth * videoHeight * 3);
   const int channels = 1;
-  videoRecorder = std::make_unique<FFMPEGRecorder>(
-      videoWidth, videoHeight, channels, filename, fps);
+  videoRecorder = std::make_unique<FFMPEGRecorder>(videoWidth, videoHeight,
+                                                   channels, filename, fps);
 
   videoRecorder->startRecording();
   videoTimer = std::make_unique<QTimer>(this);

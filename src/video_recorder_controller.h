@@ -1,6 +1,6 @@
-#ifndef VIDEO_RECORDER_CONTROLLER_H_
+#ifndef SRC_VIDEO_RECORDER_CONTROLLER_H_
 
-#define VIDEO_RECORDER_CONTROLLER_H_
+#define SRC_VIDEO_RECORDER_CONTROLLER_H_
 
 #include <QObject>
 #include <memory>
@@ -19,14 +19,15 @@ class VideoRecorderController : public QObject
   Q_PROPERTY(bool canToggleRecording READ getCanToggleRecording NOTIFY
                  recordingStateSwitched)
  public:
-  VideoRecorderController(std::shared_ptr<VideoRecorder> videoRecorder);
+  explicit VideoRecorderController(
+      std::shared_ptr<VideoRecorder> videoRecorder);
   ~VideoRecorderController();
 
  public slots:
   QString getToggleText();
   bool getCanToggleRecording();
 
-signals:
+ signals:
   void toggleRecording();
   void startNewVideo();
   void recordingStateSwitched();
@@ -38,4 +39,4 @@ signals:
   void startNewVideoInMainThread();
 };
 
-#endif  // VIDEO_RECORDER_CONTROLLER_H_
+#endif  // SRC_VIDEO_RECORDER_CONTROLLER_H_

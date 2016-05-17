@@ -4,6 +4,8 @@
 
 #include <QObject>
 #include <QTimer>
+#include <string>
+#include <vector>
 #include "./utils/memory.h"
 
 class FFMPEGRecorder;
@@ -25,7 +27,7 @@ class VideoRecorder : public QObject
 {
   Q_OBJECT
  public:
-  VideoRecorder(double fps = 24);
+  explicit VideoRecorder(double fps = 24);
   virtual ~VideoRecorder();
 
   void initialize(Graphics::Gl *gl);
