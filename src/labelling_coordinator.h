@@ -67,6 +67,8 @@ class LabellingCoordinator
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<Placement::LabelsArranger> insertionOrderLabelsArranger;
   std::shared_ptr<Placement::LabelsArranger> randomizedLabelsArranger;
+  std::vector<std::shared_ptr<Placement::LabelsArranger>>
+      apolloniusLabelsArrangers;
 
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
   std::shared_ptr<Placement::Saliency> saliency;
