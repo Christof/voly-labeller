@@ -100,6 +100,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
 void LabellingCoordinator::updatePlacement(bool isIdle)
 {
+  bool optimize = isIdle && optimizeOnIdle;
   float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
@@ -108,19 +109,19 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
     integralCostsCalculator->runKernel();
 
     auto labeller = placementLabellers[layerIndex];
-    labeller->setLabelsArranger(isIdle ? randomizedLabelsArranger
+    labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
                                        : insertionOrderLabelsArranger);
     labeller->update(labellerFrameData);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
 
-  if (isIdle)
+  if (optimize)
   {
     std::cout << "Old costs: " << sumOfCosts << "\tnew costs:" << newSumOfCosts
               << std::endl;
   }
 
-  if (isIdle && newSumOfCosts > sumOfCosts)
+  if (optimize && newSumOfCosts > sumOfCosts)
   {
     preserveLastResult = true;
   }
