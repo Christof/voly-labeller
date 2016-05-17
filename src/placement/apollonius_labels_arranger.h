@@ -20,7 +20,6 @@ class ApolloniusLabelsArranger : public LabelsArranger
 {
  public:
   ApolloniusLabelsArranger() = default;
-  virtual ~ApolloniusLabelsArranger();
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
