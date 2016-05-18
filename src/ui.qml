@@ -127,6 +127,12 @@ FocusScope
             checkable: true
             onTriggered: labelling.toggleOptimizeOnIdle();
           }
+          MenuItem {
+            text: "Use apollonius"
+            checkable: true
+            checked: false
+            onTriggered: labelling.toggleApollonius();
+          }
         }
         Menu {
           title: "Debug"
