@@ -44,13 +44,15 @@ void TextureMappersForLayer::update()
   if (saveDistanceTransformInNextFrame)
   {
     saveDistanceTransformInNextFrame = false;
-    distanceTransformTexture->save("distanceTransform.tiff");
+    distanceTransformTexture->save("distanceTransform" +
+                                   std::to_string(layerIndex) + ".tiff");
   }
 
   if (saveApolloniusInNextFrame)
   {
     saveApolloniusInNextFrame = false;
-    apolloniusTexture->save("apollonius.tiff");
+    apolloniusTexture->save("apollonius" + std::to_string(layerIndex) +
+                            ".tiff");
   }
 }
 
