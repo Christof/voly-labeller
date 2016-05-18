@@ -77,8 +77,8 @@ void LabellingCoordinator::initialize(
         textureMapperManager->getApolloniusTextureMapper(layerIndex));
     apolloniusLabelsArrangers.push_back(apolloniusLabelsArranger);
 
-    labeller->setLabelsArranger(apolloniusLabelsArranger);
-    // labeller->setLabelsArranger(insertionOrderLabelsArranger);
+    labeller->setLabelsArranger(useApollonius ? apolloniusLabelsArranger
+                                              : insertionOrderLabelsArranger);
 
     placementLabellers.push_back(labeller);
   }
@@ -124,9 +124,10 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
     integralCostsCalculator->runKernel();
 
     auto labeller = placementLabellers[layerIndex];
-    labeller->setLabelsArranger(optimize
-                                    ? randomizedLabelsArranger
-                                    : apolloniusLabelsArrangers[layerIndex]);
+    auto defaultArranger = useApollonius ? apolloniusLabelsArrangers[layerIndex]
+                                         : insertionOrderLabelsArranger;
+    labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
+                                         : defaultArranger);
     labeller->update(labellerFrameData);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
