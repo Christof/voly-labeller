@@ -21,6 +21,7 @@ class LabellingController : public QObject
  public slots:
   void toggleForces();
   void toggleOptimizeOnIdle();
+  void toggleApollonius();
   void saveOcclusion();
 
  private:

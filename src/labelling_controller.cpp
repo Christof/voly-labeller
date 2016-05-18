@@ -21,6 +21,11 @@ void LabellingController::toggleOptimizeOnIdle()
   labellingCoordinator->optimizeOnIdle = !labellingCoordinator->optimizeOnIdle;
 }
 
+void LabellingController::toggleApollonius()
+{
+  labellingCoordinator->useApollonius = !labellingCoordinator->useApollonius;
+}
+
 void LabellingController::saveOcclusion()
 {
   labellingCoordinator->saveOcclusion();
