@@ -22,6 +22,8 @@ namespace Placement
 class OcclusionCalculator;
 class IntegralCostsCalculator;
 class Saliency;
+class LabelsArranger;
+class ApolloniusLabelsArranger;
 }
 
 /**
@@ -48,7 +50,7 @@ class LabellingCoordinator
 
   void update(double frameTime, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
-  void updatePlacement();
+  void updatePlacement(bool isIdle);
   std::vector<float> updateClusters();
 
   void resize(int width, int height);
@@ -57,12 +59,18 @@ class LabellingCoordinator
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
   bool forcesEnabled = true;
+  bool optimizeOnIdle = false;
+  bool useApollonius = false;
 
  private:
   int layerCount;
   std::shared_ptr<Forces::Labeller> forcesLabeller;
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Nodes> nodes;
+  std::shared_ptr<Placement::LabelsArranger> insertionOrderLabelsArranger;
+  std::shared_ptr<Placement::LabelsArranger> randomizedLabelsArranger;
+  std::vector<std::shared_ptr<Placement::ApolloniusLabelsArranger>>
+      apolloniusLabelsArrangers;
 
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
   std::shared_ptr<Placement::Saliency> saliency;
@@ -74,6 +82,9 @@ class LabellingCoordinator
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
+  float sumOfCosts = 0.0f;
+  bool preserveLastResult = false;
+  std::map<int, Eigen::Vector3f> lastPlacementResult;
 
   std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
   std::map<int, Eigen::Vector3f>

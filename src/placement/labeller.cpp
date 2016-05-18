@@ -10,12 +10,9 @@
 #include "../utils/cuda_array_provider.h"
 #include "../utils/logging.h"
 #include "./summed_area_table.h"
-#if _WIN32
-#else
-#include "./apollonius.h"
-#endif
 #include "./constraint_updater.h"
 #include "./persistent_constraint_updater.h"
+#include "./labels_arranger.h"
 #include "../utils/memory.h"
 
 namespace Placement
@@ -29,8 +26,6 @@ Labeller::Labeller(std::shared_ptr<LabelsContainer> labels) : labels(labels)
 
 void Labeller::initialize(
     std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
-    std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-    std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
     std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
     std::shared_ptr<PersistentConstraintUpdater> constraintUpdater)
 {
@@ -39,25 +34,21 @@ void Labeller::initialize(
     integralCosts =
         std::make_shared<SummedAreaTable>(integralCostsTextureMapper);
 
-  this->distanceTransformTextureMapper = distanceTransformTextureMapper;
-  this->apolloniusTextureMapper = apolloniusTextureMapper;
   this->constraintUpdater = constraintUpdater;
+
+  bufferSize = Eigen::Vector2i(integralCostsTextureMapper->getWidth(),
+                               integralCostsTextureMapper->getHeight());
 
   costFunctionCalculator =
       std::make_unique<CostFunctionCalculator>(constraintTextureMapper);
   costFunctionCalculator->resize(size.x(), size.y());
-  costFunctionCalculator->setTextureSize(
-      integralCostsTextureMapper->getWidth(),
-      integralCostsTextureMapper->getHeight());
+  costFunctionCalculator->setTextureSize(bufferSize.x(), bufferSize.y());
 }
 
 void Labeller::cleanup()
 {
   integralCosts.reset();
-  apolloniusTextureMapper.reset();
   costFunctionCalculator.reset();
-  distanceTransformTextureMapper.reset();
-  apolloniusTextureMapper.reset();
 }
 
 std::map<int, Eigen::Vector3f>
@@ -70,18 +61,14 @@ Labeller::update(const LabellerFrameData &frameData)
   if (!integralCosts.get())
     return newPositions;
 
-  Eigen::Vector2i bufferSize(distanceTransformTextureMapper->getWidth(),
-                             distanceTransformTextureMapper->getHeight());
-
   Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   auto startTime = std::chrono::high_resolution_clock::now();
   integralCosts->runKernel();
   qCDebug(plChan) << "SAT took" << calculateDurationSince(startTime) << "ms";
 
-  auto labelsInLayer = useApollonius
-                           ? getLabelsInApolloniusOrder(frameData, bufferSize)
-                           : labels->getLabels();
+  costSum = 0.0f;
+  auto labelsInLayer = labelsArranger->getArrangement(frameData, labels);
 
   for (auto &label : labelsInLayer)
   {
@@ -96,14 +83,14 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
-    auto newPos = costFunctionCalculator->calculateForLabel(
+    auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
         anchorPixels.y(), label.size.x(), label.size.y());
 
-    Eigen::Vector2i newPosition(std::get<0>(newPos), std::get<1>(newPos));
-    constraintUpdater->setPosition(label.id, newPosition);
+    constraintUpdater->setPosition(label.id, result.position);
+    costSum += result.cost;
 
-    newPositions[label.id] = reprojectTo3d(newPosition, anchor2D.z(),
+    newPositions[label.id] = reprojectTo3d(result.position, anchor2D.z(),
                                            bufferSize, inverseViewProjection);
   }
 
@@ -123,53 +110,19 @@ void Labeller::setCostFunctionWeights(CostFunctionWeights weights)
   costFunctionCalculator->weights = weights;
 }
 
+void Labeller::setLabelsArranger(std::shared_ptr<LabelsArranger> labelsArranger)
+{
+  this->labelsArranger = labelsArranger;
+}
+
 std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
 {
   return newPositions;
 }
 
-std::vector<Eigen::Vector4f>
-Labeller::createLabelSeeds(Eigen::Vector2i size, Eigen::Matrix4f viewProjection)
+float Labeller::getLastSumOfCosts()
 {
-  std::vector<Eigen::Vector4f> result;
-  for (auto &label : labels->getLabels())
-  {
-    Eigen::Vector4f pos =
-        viewProjection * Eigen::Vector4f(label.anchorPosition.x(),
-                                         label.anchorPosition.y(),
-                                         label.anchorPosition.z(), 1);
-    float x = (pos.x() / pos.w() * 0.5f + 0.5f) * size.x();
-    float y = (pos.y() / pos.w() * 0.5f + 0.5f) * size.y();
-    result.push_back(Eigen::Vector4f(label.id, x, y, 1));
-  }
-
-  return result;
-}
-
-std::vector<Label>
-Labeller::getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
-                                     Eigen::Vector2i bufferSize)
-{
-#if _WIN32
-  return std::vector<Label>(labels->getLabels());
-#else
-  if (labels->count() == 1)
-    return std::vector<Label>{ labels->getLabels()[0] };
-
-  std::vector<Eigen::Vector4f> labelsSeed =
-      createLabelSeeds(bufferSize, frameData.viewProjection);
-
-  Apollonius apollonius(distanceTransformTextureMapper, apolloniusTextureMapper,
-                        labelsSeed, labels->count());
-  apollonius.run();
-
-  std::vector<Label> result;
-  for (int id : apollonius.calculateOrdering())
-  {
-    result.push_back(labels->getById(id));
-  }
-  return result;
-#endif
+  return costSum;
 }
 
 Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,

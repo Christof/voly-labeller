@@ -108,14 +108,30 @@ FocusScope
         Menu {
           title: "Simulation"
           MenuItem {
-            text: "Toggle label update"
+            text: "Update labels"
             shortcut: "Space"
+            checkable: true
+            checked: true
             onTriggered: labeller.toggleUpdatePositions();
           }
           MenuItem {
-            text: "Toggle forces"
+            text: "Enable forces"
             shortcut: "F8"
+            checkable: true
+            checked: true
             onTriggered: labelling.toggleForces();
+          }
+          MenuItem {
+            text: "Optimization on idle"
+            shortcut: "F9"
+            checkable: true
+            onTriggered: labelling.toggleOptimizeOnIdle();
+          }
+          MenuItem {
+            text: "Use apollonius"
+            checkable: true
+            checked: false
+            onTriggered: labelling.toggleApollonius();
           }
         }
         Menu {

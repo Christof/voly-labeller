@@ -5,7 +5,6 @@
 #include "./texture_mappers_for_layer.h"
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
-#include "./placement/distance_transform.h"
 #include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
 #include "./utils/image_persister.h"
@@ -42,18 +41,18 @@ void TextureMappersForLayer::resize(int width, int height)
 
 void TextureMappersForLayer::update()
 {
-  // distanceTransform->run();
-
   if (saveDistanceTransformInNextFrame)
   {
     saveDistanceTransformInNextFrame = false;
-    distanceTransformTexture->save("distanceTransform.tiff");
+    distanceTransformTexture->save("distanceTransform" +
+                                   std::to_string(layerIndex) + ".tiff");
   }
 
   if (saveApolloniusInNextFrame)
   {
     saveApolloniusInNextFrame = false;
-    apolloniusTexture->save("apollonius.tiff");
+    apolloniusTexture->save("apollonius" + std::to_string(layerIndex) +
+                            ".tiff");
   }
 }
 
@@ -87,8 +86,6 @@ TextureMappersForLayer::getApolloniusTextureMapper()
 
 void TextureMappersForLayer::cleanup()
 {
-  // distanceTransform.release();
-
   colorTextureMapper.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
@@ -121,10 +118,5 @@ void TextureMappersForLayer::initializeMappers(
       CudaTextureMapper::createReadWriteDiscardMapper(
           apolloniusTexture->getId(), apolloniusTexture->getWidth(),
           apolloniusTexture->getHeight()));
-
-  /*
-  distanceTransform = std::make_unique<Placement::DistanceTransform>(
-      occupancyTextureMapper, distanceTransformTextureMapper);
-      */
 }
 

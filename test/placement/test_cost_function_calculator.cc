@@ -37,7 +37,7 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
       calculator.calculateForLabel(occupancyDevice, labelId, anchorX, anchorY,
                                    labelWidthInPixel, labelHeightInPixel);
 
-  EXPECT_EQ(9, std::get<0>(result));
-  EXPECT_EQ(6, std::get<1>(result));
+  EXPECT_EQ(9, result.position.x());
+  EXPECT_EQ(6, result.position.y());
 }
 

@@ -15,6 +15,10 @@
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/integral_costs_calculator.h"
 #include "./placement/saliency.h"
+#include "./placement/labels_arranger.h"
+#include "./placement/insertion_order_labels_arranger.h"
+#include "./placement/randomized_labels_arranger.h"
+#include "./placement/apollonius_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./label_node.h"
@@ -50,18 +54,31 @@ void LabellingCoordinator::initialize(
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
+  insertionOrderLabelsArranger =
+      std::make_shared<Placement::InsertionOrderLabelsArranger>();
+  randomizedLabelsArranger =
+      std::make_shared<Placement::RandomizedLabelsArranger>();
+
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     auto labelsContainer = std::make_shared<LabelsContainer>();
     labelsInLayer.push_back(labelsContainer);
     auto labeller = std::make_shared<Placement::Labeller>(labelsContainer);
     labeller->resize(width, height);
-    labeller->initialize(
-        textureMapperManager->getIntegralCostsTextureMapper(),
+    labeller->initialize(textureMapperManager->getIntegralCostsTextureMapper(),
+                         textureMapperManager->getConstraintTextureMapper(),
+                         persistentConstraintUpdater);
+
+    auto apolloniusLabelsArranger =
+        std::make_shared<Placement::ApolloniusLabelsArranger>();
+    apolloniusLabelsArranger->initialize(
         textureMapperManager->getDistanceTransformTextureMapper(layerIndex),
-        textureMapperManager->getApolloniusTextureMapper(layerIndex),
-        textureMapperManager->getConstraintTextureMapper(),
-        persistentConstraintUpdater);
+        textureMapperManager->getOcclusionTextureMapper(),
+        textureMapperManager->getApolloniusTextureMapper(layerIndex));
+    apolloniusLabelsArrangers.push_back(apolloniusLabelsArranger);
+
+    labeller->setLabelsArranger(useApollonius ? apolloniusLabelsArranger
+                                              : insertionOrderLabelsArranger);
 
     placementLabellers.push_back(labeller);
   }
@@ -72,6 +89,10 @@ void LabellingCoordinator::cleanup()
   occlusionCalculator.reset();
   saliency.reset();
   integralCostsCalculator.reset();
+
+  for (auto apolloniusLabelsArranger : apolloniusLabelsArrangers)
+    apolloniusLabelsArranger->cleanup();
+
   for (auto placementLabeller : placementLabellers)
     placementLabeller->cleanup();
 }
@@ -92,14 +113,39 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   updateLabelPositionsInLabelNodes(positions);
 }
 
-void LabellingCoordinator::updatePlacement()
+void LabellingCoordinator::updatePlacement(bool isIdle)
 {
+  bool optimize = isIdle && optimizeOnIdle;
+  float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusionCalculator->calculateFor(layerIndex);
     integralCostsCalculator->runKernel();
-    placementLabellers[layerIndex]->update(labellerFrameData);
+
+    auto labeller = placementLabellers[layerIndex];
+    auto defaultArranger = useApollonius ? apolloniusLabelsArrangers[layerIndex]
+                                         : insertionOrderLabelsArranger;
+    labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
+                                         : defaultArranger);
+    labeller->update(labellerFrameData);
+    newSumOfCosts += labeller->getLastSumOfCosts();
+  }
+
+  if (optimize)
+  {
+    std::cout << "Old costs: " << sumOfCosts << "\tnew costs:" << newSumOfCosts
+              << std::endl;
+  }
+
+  if (optimize && newSumOfCosts > sumOfCosts)
+  {
+    preserveLastResult = true;
+  }
+  else
+  {
+    preserveLastResult = false;
+    sumOfCosts = newSumOfCosts;
   }
 }
 
@@ -140,6 +186,9 @@ void LabellingCoordinator::setCostFunctionWeights(
 std::map<int, Eigen::Vector3f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
+  if (preserveLastResult)
+    return lastPlacementResult;
+
   std::map<int, Eigen::Vector3f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
@@ -153,6 +202,8 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 
     layerIndex++;
   }
+
+  lastPlacementResult = placementPositions;
 
   return placementPositions;
 }

@@ -3,6 +3,7 @@
 #include "../../src/placement/labeller.h"
 #include "../../src/placement/constraint_updater.h"
 #include "../../src/placement/persistent_constraint_updater.h"
+#include "../../src/placement/insertion_order_labels_arranger.h"
 #include "../../src/labelling/labels.h"
 #include "../../src/utils/image_persister.h"
 #include "../../src/utils/path_helper.h"
@@ -24,21 +25,6 @@ class Test_PlacementLabeller : public ::testing::Test
     auto integralCostsTextureMapper = std::make_shared<CudaArrayMapper<float>>(
         width, height, integralCostsImage, floatChannelDesc);
 
-    auto distanceTransformImage =
-        ImagePersister::loadR32F(absolutePathOfProjectRelativePath(std::string(
-            "assets/tests/placement-labeller/distanceTransform.tiff")));
-    auto distanceTransformTextureMapper =
-        std::make_shared<CudaArrayMapper<float>>(
-            width, height, distanceTransformImage, floatChannelDesc);
-
-    cudaChannelFormatDesc vector4ChannelDesc =
-        cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
-    std::vector<Eigen::Vector4f> apolloniusImage(width * height,
-                                                 Eigen::Vector4f(0, 0, 0, 0));
-    auto apolloniusTextureMapper =
-        std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
-            width, height, apolloniusImage, vector4ChannelDesc);
-
     cudaChannelFormatDesc byteChannelDesc =
         cudaCreateChannelDesc(8, 0, 0, 0, cudaChannelFormatKindUnsigned);
     std::vector<unsigned char> constraintImage(width * height, 0);
@@ -53,9 +39,10 @@ class Test_PlacementLabeller : public ::testing::Test
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
     labeller = std::make_shared<Placement::Labeller>(labels);
-    labeller->initialize(integralCostsTextureMapper, distanceTransformTextureMapper,
-                         apolloniusTextureMapper, constraintTextureMapper,
+    labeller->initialize(integralCostsTextureMapper, constraintTextureMapper,
                          persistentConstraintUpdater);
+    labeller->setLabelsArranger(
+        std::make_shared<Placement::InsertionOrderLabelsArranger>());
     labeller->resize(1024, 1024);
   }
 
@@ -96,6 +83,8 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   LabellerFrameData frameData(0.02f, projection, view);
   auto newPositions = labeller->update(frameData);
   auto lastPlacementResult = labeller->getLastPlacementResult();
+
+  EXPECT_FLOAT_EQ(0.76581049f, labeller->getLastSumOfCosts());
 
   labeller->cleanup();
 

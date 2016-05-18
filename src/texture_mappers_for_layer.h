@@ -11,7 +11,6 @@ class CudaTextureMapper;
 namespace Placement
 {
 class Occlusion;
-class DistanceTransform;
 }
 
 /**
@@ -54,7 +53,6 @@ class TextureMappersForLayer
   std::shared_ptr<Graphics::StandardTexture2d> distanceTransformTexture;
   std::shared_ptr<Graphics::StandardTexture2d> apolloniusTexture;
 
-  std::unique_ptr<Placement::DistanceTransform> distanceTransform;
   int bufferSize;
   int layerIndex;
   int width;

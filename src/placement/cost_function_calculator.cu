@@ -160,7 +160,7 @@ void CostFunctionCalculator::setTextureSize(int width, int height)
   textureHeight = height;
 }
 
-std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
+CostFunctionResult CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &integralCosts, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel)
 {
@@ -198,7 +198,10 @@ std::tuple<float, float> CostFunctionCalculator::calculateForLabel(
 
   cudaDestroyTextureObject(constraints);
 
-  return std::make_tuple(cost.x, cost.y);
+  return CostFunctionResult {
+    Eigen::Vector2i(cost.x, cost.y),
+    cost.cost
+  };
 }
 
 void CostFunctionCalculator::createTextureObject()

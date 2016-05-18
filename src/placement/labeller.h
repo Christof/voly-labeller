@@ -17,8 +17,8 @@ class PersistentConstraintUpdater;
 namespace Placement
 {
 
-class Apollonius;
 class SummedAreaTable;
+class LabelsArranger;
 
 /**
  * \brief Places labels according to an energy minimization of a cost function
@@ -32,35 +32,34 @@ class Labeller
 
   void
   initialize(std::shared_ptr<CudaArrayProvider> integralCostsTextureMapper,
-             std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper,
-             std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper,
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
              std::shared_ptr<PersistentConstraintUpdater> constraintUpdater);
 
   std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
 
   std::map<int, Eigen::Vector3f> getLastPlacementResult();
+  float getLastSumOfCosts();
 
   void resize(int width, int height);
 
   void cleanup();
 
-  bool useApollonius = false;
-
   void setCostFunctionWeights(CostFunctionWeights weights);
+
+  void setLabelsArranger(std::shared_ptr<LabelsArranger> labelsArranger);
 
  private:
   std::shared_ptr<LabelsContainer> labels;
   std::unique_ptr<CostFunctionCalculator> costFunctionCalculator;
-  std::shared_ptr<Apollonius> apollonius;
   std::shared_ptr<SummedAreaTable> integralCosts;
-  std::shared_ptr<CudaArrayProvider> distanceTransformTextureMapper;
-  std::shared_ptr<CudaArrayProvider> apolloniusTextureMapper;
   std::shared_ptr<PersistentConstraintUpdater> constraintUpdater;
+  std::shared_ptr<LabelsArranger> labelsArranger;
 
   Eigen::Vector2i size;
+  Eigen::Vector2i bufferSize;
 
   std::map<int, Eigen::Vector3f> newPositions;
+  float costSum;
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
                                                 Eigen::Matrix4f viewProjection);
