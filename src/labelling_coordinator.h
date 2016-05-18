@@ -60,6 +60,7 @@ class LabellingCoordinator
 
   bool forcesEnabled = true;
   bool optimizeOnIdle = false;
+  bool useApollonius = false;
 
  private:
   int layerCount;
