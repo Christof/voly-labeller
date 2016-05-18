@@ -25,6 +25,8 @@ class MouseShapeController;
 class PickingController;
 class LabelsModel;
 class QStateMachine;
+class VideoRecorder;
+class VideoRecorderController;
 
 /**
  * \brief Class for the whole application
@@ -57,6 +59,8 @@ class Application : public QObject
   std::shared_ptr<TextureMapperManagerController>
       textureMapperManagerController;
   std::shared_ptr<Scene> scene;
+  std::shared_ptr<VideoRecorder> videoRecorder;
+  std::unique_ptr<VideoRecorderController> videoRecorderController;
   std::unique_ptr<Window> window;
   std::unique_ptr<SceneController> sceneController;
   std::unique_ptr<LabellerModel> labellerModel;

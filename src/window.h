@@ -15,6 +15,7 @@
 class AbstractScene;
 class QStateMachine;
 class QOpenGLDebugLogger;
+class VideoRecorder;
 
 /**
  * \brief Main window which draws the 3D scene before Qt Gui is drawn
@@ -27,12 +28,14 @@ class Window : public QQuickView
   Q_PROPERTY(double averageFrameTime MEMBER avgFrameTime NOTIFY
                  averageFrameTimeUpdated)
  public:
-  explicit Window(std::shared_ptr<AbstractScene> scene, QWindow *parent = 0);
+  explicit Window(std::shared_ptr<AbstractScene> scene,
+                  std::shared_ptr<VideoRecorder> videoRecorder,
+                  QWindow *parent = 0);
   ~Window();
 
   std::shared_ptr<QStateMachine> stateMachine;
 
- signals:
+signals:
   void averageFrameTimeUpdated();
   void uiGotFocus();
   void uiLostFocus();
@@ -66,6 +69,8 @@ class Window : public QQuickView
   int framesInSecond = 0;
   double runningTime = 0;
   double avgFrameTime = 0;
+
+  std::shared_ptr<VideoRecorder> videoRecorder;
 };
 
 #endif  // SRC_WINDOW_H_

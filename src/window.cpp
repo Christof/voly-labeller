@@ -9,11 +9,13 @@
 #include <QLoggingCategory>
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
+#include "./video_recorder.h"
 
 QLoggingCategory openGlChan("OpenGl");
 
-Window::Window(std::shared_ptr<AbstractScene> scene, QWindow *parent)
-  : QQuickView(parent), scene(scene)
+Window::Window(std::shared_ptr<AbstractScene> scene,
+               std::shared_ptr<VideoRecorder> videoRecorder, QWindow *parent)
+  : QQuickView(parent), scene(scene), videoRecorder(videoRecorder)
 {
   setClearBeforeRendering(false);
 
@@ -81,6 +83,9 @@ void Window::initializeOpenGL()
   glAssert(gl->glDisable(GL_STENCIL_TEST));
   glAssert(gl->glDisable(GL_BLEND));
   glAssert(gl->glDepthMask(GL_FALSE));
+
+  videoRecorder->initialize(gl);
+  videoRecorder->resize(this->width(), this->height());
 }
 
 void Window::onInvalidated()
@@ -115,6 +120,8 @@ void Window::render()
   // resetOpenGLState();
 
   QQuickView::update();
+
+  videoRecorder->captureVideoFrame();
 }
 
 void Window::resizeOpenGL()
