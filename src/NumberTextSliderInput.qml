@@ -11,7 +11,7 @@ Item {
 
   TextInput {
     x: 10
-    id: weightInput
+    id: textInput
     maximumLength: 6
     width: 50
     validator: DoubleValidator {
@@ -23,12 +23,12 @@ Item {
     text: root.value
     color: root.color
     onTextChanged: {
-      weightSlider.value = text;
+      slider.value = text;
       root.inputValueChanged(text);
     }
   }
   Slider {
-    id: weightSlider
+    id: slider
     width: 150
     x: 66
     activeFocusOnPress: true
@@ -36,7 +36,7 @@ Item {
     maximumValue: root.maxValue
     value: root.value
     onValueChanged: {
-      weightInput.text = value;
+      textInput.text = value;
       root.inputValueChanged(value);
     }
   }
