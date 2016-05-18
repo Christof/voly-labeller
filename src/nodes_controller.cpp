@@ -1,5 +1,6 @@
 #include "./nodes_controller.h"
 #include "./nodes.h"
+#include "./label_node.h"
 
 NodesController::NodesController(std::shared_ptr<Nodes> nodes) : nodes(nodes)
 {
@@ -38,5 +39,14 @@ void NodesController::clear()
 void NodesController::toggleBoundingVolumes()
 {
   nodes->toggleBoundingVolumes();
+}
+
+void NodesController::changeAnchorSize(float size)
+{
+  labelAnchorSize = size;
+
+  auto labels = nodes->getLabelNodes();
+  for (auto label : labels)
+    label->anchorSize = size;
 }
 
