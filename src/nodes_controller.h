@@ -21,6 +21,8 @@ class NodesController : public QObject
  public:
   explicit NodesController(std::shared_ptr<Nodes> nodes);
 
+  float getAnchorSize();
+
  signals:
   void anchorSizeChanged();
 

@@ -6,6 +6,11 @@ NodesController::NodesController(std::shared_ptr<Nodes> nodes) : nodes(nodes)
 {
 }
 
+float NodesController::getAnchorSize()
+{
+  return labelAnchorSize;
+}
+
 void NodesController::addSceneNodesFrom(QUrl url)
 {
   nodes->addSceneNodesFrom(url.path().toStdString());
