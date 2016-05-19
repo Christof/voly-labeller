@@ -117,6 +117,10 @@ set(SOURCES
   src/graphics/buffer_drawer.cpp
   src/graphics/qimage_drawer.cpp
   src/ui.qml
+  src/ForcesTableView.qml
+  src/LabelsTableView.qml
+  src/PlacementWeightsTableView.qml
+  src/NumberTextSliderInput.qml
   ${RESOURCES})
 
 file(GLOB SHADER src/shader/*)
