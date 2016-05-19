@@ -9,6 +9,18 @@ struct AVCodecContext;
 struct AVFrame;
 struct SwsContext;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <libavcodec/avcodec.h>
+
+#ifdef __cplusplus
+}
+#endif
+
+
+
 class VOLYVIDEOMODULE_API ffmpeg_encoder
 {
 public:
@@ -26,12 +38,9 @@ private:
   AVCodec * m_codec;
   AVCodecContext * m_context;
   int m_out_size;
-  int m_outbuf_size;
   FILE *m_file;
   AVFrame *m_picture;
-  unsigned char *m_outbuf;
-
-  unsigned char *m_picture_buf;
+  AVPacket m_packet;
 
   unsigned char *m_rgb_src[3];
   int m_rgb_stride[3];
