@@ -6,8 +6,8 @@ Item {
   signal inputValueChanged(real value)
   property real value
   property color color: "black"
-  property alias minTextValue: textInput.bottom
-  property alias maxTextValue: textInput.top
+  property alias minTextValue: textInputValidator.bottom
+  property alias maxTextValue: textInputValidator.top
   property alias minSliderValue: slider.minimumValue
   property alias maxSliderValue: slider.maximumValue
 
