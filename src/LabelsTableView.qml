@@ -59,12 +59,56 @@ Item {
 
   Column {
     id: labelsItem
+    spacing: 4
     x: 10
     y: 192
     width: 441
-    height: 197
+    height: 263
     visible: labels.isVisible
     Row {
+      id: row1
+      spacing: 10
+
+      Label {
+        text: "Anchor size"
+      }
+
+      Item {
+        x: 0
+        width: 250
+        height: 27
+        Loader {
+          id: anchorSize
+          source: "NumberTextSliderInput.qml"
+        }
+
+        Connections {
+          target: anchorSize.item
+          onInputValueChanged: {
+            if (nodes) nodes.changeAnchorSize(value);
+          }
+        }
+
+        Binding {
+          target: anchorSize.item
+          property: "value"
+          value: nodes.anchorSize
+        }
+
+        Binding {
+          target: anchorSize.item
+          property: "minSliderValue"
+          value: 0.001
+        }
+        Binding {
+          target: anchorSize.item
+          property: "maxSliderValue"
+          value: 0.1
+        }
+      }
+    }
+    Row {
+      spacing: 10
       Button {
         text: "Add Label"
         onClicked: {
@@ -78,7 +122,6 @@ Item {
         }
       }
     }
-
 
     TableView {
       id: labelsView
