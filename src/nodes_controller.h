@@ -17,8 +17,14 @@ class Nodes;
 class NodesController : public QObject
 {
   Q_OBJECT
+  Q_PROPERTY(float anchorSize MEMBER labelAnchorSize NOTIFY anchorSizeChanged)
  public:
   explicit NodesController(std::shared_ptr<Nodes> nodes);
+
+  float getAnchorSize();
+
+ signals:
+  void anchorSizeChanged();
 
  public slots:
   void addSceneNodesFrom(QUrl url);
@@ -32,10 +38,14 @@ class NodesController : public QObject
 
   void toggleBoundingVolumes();
 
+  void changeAnchorSize(float size);
+
  private:
   std::shared_ptr<Nodes> nodes;
 
   std::string volumeToImport;
+
+  float labelAnchorSize = 0.01f;
 };
 
 #endif  // SRC_NODES_CONTROLLER_H_

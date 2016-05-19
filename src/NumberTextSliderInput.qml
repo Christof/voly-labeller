@@ -6,37 +6,40 @@ Item {
   signal inputValueChanged(real value)
   property real value
   property color color: "black"
-  property real minValue: 0
-  property real maxValue: 10
+  property alias minTextValue: textInput.bottom
+  property alias maxTextValue: textInput.top
+  property alias minSliderValue: slider.minimumValue
+  property alias maxSliderValue: slider.maximumValue
 
   TextInput {
     x: 10
-    id: weightInput
+    id: textInput
     maximumLength: 6
     width: 50
     validator: DoubleValidator {
-      bottom: root.minValue
-      top: root.maxValue
+      id: textInputValidator
+      bottom: 0
+      top: 10
     }
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     horizontalAlignment: Qt.AlignRight
     text: root.value
     color: root.color
     onTextChanged: {
-      weightSlider.value = text;
+      slider.value = text;
       root.inputValueChanged(text);
     }
   }
   Slider {
-    id: weightSlider
+    id: slider
     width: 150
     x: 66
     activeFocusOnPress: true
-    minimumValue: root.minValue
-    maximumValue: root.maxValue
+    minimumValue: 0
+    maximumValue: 10
     value: root.value
     onValueChanged: {
-      weightInput.text = value;
+      textInput.text = value;
       root.inputValueChanged(value);
     }
   }

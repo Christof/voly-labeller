@@ -173,7 +173,10 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   std::shared_ptr<LabelNode> labelNode =
       std::dynamic_pointer_cast<LabelNode>(node);
   if (labelNode.get())
+  {
+    labelNode->anchorSize = nodesController->getAnchorSize();
     labels->add(labelNode->label);
+  }
 }
 
 void Application::onLabelChangedUpdateLabelNodes(Labels::Action action,

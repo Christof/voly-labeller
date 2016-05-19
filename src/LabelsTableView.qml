@@ -59,26 +59,49 @@ Item {
 
   Column {
     id: labelsItem
+    spacing: 4
     x: 10
     y: 192
     width: 441
-    height: 197
+    height: 263
     visible: labels.isVisible
     Row {
-      Button {
-        text: "Add Label"
-        onClicked: {
-          if (labels) labels.addLabel();
-        }
+      id: row1
+      spacing: 10
+
+      Label {
+        text: "Anchor size"
       }
-      Button {
-        text: "Delete Label"
-        onClicked: {
-          if (labels) labels.deleteLabel(labelsView.currentRow);
+
+      Item {
+        x: 0
+        width: 250
+        height: 27
+        Loader {
+          id: anchorSize
+          source: "NumberTextSliderInput.qml"
+          onLoaded: {
+            item.minSliderValue = 0.0001
+            item.maxSliderValue = 0.1
+            item.minTextValue = 0.00001
+            item.maxTextValue = 100
+          }
+        }
+
+        Connections {
+          target: anchorSize.item
+          onInputValueChanged: {
+            if (nodes) nodes.changeAnchorSize(value);
+          }
+        }
+
+        Binding {
+          target: anchorSize.item
+          property: "value"
+          value: nodes.anchorSize
         }
       }
     }
-
 
     TableView {
       id: labelsView
@@ -110,6 +133,22 @@ Item {
       model: labels
       focus: true
       clip: true
+    }
+
+    Row {
+      spacing: 10
+      Button {
+        text: "Add Label"
+        onClicked: {
+          if (labels) labels.addLabel();
+        }
+      }
+      Button {
+        text: "Delete Label"
+        onClicked: {
+          if (labels) labels.deleteLabel(labelsView.currentRow);
+        }
+      }
     }
   }
 }
