@@ -80,6 +80,12 @@ Item {
         Loader {
           id: anchorSize
           source: "NumberTextSliderInput.qml"
+          onLoaded: {
+            item.minSliderValue = 0.0001
+            item.maxSliderValue = 0.1
+            item.minTextValue = 0.00001
+            item.maxTextValue = 100
+          }
         }
 
         Connections {
@@ -93,17 +99,6 @@ Item {
           target: anchorSize.item
           property: "value"
           value: nodes.anchorSize
-        }
-
-        Binding {
-          target: anchorSize.item
-          property: "minSliderValue"
-          value: 0.001
-        }
-        Binding {
-          target: anchorSize.item
-          property: "maxSliderValue"
-          value: 0.1
         }
       }
     }
