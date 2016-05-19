@@ -107,21 +107,6 @@ Item {
         }
       }
     }
-    Row {
-      spacing: 10
-      Button {
-        text: "Add Label"
-        onClicked: {
-          if (labels) labels.addLabel();
-        }
-      }
-      Button {
-        text: "Delete Label"
-        onClicked: {
-          if (labels) labels.deleteLabel(labelsView.currentRow);
-        }
-      }
-    }
 
     TableView {
       id: labelsView
@@ -153,6 +138,22 @@ Item {
       model: labels
       focus: true
       clip: true
+    }
+
+    Row {
+      spacing: 10
+      Button {
+        text: "Add Label"
+        onClicked: {
+          if (labels) labels.addLabel();
+        }
+      }
+      Button {
+        text: "Delete Label"
+        onClicked: {
+          if (labels) labels.deleteLabel(labelsView.currentRow);
+        }
+      }
     }
   }
 }
