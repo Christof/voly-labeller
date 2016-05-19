@@ -159,7 +159,8 @@ void LabelsModel::addLabel()
       {
         return a.id < b.id;
       });
-  int maxId = maxIdLabelNode->id;
+
+  int maxId = maxIdLabelNode != labelsVector.end() ? maxIdLabelNode->id : 0;
   labels->add(Label(maxId + 1, "Change text", Eigen::Vector3f(0.5f, 0, 0)));
 }
 
