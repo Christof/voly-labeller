@@ -166,8 +166,8 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
 
 QImage *LabelNode::renderLabelTextToQImage()
 {
-  int width = 512;
-  int height = 128;
+  int width = label.size.x() * 4;
+  int height = label.size.y() * 4;
   QImage *image = new QImage(width, height, QImage::Format_ARGB32);
   image->fill(Qt::GlobalColor::transparent);
 
