@@ -2,23 +2,23 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>8</count>
+	<count>12</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
-				<r0c0>9.559547901e-01</r0c0>
-				<r0c1>0.000000000e+00</r0c1>
-				<r0c2>2.935141921e-01</r0c2>
+				<r0c0>2.352903336e-01</r0c0>
+				<r0c1>7.450580597e-09</r0c1>
+				<r0c2>-9.719251394e-01</r0c2>
 				<r0c3>0.000000000e+00</r0c3>
-				<r1c0>1.767787337e-01</r1c0>
-				<r1c1>7.982825041e-01</r1c1>
-				<r1c2>-5.757557154e-01</r1c2>
-				<r1c3>-7.450580597e-09</r1c3>
-				<r2c0>-2.343071997e-01</r2c0>
-				<r2c1>6.022834182e-01</r2c1>
-				<r2c2>7.631218433e-01</r2c2>
-				<r2c3>-1.125239849e+00</r2c3>
+				<r1c0>-5.316295028e-01</r1c0>
+				<r1c1>8.371417522e-01</r1c1>
+				<r1c2>-1.287005246e-01</r1c2>
+				<r1c3>1.490116119e-08</r1c3>
+				<r2c0>8.136391044e-01</r2c0>
+				<r2c1>5.469860435e-01</r2c1>
+				<r2c2>1.969713569e-01</r2c2>
+				<r2c3>-4.292144775e-01</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
@@ -35,8 +35,8 @@
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.463100553e+00</r2c2>
-				<r2c3>-8.772601485e-01</r2c3>
+				<r2c2>-1.001626372e+00</r2c2>
+				<r2c3>-2.001626417e-03</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
@@ -153,6 +153,74 @@
 					<x>1.931830049e-01</x>
 					<y>4.613778591e-01</y>
 					<z>5.205542315e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_7">
+			<label>
+				<label.id>6</label.id>
+				<label.text>spinal canal</label.text>
+				<label.anchorPosition>
+					<x>1.057467423e-02</x>
+					<y>5.461091399e-01</y>
+					<z>-2.939824946e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_8">
+			<label>
+				<label.id>7</label.id>
+				<label.text>inside skull</label.text>
+				<label.anchorPosition>
+					<x>3.230512142e-02</x>
+					<y>7.336364985e-01</y>
+					<z>-8.677672595e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_9">
+			<label>
+				<label.id>8</label.id>
+				<label.text>radius</label.text>
+				<label.anchorPosition>
+					<x>2.289855778e-01</x>
+					<y>2.036306560e-01</y>
+					<z>1.252326649e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_10">
+			<label>
+				<label.id>9</label.id>
+				<label.text>ulna</label.text>
+				<label.anchorPosition>
+					<x>2.391501218e-01</x>
+					<y>1.934812218e-01</y>
+					<z>-1.549674477e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>1.280000000e+02</x>
