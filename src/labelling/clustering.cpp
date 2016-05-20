@@ -11,16 +11,7 @@ Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
 
 void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 {
-  allLabels = labels->getLabels();
-
-  zValues.clear();
-  int labelIndex = 0;
-  for (auto &label : allLabels)
-  {
-    zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
-    clusterIndices.push_back(labelIndex % clusterCount);
-    ++labelIndex;
-  }
+  initializeClusters(viewProjectionMatrix);
 
   recalculateCenters();
 
@@ -68,6 +59,20 @@ Clustering::getFarthestClusterMembersWithLabelIds()
   }
 
   return result;
+}
+
+void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
+{
+  allLabels = labels->getLabels();
+
+  zValues.clear();
+  int labelIndex = 0;
+  for (auto &label : allLabels)
+  {
+    zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
+    clusterIndices.push_back(labelIndex % clusterCount);
+    ++labelIndex;
+  }
 }
 
 int Clustering::updateStep()

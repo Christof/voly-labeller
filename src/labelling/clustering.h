@@ -42,6 +42,8 @@ class Clustering
   std::vector<int> clusterIndices;
   std::vector<float> clusterCenters;
 
+  void initializeClusters(Eigen::Matrix4f viewProjectionMatrix);
+
   /** \brief Iterate over all labels, assign each label to the nearest clust
    * and recalculate the cluster centers
    *
