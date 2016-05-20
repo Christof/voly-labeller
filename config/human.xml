@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="13">
+<data class_id="0" tracking_level="0" version="0">
+	<count>8</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.559547901e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>2.935141921e-01</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>1.767787337e-01</r1c0>
+				<r1c1>7.982825041e-01</r1c1>
+				<r1c2>-5.757557154e-01</r1c2>
+				<r1c3>-7.450580597e-09</r1c3>
+				<r2c0>-2.343071997e-01</r2c0>
+				<r2c1>6.022834182e-01</r2c1>
+				<r2c2>7.631218433e-01</r2c2>
+				<r2c3>-1.125239849e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>1.000000000e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>1.000000000e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.463100553e+00</r2c2>
+				<r2c3>-8.772601485e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>0.000000000e+00</x>
+				<y>0.000000000e+00</y>
+				<z>0.000000000e+00</z>
+			</origin>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="5" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/v1.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/v1-custom.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>1.192092896e-07</r0c0>
+				<r0c1>-9.999998808e-01</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>1.192092896e-07</r1c1>
+				<r1c2>9.999998808e-01</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>-9.999998808e-01</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>1.192092896e-07</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="6" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="7" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>ilium</label.text>
+				<label.anchorPosition>
+					<x>8.766472340e-02</x>
+					<y>1.232400984e-01</y>
+					<z>-1.150209270e-02</z>
+				</label.anchorPosition>
+				<label.size class_id="8" tracking_level="0" version="0">
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_3">
+			<label>
+				<label.id>2</label.id>
+				<label.text>sternum</label.text>
+				<label.anchorPosition>
+					<x>5.143845920e-03</x>
+					<y>4.839503169e-01</y>
+					<z>8.699886501e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_4">
+			<label>
+				<label.id>3</label.id>
+				<label.text>manubrium sterni</label.text>
+				<label.anchorPosition>
+					<x>5.031356122e-03</x>
+					<y>5.350193381e-01</y>
+					<z>6.671650708e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>clavicle</label.text>
+				<label.anchorPosition>
+					<x>8.642478287e-02</x>
+					<y>5.847501755e-01</y>
+					<z>3.957573324e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_6">
+			<label>
+				<label.id>5</label.id>
+				<label.text>humerus</label.text>
+				<label.anchorPosition>
+					<x>1.931830049e-01</x>
+					<y>4.613778591e-01</y>
+					<z>5.205542315e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
