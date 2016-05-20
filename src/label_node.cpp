@@ -166,7 +166,9 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
 
 QImage *LabelNode::renderLabelTextToQImage()
 {
-  QImage *image = new QImage(512, 128, QImage::Format_ARGB32);
+  int width = 512;
+  int height = 128;
+  QImage *image = new QImage(width, height, QImage::Format_ARGB32);
   image->fill(Qt::GlobalColor::transparent);
 
   QPainter painter;
@@ -174,11 +176,12 @@ QImage *LabelNode::renderLabelTextToQImage()
 
   painter.setBrush(QBrush(Qt::GlobalColor::lightGray));
   painter.setPen(Qt::GlobalColor::lightGray);
-  painter.drawRoundRect(QRectF(0, 0, 512, 128), 15, 60);
+  painter.drawRoundRect(QRectF(0, 0, width, height), 15, 60);
 
   painter.setPen(Qt::black);
   painter.setFont(QFont("Arial", 72));
-  painter.drawText(QRectF(0, 0, 512, 128), Qt::AlignCenter, label.text.c_str());
+  painter.drawText(QRectF(0, 0, width, height), Qt::AlignCenter,
+                   label.text.c_str());
   painter.end();
 
   textureText = label.text;
