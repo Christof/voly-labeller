@@ -53,6 +53,7 @@ class Clustering
    * \return Number of assignment changes
    */
   int updateStep();
+  int findNearestCluster(float zValue, int clusterCount);
   int findNearestCluster(float zValue);
   void recalculateCenters();
 

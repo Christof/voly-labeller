@@ -12,6 +12,9 @@ Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
 
 void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 {
+  if (labels->count() == 0)
+    return;
+
   initializeClusters(viewProjectionMatrix);
 
   recalculateCenters();
@@ -98,8 +101,42 @@ void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
   for (auto &label : allLabels)
   {
     zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
-    clusterIndices.push_back(labelIndex % clusterCount);
     ++labelIndex;
+  }
+
+  std::vector<int> labelIndexForClusterIndex;
+
+  // Choose one center uniformly at random from among the data points.
+  std::uniform_int_distribution<> dist(0, allLabels.size() - 1);
+  int clusterIndex = dist(gen);
+  clusterCenters[0] = zValues[clusterIndex];
+  labelIndexForClusterIndex.push_back(clusterIndex);
+
+  for (size_t clusterIndex = 1; clusterIndex < clusterCenters.size();
+       ++clusterIndex)
+  {
+    // For each data point x, compute D(x), the distance between x and
+    // the nearest center that has already been chosen.
+    std::vector<float> distances;
+    for (size_t labelIndex = 0; labelIndex < zValues.size(); ++labelIndex)
+    {
+      float zValue = zValues[labelIndex];
+      int nearestCluster = findNearestCluster(zValue, clusterIndex);
+      distances.push_back(getDistance(clusterCenters[nearestCluster], zValue));
+    }
+    // Choose one new data point at random as a new center, using a weighted
+    // probability distribution where a point x is chosen with probability
+    // proportional to D(x)2.
+    int newClusterIndex = getRandomLabelIndexWeightedBy(distances);
+
+    clusterCenters[clusterIndex] = zValues[newClusterIndex];
+    labelIndexForClusterIndex.push_back(newClusterIndex);
+    // Repeat Steps 2 and 3 until k centers have been chosen.
+  }
+
+  for (size_t labelIndex = 0; labelIndex < zValues.size(); ++labelIndex)
+  {
+    clusterIndices.push_back(findNearestCluster(zValues[labelIndex]));
   }
 }
 
@@ -125,7 +162,7 @@ int Clustering::updateStep()
   return updateCount;
 }
 
-int Clustering::findNearestCluster(float zValue)
+int Clustering::findNearestCluster(float zValue, int clusterCount)
 {
   float minDistance = std::numeric_limits<float>::max();
   int bestClusterIndex = -1;
@@ -141,6 +178,11 @@ int Clustering::findNearestCluster(float zValue)
   }
 
   return bestClusterIndex;
+}
+
+int Clustering::findNearestCluster(float zValue)
+{
+  return findNearestCluster(zValue, clusterCount);
 }
 
 void Clustering::recalculateCenters()
