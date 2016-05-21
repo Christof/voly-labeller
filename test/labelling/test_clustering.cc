@@ -175,47 +175,44 @@ TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
   EXPECT_EQ(7, indices[2]);
 }
 
-TEST(Test_Clustering, getRandomLabelIndexWeightedBy)
+TEST(Test_Clustering, getRandomLabelIndexWeightedBy_equal_distances)
 {
   auto labels = std::make_shared<Labels>();
   Clustering clustering(labels, 3);
 
   std::vector<float> equalDistances = { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
-  std::vector<float> differentDistances = { 1.0f, 2.5f, 2.0f, 4.0f, 0.5f };
 
   std::vector<float> winnerCountEqual(equalDistances.size(), 0);
-  std::vector<float> winnerCountDifferent(differentDistances.size(), 0);
 
   for (int i = 0; i < 10000; ++i)
   {
     int index = clustering.getRandomLabelIndexWeightedBy(equalDistances);
-    winnerCountEqual[index] += 1;
-
-    index = clustering.getRandomLabelIndexWeightedBy(differentDistances);
-    winnerCountDifferent[index] += 1;
+    winnerCountEqual[index] += 0.0001;
   }
-
-  std::for_each(winnerCountEqual.begin(), winnerCountEqual.end(),
-                [](float winnerCount)
-                {
-    return winnerCount / 10000.0f;
-  });
-  std::for_each(winnerCountDifferent.begin(), winnerCountDifferent.end(),
-                [](float winnerCount)
-                {
-    return winnerCount / 10000.0f;
-  });
 
   EXPECT_NEAR(0.2f, winnerCountEqual[0], 0.03f);
   EXPECT_NEAR(0.2f, winnerCountEqual[1], 0.03f);
   EXPECT_NEAR(0.2f, winnerCountEqual[2], 0.03f);
   EXPECT_NEAR(0.2f, winnerCountEqual[3], 0.03f);
   EXPECT_NEAR(0.2f, winnerCountEqual[4], 0.03f);
-
-  EXPECT_NEAR(0.1f, winnerCountDifferent[0], 0.03f);
-  EXPECT_NEAR(0.25f, winnerCountDifferent[1], 0.03f);
-  EXPECT_NEAR(0.2f, winnerCountDifferent[2], 0.03f);
-  EXPECT_NEAR(0.4f, winnerCountDifferent[3], 0.03f);
-  EXPECT_NEAR(0.05f, winnerCountDifferent[4], 0.03f);
 }
 
+TEST(Test_Clustering, getRandomLabelIndexWeightedBy_different_distances)
+{
+  auto labels = std::make_shared<Labels>();
+  Clustering clustering(labels, 3);
+  std::vector<float> differentDistances = { 1.0f, 3.0f, 2.0f, 4.0f, 0.0f };
+  std::vector<float> winnerCountDifferent(differentDistances.size(), 0);
+
+  for (int i = 0; i < 10000; ++i)
+  {
+    int index = clustering.getRandomLabelIndexWeightedBy(differentDistances);
+    winnerCountDifferent[index] += 0.0001;
+  }
+
+  EXPECT_NEAR(0.1f, winnerCountDifferent[0], 0.03f);
+  EXPECT_NEAR(0.3f, winnerCountDifferent[1], 0.03f);
+  EXPECT_NEAR(0.2f, winnerCountDifferent[2], 0.03f);
+  EXPECT_NEAR(0.4f, winnerCountDifferent[3], 0.03f);
+  EXPECT_EQ(0.0f, winnerCountDifferent[4]);
+}
