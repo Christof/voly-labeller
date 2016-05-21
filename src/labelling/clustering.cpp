@@ -1,5 +1,6 @@
 #include "./clustering.h"
 #include <map>
+#include <random>
 #include <vector>
 #include <limits>
 #include "./labels.h"
@@ -61,6 +62,33 @@ Clustering::getFarthestClusterMembersWithLabelIds()
   return result;
 }
 
+float getDistance(float value1, float value2)
+{
+  float diff = value1 - value2;
+
+  return diff * diff;
+}
+
+int Clustering::getRandomLabelIndexWeightedBy(std::vector<float> distances)
+{
+  float sumOfDistances =
+      std::accumulate(distances.begin(), distances.end(), 0.0f);
+
+  std::uniform_real_distribution<float> dist(0.0f, sumOfDistances);
+  float randomValue = dist(gen);
+
+  float sum = 0.0f;
+  for (size_t labelIndex = 0; labelIndex < distances.size(); ++labelIndex)
+  {
+    sum += distances[labelIndex];
+
+    if (sum >= randomValue)
+      return labelIndex;
+  }
+
+  return distances.size() - 1;
+}
+
 void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
 {
   allLabels = labels->getLabels();
@@ -103,8 +131,7 @@ int Clustering::findNearestCluster(float zValue)
   int bestClusterIndex = -1;
   for (int clusterIndex = 0; clusterIndex < clusterCount; ++clusterIndex)
   {
-    float distance = clusterCenters[clusterIndex] - zValue;
-    distance *= distance;
+    float distance = getDistance(clusterCenters[clusterIndex], zValue);
 
     if (distance < minDistance)
     {

@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <map>
+#include <random>
 #include <vector>
 #include "./label.h"
 #include "../math/eigen.h"
@@ -32,6 +33,8 @@ class Clustering
    */
   std::map<float, std::vector<int>> getFarthestClusterMembersWithLabelIds();
 
+  int getRandomLabelIndexWeightedBy(std::vector<float> distances);
+
  private:
   std::shared_ptr<Labels> labels;
   int clusterCount;
@@ -52,6 +55,8 @@ class Clustering
   int updateStep();
   int findNearestCluster(float zValue);
   void recalculateCenters();
+
+  std::default_random_engine gen;
 };
 
 #endif  // SRC_LABELLING_CLUSTERING_H_
