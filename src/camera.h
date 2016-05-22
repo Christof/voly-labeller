@@ -60,7 +60,7 @@ class Camera
   float azimuth;
   float declination;
 
-  float fieldOfView = static_cast<float>(0.5f * M_PI);
+  float fieldOfView = static_cast<float>(0.25 * M_PI);
   float aspectRatio = 0.0f;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
