@@ -180,6 +180,21 @@ void Camera::updateNearAndFarPlanes(float nearPlane, float farPlane)
   projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
 }
 
+float Camera::getNearPlane()
+{
+  return this->nearPlane;
+}
+
+float Camera::getFarPlane()
+{
+  return this->farPlane;
+}
+
+void Camera::setOrigin(Eigen::Vector3f origin)
+{
+  this->origin = origin;
+}
+
 bool Camera::needsResizing()
 {
   return aspectRatio == 0.0f;

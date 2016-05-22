@@ -38,6 +38,11 @@ class Camera
 
   void updateNearAndFarPlanes(float nearPlane, float farPlane);
 
+  float getNearPlane();
+  float getFarPlane();
+
+  void setOrigin(Eigen::Vector3f origin);
+
   bool needsResizing();
 
  private:
