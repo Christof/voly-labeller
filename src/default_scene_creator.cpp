@@ -1,7 +1,7 @@
 #include "./default_scene_creator.h"
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
-#include <Eigen/Geometry>
 #include "./importer.h"
 #include "./nodes.h"
 #include "./mesh_node.h"
