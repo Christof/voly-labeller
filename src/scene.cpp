@@ -65,7 +65,7 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/transparentOverlay.frag");
 
   fbo->initialize(gl, width, height);
-  picker = std::make_unique<Picker>(fbo, gl, labels);
+  picker = std::make_unique<Picker>(fbo, gl, labels, nodes);
   picker->resize(width, height);
   constraintBufferObject->initialize(gl, textureMapperManager->getBufferSize(),
                                      textureMapperManager->getBufferSize());

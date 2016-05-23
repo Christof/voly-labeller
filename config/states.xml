@@ -30,7 +30,8 @@
       <invoke targettype="cameraZoom" src="wheelZoom"/>
     </transition>
 
-    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate"/>
+    <transition event="MouseButtonEvent.DOWN.RIGHT" target="rotate"/>
+    <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate-around-picked-position"/>
     <transition event="KeyboardEvent.DOWN.CTRL" target="ctrl"/>
     <transition event="KeyboardEvent.DOWN.SHIFT" target="shift"/>
     <transition event="KeyboardEvent.UP.P" target="picking"/>
@@ -85,11 +86,35 @@
         <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
     </state>
+    <transition event="MouseButtonEvent.UP.RIGHT" target="idle"/>
+    <onexit>
+      <invoke targettype="mouseShape" src="reset"/>
+    </onexit>
+  </state>
+
+  <state id="rotate-around-picked-position">
+    <initial id="rotate-initial-pick">
+      <transition target="rotate-pick-origin"/>
+      <invoke targettype="mouseShape" src="startDragging"/>
+      <invoke targettype="cameraRotation" src="startDragging"/>
+    </initial>
+    <state id="rotate-pick-origin">
+      <transition event="Event.MouseMove" target="rotate-move-pick">
+        <invoke targettype="picking" src="pickRotationPosition"/>
+      </transition>
+    </state>
+    <state id="rotate-move-pick">
+      <transition event="window.uiGotFocus" target="qt-ui"/>
+      <transition event="Event.MouseMove">
+        <invoke targettype="cameraRotation" src="updateDragging"/>
+      </transition>
+    </state>
     <transition event="MouseButtonEvent.UP.LEFT" target="idle"/>
     <onexit>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
   </state>
+
   <state id="ctrl">
     <transition event="KeyboardEvent.UP.CTRL" target="idle"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="zoom"/>

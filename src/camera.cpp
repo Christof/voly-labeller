@@ -193,6 +193,12 @@ float Camera::getFarPlane()
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
   this->origin = origin;
+  radius = (origin - position).norm();
+  Eigen::Vector3f diff = (position - origin).normalized();
+
+  declination = asin(diff.y());
+  azimuth = -acos(diff.x() / cos(declination));
+  update();
 }
 
 bool Camera::needsResizing()

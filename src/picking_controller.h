@@ -22,6 +22,7 @@ class PickingController : public QObject
  public slots:
   void startPicking(Label label);
   void pick(QEvent *event);
+  void pickRotationPosition(QEvent *event);
 
  private:
   std::shared_ptr<Scene> scene;
