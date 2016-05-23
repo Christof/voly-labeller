@@ -1,4 +1,5 @@
 #include "./default_scene_creator.h"
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
 #include "./importer.h"
@@ -23,11 +24,14 @@ DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
-  addMeshNodesTo(sceneNodes);
-  addLabelNodesTo(sceneNodes);
+  // addMeshNodesTo(sceneNodes);
+  // addLabelNodesTo(sceneNodes);
+  Eigen::Affine3f trans(
+      Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitY()) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/neurochirurgie_test.mhd",
-      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
+      "assets/datasets/v1.mhd", "assets/transferfunctions/v1-custom.gra",
+      trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");
