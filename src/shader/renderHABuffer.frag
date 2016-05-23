@@ -24,7 +24,7 @@ const int layerCount = 4;
 const int planeCount = layerCount - 1;
 uniform vec4 layerPlanes[planeCount];
 uniform float planesZValuesNdc[planeCount];
-uniform vec3 lightPos_eye = vec3(0.0f, 1.0f, -1.0f);
+uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
 
 uniform sampler3D volumeSampler;
 

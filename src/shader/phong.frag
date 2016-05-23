@@ -9,7 +9,7 @@ in vec4 outEyePosition;
 in vec2 outTextureCoordinate;
 in flat int outDrawId;
 
-uniform vec3 lightPos_eye = vec3(0.0f, 1.0f, -1.0f);
+uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
 
 struct PhongMaterial
 {
