@@ -81,10 +81,10 @@ Item {
           id: anchorSize
           source: "NumberTextSliderInput.qml"
           onLoaded: {
-            item.minSliderValue = 0.0001
-            item.maxSliderValue = 0.1
-            item.minTextValue = 0.00001
-            item.maxTextValue = 100
+            item.minSliderValue = 2
+            item.maxSliderValue = 64
+            item.minTextValue = 2
+            item.maxTextValue = 64
           }
         }
 

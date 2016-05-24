@@ -42,7 +42,7 @@ class LabelNode : public Node
   Label label;
 
   int layerIndex = 0;
-  float anchorSize = 0.01f;
+  float anchorSize = 10.0f;
 
   void setIsVisible(bool isVisible);
 

@@ -132,7 +132,6 @@ void LabelNode::renderAnchor(Graphics::Gl *gl,
       renderData.viewProjectionMatrix * toVector4f(label.anchorPosition);
   anchorNDC /= anchorNDC.w();
 
-  anchorSize = 32;
   float sizeNDC = anchorSize / renderData.windowPixelSize.x();
 
   Eigen::Vector4f sizeWorld =
