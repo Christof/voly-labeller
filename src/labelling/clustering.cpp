@@ -15,7 +15,9 @@ void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   if (labels->count() == 0)
     return;
 
-  initializeClusters(viewProjectionMatrix);
+  recalculateZValues(viewProjectionMatrix);
+
+  initializeClusters();
 
   recalculateCenters();
 
@@ -92,7 +94,7 @@ int Clustering::getRandomLabelIndexWeightedBy(std::vector<float> distances)
   return distances.size() - 1;
 }
 
-void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
+void Clustering::recalculateZValues(Eigen::Matrix4f viewProjectionMatrix)
 {
   allLabels = labels->getLabels();
 
@@ -103,11 +105,14 @@ void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
     zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
     ++labelIndex;
   }
+}
 
+void Clustering::initializeClusters()
+{
   std::vector<int> labelIndexForClusterIndex;
 
   // Choose one center uniformly at random from among the data points.
-  std::uniform_int_distribution<> dist(0, allLabels.size() - 1);
+  std::uniform_int_distribution<> dist(0, zValues.size() - 1);
   int clusterIndex = dist(gen);
   clusterCenters[0] = zValues[clusterIndex];
   labelIndexForClusterIndex.push_back(clusterIndex);
@@ -115,29 +120,31 @@ void Clustering::initializeClusters(Eigen::Matrix4f viewProjectionMatrix)
   for (size_t clusterIndex = 1; clusterIndex < clusterCenters.size();
        ++clusterIndex)
   {
-    // For each data point x, compute D(x), the distance between x and
-    // the nearest center that has already been chosen.
-    std::vector<float> distances;
-    for (size_t labelIndex = 0; labelIndex < zValues.size(); ++labelIndex)
-    {
-      float zValue = zValues[labelIndex];
-      int nearestCluster = findNearestCluster(zValue, clusterIndex);
-      distances.push_back(getDistance(clusterCenters[nearestCluster], zValue));
-    }
-    // Choose one new data point at random as a new center, using a weighted
-    // probability distribution where a point x is chosen with probability
-    // proportional to D(x)2.
-    int newClusterIndex = getRandomLabelIndexWeightedBy(distances);
+    auto distances = calculateDistancesToNearestCenter(clusterIndex);
 
+    int newClusterIndex = getRandomLabelIndexWeightedBy(distances);
     clusterCenters[clusterIndex] = zValues[newClusterIndex];
     labelIndexForClusterIndex.push_back(newClusterIndex);
-    // Repeat Steps 2 and 3 until k centers have been chosen.
   }
 
   for (size_t labelIndex = 0; labelIndex < zValues.size(); ++labelIndex)
   {
     clusterIndices.push_back(findNearestCluster(zValues[labelIndex]));
   }
+}
+
+std::vector<float>
+Clustering::calculateDistancesToNearestCenter(size_t currentClusterCount)
+{
+  std::vector<float> distances;
+  for (size_t labelIndex = 0; labelIndex < zValues.size(); ++labelIndex)
+  {
+    float zValue = zValues[labelIndex];
+    int nearestCluster = findNearestCluster(zValue, currentClusterCount);
+    distances.push_back(getDistance(clusterCenters[nearestCluster], zValue));
+  }
+
+  return distances;
 }
 
 int Clustering::updateStep()
