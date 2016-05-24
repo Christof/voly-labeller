@@ -111,7 +111,6 @@ void Clustering::initializeClusters()
 {
   std::vector<int> labelIndexForClusterIndex;
 
-  // Choose one center uniformly at random from among the data points.
   std::uniform_int_distribution<> dist(0, zValues.size() - 1);
   int clusterIndex = dist(gen);
   clusterCenters[0] = zValues[clusterIndex];
