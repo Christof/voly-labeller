@@ -128,9 +128,21 @@ void LabelNode::renderAnchor(Graphics::Gl *gl,
                              std::shared_ptr<Graphics::Managers> managers,
                              RenderData renderData)
 {
-  Eigen::Affine3f modelTransform(Eigen::Translation3f(label.anchorPosition) *
-                                 Eigen::Scaling(anchorSize));
-  renderData.modelMatrix = modelTransform.matrix();
+  Eigen::Vector4f anchorNDC =
+      renderData.viewProjectionMatrix * toVector4f(label.anchorPosition);
+  anchorNDC /= anchorNDC.w();
+
+  anchorSize = 32;
+  float sizeNDC = anchorSize / renderData.windowPixelSize.x();
+
+  Eigen::Vector4f sizeWorld =
+      renderData.projectionMatrix.inverse() *
+      Eigen::Vector4f(sizeNDC, sizeNDC, anchorNDC.z(), 1);
+  sizeWorld /= sizeWorld.w();
+
+  Eigen::Affine3f anchorTransform(Eigen::Translation3f(label.anchorPosition) *
+                                  Eigen::Scaling(sizeWorld.x()));
+  renderData.modelMatrix = anchorTransform.matrix();
 
   anchorMesh->render(gl, managers, renderData);
 }
