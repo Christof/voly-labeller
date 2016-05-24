@@ -12,8 +12,11 @@
 class Labels;
 
 /**
- * \brief Cluster given labels by their depth using k-means
+ * \brief Cluster given labels by their depth using k-means++
  *
+ * The k-means++ algorithm is taken from:
+ * Arthur, D., & Vassilvitskii, S. (n.d.).
+ * k-means++: The Advantages of Careful Seeding, 8, 1–11.
  */
 class Clustering
 {
