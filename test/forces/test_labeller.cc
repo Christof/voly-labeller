@@ -34,6 +34,7 @@ class TestLabeller : public ::testing::Test
 TEST_F(TestLabeller, AddedLabelIsUpdated)
 {
   auto oldPosition = labeller->getLabels()[0].labelPosition;
+  labeller->forces[0]->isEnabled = true;
 
   auto newPositions =
       labeller->update(getDefaultFrameData(), getEmptyPlacementResult());

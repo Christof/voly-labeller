@@ -54,7 +54,7 @@ class Labeller
   std::vector<LabelState> labelStates;
   std::function<void()> unsubscribeLabelChanges;
 
-  template <class T> void addForce(T *force);
+  template <class T> void addForce(T *force, bool enabled = true);
   void enforceAnchorDepthForLabel(LabelState &label,
                                   const Eigen::Matrix4f &viewMatrix);
   void setLabel(Labels::Action action, const Label &label);

@@ -15,10 +15,10 @@ namespace Forces
 Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
   srand(9);
-  addForce(new CenterForce());
-  // addForce(new AnchorForce());
-  addForce(new LabelCollisionForce());
-  addForce(new LinesCrossingForce());
+  addForce(new CenterForce(), false);
+  addForce(new AnchorForce(), false);
+  addForce(new LabelCollisionForce(), false);
+  addForce(new LinesCrossingForce(), false);
   addForce(new PlacementForce());
 
   unsubscribeLabelChanges = labels->subscribe(std::bind(
@@ -132,8 +132,9 @@ std::vector<LabelState> Labeller::getLabels()
   return labelStates;
 }
 
-template <class T> void Labeller::addForce(T *force)
+template <class T> void Labeller::addForce(T *force, bool enabled)
 {
+  force->isEnabled = enabled;
   forces.push_back(std::unique_ptr<T>(force));
 }
 
