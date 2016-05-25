@@ -45,7 +45,7 @@ class NodesController : public QObject
 
   std::string volumeToImport;
 
-  float labelAnchorSize = 0.01f;
+  float labelAnchorSize = 10.0f;
 };
 
 #endif  // SRC_NODES_CONTROLLER_H_

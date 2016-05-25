@@ -42,7 +42,7 @@ class LabelNode : public Node
   Label label;
 
   int layerIndex = 0;
-  float anchorSize = 0.01f;
+  float anchorSize = 10.0f;
 
   void setIsVisible(bool isVisible);
 
@@ -70,7 +70,10 @@ class LabelNode : public Node
                    std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData);
   QImage *renderLabelTextToQImage();
+  Eigen::Vector3f calculateWorldScale(Eigen::Vector4f sizeNDC,
+                                      Eigen::Matrix4f projectionMatrix);
 
+  Eigen::Vector4f anchorNDC;
   std::shared_ptr<Graphics::Mesh> anchorMesh;
   std::shared_ptr<Graphics::Quad> quad;
   std::shared_ptr<Graphics::Connector> connector;
