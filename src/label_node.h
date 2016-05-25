@@ -70,6 +70,8 @@ class LabelNode : public Node
                    std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData);
   QImage *renderLabelTextToQImage();
+  Eigen::Vector3f calculateWorldScale(Eigen::Vector4f sizeNDC,
+                                      Eigen::Matrix4f projectionMatrix);
 
   Eigen::Vector4f anchorNDC;
   std::shared_ptr<Graphics::Mesh> anchorMesh;

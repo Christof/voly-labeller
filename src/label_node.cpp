@@ -134,10 +134,9 @@ void LabelNode::renderAnchor(Graphics::Gl *gl,
 
   float sizeNDC = anchorSize / renderData.windowPixelSize.x();
 
-  Eigen::Vector4f sizeWorld =
-      renderData.projectionMatrix.inverse() *
-      Eigen::Vector4f(sizeNDC, sizeNDC, anchorNDC.z(), 1);
-  sizeWorld /= sizeWorld.w();
+  Eigen::Vector3f sizeWorld =
+      calculateWorldScale(Eigen::Vector4f(sizeNDC, sizeNDC, anchorNDC.z(), 1),
+                          renderData.projectionMatrix);
 
   Eigen::Affine3f anchorTransform(Eigen::Translation3f(label.anchorPosition) *
                                   Eigen::Scaling(sizeWorld.x()));
@@ -152,10 +151,10 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
 {
   Eigen::Vector2f sizeNDC =
       label.size.cwiseQuotient(renderData.windowPixelSize);
-  Eigen::Vector4f sizeWorld =
-      renderData.projectionMatrix.inverse() *
-      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1);
-  sizeWorld /= sizeWorld.w();
+
+  Eigen::Vector3f sizeWorld = calculateWorldScale(
+      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1),
+      renderData.projectionMatrix);
 
   Eigen::Affine3f labelTransform(
       Eigen::Translation3f(labelPosition) *
@@ -193,5 +192,16 @@ QImage *LabelNode::renderLabelTextToQImage()
   textureText = label.text;
 
   return image;
+}
+
+Eigen::Vector3f LabelNode::calculateWorldScale(Eigen::Vector4f sizeNDC,
+                                               Eigen::Matrix4f projectionMatrix)
+{
+  Eigen::Vector4f sizeWorld =
+      projectionMatrix.inverse() *
+      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1);
+  sizeWorld /= sizeWorld.w();
+
+  return Eigen::Vector3f(sizeWorld.x(), sizeWorld.y(), 1.0f);
 }
 
