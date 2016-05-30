@@ -5,6 +5,7 @@
 #include "./cost_function_calculator.h"
 #include <thrust/transform_reduce.h>
 #include <limits>
+#include <cfloat>
 #include <tuple>
 #include "./placement.h"
 
@@ -103,6 +104,10 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   {
     int x = index % width;
     int y = index / width;
+
+    if (x < halfLabelWidth || x > width - halfLabelWidth ||
+        y < halfLabelHeight || y > height - halfLabelHeight)
+      return EvalResult(x, y, FLT_MAX);
 
     unsigned char constraintValue =
         tex2D<unsigned char>(constraints, x + 0.5f, y + 0.5f);
