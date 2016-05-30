@@ -21,7 +21,7 @@ namespace Placement
 struct CostFunctionWeights
 {
   float labelShadowConstraint = 1e2f;
-  float occupancy = 1.0f;
+  float integralCosts = 1.0f;
   float distanceToAnchor = 1e-3f;
   float favorHorizontalOrVerticalLines = 1e-1f;
   float connectorShadowConstraint = 1e1f;
@@ -46,8 +46,8 @@ struct CostFunctionResult
  * corresponding position
  *
  * The cost function consists of the following terms:
- * - occupancy of the area under the label (determined using the summed area
- *   table of the occupancy)
+ * - integral costs of the area under the label (determined using the
+ *   summed area table of the sum of the occlusion and saliency)
  * - distance between the label position to the anchor
  * - how aligned the connector line would be the horizontal or vertical axis
  * - distance between the old and new label position

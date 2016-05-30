@@ -75,7 +75,7 @@ void PlacementLabellerModel::changeWeight(int row, QVariant newValue)
       weights.labelShadowConstraint = value;
       break;
     case 1:
-      weights.occupancy = value;
+      weights.integralCosts = value;
       break;
     case 2:
       weights.distanceToAnchor = value;
@@ -108,7 +108,7 @@ QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
   case 0:
     return "Label shadow";
   case 1:
-    return "Occupancy";
+    return "Integral costs";
   case 2:
     return "Distance to anchor";
   case 3:
@@ -129,7 +129,7 @@ float PlacementLabellerModel::getWeightValueForRowIndex(int rowIndex) const
   case 0:
     return weights.labelShadowConstraint;
   case 1:
-    return weights.occupancy;
+    return weights.integralCosts;
   case 2:
     return weights.distanceToAnchor;
   case 3:

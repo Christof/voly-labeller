@@ -68,7 +68,7 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
 {
   Placement::CostFunctionWeights weights;
   weights.labelShadowConstraint = 1e2f;
-  weights.occupancy = 1.0f;
+  weights.integralCosts = 1.0f;
   weights.distanceToAnchor = 1e-3f;
   weights.favorHorizontalOrVerticalLines = 1e-1f;
   weights.connectorShadowConstraint = 1e1f;

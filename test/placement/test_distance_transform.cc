@@ -7,18 +7,18 @@
 #include "../cuda_array_mapper.h"
 
 std::vector<float> callDistanceTransform(
-    std::shared_ptr<CudaArrayMapper<float>> occupancyImageProvider)
+    std::shared_ptr<CudaArrayMapper<float>> occlusionImageProvider)
 {
   cudaChannelFormatDesc outputChannelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
   int pixelCount =
-      occupancyImageProvider->getWidth() * occupancyImageProvider->getHeight();
+      occlusionImageProvider->getWidth() * occlusionImageProvider->getHeight();
   std::vector<float> resultImage(pixelCount);
   auto output = std::make_shared<CudaArrayMapper<float>>(
-      occupancyImageProvider->getWidth(), occupancyImageProvider->getHeight(),
+      occlusionImageProvider->getWidth(), occlusionImageProvider->getHeight(),
       resultImage, outputChannelDesc);
 
-  Placement::DistanceTransform distanceTransform(occupancyImageProvider,
+  Placement::DistanceTransform distanceTransform(occlusionImageProvider,
                                                  output);
   distanceTransform.run();
 
@@ -31,33 +31,33 @@ std::vector<float> callDistanceTransform(
 
 TEST(Test_DistanceTransform, DistanceTransform)
 {
-  std::vector<float> occupancyImage;
+  std::vector<float> occlusionImage;
 
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
 
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(1.0f);
-  occupancyImage.push_back(1.0f);
-  occupancyImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(1.0f);
+  occlusionImage.push_back(1.0f);
+  occlusionImage.push_back(0.0f);
 
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(1.0f);
-  occupancyImage.push_back(1.0f);
-  occupancyImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(1.0f);
+  occlusionImage.push_back(1.0f);
+  occlusionImage.push_back(0.0f);
 
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
-  occupancyImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
+  occlusionImage.push_back(0.0f);
 
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-  auto occupancyImageProvider = std::make_shared<CudaArrayMapper<float>>(
-      4, 4, occupancyImage, channelDesc);
-  auto image = callDistanceTransform(occupancyImageProvider);
+  auto occlusionImageProvider = std::make_shared<CudaArrayMapper<float>>(
+      4, 4, occlusionImage, channelDesc);
+  auto image = callDistanceTransform(occlusionImageProvider);
 
   EXPECT_NEAR(0.0f, image[0], 1e-4f);
   EXPECT_NEAR(0.0f, image[1], 1e-4f);

@@ -57,7 +57,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   float anchorY;
 
   cudaTextureObject_t constraints;
-  const float *occupancy;
+  const float *integralCosts;
 
   __device__ float lineLength(int x, int y) const
   {
@@ -79,17 +79,17 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     return fabs(diffX) + fabs(diffY);
   }
 
-  __device__ float occupancyForLabelArea(int x, int y) const
+  __device__ float integralCostsForLabelArea(int x, int y) const
   {
     int startX = max(x - halfLabelWidth - 1, 0);
     int startY = max(y - halfLabelWidth - 1, 0);
     int endX = min(x + halfLabelWidth, width - 1);   // NOLINT
     int endY = min(y + halfLabelWidth, height - 1);  // NOLINT
 
-    float lowerRight = occupancy[endY * width + endX];
-    float lowerLeft = occupancy[endY * width + startX];
-    float upperLeft = occupancy[startY * width + startX];
-    float upperRight = occupancy[startY * width + endX];
+    float lowerRight = integralCosts[endY * width + endX];
+    float lowerLeft = integralCosts[endY * width + startX];
+    float upperLeft = integralCosts[startY * width + startX];
+    float upperRight = integralCosts[startY * width + endX];
     float sum = lowerRight + upperLeft - lowerLeft - upperRight;
 
     // this can be the case through inaccuracies
@@ -116,7 +116,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
     float cost = weights.labelShadowConstraint * labelShadow +
                  weights.connectorShadowConstraint * connectorShadow +
                  weights.anchorConstraint * anchorConstraint +
-                 weights.occupancy * occupancyForLabelArea(x, y) +
+                 weights.integralCosts * integralCostsForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
                  weights.favorHorizontalOrVerticalLines *
                      favorHorizontalOrVerticalLines(x, y);
@@ -176,7 +176,7 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
       Placement::connectorShadowValue, Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;
-  costEvaluator.occupancy = thrust::raw_pointer_cast(integralCosts.data());
+  costEvaluator.integralCosts = thrust::raw_pointer_cast(integralCosts.data());
   costEvaluator.constraints = constraints;
   costEvaluator.halfLabelWidth =
       static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);

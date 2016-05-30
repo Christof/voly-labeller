@@ -18,24 +18,25 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
   calculator.resize(2 * side, 2 * side);
   calculator.setTextureSize(side, side);
 
-  thrust::host_vector<float> occupancy;
+  thrust::host_vector<float> integralCosts;
   for (int y = 0; y < side; ++y)
   {
     for (int x = 0; x < side; ++x)
     {
-      occupancy.push_back(y >= 4 && y < 12 && x >= 4 && x < 12 ? 1.0f : 0.0f);
+      bool inRegion = y >= 4 && y < 12 && x >= 4 && x < 12;
+      integralCosts.push_back(inRegion ? 1.0f : 0.0f);
     }
   }
-  thrust::device_vector<float> occupancyDevice = occupancy;
+  thrust::device_vector<float> integralCostsDevice = integralCosts;
 
   int labelId = 0;
   int anchorX = 16;
   int anchorY = 12;
   int labelWidthInPixel = 3;
   int labelHeightInPixel = 3;
-  auto result =
-      calculator.calculateForLabel(occupancyDevice, labelId, anchorX, anchorY,
-                                   labelWidthInPixel, labelHeightInPixel);
+  auto result = calculator.calculateForLabel(
+      integralCostsDevice, labelId, anchorX, anchorY, labelWidthInPixel,
+      labelHeightInPixel);
 
   EXPECT_EQ(9, result.position.x());
   EXPECT_EQ(6, result.position.y());

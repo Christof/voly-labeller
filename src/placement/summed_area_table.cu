@@ -486,7 +486,6 @@ void cudaSAT(cudaGraphicsResource_t &inputImage, int image_size,
   // QElapsedTimer tm;
   // tm.start();
 
-  // initialize occupancy function from inputImage
   textureReadDepth.normalized = 0;
   textureReadDepth.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
   textureReadDepth.addressMode[0] = cudaAddressModeWrap;
@@ -541,7 +540,6 @@ void SummedAreaTable::runKernel()
   resizeIfNecessary(vhat, compute_m_size * computeHeight);
   resizeIfNecessary(ysum, compute_m_size * compute_n_size);
 
-  // initialize occupancy function from inputImage
   textureReadDepth.normalized = 0;
   textureReadDepth.filterMode = cudaFilterModeLinear /*cudaFilterModePoint*/;
   textureReadDepth.addressMode[0] = cudaAddressModeWrap;
