@@ -110,6 +110,7 @@ void Clustering::recalculateZValues(Eigen::Matrix4f viewProjectionMatrix)
 void Clustering::initializeClusters()
 {
   std::vector<int> labelIndexForClusterIndex;
+  gen.seed(0);
 
   std::uniform_int_distribution<> dist(0, zValues.size() - 1);
   int clusterIndex = dist(gen);
