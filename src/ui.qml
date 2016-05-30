@@ -16,10 +16,6 @@ FocusScope
     width: 1024
     height: 1024
 
-    function toggleVisibility() {
-        root.visible = !root.visible;
-    }
-
     Item {
       id: menuWrapper
       anchors.fill: parent
@@ -67,7 +63,7 @@ FocusScope
           MenuItem {
             text: "Hide user interface"
             shortcut: "F1"
-            onTriggered: toggleVisibility();
+            onTriggered: root.visible = !root.visible
           }
           MenuItem {
             text: "Toggle bounding volumes"
