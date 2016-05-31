@@ -36,7 +36,7 @@ void LabelNode::render(Graphics::Gl *gl,
           0, renderData.projectionMatrix, renderData.viewMatrix)))
     return;
 
-  if (textureId == -1 || textureText != label.text)
+  if (textureId == -1 || textureText != label.text || labelSize != label.size)
   {
     initialize(gl, managers);
   }
@@ -190,6 +190,7 @@ QImage *LabelNode::renderLabelTextToQImage()
   painter.end();
 
   textureText = label.text;
+  labelSize = label.size;
 
   return image;
 }

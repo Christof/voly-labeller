@@ -48,6 +48,7 @@ class LabelNode : public Node
 
  private:
   std::string textureText;
+  Eigen::Vector2f labelSize;
   bool isVisible;
 
   friend class boost::serialization::access;
