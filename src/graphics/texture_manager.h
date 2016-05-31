@@ -45,6 +45,7 @@ class TextureManager
   std::shared_ptr<Texture2d> newTexture2d(float *data, int width, int height);
 
   void free(Texture2d *texture);
+  void free(int textureId);
 
   // maxNumTextures <= 0 will cause allocation of maximum number of layers
   bool initialize(Gl *gl, bool sparse = true, int maxTextureArrayLevels = -1);

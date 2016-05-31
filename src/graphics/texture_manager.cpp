@@ -109,6 +109,17 @@ std::shared_ptr<Texture2d> TextureManager::newTexture2d(float *data, int width,
   return texture;
 }
 
+void TextureManager::free(Texture2d *texture)
+{
+  texture->free();
+}
+
+void TextureManager::free(int textureId)
+{
+  auto texture = getTextureFor(textureId);
+  texture->free();
+}
+
 bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 {
   this->gl = gl;
