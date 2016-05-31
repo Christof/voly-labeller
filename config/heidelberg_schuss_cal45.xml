@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>7</count>
+	<count>10</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
@@ -80,7 +80,7 @@
 		<px class_id="6" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
 			<label class_id="7" tracking_level="0" version="0">
 				<label.id>1</label.id>
-				<label.text>bulllet path (air)</label.text>
+				<label.text>bullet path (air)</label.text>
 				<label.anchorPosition>
 					<x>-9.580505081e-03</x>
 					<y>2.319183387e-02</y>
@@ -136,6 +136,57 @@
 					<x>-9.310207516e-02</x>
 					<y>-5.189819261e-02</y>
 					<z>2.047306538e+00</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_6">
+			<label>
+				<label.id>5</label.id>
+				<label.text>maxillary fracture</label.text>
+				<label.anchorPosition>
+					<x>-7.949763536e-02</x>
+					<y>-1.022029072e-01</y>
+					<z>1.994364977e+00</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_7">
+			<label>
+				<label.id>6</label.id>
+				<label.text>mandibular fracture</label.text>
+				<label.anchorPosition>
+					<x>-7.938346267e-02</x>
+					<y>-1.058256775e-01</y>
+					<z>1.941759825e+00</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_8">
+			<label>
+				<label.id>7</label.id>
+				<label.text>bullet hole</label.text>
+				<label.anchorPosition>
+					<x>-102.6483e-03</x>
+					<y>-110.93457e-03</y>
+					<z>1911.147e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
