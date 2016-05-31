@@ -79,6 +79,9 @@ void LabelNode::initialize(Graphics::Gl *gl,
 
   auto image = renderLabelTextToQImage();
   auto textureManager = managers->getTextureManager();
+  if (textureId >= 0)
+    textureManager->free(textureId);
+
   textureId = textureManager->addTexture(image);
   delete image;
 
