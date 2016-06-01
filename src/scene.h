@@ -12,6 +12,7 @@
 #include "./graphics/ha_buffer.h"
 #include "./graphics/object_manager.h"
 #include "./graphics/managers.h"
+#include "./graphics/mesh.h"
 #include "./picker.h"
 
 class Nodes;
@@ -90,6 +91,8 @@ class Scene : public AbstractScene
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
   RenderData renderData;
+  std::shared_ptr<Graphics::Mesh> cameraOriginSphere;
+  void renderCameraOriginSphere(RenderData renderData);
 };
 
 #endif  // SRC_SCENE_H_
