@@ -158,7 +158,7 @@ Eigen::Vector3f Camera::getPosition() const
 
 Eigen::Vector3f Camera::getOrigin() const
 {
-  return origin;
+  return -origin;
 }
 
 float Camera::getRadius() const
@@ -192,9 +192,8 @@ float Camera::getFarPlane()
 
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
-  this->origin = origin;
-  radius = (origin - position).norm();
-  Eigen::Vector3f diff = (position - origin).normalized();
+  this->origin = -origin;
+  Eigen::Vector3f diff = (position - this->origin).normalized();
 
   declination = asin(diff.y());
   azimuth = -acos(diff.x() / cos(declination));
