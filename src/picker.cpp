@@ -50,7 +50,7 @@ void Picker::doPick(Eigen::Matrix4f viewProjection)
   if (pickingLabelId == -1)
   {
     auto camera = nodes->getCameraNode()->getCamera();
-    if (depth < camera->getFarPlane())
+    if (depth < 1.0f)
     {
       camera->setOrigin(toVector3f(positionWorld));
     }
