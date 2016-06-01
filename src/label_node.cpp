@@ -36,7 +36,7 @@ void LabelNode::render(Graphics::Gl *gl,
           0, renderData.projectionMatrix, renderData.viewMatrix)))
     return;
 
-  if (textureId == -1 || textureText != label.text)
+  if (textureId == -1 || textureText != label.text || labelSize != label.size)
   {
     initialize(gl, managers);
   }
@@ -79,6 +79,9 @@ void LabelNode::initialize(Graphics::Gl *gl,
 
   auto image = renderLabelTextToQImage();
   auto textureManager = managers->getTextureManager();
+  if (textureId >= 0)
+    textureManager->free(textureId);
+
   textureId = textureManager->addTexture(image);
   delete image;
 
@@ -181,7 +184,7 @@ QImage *LabelNode::renderLabelTextToQImage()
 
   painter.setBrush(QBrush(Qt::GlobalColor::lightGray));
   painter.setPen(Qt::GlobalColor::lightGray);
-  painter.drawRoundRect(QRectF(0, 0, width, height), 15, 60);
+  painter.drawRoundRect(QRectF(0, 0, width, height), 15, 15 * width / height);
 
   painter.setPen(Qt::black);
   painter.setFont(QFont("Arial", 72));
@@ -190,6 +193,7 @@ QImage *LabelNode::renderLabelTextToQImage()
   painter.end();
 
   textureText = label.text;
+  labelSize = label.size;
 
   return image;
 }

@@ -88,13 +88,11 @@ VolumeReader::normalizeToCT(itk::ImageRegionIterator<ImageType> imageIterator)
 
   if (min < minAllowedValue)
   {
-    std::cout << "VolumeReader adjusting min value!" << std::endl;
     min = minAllowedValue;
   }
 
   if (max > maxAllowedValue)
   {
-    std::cout << "VolumeReader adjusting max value!" << std::endl;
     max = maxAllowedValue;
   }
 }
