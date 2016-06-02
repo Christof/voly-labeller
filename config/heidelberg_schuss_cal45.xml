@@ -2,50 +2,50 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>10</count>
+	<count>11</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
-				<r0c0>9.982044101e-01</r0c0>
-				<r0c1>1.862644927e-09</r0c1>
-				<r0c2>5.989969522e-02</r0c2>
-				<r0c3>-2.844612300e-02</r0c3>
-				<r1c0>-3.653084859e-02</r1c0>
-				<r1c1>7.925038934e-01</r1c1>
-				<r1c2>6.087719798e-01</r1c2>
-				<r1c3>-1.257152200e+00</r1c3>
-				<r2c0>-4.747074097e-02</r2c0>
-				<r2c1>-6.098670363e-01</r2c1>
-				<r2c2>7.910808325e-01</r2c2>
-				<r2c3>-1.827880740e+00</r2c3>
+				<r0c0>8.196429014e-01</r0c0>
+				<r0c1>2.980232239e-08</r0c1>
+				<r0c2>5.728749037e-01</r0c2>
+				<r0c3>-1.066659808e+00</r0c3>
+				<r1c0>-4.961001277e-01</r1c0>
+				<r1c1>5.000729561e-01</r1c1>
+				<r1c2>7.097971439e-01</r1c2>
+				<r1c3>-1.398027301e+00</r1c3>
+				<r2c0>-2.864792049e-01</r2c0>
+				<r2c1>-8.659833670e-01</r2c1>
+				<r2c2>4.098811746e-01</r2c2>
+				<r2c3>-1.570693970e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
 				<r3c3>1.000000000e+00</r3c3>
 			</viewMatrix>
 			<projectionMatrix>
-				<r0c0>1.000000000e+00</r0c0>
+				<r0c0>2.414213419e+00</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
 				<r0c2>0.000000000e+00</r0c2>
 				<r0c3>0.000000000e+00</r0c3>
 				<r1c0>0.000000000e+00</r1c0>
-				<r1c1>1.000000000e+00</r1c1>
+				<r1c1>2.414213419e+00</r1c1>
 				<r1c2>0.000000000e+00</r1c2>
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.001179695e+00</r2c2>
-				<r2c3>-2.001179615e-03</r2c3>
+				<r2c2>-1.450413823e+00</r2c2>
+				<r2c3>-7.898174524e-01</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
 				<r3c3>0.000000000e+00</r3c3>
 			</projectionMatrix>
 			<origin class_id="4" tracking_level="0" version="0">
-				<x>9.986765683e-02</x>
-				<y>6.151501834e-02</y>
-				<z>-2.139150381e+00</z>
+				<x>-8.608584106e-02</x>
+				<y>-1.073943973e-01</y>
+				<z>1.985109687e+00</z>
 			</origin>
 		</px>
 	</item>
@@ -184,15 +184,39 @@
 				<label.id>7</label.id>
 				<label.text>bullet hole</label.text>
 				<label.anchorPosition>
-					<x>-102.6483e-03</x>
-					<y>-110.93457e-03</y>
-					<z>1911.147e-03</z>
+					<x>-1.026483029e-01</x>
+					<y>-1.109345704e-01</y>
+					<z>1.911146998e+00</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id="9" class_name="MeshNode" tracking_level="1" version="0" object_id="_9">
+			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/cal45_pistole.dae</assetFilename>
+			<meshIndex>0</meshIndex>
+			<transformation>
+				<r0c0>2.253643936e-03</r0c0>
+				<r0c1>1.150224009e-03</r0c1>
+				<r0c2>2.228709927e-04</r0c2>
+				<r0c3>-6.198999658e-02</r0c3>
+				<r1c0>-1.104114926e-03</r1c0>
+				<r1c1>1.923387987e-03</r1c1>
+				<r1c2>1.238186960e-03</r1c2>
+				<r1c3>-1.903021038e-01</r1c3>
+				<r2c0>3.919389856e-04</r2c0>
+				<r2c1>-1.195475925e-03</r2c1>
+				<r2c2>2.206540899e-03</r2c2>
+				<r2c3>1.830582023e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
 		</px>
 	</item>
 </data>
