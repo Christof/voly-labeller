@@ -1,5 +1,6 @@
 #include "./nodes.h"
 #include <QDebug>
+#include <Eigen/Geometry>
 #include <string>
 #include <vector>
 #include "./utils/persister.h"
@@ -115,6 +116,8 @@ void Nodes::render(Graphics::Gl *gl,
   for (auto &node : allNodes)
     node->render(gl, managers, renderData);
 
+  renderCameraOriginVisualizer(gl, managers, renderData);
+
   if (showBoundingVolumes)
   {
     for (auto &node : obbNodes)
@@ -191,5 +194,32 @@ void
 Nodes::setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
   this->onNodeAdded = onNodeAdded;
+}
+
+void Nodes::createCameraOriginVisualizer()
+{
+  Importer importer;
+
+  std::string filename = "assets/cameraOrigin.dae";
+  auto cameraOriginSphere = importer.import(filename, 0);
+
+  cameraOriginVisualizerNode = std::make_shared<MeshNode>(
+      filename, 0, cameraOriginSphere, Eigen::Matrix4f::Identity());
+}
+
+void Nodes::renderCameraOriginVisualizer(
+    Graphics::Gl *gl, std::shared_ptr<Graphics::Managers> managers,
+    const RenderData &renderData)
+{
+  if (!cameraOriginVisualizerNode.get())
+  {
+    createCameraOriginVisualizer();
+  }
+
+  Eigen::Affine3f transformation(
+      Eigen::Translation3f(cameraNode->getCamera()->getOrigin()) *
+      Eigen::Scaling(0.01f));
+  cameraOriginVisualizerNode->setTransformation(transformation.matrix());
+  cameraOriginVisualizerNode->render(gl, managers, renderData);
 }
 

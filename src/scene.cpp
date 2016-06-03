@@ -27,7 +27,6 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./labelling_coordinator.h"
-#include "./importer.h"
 
 Scene::Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
@@ -94,10 +93,6 @@ void Scene::initialize()
 
   labellingCoordinator->initialize(textureMapperManager->getBufferSize(),
                                    drawer, textureMapperManager, width, height);
-
-  Importer importer;
-
-  cameraOriginSphere = importer.import("assets/anchor.dae", 0);
 }
 
 void Scene::cleanup()
@@ -149,8 +144,6 @@ void Scene::render()
   renderData = newRenderData;
 
   renderNodesWithHABufferIntoFBO();
-
-  renderCameraOriginSphere(renderData);
 
   textureMapperManager->update();
 
@@ -335,14 +328,5 @@ std::shared_ptr<Camera> Scene::getCamera()
 void Scene::setRenderLayer(int layerNumber)
 {
   activeLayerNumber = layerNumber;
-}
-
-void Scene::renderCameraOriginSphere(RenderData renderData)
-{
-  Eigen::Affine3f transformation(
-      Eigen::Translation3f(getCamera()->getOrigin()) * Eigen::Scaling(0.01f));
-  renderData.modelMatrix = transformation.matrix();
-
-  cameraOriginSphere->render(gl, managers, renderData);
 }
 

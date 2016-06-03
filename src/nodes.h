@@ -13,6 +13,7 @@
 
 class LabelNode;
 class CameraNode;
+class MeshNode;
 
 /**
  * \brief Manages a collection of nodes which is rendered
@@ -63,9 +64,16 @@ class Nodes
   bool showBoundingVolumes = false;
   std::vector<std::shared_ptr<Node>> obbNodes;
   std::shared_ptr<Node> forcesVisualizerNode;
+  std::shared_ptr<MeshNode> cameraOriginVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;
 
   std::function<void(std::shared_ptr<Node>)> onNodeAdded;
+
+  void createCameraOriginVisualizer();
+  void
+  renderCameraOriginVisualizer(Graphics::Gl *gl,
+                               std::shared_ptr<Graphics::Managers> managers,
+                               const RenderData &renderData);
 };
 
 #endif  // SRC_NODES_H_
