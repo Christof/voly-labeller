@@ -2,50 +2,50 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>12</count>
+	<count>14</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
-				<r0c0>2.352903336e-01</r0c0>
-				<r0c1>7.450580597e-09</r0c1>
-				<r0c2>-9.719251394e-01</r0c2>
-				<r0c3>0.000000000e+00</r0c3>
-				<r1c0>-5.316295028e-01</r1c0>
-				<r1c1>8.371417522e-01</r1c1>
-				<r1c2>-1.287005246e-01</r1c2>
-				<r1c3>1.490116119e-08</r1c3>
-				<r2c0>8.136391044e-01</r2c0>
-				<r2c1>5.469860435e-01</r2c1>
-				<r2c2>1.969713569e-01</r2c2>
-				<r2c3>-4.292144775e-01</r2c3>
+				<r0c0>7.972509265e-01</r0c0>
+				<r0c1>-1.490116119e-08</r0c1>
+				<r0c2>-6.036481261e-01</r0c2>
+				<r0c3>9.207490087e-02</r0c3>
+				<r1c0>-4.895111024e-01</r1c0>
+				<r1c1>5.851553679e-01</r1c1>
+				<r1c2>-6.465077400e-01</r1c2>
+				<r1c3>-1.876993328e-01</r1c3>
+				<r2c0>3.532279134e-01</r2c0>
+				<r2c1>8.109212518e-01</r2c1>
+				<r2c2>4.665156007e-01</r2c2>
+				<r2c3>-1.782418966e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
 				<r3c3>1.000000000e+00</r3c3>
 			</viewMatrix>
 			<projectionMatrix>
-				<r0c0>1.000000000e+00</r0c0>
+				<r0c0>2.414213419e+00</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
 				<r0c2>0.000000000e+00</r0c2>
 				<r0c3>0.000000000e+00</r0c3>
 				<r1c0>0.000000000e+00</r1c0>
-				<r1c1>1.000000000e+00</r1c1>
+				<r1c1>2.414213419e+00</r1c1>
 				<r1c2>0.000000000e+00</r1c2>
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.001626372e+00</r2c2>
-				<r2c3>-2.001626417e-03</r2c3>
+				<r2c2>-1.890123963e+00</r2c2>
+				<r2c3>-2.425975800e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
 				<r3c3>0.000000000e+00</r3c3>
 			</projectionMatrix>
 			<origin class_id="4" tracking_level="0" version="0">
-				<x>0.000000000e+00</x>
-				<y>0.000000000e+00</y>
-				<z>0.000000000e+00</z>
+				<x>-3.250868246e-02</x>
+				<y>4.146601260e-01</y>
+				<z>1.095959023e-01</z>
 			</origin>
 		</px>
 	</item>
@@ -221,6 +221,40 @@
 					<x>2.391501218e-01</x>
 					<y>1.934812218e-01</y>
 					<z>-1.549674477e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_11">
+			<label>
+				<label.id>10</label.id>
+				<label.text>T1</label.text>
+				<label.anchorPosition>
+					<x>-8.808070794e-03</x>
+					<y>5.756550431e-01</y>
+					<z>-2.064877190e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_12">
+			<label>
+				<label.id>11</label.id>
+				<label.text>C5</label.text>
+				<label.anchorPosition>
+					<x>-1.021288056e-02</x>
+					<y>6.233102083e-01</y>
+					<z>4.757774062e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>1.280000000e+02</x>
