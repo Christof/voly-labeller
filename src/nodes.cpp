@@ -1,8 +1,8 @@
 #include "./nodes.h"
 #include <QDebug>
-#include <Eigen/Geometry>
 #include <string>
 #include <vector>
+#include "./math/eigen.h"
 #include "./utils/persister.h"
 #include "./importer.h"
 #include "./mesh_node.h"
@@ -216,9 +216,17 @@ void Nodes::renderCameraOriginVisualizer(
     createCameraOriginVisualizer();
   }
 
-  Eigen::Affine3f transformation(
-      Eigen::Translation3f(cameraNode->getCamera()->getOrigin()) *
-      Eigen::Scaling(0.01f));
+  auto origin = cameraNode->getCamera()->getOrigin();
+  auto originNDC = project(renderData.viewProjectionMatrix, origin);
+
+  float sizeNDC = 16.0f / renderData.windowPixelSize.x();
+
+  Eigen::Vector3f sizeWorld =
+      calculateWorldScale(Eigen::Vector4f(sizeNDC, sizeNDC, originNDC.z(), 1),
+                          renderData.projectionMatrix);
+
+  Eigen::Affine3f transformation(Eigen::Translation3f(origin) *
+                                 Eigen::Scaling(sizeWorld.x()));
   cameraOriginVisualizerNode->setTransformation(transformation.matrix());
   cameraOriginVisualizerNode->render(gl, managers, renderData);
 }
