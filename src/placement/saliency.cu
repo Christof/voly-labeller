@@ -83,6 +83,11 @@ __device__ float3 rgbaToLab(float4 rgba)
   return xyzToLab(rgbToXyz(make_float3(rgba.x, rgba.y, rgba.z)));
 }
 
+__device__ float rgbaToLightness(float4 rgba)
+{
+  return xyzToLab(rgbToXyz(make_float3(rgba.x, rgba.y, rgba.z))).x;
+}
+
 __global__ void saliencyKernel(cudaTextureObject_t input,
                                cudaSurfaceObject_t output, int width,
                                int height, int widthScale, int heightScale)
@@ -95,24 +100,24 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   float x = xOutput * widthScale;
   float y = yOutput * heightScale;
 
-  float3 leftUpper =
-      rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f));
-  float3 left = rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f));
-  float3 leftLower =
-      rgbaToLab(tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f));
+  float leftUpper =
+    rgbaToLightness(tex2D<float4>(input, x - 1 + 0.5f, y - 1 + 0.5f));
+  float left = rgbaToLightness(tex2D<float4>(input, x - 1 + 0.5f, y + 0.5f));
+  float leftLower =
+    rgbaToLightness(tex2D<float4>(input, x - 1 + 0.5f, y + 1 + 0.5f));
 
-  float3 upper = rgbaToLab(tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f));
-  float3 lower = rgbaToLab(tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f));
+  float upper = rgbaToLightness(tex2D<float4>(input, x + 0.5f, y - 1 + 0.5f));
+  float lower = rgbaToLightness(tex2D<float4>(input, x + 0.5f, y + 1 + 0.5f));
 
-  float3 rightUpper =
-      rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f));
-  float3 right = rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f));
-  float3 rightLower =
-      rgbaToLab(tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f));
+  float rightUpper =
+    rgbaToLightness(tex2D<float4>(input, x + 1 + 0.5f, y - 1 + 0.5f));
+  float right = rgbaToLightness(tex2D<float4>(input, x + 1 + 0.5f, y + 0.5f));
+  float rightLower =
+    rgbaToLightness(tex2D<float4>(input, x + 1 + 0.5f, y + 1 + 0.5f));
 
-  float3 resultX = -leftUpper - 2.0f * left - leftLower + rightUpper +
+  float resultX = -leftUpper - 2.0f * left - leftLower + rightUpper +
                    2.0f * right + rightLower;
-  float3 resultY = -leftUpper - 2.0f * upper - rightUpper + leftLower +
+  float resultY = -leftUpper - 2.0f * upper - rightUpper + leftLower +
                    2.0f * lower + rightLower;
 
   float magnitudeSquared = resultX * resultX + resultY * resultY;
