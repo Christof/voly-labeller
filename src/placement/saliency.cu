@@ -85,7 +85,9 @@ __device__ float3 rgbaToLab(float4 rgba)
 
 __device__ float rgbaToLightness(float4 rgba)
 {
-  return xyzToLab(rgbToXyz(make_float3(rgba.x, rgba.y, rgba.z))).x;
+  float3 xyz = rgbToXyz(make_float3(rgba.x, rgba.y, rgba.z));
+  float fy = f(xyz.y);
+  return 116.0f * fy - 16.0f;
 }
 
 __global__ void saliencyKernel(cudaTextureObject_t input,
