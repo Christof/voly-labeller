@@ -82,10 +82,10 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
   __device__ float integralCostsForLabelArea(int x, int y) const
   {
-    int startX = max(x - halfLabelWidth - 1, 0);
-    int startY = max(y - halfLabelHeight - 1, 0);
-    int endX = min(x + halfLabelWidth, width - 1);   // NOLINT
-    int endY = min(y + halfLabelHeight, height - 1);  // NOLINT
+    int startX = x - halfLabelWidth - 1;
+    int startY = y - halfLabelHeight - 1;
+    int endX = x + halfLabelWidth;
+    int endY = y + halfLabelHeight;
 
     float lowerRight = integralCosts[endY * width + endX];
     float lowerLeft = integralCosts[endY * width + startX];
