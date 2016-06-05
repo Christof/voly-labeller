@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <string>
 #include <vector>
+#include "./math/eigen.h"
 #include "./utils/persister.h"
 #include "./importer.h"
 #include "./mesh_node.h"
@@ -115,6 +116,8 @@ void Nodes::render(Graphics::Gl *gl,
   for (auto &node : allNodes)
     node->render(gl, managers, renderData);
 
+  renderCameraOriginVisualizer(gl, managers, renderData);
+
   if (showBoundingVolumes)
   {
     for (auto &node : obbNodes)
@@ -191,5 +194,40 @@ void
 Nodes::setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
   this->onNodeAdded = onNodeAdded;
+}
+
+void Nodes::createCameraOriginVisualizer()
+{
+  Importer importer;
+
+  std::string filename = "assets/cameraOrigin.dae";
+  auto cameraOriginSphere = importer.import(filename, 0);
+
+  cameraOriginVisualizerNode = std::make_shared<MeshNode>(
+      filename, 0, cameraOriginSphere, Eigen::Matrix4f::Identity());
+}
+
+void Nodes::renderCameraOriginVisualizer(
+    Graphics::Gl *gl, std::shared_ptr<Graphics::Managers> managers,
+    const RenderData &renderData)
+{
+  if (!cameraOriginVisualizerNode.get())
+  {
+    createCameraOriginVisualizer();
+  }
+
+  auto origin = cameraNode->getCamera()->getOrigin();
+  auto originNDC = project(renderData.viewProjectionMatrix, origin);
+
+  float sizeNDC = 16.0f / renderData.windowPixelSize.x();
+
+  Eigen::Vector3f sizeWorld =
+      calculateWorldScale(Eigen::Vector4f(sizeNDC, sizeNDC, originNDC.z(), 1),
+                          renderData.projectionMatrix);
+
+  Eigen::Affine3f transformation(Eigen::Translation3f(origin) *
+                                 Eigen::Scaling(sizeWorld.x()));
+  cameraOriginVisualizerNode->setTransformation(transformation.matrix());
+  cameraOriginVisualizerNode->render(gl, managers, renderData);
 }
 

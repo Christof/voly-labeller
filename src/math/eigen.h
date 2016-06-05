@@ -3,6 +3,7 @@
 #define SRC_MATH_EIGEN_H_
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 #include <QPoint>
 
 inline Eigen::Vector3f toVector3f(const Eigen::Vector4f vector)
@@ -47,6 +48,17 @@ inline Eigen::Vector3f project(const Eigen::Matrix4f &matrix,
                                const Eigen::Vector3f &vector)
 {
   return project(matrix, toVector4f(vector));
+}
+
+inline Eigen::Vector3f calculateWorldScale(Eigen::Vector4f sizeNDC,
+                                    Eigen::Matrix4f projectionMatrix)
+{
+  Eigen::Vector4f sizeWorld =
+      projectionMatrix.inverse() *
+      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), sizeNDC.z(), 1);
+  sizeWorld /= sizeWorld.w();
+
+  return Eigen::Vector3f(sizeWorld.x(), sizeWorld.y(), 1.0f);
 }
 
 #endif  // SRC_MATH_EIGEN_H_

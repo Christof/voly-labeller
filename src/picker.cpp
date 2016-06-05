@@ -6,11 +6,15 @@
 #include <Eigen/Geometry>
 #include "./eigen_qdebug.h"
 #include "./labelling/labels.h"
+#include "./nodes.h"
+#include "./camera_node.h"
+#include "./camera.h"
 #include "./src/math/eigen.h"
 
 Picker::Picker(std::shared_ptr<Graphics::FrameBufferObject> fbo,
-               Graphics::Gl *gl, std::shared_ptr<Labels> labels)
-  : fbo(fbo), gl(gl), labels(labels)
+               Graphics::Gl *gl, std::shared_ptr<Labels> labels,
+               std::shared_ptr<Nodes> nodes)
+  : fbo(fbo), gl(gl), labels(labels), nodes(nodes)
 {
 }
 
@@ -42,10 +46,22 @@ void Picker::doPick(Eigen::Matrix4f viewProjection)
   qWarning() << "picked:" << positionWorld << "depth value:" << depth;
 
   performPicking = false;
-  auto label = labels->getById(pickingLabelId);
-  label.anchorPosition = toVector3f(positionWorld);
 
-  labels->update(label);
+  if (pickingLabelId == -1)
+  {
+    auto camera = nodes->getCameraNode()->getCamera();
+    if (depth < 1.0f)
+    {
+      camera->setOrigin(toVector3f(positionWorld));
+    }
+  }
+  else
+  {
+    auto label = labels->getById(pickingLabelId);
+    label.anchorPosition = toVector3f(positionWorld);
+
+    labels->update(label);
+  }
 }
 
 void Picker::resize(int width, int height)

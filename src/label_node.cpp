@@ -131,9 +131,7 @@ void LabelNode::renderAnchor(Graphics::Gl *gl,
                              std::shared_ptr<Graphics::Managers> managers,
                              RenderData renderData)
 {
-  anchorNDC =
-      renderData.viewProjectionMatrix * toVector4f(label.anchorPosition);
-  anchorNDC /= anchorNDC.w();
+  anchorNDC = project(renderData.viewProjectionMatrix, label.anchorPosition);
 
   float sizeNDC = anchorSize / renderData.windowPixelSize.x();
 
@@ -196,16 +194,5 @@ QImage *LabelNode::renderLabelTextToQImage()
   labelSize = label.size;
 
   return image;
-}
-
-Eigen::Vector3f LabelNode::calculateWorldScale(Eigen::Vector4f sizeNDC,
-                                               Eigen::Matrix4f projectionMatrix)
-{
-  Eigen::Vector4f sizeWorld =
-      projectionMatrix.inverse() *
-      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1);
-  sizeWorld /= sizeWorld.w();
-
-  return Eigen::Vector3f(sizeWorld.x(), sizeWorld.y(), 1.0f);
 }
 
