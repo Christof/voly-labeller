@@ -30,7 +30,7 @@
       <invoke targettype="cameraZoom" src="wheelZoom"/>
     </transition>
 
-    <transition event="MouseButtonEvent.DOWN.RIGHT" target="rotate"/>
+    <transition event="MouseButtonEvent.DOWN.MIDDLE" target="rotate"/>
     <transition event="MouseButtonEvent.DOWN.LEFT" target="rotate-around-picked-position"/>
     <transition event="KeyboardEvent.DOWN.CTRL" target="ctrl"/>
     <transition event="KeyboardEvent.DOWN.SHIFT" target="shift"/>
@@ -86,7 +86,7 @@
         <invoke targettype="cameraRotation" src="updateDragging"/>
       </transition>
     </state>
-    <transition event="MouseButtonEvent.UP.RIGHT" target="idle"/>
+    <transition event="MouseButtonEvent.UP.MIDDLE" target="idle"/>
     <onexit>
       <invoke targettype="mouseShape" src="reset"/>
     </onexit>
