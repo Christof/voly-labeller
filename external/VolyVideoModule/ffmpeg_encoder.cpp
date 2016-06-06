@@ -34,7 +34,6 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
 {
   staticInit();
 
-
   /* find the mpeg1 video encoder */
   //m_codec = avcodec_find_encoder(CODEC_ID_MPEG2VIDEO);
   //m_codec = avcodec_find_encoder(AV_CODEC_ID_H);
@@ -42,10 +41,14 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
   // RGB frames instead
   m_codec = avcodec_find_encoder_by_name("libx264rgb");
 
-
   if (!m_codec) {
-    fprintf(stderr, "codec not found\n");
-    ::exit(1);
+    fprintf(stderr, "codec libx264rgb not found\n");
+    m_codec = avcodec_find_encoder(AV_CODEC_ID_MPEG2VIDEO);
+    if (!m_codec)
+    {
+      fprintf(stderr, "codec mpeg2 not found\n");
+      ::exit(1);
+    }
   }
 
   m_context = avcodec_alloc_context3(NULL);
@@ -69,26 +72,26 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
   m_context->qmin = 10;
   m_context->qmax = 51;
 
-  m_context->qcompress = 0.6;
-  m_context->trellis=0;
-  m_context->refs = 5;
-  m_context->coder_type = 0;
-
-  m_context->me_subpel_quality = 6;
-  m_context->me_cmp|= 1;
-
-  m_context->scenechange_threshold = 40;
-  m_context-> rc_buffer_size = 0;
-
   // output videl pixel formats in ascending video quality order - RGB is best
-  //m_context->pix_fmt =  PIX_FMT_YUV420P;
+  m_context->pix_fmt =  AV_PIX_FMT_YUV420P;
   //m_context->pix_fmt =  PIX_FMT_YUV422P;
-  //m_context->pix_fmt = PIX_FMT_YUV444P;
-  m_context->pix_fmt = AV_PIX_FMT_RGB24;
+  //m_context->pix_fmt = AV_PIX_FMT_YUV444P;
+  //m_context->pix_fmt = AV_PIX_FMT_RGB24;
 
   // H264 settings
   if (m_codec->id == AV_CODEC_ID_H264)
   {
+    m_context->qcompress = 0.6;
+    m_context->trellis=0;
+    m_context->refs = 5;
+    m_context->coder_type = 0;
+
+    m_context->me_subpel_quality = 6;
+    m_context->me_cmp|= 1;
+
+    m_context->scenechange_threshold = 40;
+    m_context-> rc_buffer_size = 0;
+    m_context->pix_fmt = AV_PIX_FMT_RGB24;
     m_context->level = 30;
     av_opt_set(m_context->priv_data,"subq","6",0);
     av_opt_set(m_context->priv_data,"crf","20.0",0);
