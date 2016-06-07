@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>11</count>
+	<count>13</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
@@ -197,7 +197,7 @@
 	</item>
 	<item>
 		<px class_id="9" class_name="MeshNode" tracking_level="1" version="0" object_id="_9">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/cal45_pistole.dae</assetFilename>
+			<assetFilename>assets/cal45_pistole.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>2.210933017e-03</r0c0>
@@ -212,6 +212,54 @@
 				<r2c1>-1.090689097e-03</r2c1>
 				<r2c2>2.217587084e-03</r2c2>
 				<r2c3>1.829019189e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="9" object_id="_10">
+			<assetFilename>assets/cal45_pfeil.dae</assetFilename>
+			<meshIndex>0</meshIndex>
+			<transformation>
+				<r0c0>4.119351972e-03</r0c0>
+				<r0c1>2.954470574e-06</r0c1>
+				<r0c2>-2.285742266e-05</r0c2>
+				<r0c3>-8.983626217e-02</r0c3>
+				<r1c0>-2.157593008e-05</r1c0>
+				<r1c1>1.926781377e-03</r1c1>
+				<r1c2>-3.637891961e-03</r1c2>
+				<r1c3>1.183783822e-02</r1c3>
+				<r2c0>8.106490895e-06</r2c0>
+				<r2c1>3.626919817e-03</r2c1>
+				<r2c2>1.932628336e-03</r2c2>
+				<r2c3>2.125206232e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="9" object_id="_11">
+			<assetFilename>assets/cal45_pfeil.dae</assetFilename>
+			<meshIndex>1</meshIndex>
+			<transformation>
+				<r0c0>4.119351972e-03</r0c0>
+				<r0c1>2.954470574e-06</r0c1>
+				<r0c2>-2.285742266e-05</r0c2>
+				<r0c3>-8.993376791e-02</r0c3>
+				<r1c0>-2.157593008e-05</r1c0>
+				<r1c1>1.926781377e-03</r1c1>
+				<r1c2>-3.637891961e-03</r1c2>
+				<r1c3>-5.174598470e-02</r1c3>
+				<r2c0>8.106490895e-06</r2c0>
+				<r2c1>3.626919817e-03</r2c1>
+				<r2c2>1.932628336e-03</r2c2>
+				<r2c3>2.005517960e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
