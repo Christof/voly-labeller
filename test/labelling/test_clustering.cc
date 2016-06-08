@@ -175,6 +175,31 @@ TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
   EXPECT_EQ(7, indices[2]);
 }
 
+TEST(Test_Clustering, UpdateAndCheckMedianMembers)
+{
+  auto labels = std::make_shared<Labels>();
+
+  labels->add(Label(0, "Label 0", Eigen::Vector3f(0, 0, 1)));
+  labels->add(Label(1, "Label 1", Eigen::Vector3f(0, 0, 0.7)));
+  labels->add(Label(2, "Label 2", Eigen::Vector3f(0, 0, 0.4)));
+  labels->add(Label(3, "Label 3", Eigen::Vector3f(0, 0, 0)));
+  labels->add(Label(4, "Label 4", Eigen::Vector3f(0, 0, 0.3)));
+  labels->add(Label(5, "Label 5", Eigen::Vector3f(0, 0, 0.35)));
+  labels->add(Label(6, "Label 6", Eigen::Vector3f(0, 0, 0.1)));
+  labels->add(Label(7, "Label 7", Eigen::Vector3f(0, 0, 0.9)));
+
+  Clustering clustering(labels, 3);
+
+  clustering.update(Eigen::Matrix4f::Identity());
+  auto result = clustering.getMedianClusterMembers();
+
+  ASSERT_EQ(3, result.size());
+
+  EXPECT_FLOAT_EQ(0.9f, result[0]);
+  EXPECT_FLOAT_EQ(0.35f, result[1]);
+  EXPECT_FLOAT_EQ(0.1f, result[2]);
+}
+
 TEST(Test_Clustering, getRandomLabelIndexWeightedBy_equal_distances)
 {
   auto labels = std::make_shared<Labels>();

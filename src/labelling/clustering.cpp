@@ -67,6 +67,31 @@ Clustering::getFarthestClusterMembersWithLabelIds()
   return result;
 }
 
+float median(std::vector<float> &vector)
+{
+  size_t halfSize = vector.size() / 2;
+  std::nth_element(vector.begin(), vector.begin() + halfSize, vector.end());
+  return vector[halfSize];
+}
+
+std::vector<float> Clustering::getMedianClusterMembers()
+{
+  std::map<int, std::vector<float>> clusterIndexToZValues;
+  for (size_t labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
+  {
+    int clusterIndex = clusterIndices[labelIndex];
+    clusterIndexToZValues[clusterIndex].push_back(zValues[labelIndex]);
+  }
+
+  std::vector<float> medians;
+  for (auto &pair : clusterIndexToZValues)
+  {
+    medians.push_back(median(pair.second));
+  }
+
+  return medians;
+}
+
 float getDistance(float value1, float value2)
 {
   float diff = value1 - value2;
