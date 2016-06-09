@@ -152,6 +152,8 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
 std::vector<float> LabellingCoordinator::updateClusters()
 {
   clustering.update(labellerFrameData.viewProjection);
+  return clustering.getMedianClusterMembers();
+  /*
   auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
   std::vector<float> zValues;
 
@@ -161,6 +163,7 @@ std::vector<float> LabellingCoordinator::updateClusters()
   }
 
   return zValues;
+  */
 }
 
 void LabellingCoordinator::resize(int width, int height)
@@ -222,7 +225,7 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
 
 void LabellingCoordinator::distributeLabelsToLayers()
 {
-  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
+  auto centerWithLabelIds = clustering.getMedianClusterMembersWithLabelIds();
   int layerIndex = 0;
   for (auto &pair : centerWithLabelIds)
   {
