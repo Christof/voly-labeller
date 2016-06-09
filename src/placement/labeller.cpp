@@ -51,17 +51,15 @@ void Labeller::cleanup()
   costFunctionCalculator.reset();
 }
 
-std::map<int, Eigen::Vector3f>
+std::map<int, Eigen::Vector2f>
 Labeller::update(const LabellerFrameData &frameData)
 {
   if (labels->count() == 0)
-    return std::map<int, Eigen::Vector3f>();
+    return std::map<int, Eigen::Vector2f>();
 
   newPositions.clear();
   if (!integralCosts.get())
     return newPositions;
-
-  Eigen::Matrix4f inverseViewProjection = frameData.viewProjection.inverse();
 
   auto startTime = std::chrono::high_resolution_clock::now();
   integralCosts->runKernel();
@@ -90,8 +88,11 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->setPosition(label.id, result.position);
     costSum += result.cost;
 
-    newPositions[label.id] = reprojectTo3d(result.position, anchor2D.z(),
-                                           bufferSize, inverseViewProjection);
+    auto relativeResult =
+        result.position.cast<float>().cwiseQuotient(bufferSize.cast<float>());
+    Eigen::Vector2f newNDC2d =
+        2.0f * relativeResult - Eigen::Vector2f(1.0f, 1.0f);
+    newPositions[label.id] = newNDC2d;
   }
 
   return newPositions;
@@ -115,7 +116,7 @@ void Labeller::setLabelsArranger(std::shared_ptr<LabelsArranger> labelsArranger)
   this->labelsArranger = labelsArranger;
 }
 
-std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
+std::map<int, Eigen::Vector2f> Labeller::getLastPlacementResult()
 {
   return newPositions;
 }
@@ -123,22 +124,6 @@ std::map<int, Eigen::Vector3f> Labeller::getLastPlacementResult()
 float Labeller::getLastSumOfCosts()
 {
   return costSum;
-}
-
-Eigen::Vector3f Labeller::reprojectTo3d(Eigen::Vector2i newPosition,
-                                        float anchorZValue,
-                                        Eigen::Vector2i bufferSize,
-                                        Eigen::Matrix4f inverseViewProjection)
-{
-  Eigen::Vector2f newNDC2d =
-      2.0f * newPosition.cast<float>().cwiseQuotient(bufferSize.cast<float>()) -
-      Eigen::Vector2f(1.0f, 1.0f);
-
-  Eigen::Vector4f newNDC(newNDC2d.x(), newNDC2d.y(), anchorZValue, 1);
-  Eigen::Vector4f reprojected = inverseViewProjection * newNDC;
-  reprojected /= reprojected.w();
-
-  return toVector3f(reprojected);
 }
 
 Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)

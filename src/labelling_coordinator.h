@@ -84,9 +84,9 @@ class LabellingCoordinator
   Clustering clustering;
   float sumOfCosts = 0.0f;
   bool preserveLastResult = false;
-  std::map<int, Eigen::Vector3f> lastPlacementResult;
+  std::map<int, Eigen::Vector2f> lastPlacementResult;
 
-  std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
+  std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
   std::map<int, Eigen::Vector3f>
   getForcesPositions(std::map<int, Eigen::Vector3f> placementPositions);
   void distributeLabelsToLayers();

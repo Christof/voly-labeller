@@ -35,9 +35,13 @@ class Labeller
              std::shared_ptr<CudaArrayProvider> constraintTextureMapper,
              std::shared_ptr<PersistentConstraintUpdater> constraintUpdater);
 
-  std::map<int, Eigen::Vector3f> update(const LabellerFrameData &frameData);
+  /**
+   * \brief Calculates new label positions via global minimization and returns
+   * them as NDC coordinates.
+   */
+  std::map<int, Eigen::Vector2f> update(const LabellerFrameData &frameData);
 
-  std::map<int, Eigen::Vector3f> getLastPlacementResult();
+  std::map<int, Eigen::Vector2f> getLastPlacementResult();
   float getLastSumOfCosts();
 
   void resize(int width, int height);
@@ -58,7 +62,7 @@ class Labeller
   Eigen::Vector2i size;
   Eigen::Vector2i bufferSize;
 
-  std::map<int, Eigen::Vector3f> newPositions;
+  std::map<int, Eigen::Vector2f> newPositions;
   float costSum;
 
   std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,

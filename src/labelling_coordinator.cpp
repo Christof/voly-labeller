@@ -4,7 +4,6 @@
 
 #include "./labelling_coordinator.h"
 #include <QtOpenGLExtensions>
-#include <Eigen/Core>
 #include <map>
 #include <vector>
 #include "./labelling/clustering.h"
@@ -21,6 +20,7 @@
 #include "./placement/apollonius_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
+#include "./math/eigen.h"
 #include "./label_node.h"
 #include "./texture_mapper_manager.h"
 
@@ -104,7 +104,20 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
   saliency->runKernel();
 
-  auto positions = getPlacementPositions(activeLayerNumber);
+  auto positionsNDC = getPlacementPositions(activeLayerNumber);
+  Eigen::Matrix4f inverseViewProjection =
+      labellerFrameData.viewProjection.inverse();
+
+  std::map<int, Eigen::Vector3f> positions;
+  for (auto positionNDCPair : positionsNDC)
+  {
+    int labelId = positionNDCPair.first;
+    positions[labelId] = project(inverseViewProjection,
+                                 Eigen::Vector3f(positionNDCPair.second.x(),
+                                                 positionNDCPair.second.y(),
+                                                 labelIdToZValue[labelId]));
+  }
+
   if (forcesEnabled)
     positions = getForcesPositions(positions);
 
@@ -186,13 +199,13 @@ void LabellingCoordinator::setCostFunctionWeights(
     placementLabeller->setCostFunctionWeights(weights);
 }
 
-std::map<int, Eigen::Vector3f>
+std::map<int, Eigen::Vector2f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
   if (preserveLastResult)
     return lastPlacementResult;
 
-  std::map<int, Eigen::Vector3f> placementPositions;
+  std::map<int, Eigen::Vector2f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
   {
@@ -247,11 +260,12 @@ void LabellingCoordinator::updateLabelPositionsInLabelNodes(
 {
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    if (newPositions.count(labelNode->label.id))
+    int labelId = labelNode->label.id;
+    if (newPositions.count(labelId))
     {
       labelNode->setIsVisible(true);
-      labelNode->labelPosition = newPositions[labelNode->label.id];
-      labelNode->layerIndex = labelIdToLayerIndex[labelNode->label.id];
+      labelNode->labelPosition = newPositions[labelId];
+      labelNode->layerIndex = labelIdToLayerIndex[labelId];
     }
     else
     {
