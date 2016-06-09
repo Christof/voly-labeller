@@ -92,6 +92,40 @@ std::vector<float> Clustering::getMedianClusterMembers()
   return medians;
 }
 
+std::map<float, std::vector<int>>
+Clustering::getMedianClusterMembersWithLabelIds()
+{
+  std::vector<float> medians = getMedianClusterMembers();
+  std::sort(medians.begin(), medians.end());
+
+  std::map<float, std::vector<int>> result;
+  std::vector<int> labelIndicesToPlace;
+  for (size_t labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
+    labelIndicesToPlace.push_back(labelIndex);
+
+  for (float median : medians)
+  {
+    for (auto iterator = labelIndicesToPlace.cbegin();
+         iterator != labelIndicesToPlace.cend();)
+    {
+      auto labelIndex = *iterator;
+      if (zValues[labelIndex] <= median)
+      {
+        result[median].push_back(allLabels[labelIndex].id);
+        iterator = labelIndicesToPlace.erase(iterator);
+      }
+      else
+      {
+        ++iterator;
+      }
+    }
+  }
+
+  result[1] = labelIndicesToPlace;
+
+  return result;
+}
+
 float getDistance(float value1, float value2)
 {
   float diff = value1 - value2;

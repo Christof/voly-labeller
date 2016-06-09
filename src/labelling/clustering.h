@@ -37,6 +37,7 @@ class Clustering
 
   /** \brief Returns the median z-value for all clusters */
   std::vector<float> getMedianClusterMembers();
+  std::map<float, std::vector<int>> getMedianClusterMembersWithLabelIds();
 
   int getRandomLabelIndexWeightedBy(std::vector<float> distances);
 
