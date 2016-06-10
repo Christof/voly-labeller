@@ -53,10 +53,8 @@ inline Eigen::Vector3f project(const Eigen::Matrix4f &matrix,
 inline Eigen::Vector3f calculateWorldScale(Eigen::Vector4f sizeNDC,
                                     Eigen::Matrix4f projectionMatrix)
 {
-  Eigen::Vector4f sizeWorld =
-      projectionMatrix.inverse() *
-      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), sizeNDC.z(), 1);
-  sizeWorld /= sizeWorld.w();
+  Eigen::Vector3f sizeWorld = project(projectionMatrix.inverse(),
+      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), sizeNDC.z(), 1));
 
   return Eigen::Vector3f(sizeWorld.x(), sizeWorld.y(), 1.0f);
 }
