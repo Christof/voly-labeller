@@ -99,13 +99,12 @@ Labeller::update(const LabellerFrameData &frameData,
       label.labelPosition2D += delta;
     }
 
-    Eigen::Vector4f reprojected =
-        inverseViewProjection * Eigen::Vector4f(label.labelPosition2D.x(),
-                                                label.labelPosition2D.y(),
-                                                label.labelPositionDepth, 1);
-    reprojected /= reprojected.w();
+    Eigen::Vector3f reprojected = project(
+        inverseViewProjection,
+        Eigen::Vector3f(label.labelPosition2D.x(), label.labelPosition2D.y(),
+                        label.labelPositionDepth));
 
-    label.labelPosition = reprojected.head<3>();
+    label.labelPosition = reprojected;
 
     enforceAnchorDepthForLabel(label, frameData.view);
 
