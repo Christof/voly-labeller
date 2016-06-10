@@ -79,6 +79,7 @@ class LabellingCoordinator
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
   std::map<int, int> labelIdToLayerIndex;
+  std::map<int, float> labelIdToZValue;
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
@@ -92,6 +93,9 @@ class LabellingCoordinator
   void distributeLabelsToLayers();
   void
   updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);
+
+  std::map<int, Eigen::Vector3f>
+  ndcPositionsTo3d(std::map<int, Eigen::Vector2f> positionsNDC);
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_
