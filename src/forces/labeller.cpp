@@ -103,12 +103,11 @@ Labeller::update(const LabellerFrameData &frameData,
         inverseViewProjection,
         Eigen::Vector3f(label.labelPosition2D.x(), label.labelPosition2D.y(),
                         label.labelPositionDepth));
+    reprojected.z() = label.placementPosition.z();
+
 
     label.labelPosition = reprojected;
-
-    enforceAnchorDepthForLabel(label, frameData.view);
-
-    positions[label.id] = label.labelPosition;
+    positions[label.id] = reprojected;
   }
 
   return positions;
@@ -135,16 +134,6 @@ template <class T> void Labeller::addForce(T *force, bool enabled)
 {
   force->isEnabled = enabled;
   forces.push_back(std::unique_ptr<T>(force));
-}
-
-void Labeller::enforceAnchorDepthForLabel(LabelState &label,
-                                          const Eigen::Matrix4f &viewMatrix)
-{
-  Eigen::Vector4f anchorView = mul(viewMatrix, label.anchorPosition);
-  Eigen::Vector4f labelView = mul(viewMatrix, label.labelPosition);
-  labelView.z() = anchorView.z();
-
-  label.labelPosition = (viewMatrix.inverse() * labelView).head<3>();
 }
 
 }  // namespace Forces

@@ -25,9 +25,9 @@ class TestLabeller : public ::testing::Test
                              Eigen::Matrix4f::Identity());
   }
 
-  std::map<int, Eigen::Vector3f> getEmptyPlacementResult()
+  std::map<int, Eigen::Vector3f> getDefaultPlacementResult()
   {
-    return std::map<int, Eigen::Vector3f>();
+    return std::map<int, Eigen::Vector3f>{ { 1, Eigen::Vector3f(1, 2, 2.5f) } };
   }
 };
 
@@ -37,7 +37,7 @@ TEST_F(TestLabeller, AddedLabelIsUpdated)
   labeller->forces[0]->isEnabled = true;
 
   auto newPositions =
-      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
+      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
   EXPECT_EQ(1, newPositions.size());
   EXPECT_NE(oldPosition.x(), newPositions[label.id].x());
@@ -46,25 +46,28 @@ TEST_F(TestLabeller, AddedLabelIsUpdated)
 TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
 {
   auto newPositions =
-      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
+      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
   EXPECT_Vector3f_NEAR(newPositions[label.id],
                        labeller->getLabels()[0].labelPosition, 1E-5);
 }
 
-TEST_F(TestLabeller, LabelHasSameDepthValueAsAnchor)
+TEST_F(TestLabeller, LabelHasDepthOfPlacementResult)
 {
-  auto newPositions =
-      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
+  float depth = 2.0f;
+  std::map<int, Eigen::Vector3f> placementResult{
+    { label.id, Eigen::Vector3f(0, 0, depth) }
+  };
+  auto newPositions = labeller->update(getDefaultFrameData(), placementResult);
 
-  EXPECT_NEAR(label.anchorPosition.z(), newPositions[label.id].z(), 1E-5);
+  EXPECT_NEAR(depth, newPositions[label.id].z(), 1E-5);
 }
 
 TEST_F(TestLabeller,
        LabelUpdateSetsTheGivenAnchorPositionAndReinitializesTheLabelPosition)
 {
   auto newPositions =
-      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
+      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
   label.anchorPosition = Eigen::Vector3f(-1, -2, -3);
   labels->update(label);
@@ -80,7 +83,7 @@ TEST_F(TestLabeller,
 TEST_F(TestLabeller, LabelUpdateSetsTheCurrentLabelPositionIfAnchorsUnchanged)
 {
   auto newPositions =
-      labeller->update(getDefaultFrameData(), getEmptyPlacementResult());
+      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
   label.text = "Some changed text";
   labels->update(label);
