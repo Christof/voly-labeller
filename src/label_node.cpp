@@ -153,13 +153,12 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
   Eigen::Vector2f sizeNDC =
       label.size.cwiseQuotient(renderData.windowPixelSize);
 
-  Eigen::Vector3f sizeWorld = calculateWorldScale(
-      Eigen::Vector4f(sizeNDC.x(), sizeNDC.y(), anchorNDC.z(), 1),
-      renderData.projectionMatrix);
+  Eigen::Vector3f labelPositionNDC =
+      project(renderData.viewProjectionMatrix, labelPosition);
 
   Eigen::Affine3f labelTransform(
-      Eigen::Translation3f(labelPosition) *
-      Eigen::Scaling(sizeWorld.x(), sizeWorld.y(), 1.0f));
+      Eigen::Translation3f(labelPositionNDC) *
+      Eigen::Scaling(sizeNDC.x(), sizeNDC.y(), 1.0f));
 
   labelQuad.modelMatrix = labelTransform.matrix();
 

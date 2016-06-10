@@ -18,16 +18,15 @@ void main()
 {
   mat4 modelMatrix = getModelMatrix(drawId);
 
-  vec3 cameraRight = vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]);
-  vec3 cameraUp = vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]);
-  vec3 labelPosition = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
-  vec2 size = vec2(modelMatrix[0][0], modelMatrix[1][1]);
-  vec3 position = labelPosition +
-      cameraRight * pos.x * size.x +
-      cameraUp * pos.y * size.y;
+  vec3 cameraRight = vec3(1, 0, 0);
+  vec3 cameraUp = vec3(0, 1, 0);
+  vec3 labelPositionNDC = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
+  vec2 sizeNDC = vec2(modelMatrix[0][0], modelMatrix[1][1]);
+  vec3 position = labelPositionNDC +
+      cameraRight * pos.x * sizeNDC.x +
+      cameraUp * pos.y * sizeNDC.y;
 
-  vec4 vertexPos = viewProjectionMatrix * vec4(position, 1.0f);
-  vertexPos.z -= 0.01f;
+  vec4 vertexPos = vec4(position, 1);
   gl_Position = vertexPos;
   vertexTexCoord = texCoord;
   vertexDrawId = drawId;
