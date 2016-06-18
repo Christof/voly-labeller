@@ -23,9 +23,10 @@ bool Label::operator!=(const Label &other) const
          anchorPosition != other.anchorPosition || size != other.size;
 }
 
-bool Label::isAnchorInsideFieldOfView(const LabellerFrameData &frameData) const
+bool Label::isAnchorInsideFieldOfView(
+    const Eigen::Matrix4f &viewProjectionMatrix) const
 {
-  Eigen::Vector3f anchorNdc = frameData.project(anchorPosition);
+  Eigen::Vector3f anchorNdc = project(viewProjectionMatrix, anchorPosition);
 
   return std::abs(anchorNdc.x()) <= 1.0f && std::abs(anchorNdc.y()) <= 1.0f &&
          std::abs(anchorNdc.z()) <= 1.0f;

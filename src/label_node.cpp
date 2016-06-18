@@ -32,8 +32,7 @@ void LabelNode::render(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(LabellerFrameData(
-          0, renderData.projectionMatrix, renderData.viewMatrix)))
+  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
     return;
 
   if (textureId == -1 || textureText != label.text || labelSize != label.size)
@@ -50,8 +49,7 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    std::shared_ptr<Graphics::Managers> managers,
                                    RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(LabellerFrameData(
-          0, renderData.projectionMatrix, renderData.viewMatrix)))
+  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
     return;
 
   if (textureId == -1 || textureText != label.text)
