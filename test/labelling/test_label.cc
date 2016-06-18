@@ -33,16 +33,38 @@ TEST(Test_Label, IsAnchorInsideFieldOfViewForPositiveCase)
 {
   Label label(0, "Label 0", Eigen::Vector3f(0, 0, -1));
 
-  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(), Eigen::Matrix4f::Identity());
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(),
+                              Eigen::Matrix4f::Identity());
 
   EXPECT_TRUE(label.isAnchorInsideFieldOfView(frameData));
 }
 
-TEST(Test_Label, IsAnchorInsideFieldOfViewForNegativeCase)
+TEST(Test_Label, IsAnchorInsideFieldOfViewForNegativeCaseX)
 {
-  Label label(0, "Label 0", Eigen::Vector3f(-10, 10, 1));
+  Label label(0, "Label 0", Eigen::Vector3f(-10, 0, 1));
 
-  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(), Eigen::Matrix4f::Identity());
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(),
+                              Eigen::Matrix4f::Identity());
+
+  EXPECT_FALSE(label.isAnchorInsideFieldOfView(frameData));
+}
+
+TEST(Test_Label, IsAnchorInsideFieldOfViewForNegativeCaseY)
+{
+  Label label(0, "Label 0", Eigen::Vector3f(0, 10, 1));
+
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(),
+                              Eigen::Matrix4f::Identity());
+
+  EXPECT_FALSE(label.isAnchorInsideFieldOfView(frameData));
+}
+
+TEST(Test_Label, IsAnchorInsideFieldOfViewForNegativeCaseZ)
+{
+  Label label(0, "Label 0", Eigen::Vector3f(0, 0, -10));
+
+  LabellerFrameData frameData(0, Eigen::Matrix4f::Identity(),
+                              Eigen::Matrix4f::Identity());
 
   EXPECT_FALSE(label.isAnchorInsideFieldOfView(frameData));
 }
