@@ -65,14 +65,6 @@ class Labeller
   std::map<int, Eigen::Vector2f> newPositions;
   float costSum;
 
-  std::vector<Eigen::Vector4f> createLabelSeeds(Eigen::Vector2i size,
-                                                Eigen::Matrix4f viewProjection);
-  std::vector<Label>
-  getLabelsInApolloniusOrder(const LabellerFrameData &frameData,
-                             Eigen::Vector2i bufferSize);
-  Eigen::Vector3f reprojectTo3d(Eigen::Vector2i newPosition, float anchorZValue,
-                                Eigen::Vector2i bufferSize,
-                                Eigen::Matrix4f inverseViewProjection);
   Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
 };
 
