@@ -104,9 +104,10 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
   {
     int x = index % width;
     int y = index / width;
+    const int border = 1;
 
-    if (x < halfLabelWidth + 1 || x > width - halfLabelWidth - 1 ||
-        y < halfLabelHeight + 1 || y > height - halfLabelHeight - 1)
+    if (x < halfLabelWidth + border || x > width - halfLabelWidth - border ||
+        y < halfLabelHeight + border || y > height - halfLabelHeight - border)
       return EvalResult(x, y, FLT_MAX);
 
     unsigned char constraintValue =
