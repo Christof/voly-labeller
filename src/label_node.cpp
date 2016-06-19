@@ -161,7 +161,6 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
   labelQuad.modelMatrix = labelTransform.matrix();
 
   auto shaderId = labelQuad.getShaderProgramId();
-  auto shader = managers->getShaderManager()->getShader(shaderId);
   managers->getShaderManager()->bind(shaderId, renderData);
 
   managers->getObjectManager()->renderImmediately(labelQuad);
