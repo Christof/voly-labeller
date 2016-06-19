@@ -121,7 +121,8 @@ Clustering::getMedianClusterMembersWithLabelIds()
     }
   }
 
-  result[1] = labelIndicesToPlace;
+  for (auto labelIndex : labelIndicesToPlace)
+    result[1].push_back(allLabels[labelIndex].id);
 
   return result;
 }
