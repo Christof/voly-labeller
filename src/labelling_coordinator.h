@@ -89,7 +89,8 @@ class LabellingCoordinator
 
   std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
   std::map<int, Eigen::Vector3f>
-  getForcesPositions(std::map<int, Eigen::Vector3f> placementPositions);
+  getForcesPositions(std::map<int, Eigen::Vector3f> placementPositionsNDC,
+                     std::map<int, Eigen::Vector3f> placementPositions);
   void distributeLabelsToLayers();
   void
   updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);

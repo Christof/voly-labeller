@@ -38,6 +38,7 @@ class Labeller
 
   std::map<int, Eigen::Vector3f>
   update(const LabellerFrameData &frameData,
+         std::map<int, Eigen::Vector3f> placementPositionsNDC,
          std::map<int, Eigen::Vector3f> placementPositions);
 
   void setPositions(const LabellerFrameData &frameData,

@@ -151,8 +151,8 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
   Eigen::Vector2f sizeNDC =
       label.size.cwiseQuotient(renderData.windowPixelSize);
 
-  Eigen::Vector3f labelPositionNDC =
-      project(renderData.viewProjectionMatrix, labelPosition);
+  Eigen::Vector3f labelPositionNDC = labelPosition;
+      // project(renderData.viewProjectionMatrix, labelPosition);
 
   Eigen::Affine3f labelTransform(
       Eigen::Translation3f(labelPositionNDC) *

@@ -110,7 +110,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   std::map<int, Eigen::Vector3f> positions = ndcPositionsTo3d(positionsNDC);
 
   if (forcesEnabled)
-    positions = getForcesPositions(positions);
+    positions = getForcesPositions(positionsNDC, positions);
 
   distributeLabelsToLayers();
 
@@ -216,6 +216,7 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 }
 
 std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
+    std::map<int, Eigen::Vector3f> placementPositionsNDC,
     std::map<int, Eigen::Vector3f> placementPositions)
 {
   if (firstFramesWithoutPlacement && placementPositions.size())
@@ -224,7 +225,8 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
     forcesLabeller->setPositions(labellerFrameData, placementPositions);
   }
 
-  return forcesLabeller->update(labellerFrameData, placementPositions);
+  return forcesLabeller->update(labellerFrameData, placementPositionsNDC,
+                                placementPositions);
 }
 
 void LabellingCoordinator::distributeLabelsToLayers()

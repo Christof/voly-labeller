@@ -73,6 +73,7 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
 
 std::map<int, Eigen::Vector3f>
 Labeller::update(const LabellerFrameData &frameData,
+                 std::map<int, Eigen::Vector3f> placementPositionsNDC,
                  std::map<int, Eigen::Vector3f> placementPositions)
 {
   std::map<int, Eigen::Vector3f> positions;
@@ -85,7 +86,11 @@ Labeller::update(const LabellerFrameData &frameData,
   for (auto &label : labelStates)
   {
     if (placementPositions.count(label.id))
+    {
       label.placementPosition = placementPositions[label.id];
+      label.placementPosition2D = placementPositionsNDC[label.id].head<2>();
+      label.labelPositionDepth = placementPositionsNDC[label.id].z();
+    }
 
     label.update2dValues(frameData);
 
@@ -99,15 +104,14 @@ Labeller::update(const LabellerFrameData &frameData,
       label.labelPosition2D += delta;
     }
 
-    Eigen::Vector3f reprojected = project(
-        inverseViewProjection,
-        Eigen::Vector3f(label.labelPosition2D.x(), label.labelPosition2D.y(),
-                        label.labelPositionDepth));
+    Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
+                                label.labelPosition2D.y(),
+                                label.labelPositionDepth);
+    Eigen::Vector3f reprojected = project(inverseViewProjection, positionNDC);
     reprojected.z() = label.placementPosition.z();
 
-
     label.labelPosition = reprojected;
-    positions[label.id] = reprojected;
+    positions[label.id] = positionNDC;
   }
 
   return positions;
