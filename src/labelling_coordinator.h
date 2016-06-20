@@ -95,7 +95,9 @@ class LabellingCoordinator
   updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);
 
   std::map<int, Eigen::Vector3f>
-  ndcPositionsTo3d(std::map<int, Eigen::Vector2f> positionsNDC);
+  addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);
+  std::map<int, Eigen::Vector3f>
+  ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_

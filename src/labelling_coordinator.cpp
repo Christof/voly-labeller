@@ -104,7 +104,8 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
   saliency->runKernel();
 
-  auto positionsNDC = getPlacementPositions(activeLayerNumber);
+  auto positionsNDC2d = getPlacementPositions(activeLayerNumber);
+  auto positionsNDC = addDepthValueNDC(positionsNDC2d);
 
   std::map<int, Eigen::Vector3f> positions = ndcPositionsTo3d(positionsNDC);
 
@@ -265,8 +266,23 @@ void LabellingCoordinator::updateLabelPositionsInLabelNodes(
   }
 }
 
-std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
+std::map<int, Eigen::Vector3f> LabellingCoordinator::addDepthValueNDC(
     std::map<int, Eigen::Vector2f> positionsNDC)
+{
+  std::map<int, Eigen::Vector3f> positions;
+  for (auto positionNDCPair : positionsNDC)
+  {
+    int labelId = positionNDCPair.first;
+    auto position2d = positionNDCPair.second;
+    positions[labelId] = Eigen::Vector3f(position2d.x(), position2d.y(),
+                                         labelIdToZValue[labelId]);
+  }
+
+  return positions;
+}
+
+std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
+    std::map<int, Eigen::Vector3f> positionsNDC)
 {
   Eigen::Matrix4f inverseViewProjection =
       labellerFrameData.viewProjection.inverse();
@@ -275,10 +291,7 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
   for (auto positionNDCPair : positionsNDC)
   {
     int labelId = positionNDCPair.first;
-    auto position2d = positionNDCPair.second;
-    Eigen::Vector3f positionNDC(position2d.x(), position2d.y(),
-                                labelIdToZValue[labelId]);
-    positions[labelId] = project(inverseViewProjection, positionNDC);
+    positions[labelId] = project(inverseViewProjection, positionNDCPair.second);
   }
 
   return positions;
