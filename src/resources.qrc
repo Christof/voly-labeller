@@ -18,6 +18,8 @@
         <file>shader/colorImmediate.frag</file>
         <file>shader/label.frag</file>
         <file>shader/connector.frag</file>
+        <file>shader/labelDebug.frag</file>
+        <file>shader/connectorDebug.frag</file>
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/combineLayers.frag</file>
         <file>shader/positionRenderTarget.frag</file>

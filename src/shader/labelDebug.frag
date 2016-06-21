@@ -21,14 +21,17 @@ void setColorForLayer(int layerIndex, vec4 color)
   if (layerIndex == 0)
   {
     outputColor = color;
+    outputColor.r = 0;
   }
   else if (layerIndex == 1)
   {
     outputColor2 = color;
+    outputColor2.g = 0;
   }
   else if (layerIndex == 2)
   {
     outputColor3 = color;
+    outputColor3.b = 0;
   }
   else
   {
