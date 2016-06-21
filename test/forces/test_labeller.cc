@@ -1,6 +1,7 @@
 #include "../test.h"
 #include "../../src/forces/labeller.h"
 #include "../../src/labelling/labels.h"
+#include "../../src/labelling/label_positions.h"
 
 class TestLabeller : public ::testing::Test
 {
@@ -25,9 +26,15 @@ class TestLabeller : public ::testing::Test
                              Eigen::Matrix4f::Identity());
   }
 
-  std::map<int, Eigen::Vector3f> getDefaultPlacementResult()
+  LabelPositions getDefaultPlacementResult()
   {
-    return std::map<int, Eigen::Vector3f>{ { 1, Eigen::Vector3f(1, 2, 2.5f) } };
+    std::map<int, Eigen::Vector3f> positions3d = { { 1, Eigen::Vector3f(
+                                                            1, 2, 2.5f) } };
+    std::map<int, Eigen::Vector3f> positionsNDC = {
+      { 1, Eigen::Vector3f(0.5, 0.7, 0.5f) }
+    };
+
+    return LabelPositions(positionsNDC, positions3d);
   }
 };
 
@@ -40,7 +47,7 @@ TEST_F(TestLabeller, AddedLabelIsUpdated)
       labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
   EXPECT_EQ(1, newPositions.size());
-  EXPECT_NE(oldPosition.x(), newPositions[label.id].x());
+  EXPECT_NE(oldPosition.x(), newPositions.get3dFor(label.id).x());
 }
 
 TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
@@ -48,7 +55,7 @@ TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
   auto newPositions =
       labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
 
-  EXPECT_Vector3f_NEAR(newPositions[label.id],
+  EXPECT_Vector3f_NEAR(newPositions.get3dFor(label.id),
                        labeller->getLabels()[0].labelPosition, 1E-5);
 }
 
@@ -58,9 +65,11 @@ TEST_F(TestLabeller, LabelHasDepthOfPlacementResult)
   std::map<int, Eigen::Vector3f> placementResult{
     { label.id, Eigen::Vector3f(0, 0, depth) }
   };
-  auto newPositions = labeller->update(getDefaultFrameData(), placementResult);
 
-  EXPECT_NEAR(depth, newPositions[label.id].z(), 1E-5);
+  auto newPositions =
+      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
+
+  EXPECT_NEAR(depth, newPositions.get3dFor(label.id).z(), 1E-5);
 }
 
 TEST_F(TestLabeller,
@@ -72,11 +81,11 @@ TEST_F(TestLabeller,
   label.anchorPosition = Eigen::Vector3f(-1, -2, -3);
   labels->update(label);
 
-  EXPECT_NE(newPositions[label.id].x(),
+  EXPECT_NE(newPositions.get3dFor(label.id).x(),
             labeller->getLabels()[0].labelPosition.x());
-  EXPECT_NE(newPositions[label.id].y(),
+  EXPECT_NE(newPositions.get3dFor(label.id).y(),
             labeller->getLabels()[0].labelPosition.y());
-  EXPECT_NE(newPositions[label.id].z(),
+  EXPECT_NE(newPositions.get3dFor(label.id).z(),
             labeller->getLabels()[0].labelPosition.z());
 }
 
@@ -90,7 +99,7 @@ TEST_F(TestLabeller, LabelUpdateSetsTheCurrentLabelPositionIfAnchorsUnchanged)
 
   auto newLabelState = labeller->getLabels()[0];
   EXPECT_EQ(label.text, newLabelState.text);
-  EXPECT_Vector3f_NEAR(newPositions[label.id], newLabelState.labelPosition,
-                       1E-5);
+  EXPECT_Vector3f_NEAR(newPositions.get3dFor(label.id),
+                       newLabelState.labelPosition, 1E-5);
 }
 

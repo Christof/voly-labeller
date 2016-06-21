@@ -71,12 +71,10 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
   }
 }
 
-std::map<int, Eigen::Vector3f>
-Labeller::update(const LabellerFrameData &frameData,
-                 std::map<int, Eigen::Vector3f> placementPositionsNDC,
-                 std::map<int, Eigen::Vector3f> placementPositions)
+LabelPositions Labeller::update(const LabellerFrameData &frameData,
+                                LabelPositions placementPositions)
 {
-  std::map<int, Eigen::Vector3f> positions;
+  LabelPositions positions;
 
   for (auto &force : forces)
     force->beforeAll(labelStates);
@@ -87,9 +85,10 @@ Labeller::update(const LabellerFrameData &frameData,
   {
     if (placementPositions.count(label.id))
     {
-      label.placementPosition = placementPositions[label.id];
-      label.placementPosition2D = placementPositionsNDC[label.id].head<2>();
-      label.labelPositionDepth = placementPositionsNDC[label.id].z();
+      label.placementPosition = placementPositions.get3dFor(label.id);
+      auto placementNDC = placementPositions.getNDCFor(label.id);
+      label.placementPosition2D = placementNDC.head<2>();
+      label.labelPositionDepth = placementNDC.z();
     }
 
     label.update2dValues(frameData);
@@ -111,19 +110,27 @@ Labeller::update(const LabellerFrameData &frameData,
     reprojected.z() = label.placementPosition.z();
 
     label.labelPosition = reprojected;
-    positions[label.id] = positionNDC;
+    positions.update(label.id, positionNDC, reprojected);
   }
 
   return positions;
 }
 
 void Labeller::setPositions(const LabellerFrameData &frameData,
-                            std::map<int, Eigen::Vector3f> positions)
+                            LabelPositions placementPositions)
 {
   for (auto &label : labelStates)
   {
-    if (positions.count(label.id))
-      label.labelPosition = positions[label.id];
+    if (placementPositions.count(label.id))
+    {
+      label.placementPosition = placementPositions.get3dFor(label.id);
+      auto placementNDC = placementPositions.getNDCFor(label.id);
+      label.placementPosition2D = placementNDC.head<2>();
+      label.labelPositionDepth = placementNDC.z();
+
+      label.labelPosition2D = label.placementPosition2D;
+      label.labelPosition = label.placementPosition;
+    }
 
     label.update2dValues(frameData);
   }

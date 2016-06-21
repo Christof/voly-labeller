@@ -8,6 +8,7 @@ set(SOURCES
   labels_container.cpp
   label.cpp
   labels.cpp
+  label_positions.cpp
   clustering.cpp
   )
 

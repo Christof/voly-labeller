@@ -12,6 +12,7 @@
 #include "./force.h"
 #include "../labelling/labeller_frame_data.h"
 #include "../labelling/labels.h"
+#include "../labelling/label_positions.h"
 
 /**
  * \brief Contains classes for the force simulation part of label placement
@@ -36,13 +37,11 @@ class Labeller
 
   void updateLabel(int id, Eigen::Vector3f anchorPosition);
 
-  std::map<int, Eigen::Vector3f>
-  update(const LabellerFrameData &frameData,
-         std::map<int, Eigen::Vector3f> placementPositionsNDC,
-         std::map<int, Eigen::Vector3f> placementPositions);
+  LabelPositions update(const LabellerFrameData &frameData,
+                        LabelPositions placementPositions);
 
   void setPositions(const LabellerFrameData &frameData,
-                    std::map<int, Eigen::Vector3f> positions);
+      LabelPositions placementPositions);
 
   std::vector<LabelState> getLabels();
 

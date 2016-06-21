@@ -106,15 +106,14 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
   auto positionsNDC2d = getPlacementPositions(activeLayerNumber);
   auto positionsNDC = addDepthValueNDC(positionsNDC2d);
-
-  std::map<int, Eigen::Vector3f> positions = ndcPositionsTo3d(positionsNDC);
+  LabelPositions labelPositions(positionsNDC, ndcPositionsTo3d(positionsNDC));
 
   if (forcesEnabled)
-    positions = getForcesPositions(positionsNDC, positions);
+    labelPositions = getForcesPositions(labelPositions);
 
   distributeLabelsToLayers();
 
-  updateLabelPositionsInLabelNodes(positions);
+  updateLabelPositionsInLabelNodes(labelPositions);
 }
 
 void LabellingCoordinator::updatePlacement(bool isIdle)
@@ -215,18 +214,19 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
   return placementPositions;
 }
 
-std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
-    std::map<int, Eigen::Vector3f> placementPositionsNDC,
-    std::map<int, Eigen::Vector3f> placementPositions)
+LabelPositions
+LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
 {
+  if (placementPositions.size() == 0)
+    return LabelPositions();
+
   if (firstFramesWithoutPlacement && placementPositions.size())
   {
     firstFramesWithoutPlacement = false;
     forcesLabeller->setPositions(labellerFrameData, placementPositions);
   }
 
-  return forcesLabeller->update(labellerFrameData, placementPositionsNDC,
-                                placementPositions);
+  return forcesLabeller->update(labellerFrameData, placementPositions);
 }
 
 void LabellingCoordinator::distributeLabelsToLayers()
@@ -250,15 +250,16 @@ void LabellingCoordinator::distributeLabelsToLayers()
 }
 
 void LabellingCoordinator::updateLabelPositionsInLabelNodes(
-    std::map<int, Eigen::Vector3f> newPositions)
+    LabelPositions labelPositions)
 {
   for (auto &labelNode : nodes->getLabelNodes())
   {
     int labelId = labelNode->label.id;
-    if (newPositions.count(labelId))
+    if (labelPositions.count(labelId))
     {
       labelNode->setIsVisible(true);
-      labelNode->labelPosition = newPositions[labelId];
+      labelNode->labelPosition = labelPositions.get3dFor(labelId);
+      labelNode->labelPositionNDC = labelPositions.getNDCFor(labelId);
       labelNode->layerIndex = labelIdToLayerIndex[labelId];
     }
     else

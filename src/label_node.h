@@ -38,6 +38,7 @@ class LabelNode : public Node
   };
 
   Eigen::Vector3f labelPosition;
+  Eigen::Vector3f labelPositionNDC;
 
   Label label;
 

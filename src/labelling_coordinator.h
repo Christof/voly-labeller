@@ -10,6 +10,7 @@
 #include "./forces/labeller.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./labelling/clustering.h"
+#include "./labelling/label_positions.h"
 #include "./graphics/buffer_drawer.h"
 
 class PersistentConstraintUpdater;
@@ -88,12 +89,9 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector2f> lastPlacementResult;
 
   std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
-  std::map<int, Eigen::Vector3f>
-  getForcesPositions(std::map<int, Eigen::Vector3f> placementPositionsNDC,
-                     std::map<int, Eigen::Vector3f> placementPositions);
+  LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
-  void
-  updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);
+  void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
 
   std::map<int, Eigen::Vector3f>
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);
