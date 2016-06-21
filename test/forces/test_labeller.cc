@@ -61,15 +61,16 @@ TEST_F(TestLabeller, FromUpdateReturnedPositionsMatchGetPositions)
 
 TEST_F(TestLabeller, LabelHasDepthOfPlacementResult)
 {
-  float depth = 2.0f;
-  std::map<int, Eigen::Vector3f> placementResult{
-    { label.id, Eigen::Vector3f(0, 0, depth) }
-  };
+  float depth3d = 2.0f;
+  float depthNDC = 0.7f;
+  LabelPositions placementResult;
+  placementResult.update(label.id, Eigen::Vector3f(0, 0, depthNDC),
+                         Eigen::Vector3f(0, 0, depth3d));
 
-  auto newPositions =
-      labeller->update(getDefaultFrameData(), getDefaultPlacementResult());
+  auto newPositions = labeller->update(getDefaultFrameData(), placementResult);
 
-  EXPECT_NEAR(depth, newPositions.get3dFor(label.id).z(), 1E-5);
+  EXPECT_NEAR(depth3d, newPositions.get3dFor(label.id).z(), 1E-5);
+  EXPECT_NEAR(depthNDC, newPositions.getNDCFor(label.id).z(), 1E-5);
 }
 
 TEST_F(TestLabeller,
