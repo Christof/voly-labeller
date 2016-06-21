@@ -13,10 +13,10 @@ Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
 
 void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 {
-  if (labels->count() == 0)
-    return;
-
   recalculateZValues(viewProjectionMatrix);
+
+  if (allLabels.size() == 0)
+    return;
 
   initializeClusters();
 
@@ -157,14 +157,18 @@ int Clustering::getRandomLabelIndexWeightedBy(std::vector<float> distances)
 
 void Clustering::recalculateZValues(Eigen::Matrix4f viewProjectionMatrix)
 {
-  allLabels = labels->getLabels();
-
+  allLabels.clear();
   zValues.clear();
-  int labelIndex = 0;
-  for (auto &label : allLabels)
+  for (auto label : labels->getLabels())
   {
-    zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
-    ++labelIndex;
+    Eigen::Vector3f anchorPositionNDC =
+        project(viewProjectionMatrix, label.anchorPosition);
+
+    if (!label.isAnchorInsideFieldOfView(viewProjectionMatrix))
+      continue;
+
+    allLabels.push_back(label);
+    zValues.push_back(anchorPositionNDC.z());
   }
 }
 
