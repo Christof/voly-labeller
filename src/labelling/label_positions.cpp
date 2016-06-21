@@ -1,4 +1,5 @@
 #include "./label_positions.h"
+#include <map>
 
 LabelPositions::LabelPositions(std::map<int, Eigen::Vector3f> positionsNDC,
                                std::map<int, Eigen::Vector3f> positions3d)

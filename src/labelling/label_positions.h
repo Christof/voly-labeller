@@ -2,12 +2,11 @@
 
 #define SRC_LABELLING_LABEL_POSITIONS_H_
 
-#include <map>
 #include <Eigen/Core>
+#include <map>
 
 /**
- * \brief
- *
+ * \brief Encapsulates positions for labels in 3d and NDC space
  *
  */
 class LabelPositions

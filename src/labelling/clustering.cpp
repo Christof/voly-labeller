@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <limits>
+#include <algorithm>
 #include "./labels.h"
 
 Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
