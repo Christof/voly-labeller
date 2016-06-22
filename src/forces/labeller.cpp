@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "./center_force.h"
 #include "../math/eigen.h"
 #include "./anchor_force.h"
@@ -12,6 +13,7 @@
 
 namespace Forces
 {
+
 Labeller::Labeller(std::shared_ptr<Labels> labels) : labels(labels)
 {
   srand(9);
@@ -96,6 +98,8 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
     auto forceOnLabel = Eigen::Vector2f(0, 0);
     for (auto &force : forces)
       forceOnLabel += force->calculateForce(label, labelStates, frameData);
+
+    float scale = std::min(0.1, frameData.frameTime);
 
     if (updatePositions && forceOnLabel.norm() > epsilon)
     {
