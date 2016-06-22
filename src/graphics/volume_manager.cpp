@@ -82,9 +82,8 @@ void VolumeManager::removeVolume(int id)
   volumes.erase(volumes.find(id));
 }
 
-void VolumeManager::fillCustomBuffer(ObjectData &objectData)
+std::vector<VolumeData> VolumeManager::getBufferData()
 {
-  int size = sizeof(VolumeData) * (nextVolumeId - 1);
   std::vector<VolumeData> data;
   for (int i = 1; i < nextVolumeId; ++i)
   {
@@ -99,10 +98,7 @@ void VolumeManager::fillCustomBuffer(ObjectData &objectData)
     data.push_back(volumeData);
   }
 
-  objectData.setCustomBuffer(size, [data, size](void *insertionPoint)
-                             {
-    std::memcpy(insertionPoint, data.data(), size);
-  });
+  return data;
 }
 
 Eigen::Vector3i VolumeManager::getVolumeAtlasSize() const

@@ -8,6 +8,7 @@
 #include "./managers.h"
 #include "./object_manager.h"
 #include "./volume_manager.h"
+#include "./volume_data.h"
 #include "./texture_manager.h"
 #include "./transfer_function_manager.h"
 #include "../math/eigen.h"
@@ -175,7 +176,14 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   setLayeringUniforms(renderShader, renderData);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
-  managers->getVolumeManager()->fillCustomBuffer(objectData);
+  auto volumeData = managers->getVolumeManager()->getBufferData();
+  int volumeDataSize = volumeData.size() * sizeof(Graphics::VolumeData);
+
+  objectData.setCustomBuffer(volumeDataSize,
+                             [volumeData, volumeDataSize](void *insertionPoint)
+                             {
+    std::memcpy(insertionPoint, volumeData.data(), volumeDataSize);
+  });
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
