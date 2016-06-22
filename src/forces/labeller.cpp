@@ -101,10 +101,23 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
 
     float scale = std::min(0.1, frameData.frameTime);
 
-    if (updatePositions && forceOnLabel.norm() > epsilon)
+    if (updatePositions)
     {
-      auto delta = forceOnLabel * frameData.frameTime;
-      label.labelPosition2D += delta;
+      if (forceOnLabel.norm() > epsilon)
+      {
+        auto delta = forceOnLabel * scale;
+        label.labelPosition2D += delta;
+      }
+      else
+      {
+        label.labelPosition2D = label.placementPosition2D;
+        label.labelPosition = label.placementPosition;
+        Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
+                                    label.labelPosition2D.y(),
+                                    label.labelPositionDepth);
+        positions.update(label.id, positionNDC, label.placementPosition);
+        continue;
+      }
     }
 
     Eigen::Vector3f positionNDC(label.labelPosition2D.x(),

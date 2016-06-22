@@ -59,7 +59,7 @@ class Labeller
 
   Eigen::Vector2f size;
 
-  float epsilon = 0.05f;
+  float epsilon = 0.1f;
 };
 }  // namespace Forces
 
