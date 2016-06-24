@@ -32,6 +32,8 @@ const int LAYER_COUNT = 4;
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
+  setupCommandLineParser();
+  parser.process(application);
   invokeManager = std::make_shared<InvokeManager>();
 
   nodes = std::make_shared<Nodes>();
@@ -72,8 +74,6 @@ Application::~Application()
 
 int Application::execute()
 {
-  setupCommandLineParser();
-  parser.process(application);
   qInfo() << "Application start";
 
   auto unsubscribeLabelChanges = labels->subscribe(
@@ -129,6 +129,9 @@ void Application::setupCommandLineParser()
   parser.addVersionOption();
   parser.addPositionalArgument(
       "scene", QCoreApplication::translate("main", "Scene file to load."));
+  QCommandLineOption offlineRenderingOption("offline",
+                                            "Enables offline rendering");
+  parser.addOption(offlineRenderingOption);
 }
 
 void Application::setupWindow()
