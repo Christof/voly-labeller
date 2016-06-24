@@ -74,7 +74,7 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
 }
 
 LabelPositions Labeller::update(const LabellerFrameData &frameData,
-                                LabelPositions placementPositions)
+                                const LabelPositions &placementPositions)
 {
   LabelPositions positions;
 
@@ -95,29 +95,41 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
 
     label.update2dValues(frameData);
 
-    auto forceOnLabel = Eigen::Vector2f(0, 0);
-    for (auto &force : forces)
-      forceOnLabel += force->calculateForce(label, labelStates, frameData);
-
-    float scale = std::min(0.1, frameData.frameTime);
-
     if (updatePositions)
     {
-      if (forceOnLabel.norm() > epsilon)
+      bool onPlacementResult = false;
+      double remainingFrameTime = frameData.frameTime;
+      LabellerFrameData partialFrameData = frameData;
+      do
       {
-        auto delta = forceOnLabel * scale;
-        label.labelPosition2D += delta;
-      }
-      else
-      {
-        label.labelPosition2D = label.placementPosition2D;
-        label.labelPosition = label.placementPosition;
-        Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
-                                    label.labelPosition2D.y(),
-                                    label.labelPositionDepth);
-        positions.update(label.id, positionNDC, label.placementPosition);
+        partialFrameData.frameTime = std::min(0.2, remainingFrameTime);
+        auto forceOnLabel = Eigen::Vector2f(0, 0);
+        for (auto &force : forces)
+          forceOnLabel +=
+              force->calculateForce(label, labelStates, partialFrameData);
+
+        auto delta = 0.1 * forceOnLabel * frameData.frameTime;
+        if (delta.norm() > epsilon)
+        {
+          label.labelPosition2D += delta;
+
+          remainingFrameTime -= 0.02;
+        }
+        else
+        {
+          label.labelPosition2D = label.placementPosition2D;
+          label.labelPosition = label.placementPosition;
+          Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
+                                      label.labelPosition2D.y(),
+                                      label.labelPositionDepth);
+          positions.update(label.id, positionNDC, label.placementPosition);
+          onPlacementResult = true;
+          break;
+        }
+      } while (remainingFrameTime > 0);
+
+      if (onPlacementResult)
         continue;
-      }
     }
 
     Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
