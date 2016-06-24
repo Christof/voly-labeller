@@ -52,7 +52,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
                                   labellingCoordinator, textureMapperManager);
 
-  bool synchronousCapturing = false;
+  bool synchronousCapturing = parser.isSet("offline");
   videoRecorder = std::make_shared<VideoRecorder>(synchronousCapturing);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
