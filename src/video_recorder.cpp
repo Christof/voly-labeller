@@ -7,7 +7,8 @@
 
 QLoggingCategory videoRecorderChan("VideoRecorder");
 
-VideoRecorder::VideoRecorder(double fps) : fps(fps)
+VideoRecorder::VideoRecorder(bool synchronousCapturing, double fps)
+  : synchronousCapturing(synchronousCapturing), fps(fps)
 {
 }
 
@@ -56,8 +57,9 @@ void VideoRecorder::createNewVideo(std::string filename)
   if (videoRecorder.get())
   {
     videoRecorder->stopRecording();
-    disconnect(videoTimer.get(), &QTimer::timeout, this,
-               &VideoRecorder::updateVideoTimer);
+    if (!synchronousCapturing)
+      disconnect(videoTimer.get(), &QTimer::timeout, this,
+                 &VideoRecorder::updateVideoTimer);
   }
 
   pixelBuffer.resize(videoWidth * videoHeight * 3);
@@ -67,14 +69,18 @@ void VideoRecorder::createNewVideo(std::string filename)
 
   videoRecorder->startRecording();
   videoTimer = std::make_unique<QTimer>(this);
-  connect(videoTimer.get(), &QTimer::timeout, this,
-          &VideoRecorder::updateVideoTimer);
+
+  if (!synchronousCapturing)
+    connect(videoTimer.get(), &QTimer::timeout, this,
+            &VideoRecorder::updateVideoTimer);
 }
 
 void VideoRecorder::startRecording()
 {
   isRecording = true;
-  videoTimer->start(40);
+
+  if (!synchronousCapturing)
+    videoTimer->start(40);
 }
 
 void VideoRecorder::stopRecording()
@@ -83,7 +89,9 @@ void VideoRecorder::stopRecording()
     return;
 
   isRecording = false;
-  videoTimer->stop();
+
+  if (!synchronousCapturing)
+    videoTimer->stop();
 }
 
 void VideoRecorder::updateVideoTimer()
@@ -97,6 +105,9 @@ void VideoRecorder::captureVideoFrame()
   {
     gl->glReadPixels(0, 0, videoWidth, videoHeight, GL_RGB, GL_UNSIGNED_BYTE,
                      pixelBuffer.data());
+
+    if (synchronousCapturing)
+      updateVideoTimer();
   }
 }
 

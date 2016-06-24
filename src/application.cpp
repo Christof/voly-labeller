@@ -50,7 +50,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
                                   labellingCoordinator, textureMapperManager);
 
-  videoRecorder = std::make_shared<VideoRecorder>();
+  bool synchronousCapturing = false;
+  videoRecorder = std::make_shared<VideoRecorder>(synchronousCapturing);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
   window = std::make_unique<Window>(scene, videoRecorder);
