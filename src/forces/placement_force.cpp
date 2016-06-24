@@ -18,8 +18,8 @@ Eigen::Vector2f PlacementForce::calculate(LabelState &label,
 
   Eigen::Vector2f direction = label.placementPosition2D - label.labelPosition2D;
 
-  if (direction.norm() < 0.05f)
-    return direction;
+  if (direction.norm() < 0.01f)
+    return direction * 100.0f;
 
   return direction.normalized();
 }

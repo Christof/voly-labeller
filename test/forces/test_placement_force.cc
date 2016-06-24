@@ -39,7 +39,7 @@ TEST(Test_PlacementForce, ScalesForceDownIfLabelIsAlreadyNearThePlacementResult)
   auto labels = std::vector<LabelState>{ label };
   auto result = force.calculateForce(label, labels, frameData);
 
-  Eigen::Vector2f expected = Eigen::Vector2f(-0.01f, -0.01f);
+  Eigen::Vector2f expected = Eigen::Vector2f(-0.707106f, -0.707106f);
   EXPECT_Vector2f_NEAR(expected, result, 0.0001f);
 }
 
