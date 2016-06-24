@@ -14,22 +14,22 @@ void LabelPositions::update(int labelId, Eigen::Vector3f positionNDC,
   positions3d[labelId] = position3d;
 }
 
-int LabelPositions::size()
+int LabelPositions::size() const
 {
   return positionsNDC.size();
 }
 
-int LabelPositions::count(int labelId)
+int LabelPositions::count(int labelId) const
 {
   return positionsNDC.count(labelId);
 }
 
-Eigen::Vector3f LabelPositions::getNDCFor(int labelId)
+Eigen::Vector3f LabelPositions::getNDCFor(int labelId) const
 {
-  return positionsNDC[labelId];
+  return positionsNDC.at(labelId);
 }
 
-Eigen::Vector3f LabelPositions::get3dFor(int labelId)
+Eigen::Vector3f LabelPositions::get3dFor(int labelId) const
 {
-  return positions3d[labelId];
+  return positions3d.at(labelId);
 }
