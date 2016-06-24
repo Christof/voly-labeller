@@ -100,9 +100,10 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
       bool onPlacementResult = false;
       double remainingFrameTime = frameData.frameTime;
       LabellerFrameData partialFrameData = frameData;
+      const double stepTime = 0.2;
       do
       {
-        partialFrameData.frameTime = std::min(0.2, remainingFrameTime);
+        partialFrameData.frameTime = std::min(stepTime, remainingFrameTime);
         auto forceOnLabel = Eigen::Vector2f(0, 0);
         for (auto &force : forces)
           forceOnLabel +=
@@ -113,7 +114,7 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
         {
           label.labelPosition2D += delta;
 
-          remainingFrameTime -= 0.02;
+          remainingFrameTime -= stepTime;
         }
         else
         {
