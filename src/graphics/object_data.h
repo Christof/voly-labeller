@@ -13,8 +13,7 @@ struct CustomBufferData
   int size;
   std::function<void(void *)> setBuffer;
 
-  CustomBufferData()
-    : size(0), setBuffer(nullptr)
+  CustomBufferData() : size(0), setBuffer(nullptr)
   {
   }
 };
@@ -51,8 +50,12 @@ struct ObjectData
   bool isInitialized();
 
   void setCustomBuffer(int size, std::function<void(void *)> setFunction);
+  void setCustomBufferFor(int inddex, int size,
+                          std::function<void(void *)> setFunction);
 
   void fillBufferElement(void *bufferStart, int index);
+  void fillBufferElementFor(int customBufferIndex, void *bufferStart,
+                            int index);
 
  private:
   int id;

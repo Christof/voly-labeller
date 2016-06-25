@@ -66,13 +66,25 @@ bool ObjectData::isInitialized()
 void ObjectData::setCustomBuffer(int size,
                                  std::function<void(void *)> setFunction)
 {
-  customBuffers[0].size = size;
-  customBuffers[0].setBuffer = setFunction;
+  setCustomBufferFor(0, size, setFunction);
+}
+
+void ObjectData::setCustomBufferFor(int index, int size,
+                                    std::function<void(void *)> setFunction)
+{
+  customBuffers[index].size = size;
+  customBuffers[index].setBuffer = setFunction;
 }
 
 void ObjectData::fillBufferElement(void *bufferStart, int index)
 {
-  CustomBufferData &customBuffer = customBuffers[0];
+  fillBufferElementFor(0, bufferStart, index);
+}
+
+void ObjectData::fillBufferElementFor(int customBufferIndex, void *bufferStart,
+                                      int index)
+{
+  CustomBufferData &customBuffer = customBuffers[customBufferIndex];
   assert(customBuffer.size != 0);
   customBuffer.setBuffer(static_cast<char *>(bufferStart) +
                          index * customBuffer.size);
