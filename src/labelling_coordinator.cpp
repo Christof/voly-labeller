@@ -156,17 +156,6 @@ std::vector<float> LabellingCoordinator::updateClusters()
 {
   clustering.update(labellerFrameData.viewProjection);
   return clustering.getMedianClusterMembers();
-  /*
-  auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
-  std::vector<float> zValues;
-
-  for (auto pair : clusters)
-  {
-    zValues.push_back(pair.first);
-  }
-
-  return zValues;
-  */
 }
 
 void LabellingCoordinator::resize(int width, int height)
