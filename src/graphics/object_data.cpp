@@ -9,7 +9,7 @@ ObjectData::ObjectData(int id, int vertexOffset, int indexOffset, int indexSize,
   : modelMatrix(Eigen::Matrix4f::Identity()), id(id),
     primitiveType(primitiveType), vertexOffset(vertexOffset),
     indexOffset(indexOffset), indexSize(indexSize),
-    shaderProgramId(shaderProgramId), customBufferSize(0), setBuffer(nullptr)
+    shaderProgramId(shaderProgramId), customBuffers(1)
 
 {
 }
@@ -48,14 +48,14 @@ int ObjectData::getShaderProgramId() const
   return shaderProgramId;
 }
 
-int ObjectData::getCustomBufferSize() const
+int ObjectData::getCustomBufferSize(int index) const
 {
-  return customBufferSize;
+  return customBuffers[index].size;
 }
 
 bool ObjectData::hasCustomBuffer() const
 {
-  return setBuffer && customBufferSize;
+  return customBuffers[0].setBuffer && customBuffers[0].size;
 }
 
 bool ObjectData::isInitialized()
@@ -66,14 +66,16 @@ bool ObjectData::isInitialized()
 void ObjectData::setCustomBuffer(int size,
                                  std::function<void(void *)> setFunction)
 {
-  customBufferSize = size;
-  setBuffer = setFunction;
+  customBuffers[0].size = size;
+  customBuffers[0].setBuffer = setFunction;
 }
 
 void ObjectData::fillBufferElement(void *bufferStart, int index)
 {
-  assert(customBufferSize != 0);
-  setBuffer(static_cast<char *>(bufferStart) + index * customBufferSize);
+  CustomBufferData &customBuffer = customBuffers[0];
+  assert(customBuffer.size != 0);
+  customBuffer.setBuffer(static_cast<char *>(bufferStart) +
+                         index * customBuffer.size);
 }
 
 }  // namespace Graphics
