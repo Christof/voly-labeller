@@ -20,10 +20,11 @@ uniform vec3 textureAtlasSize;
 uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
-const int layerCount = 4;
-const int planeCount = layerCount - 1;
-uniform vec4 layerPlanes[planeCount];
-uniform float planesZValuesNdc[planeCount];
+uniform int layerCount;
+uniform int planeCount;
+const int maxPlaneCount = 3;
+uniform vec4 layerPlanes[maxPlaneCount];
+uniform float planesZValuesNdc[maxPlaneCount];
 uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
 
 uniform sampler3D volumeSampler;

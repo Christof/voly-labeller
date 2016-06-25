@@ -232,10 +232,14 @@ void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
     return left.w() < right.w();
   });
 
+  int layerCount = static_cast<int>(layerZValues.size());
+  int planeCount = static_cast<int>(layerPlanes.size());
+  renderShader->setUniform("layerCount", layerCount);
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
-                                      static_cast<int>(layerPlanes.size()));
+                                      planeCount);
+  renderShader->setUniform("planeCount", planeCount);
   renderShader->setUniformAsFloatArray("planesZValuesNdc", layerZValues.data(),
-                                       static_cast<int>(layerZValues.size()));
+                                       layerCount);
 }
 
 void HABuffer::syncAndGetCounts()
