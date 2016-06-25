@@ -125,14 +125,27 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = static_cast<uint>(objects.size());
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  int customBufferSize = objects[0].getCustomBufferSize() * objectCount;
 
-  void *custom = nullptr;
-  if (customBufferSize)
-    custom = customBuffers[0].reserve(customBufferSize);
+  int customBufferIndex = 0;
+  std::vector<void *> customBufferPointers;
+  std::vector<int> customBufferSizes;
+  for (auto &customBuffer : customBuffers)
+  {
+    int customBufferSize =
+        objects[0].getCustomBufferSize(customBufferIndex) * objectCount;
 
-  qCDebug(omChan) << "customBufferSize" << customBufferSize << "custom"
-                  << custom << "matrices" << matrices;
+    if (customBufferSize)
+    {
+      void *custom = customBuffer.reserve(customBufferSize);
+      qCDebug(omChan) << "Index" << customBufferIndex << "customBufferSize"
+                      << customBufferSize << "custom" << custom << "matrices"
+                      << matrices;
+      customBufferPointers.push_back(custom);
+      customBufferSizes.push_back(customBufferSize);
+    }
+
+    ++customBufferIndex;
+  }
 
   int counter = 0;
   for (auto &objectData : objects)
@@ -150,15 +163,23 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     if (objectData.hasCustomBuffer())
     {
-      objectData.fillBufferElement(custom, counter);
+      for (size_t customBufferIndex = 0;
+           customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+        objectData.fillBufferElementFor(customBufferIndex,
+                                        customBufferPointers[customBufferIndex],
+                                        counter);
     }
 
     ++counter;
   }
 
   transformBuffer.bindBufferRange(0, objectCount);
-  if (customBufferSize)
-    customBuffers[0].bindBufferRange(1, customBufferSize);
+  for (size_t customBufferIndex = 0;
+       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  {
+    customBuffers[customBufferIndex].bindBufferRange(
+        1, customBufferSizes[customBufferIndex]);
+  }
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -176,8 +197,12 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   commandsBuffer.onUsageComplete(objectCount);
   transformBuffer.onUsageComplete(objectCount);
-  if (customBufferSize)
-    customBuffers[0].onUsageComplete(customBufferSize);
+  for (size_t customBufferIndex = 0;
+       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  {
+    customBuffers[customBufferIndex].onUsageComplete(
+        customBufferSizes[customBufferIndex]);
+  }
 }
 
 ObjectManager::DrawElementsIndirectCommand
