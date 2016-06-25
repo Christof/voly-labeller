@@ -32,6 +32,8 @@ const int LAYER_COUNT = 4;
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
+  setupCommandLineParser();
+  parser.process(application);
   invokeManager = std::make_shared<InvokeManager>();
 
   nodes = std::make_shared<Nodes>();
@@ -50,10 +52,18 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
                                   labellingCoordinator, textureMapperManager);
 
-  videoRecorder = std::make_shared<VideoRecorder>();
+  bool synchronousCapturing = parser.isSet("offline");
+  const float offlineFPS = 24;
+  videoRecorder =
+      std::make_shared<VideoRecorder>(synchronousCapturing, offlineFPS);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
-  window = std::make_unique<Window>(scene, videoRecorder);
+
+  float offlineRenderingFrameTime =
+      parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;
+  window =
+      std::make_unique<Window>(scene, videoRecorder, offlineRenderingFrameTime);
+
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
@@ -71,8 +81,6 @@ Application::~Application()
 
 int Application::execute()
 {
-  setupCommandLineParser();
-  parser.process(application);
   qInfo() << "Application start";
 
   auto unsubscribeLabelChanges = labels->subscribe(
@@ -128,6 +136,9 @@ void Application::setupCommandLineParser()
   parser.addVersionOption();
   parser.addPositionalArgument(
       "scene", QCoreApplication::translate("main", "Scene file to load."));
+  QCommandLineOption offlineRenderingOption("offline",
+                                            "Enables offline rendering");
+  parser.addOption(offlineRenderingOption);
 }
 
 void Application::setupWindow()

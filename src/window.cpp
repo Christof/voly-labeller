@@ -14,8 +14,10 @@
 QLoggingCategory openGlChan("OpenGl");
 
 Window::Window(std::shared_ptr<AbstractScene> scene,
-               std::shared_ptr<VideoRecorder> videoRecorder, QWindow *parent)
-  : QQuickView(parent), scene(scene), videoRecorder(videoRecorder)
+               std::shared_ptr<VideoRecorder> videoRecorder,
+               double offlineRenderingFrameTime, QWindow *parent)
+  : QQuickView(parent), scene(scene), videoRecorder(videoRecorder),
+    offlineRenderingFrameTime(offlineRenderingFrameTime)
 {
   setClearBeforeRendering(false);
 
@@ -141,7 +143,8 @@ void Window::update()
   double frameTime = timer.restart() / 1000.0;
   updateAverageFrameTime(frameTime);
 
-  scene->update(frameTime);
+  scene->update(offlineRenderingFrameTime != 0.0f ? offlineRenderingFrameTime
+                                                  : frameTime);
 }
 
 void Window::toggleFullscreen()

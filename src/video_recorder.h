@@ -27,7 +27,7 @@ class VideoRecorder : public QObject
 {
   Q_OBJECT
  public:
-  explicit VideoRecorder(double fps = 24);
+  explicit VideoRecorder(bool synchronousCapturing, double fps = 24);
   virtual ~VideoRecorder();
 
   void initialize(Graphics::Gl *gl);
@@ -41,6 +41,7 @@ class VideoRecorder : public QObject
   bool getHasActiveRecording();
 
  private:
+  bool synchronousCapturing;
   double fps;
   std::unique_ptr<FFMPEGRecorder> videoRecorder;
   std::vector<unsigned char> pixelBuffer;
