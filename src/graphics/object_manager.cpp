@@ -19,9 +19,12 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
   : bufferManager(std::make_shared<BufferManager>()),
     textureManager(textureManager), shaderManager(shaderManager),
     transformBuffer(GL_SHADER_STORAGE_BUFFER),
-    customBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 {
+  int customBufferCount = 1;
+  for (int customBufferIndex = 0; customBufferIndex < customBufferCount;
+       ++customBufferIndex)
+    customBuffers.push_back(ShaderBuffer(GL_SHADER_STORAGE_BUFFER));
 }
 
 ObjectManager::~ObjectManager()
@@ -37,7 +40,8 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  customBuffer.initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  for (auto &customBuffer : customBuffers)
+    customBuffer.initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
@@ -125,7 +129,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   void *custom = nullptr;
   if (customBufferSize)
-    custom = customBuffer.reserve(customBufferSize);
+    custom = customBuffers[0].reserve(customBufferSize);
 
   qCDebug(omChan) << "customBufferSize" << customBufferSize << "custom"
                   << custom << "matrices" << matrices;
@@ -154,7 +158,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   transformBuffer.bindBufferRange(0, objectCount);
   if (customBufferSize)
-    customBuffer.bindBufferRange(1, customBufferSize);
+    customBuffers[0].bindBufferRange(1, customBufferSize);
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -173,7 +177,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   commandsBuffer.onUsageComplete(objectCount);
   transformBuffer.onUsageComplete(objectCount);
   if (customBufferSize)
-    customBuffer.onUsageComplete(customBufferSize);
+    customBuffers[0].onUsageComplete(customBufferSize);
 }
 
 ObjectManager::DrawElementsIndirectCommand
