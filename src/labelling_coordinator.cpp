@@ -4,7 +4,6 @@
 
 #include "./labelling_coordinator.h"
 #include <QtOpenGLExtensions>
-#include <Eigen/Core>
 #include <map>
 #include <vector>
 #include "./labelling/clustering.h"
@@ -21,6 +20,7 @@
 #include "./placement/apollonius_labels_arranger.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
+#include "./math/eigen.h"
 #include "./label_node.h"
 #include "./texture_mapper_manager.h"
 
@@ -104,13 +104,16 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
 
   saliency->runKernel();
 
-  auto positions = getPlacementPositions(activeLayerNumber);
+  auto positionsNDC2d = getPlacementPositions(activeLayerNumber);
+  auto positionsNDC = addDepthValueNDC(positionsNDC2d);
+  LabelPositions labelPositions(positionsNDC, ndcPositionsTo3d(positionsNDC));
+
   if (forcesEnabled)
-    positions = getForcesPositions(positions);
+    labelPositions = getForcesPositions(labelPositions);
 
   distributeLabelsToLayers();
 
-  updateLabelPositionsInLabelNodes(positions);
+  updateLabelPositionsInLabelNodes(labelPositions);
 }
 
 void LabellingCoordinator::updatePlacement(bool isIdle)
@@ -152,15 +155,7 @@ void LabellingCoordinator::updatePlacement(bool isIdle)
 std::vector<float> LabellingCoordinator::updateClusters()
 {
   clustering.update(labellerFrameData.viewProjection);
-  auto clusters = clustering.getFarthestClusterMembersWithLabelIds();
-  std::vector<float> zValues;
-
-  for (auto pair : clusters)
-  {
-    zValues.push_back(pair.first);
-  }
-
-  return zValues;
+  return clustering.getMedianClusterMembers();
 }
 
 void LabellingCoordinator::resize(int width, int height)
@@ -183,13 +178,13 @@ void LabellingCoordinator::setCostFunctionWeights(
     placementLabeller->setCostFunctionWeights(weights);
 }
 
-std::map<int, Eigen::Vector3f>
+std::map<int, Eigen::Vector2f>
 LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
 {
   if (preserveLastResult)
     return lastPlacementResult;
 
-  std::map<int, Eigen::Vector3f> placementPositions;
+  std::map<int, Eigen::Vector2f> placementPositions;
   int layerIndex = 0;
   for (auto placementLabeller : placementLabellers)
   {
@@ -208,9 +203,12 @@ LabellingCoordinator::getPlacementPositions(int activeLayerNumber)
   return placementPositions;
 }
 
-std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
-    std::map<int, Eigen::Vector3f> placementPositions)
+LabelPositions
+LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
 {
+  if (placementPositions.size() == 0)
+    return LabelPositions();
+
   if (firstFramesWithoutPlacement && placementPositions.size())
   {
     firstFramesWithoutPlacement = false;
@@ -222,7 +220,7 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::getForcesPositions(
 
 void LabellingCoordinator::distributeLabelsToLayers()
 {
-  auto centerWithLabelIds = clustering.getCentersWithLabelIds();
+  auto centerWithLabelIds = clustering.getMedianClusterMembersWithLabelIds();
   int layerIndex = 0;
   for (auto &pair : centerWithLabelIds)
   {
@@ -233,6 +231,7 @@ void LabellingCoordinator::distributeLabelsToLayers()
     {
       container->add(labels->getById(labelId));
       labelIdToLayerIndex[labelId] = layerIndex;
+      labelIdToZValue[labelId] = pair.first;
     }
 
     layerIndex++;
@@ -240,20 +239,53 @@ void LabellingCoordinator::distributeLabelsToLayers()
 }
 
 void LabellingCoordinator::updateLabelPositionsInLabelNodes(
-    std::map<int, Eigen::Vector3f> newPositions)
+    LabelPositions labelPositions)
 {
   for (auto &labelNode : nodes->getLabelNodes())
   {
-    if (newPositions.count(labelNode->label.id))
+    int labelId = labelNode->label.id;
+    if (labelPositions.count(labelId))
     {
       labelNode->setIsVisible(true);
-      labelNode->labelPosition = newPositions[labelNode->label.id];
-      labelNode->layerIndex = labelIdToLayerIndex[labelNode->label.id];
+      labelNode->labelPosition = labelPositions.get3dFor(labelId);
+      labelNode->labelPositionNDC = labelPositions.getNDCFor(labelId);
+      labelNode->layerIndex = labelIdToLayerIndex[labelId];
     }
     else
     {
       labelNode->setIsVisible(false);
     }
   }
+}
+
+std::map<int, Eigen::Vector3f> LabellingCoordinator::addDepthValueNDC(
+    std::map<int, Eigen::Vector2f> positionsNDC)
+{
+  std::map<int, Eigen::Vector3f> positions;
+  for (auto positionNDCPair : positionsNDC)
+  {
+    int labelId = positionNDCPair.first;
+    auto position2d = positionNDCPair.second;
+    positions[labelId] = Eigen::Vector3f(position2d.x(), position2d.y(),
+                                         labelIdToZValue[labelId]);
+  }
+
+  return positions;
+}
+
+std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
+    std::map<int, Eigen::Vector3f> positionsNDC)
+{
+  Eigen::Matrix4f inverseViewProjection =
+      labellerFrameData.viewProjection.inverse();
+
+  std::map<int, Eigen::Vector3f> positions;
+  for (auto positionNDCPair : positionsNDC)
+  {
+    int labelId = positionNDCPair.first;
+    positions[labelId] = project(inverseViewProjection, positionNDCPair.second);
+  }
+
+  return positions;
 }
 

@@ -30,10 +30,14 @@ class Clustering
    */
   std::map<float, std::vector<int>> getCentersWithLabelIds();
 
-  /** \brief Returns map of clusters (given by farthest z-value of clust
+  /** \brief Returns map of clusters (given by farthest z-value of cluster
    * members) to all their labels (given as vector of label Ids).
    */
   std::map<float, std::vector<int>> getFarthestClusterMembersWithLabelIds();
+
+  /** \brief Returns the median z-value for all clusters */
+  std::vector<float> getMedianClusterMembers();
+  std::map<float, std::vector<int>> getMedianClusterMembersWithLabelIds();
 
   int getRandomLabelIndexWeightedBy(std::vector<float> distances);
 

@@ -10,6 +10,7 @@
 #include "./forces/labeller.h"
 #include "./labelling/labeller_frame_data.h"
 #include "./labelling/clustering.h"
+#include "./labelling/label_positions.h"
 #include "./graphics/buffer_drawer.h"
 
 class PersistentConstraintUpdater;
@@ -79,19 +80,23 @@ class LabellingCoordinator
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
   std::map<int, int> labelIdToLayerIndex;
+  std::map<int, float> labelIdToZValue;
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
   float sumOfCosts = 0.0f;
   bool preserveLastResult = false;
-  std::map<int, Eigen::Vector3f> lastPlacementResult;
+  std::map<int, Eigen::Vector2f> lastPlacementResult;
 
-  std::map<int, Eigen::Vector3f> getPlacementPositions(int activeLayerNumber);
-  std::map<int, Eigen::Vector3f>
-  getForcesPositions(std::map<int, Eigen::Vector3f> placementPositions);
+  std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
+  LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
-  void
-  updateLabelPositionsInLabelNodes(std::map<int, Eigen::Vector3f> newPositions);
+  void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
+
+  std::map<int, Eigen::Vector3f>
+  addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);
+  std::map<int, Eigen::Vector3f>
+  ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_

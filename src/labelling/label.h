@@ -34,7 +34,8 @@ struct Label
 
   bool operator!=(const Label &other) const;
 
-  bool isAnchorInsideFieldOfView(const LabellerFrameData &frameData) const;
+  bool
+  isAnchorInsideFieldOfView(const Eigen::Matrix4f &viewProjectionMatrix) const;
 };
 
 namespace boost

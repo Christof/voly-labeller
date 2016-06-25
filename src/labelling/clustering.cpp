@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <limits>
+#include <algorithm>
 #include "./labels.h"
 
 Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
@@ -12,10 +13,10 @@ Clustering::Clustering(std::shared_ptr<Labels> labels, int clusterCount)
 
 void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 {
-  if (labels->count() == 0)
-    return;
-
   recalculateZValues(viewProjectionMatrix);
+
+  if (allLabels.size() == 0)
+    return;
 
   initializeClusters();
 
@@ -67,6 +68,66 @@ Clustering::getFarthestClusterMembersWithLabelIds()
   return result;
 }
 
+float median(std::vector<float> &vector)
+{
+  size_t halfSize = vector.size() / 2;
+  std::nth_element(vector.begin(), vector.begin() + halfSize, vector.end());
+  return vector[halfSize];
+}
+
+std::vector<float> Clustering::getMedianClusterMembers()
+{
+  std::map<int, std::vector<float>> clusterIndexToZValues;
+  for (size_t labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
+  {
+    int clusterIndex = clusterIndices[labelIndex];
+    clusterIndexToZValues[clusterIndex].push_back(zValues[labelIndex]);
+  }
+
+  std::vector<float> medians;
+  for (auto &pair : clusterIndexToZValues)
+  {
+    medians.push_back(median(pair.second));
+  }
+
+  return medians;
+}
+
+std::map<float, std::vector<int>>
+Clustering::getMedianClusterMembersWithLabelIds()
+{
+  std::vector<float> medians = getMedianClusterMembers();
+  std::sort(medians.begin(), medians.end());
+
+  std::map<float, std::vector<int>> result;
+  std::vector<int> labelIndicesToPlace;
+  for (size_t labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
+    labelIndicesToPlace.push_back(labelIndex);
+
+  for (float median : medians)
+  {
+    for (auto iterator = labelIndicesToPlace.cbegin();
+         iterator != labelIndicesToPlace.cend();)
+    {
+      auto labelIndex = *iterator;
+      if (zValues[labelIndex] <= median)
+      {
+        result[median].push_back(allLabels[labelIndex].id);
+        iterator = labelIndicesToPlace.erase(iterator);
+      }
+      else
+      {
+        ++iterator;
+      }
+    }
+  }
+
+  for (auto labelIndex : labelIndicesToPlace)
+    result[1].push_back(allLabels[labelIndex].id);
+
+  return result;
+}
+
 float getDistance(float value1, float value2)
 {
   float diff = value1 - value2;
@@ -96,14 +157,18 @@ int Clustering::getRandomLabelIndexWeightedBy(std::vector<float> distances)
 
 void Clustering::recalculateZValues(Eigen::Matrix4f viewProjectionMatrix)
 {
-  allLabels = labels->getLabels();
-
+  allLabels.clear();
   zValues.clear();
-  int labelIndex = 0;
-  for (auto &label : allLabels)
+  for (auto label : labels->getLabels())
   {
-    zValues.push_back(project(viewProjectionMatrix, label.anchorPosition).z());
-    ++labelIndex;
+    Eigen::Vector3f anchorPositionNDC =
+        project(viewProjectionMatrix, label.anchorPosition);
+
+    if (!label.isAnchorInsideFieldOfView(viewProjectionMatrix))
+      continue;
+
+    allLabels.push_back(label);
+    zValues.push_back(anchorPositionNDC.z());
   }
 }
 

@@ -71,11 +71,10 @@ void Labeller::updateLabel(int id, Eigen::Vector3f anchorPosition)
   }
 }
 
-std::map<int, Eigen::Vector3f>
-Labeller::update(const LabellerFrameData &frameData,
-                 std::map<int, Eigen::Vector3f> placementPositions)
+LabelPositions Labeller::update(const LabellerFrameData &frameData,
+                                LabelPositions placementPositions)
 {
-  std::map<int, Eigen::Vector3f> positions;
+  LabelPositions positions;
 
   for (auto &force : forces)
     force->beforeAll(labelStates);
@@ -85,7 +84,12 @@ Labeller::update(const LabellerFrameData &frameData,
   for (auto &label : labelStates)
   {
     if (placementPositions.count(label.id))
-      label.placementPosition = placementPositions[label.id];
+    {
+      label.placementPosition = placementPositions.get3dFor(label.id);
+      auto placementNDC = placementPositions.getNDCFor(label.id);
+      label.placementPosition2D = placementNDC.head<2>();
+      label.labelPositionDepth = placementNDC.z();
+    }
 
     label.update2dValues(frameData);
 
@@ -99,29 +103,34 @@ Labeller::update(const LabellerFrameData &frameData,
       label.labelPosition2D += delta;
     }
 
-    Eigen::Vector4f reprojected =
-        inverseViewProjection * Eigen::Vector4f(label.labelPosition2D.x(),
-                                                label.labelPosition2D.y(),
-                                                label.labelPositionDepth, 1);
-    reprojected /= reprojected.w();
+    Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
+                                label.labelPosition2D.y(),
+                                label.labelPositionDepth);
+    Eigen::Vector3f reprojected = project(inverseViewProjection, positionNDC);
+    reprojected.z() = label.placementPosition.z();
 
-    label.labelPosition = reprojected.head<3>();
-
-    enforceAnchorDepthForLabel(label, frameData.view);
-
-    positions[label.id] = label.labelPosition;
+    label.labelPosition = reprojected;
+    positions.update(label.id, positionNDC, reprojected);
   }
 
   return positions;
 }
 
 void Labeller::setPositions(const LabellerFrameData &frameData,
-                            std::map<int, Eigen::Vector3f> positions)
+                            LabelPositions placementPositions)
 {
   for (auto &label : labelStates)
   {
-    if (positions.count(label.id))
-      label.labelPosition = positions[label.id];
+    if (placementPositions.count(label.id))
+    {
+      label.placementPosition = placementPositions.get3dFor(label.id);
+      auto placementNDC = placementPositions.getNDCFor(label.id);
+      label.placementPosition2D = placementNDC.head<2>();
+      label.labelPositionDepth = placementNDC.z();
+
+      label.labelPosition2D = label.placementPosition2D;
+      label.labelPosition = label.placementPosition;
+    }
 
     label.update2dValues(frameData);
   }
@@ -136,16 +145,6 @@ template <class T> void Labeller::addForce(T *force, bool enabled)
 {
   force->isEnabled = enabled;
   forces.push_back(std::unique_ptr<T>(force));
-}
-
-void Labeller::enforceAnchorDepthForLabel(LabelState &label,
-                                          const Eigen::Matrix4f &viewMatrix)
-{
-  Eigen::Vector4f anchorView = mul(viewMatrix, label.anchorPosition);
-  Eigen::Vector4f labelView = mul(viewMatrix, label.labelPosition);
-  labelView.z() = anchorView.z();
-
-  label.labelPosition = (viewMatrix.inverse() * labelView).head<3>();
 }
 
 }  // namespace Forces

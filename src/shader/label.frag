@@ -15,6 +15,7 @@ void main()
 {
   Tex2DAddress address = texAddress[vertexDrawId];
   vec4 color = Texture(address, vertexTexCoord.xy);
-  setColorForLayer(address.dummy, color);
+  int layerIndex = address.dummy;
+  setColorForLayer(layerIndex, color);
 }
 

@@ -90,17 +90,17 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
-  std::vector<Eigen::Vector3f> expectedPositions = {
-    Eigen::Vector3f(0.173578f, 0.618843f, 0.034f),
-    Eigen::Vector3f(0.338289f, 0.188812f, -0.00699999f),
-    Eigen::Vector3f(0.735934f, 0.423164f, 0.058f),
-    Eigen::Vector3f(0.305347f, 0.483187f, 0.141f),
+  std::vector<Eigen::Vector2f> expectedPositions = {
+    Eigen::Vector2f(0.179687f, 0.640625f),
+    Eigen::Vector2f(0.335937f, 0.1875f),
+    Eigen::Vector2f(0.78125f, 0.44921875f),
+    Eigen::Vector2f(0.355468f, 0.5625f),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
   {
-    EXPECT_Vector3f_NEAR(expectedPositions[i], newPositions[i + 1], 1e-5f);
-    EXPECT_Vector3f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
+    EXPECT_Vector2f_NEAR(expectedPositions[i], newPositions[i + 1], 1e-5f);
+    EXPECT_Vector2f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
                          1e-5f);
   }
 

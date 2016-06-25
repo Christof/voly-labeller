@@ -16,8 +16,6 @@ void LabelState::update2dValues(const LabellerFrameData &frameData)
 
   auto label2D = frameData.project(labelPosition);
   labelPosition2D = label2D.head<2>();
-  labelPositionDepth = label2D.z();
-  placementPosition2D = frameData.project2d(placementPosition);
 }
 
 }  // namespace Forces
