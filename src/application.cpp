@@ -53,10 +53,17 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
                                   labellingCoordinator, textureMapperManager);
 
   bool synchronousCapturing = parser.isSet("offline");
-  videoRecorder = std::make_shared<VideoRecorder>(synchronousCapturing);
+  const float offlineFPS = 24;
+  videoRecorder =
+      std::make_shared<VideoRecorder>(synchronousCapturing, offlineFPS);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
-  window = std::make_unique<Window>(scene, videoRecorder);
+
+  float offlineRenderingFrameTime =
+      parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;
+  window =
+      std::make_unique<Window>(scene, videoRecorder, offlineRenderingFrameTime);
+
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
