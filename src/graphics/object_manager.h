@@ -84,7 +84,7 @@ class ObjectManager
   std::shared_ptr<ShaderManager> shaderManager;
 
   CircularBuffer<float[16]> transformBuffer;
-  std::vector<ShaderBuffer> customBuffers;
+  std::vector<std::shared_ptr<ShaderBuffer>> customBuffers;
   CircularBuffer<DrawElementsIndirectCommand> commandsBuffer;
 
   Gl *gl;

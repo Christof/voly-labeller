@@ -24,7 +24,10 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
   int customBufferCount = 2;
   for (int customBufferIndex = 0; customBufferIndex < customBufferCount;
        ++customBufferIndex)
-    customBuffers.push_back(ShaderBuffer(GL_SHADER_STORAGE_BUFFER));
+  {
+    customBuffers.push_back(
+        std::make_shared<ShaderBuffer>(GL_SHADER_STORAGE_BUFFER));
+  }
 }
 
 ObjectManager::~ObjectManager()
@@ -40,8 +43,8 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  for (auto &customBuffer : customBuffers)
-    customBuffer.initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  for (auto customBuffer : customBuffers)
+    customBuffer->initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
@@ -129,14 +132,14 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   int customBufferIndex = 0;
   std::vector<void *> customBufferPointers;
   std::vector<int> customBufferSizes;
-  for (auto &customBuffer : customBuffers)
+  for (auto customBuffer : customBuffers)
   {
     int customBufferSize =
         objects[0].getCustomBufferSize(customBufferIndex) * objectCount;
 
     if (customBufferSize)
     {
-      void *custom = customBuffer.reserve(customBufferSize);
+      void *custom = customBuffer->reserve(customBufferSize);
       qCDebug(omChan) << "Index" << customBufferIndex << "customBufferSize"
                       << customBufferSize << "custom" << custom << "matrices"
                       << matrices;
@@ -177,7 +180,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   for (size_t customBufferIndex = 0;
        customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
   {
-    customBuffers[customBufferIndex].bindBufferRange(
+    customBuffers[customBufferIndex]->bindBufferRange(
         customBufferIndex + 1, customBufferSizes[customBufferIndex]);
   }
 
@@ -200,7 +203,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   for (size_t customBufferIndex = 0;
        customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
   {
-    customBuffers[customBufferIndex].onUsageComplete(
+    customBuffers[customBufferIndex]->onUsageComplete(
         customBufferSizes[customBufferIndex]);
   }
 }
