@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <map>
+#include <vector>
 #include "./volume_data.h"
 
 namespace Graphics
