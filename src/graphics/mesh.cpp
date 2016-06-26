@@ -156,12 +156,11 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   {
     int textureId = textureManager->addTexture(
         absolutePathOfProjectRelativePath(std::string(textureFilePath)));
-    objectData.setCustomBuffer(sizeof(TextureAddress),
-                               [textureManager, textureId](void *insertionPoint)
-                               {
-      auto textureAddress = textureManager->getAddressFor(textureId);
-      std::memcpy(insertionPoint, &textureAddress, sizeof(TextureAddress));
-    });
+    objectData.setCustomBufferFor<Graphics::TextureAddress>(
+        1, [textureManager, textureId]()
+        {
+          return textureManager->getAddressFor(textureId);
+        });
   }
   else
   {

@@ -62,6 +62,16 @@ struct ObjectData
   }
 
   template <typename T>
+  void setCustomBufferFor(int index, std::function<T()> getData)
+  {
+    setCustomBufferFor(index, sizeof(T), [getData](void *insertionPoint)
+                       {
+      auto data = getData();
+      std::memcpy(insertionPoint, &data, sizeof(T));
+    });
+  }
+
+  template <typename T>
   void setCustomBufferFor(int index, const std::vector<T> &data)
   {
     int dataSize = sizeof(T) * data.size();
