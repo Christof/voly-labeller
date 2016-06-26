@@ -69,12 +69,13 @@ bool ObjectData::isInitialized()
 void ObjectData::setCustomBuffer(int size,
                                  std::function<void(void *)> setFunction)
 {
-  setCustomBufferFor(0, size, setFunction);
+  setCustomBufferFor(1, size, setFunction);
 }
 
 void ObjectData::setCustomBufferFor(int index, int size,
                                     std::function<void(void *)> setFunction)
 {
+  --index;
   for (int i = customBuffers.size(); i <= index; ++i)
     customBuffers.push_back(CustomBufferData());
 

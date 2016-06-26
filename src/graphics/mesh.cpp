@@ -165,8 +165,8 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
   else
   {
-    objectData.setCustomBufferFor(0, &this->phongMaterial);
-    objectData.setCustomBufferFor(1, &this->normalMatrix);
+    objectData.setCustomBufferFor(1, &this->phongMaterial);
+    objectData.setCustomBufferFor(2, &this->normalMatrix);
   }
 
   return objectData;
