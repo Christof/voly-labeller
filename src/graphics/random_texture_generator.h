@@ -11,9 +11,10 @@ namespace Graphics
 class TextureManager;
 
 /**
- * \brief
+ * \brief Generates random float textures with values in [0, 1]
  *
- *
+ * The generated texture is added to the TextureManager and the
+ * id is returned from #create().
  */
 class RandomTextureGenerator
 {
