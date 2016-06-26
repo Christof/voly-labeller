@@ -54,7 +54,6 @@ struct ObjectData
   void setCustomBufferFor(int inddex, int size,
                           std::function<void(void *)> setFunction);
 
-  void fillBufferElement(void *bufferStart, int index);
   void fillBufferElementFor(int customBufferIndex, void *bufferStart,
                             int index);
 

@@ -82,11 +82,6 @@ void ObjectData::setCustomBufferFor(int index, int size,
   customBuffers[index].setBuffer = setFunction;
 }
 
-void ObjectData::fillBufferElement(void *bufferStart, int index)
-{
-  fillBufferElementFor(0, bufferStart, index);
-}
-
 void ObjectData::fillBufferElementFor(int customBufferIndex, void *bufferStart,
                                       int index)
 {
