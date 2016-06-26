@@ -177,13 +177,8 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
   auto volumeData = managers->getVolumeManager()->getBufferData();
-  int volumeDataSize = volumeData.size() * sizeof(Graphics::VolumeData);
 
-  objectData.setCustomBuffer(volumeDataSize,
-                             [volumeData, volumeDataSize](void *insertionPoint)
-                             {
-    std::memcpy(insertionPoint, volumeData.data(), volumeDataSize);
-  });
+  objectData.setCustomBufferFor(1, volumeData);
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));

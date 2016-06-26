@@ -92,15 +92,11 @@ void VolumeNode::initialize(Graphics::Gl *gl,
       shaderProgramId, GL_POINTS);
   cubeData.modelMatrix = overallTransformation;
   float volumeIdAsFloat = *reinterpret_cast<float *>(&volumeId);
-  Eigen::Vector4f physicalSize(
+  physicalSize = Eigen::Vector4f(
       volumeReader->getPhysicalSize().x(), volumeReader->getPhysicalSize().y(),
       volumeReader->getPhysicalSize().z(), volumeIdAsFloat);
 
-  cubeData.setCustomBuffer(sizeof(Eigen::Vector4f),
-                           [physicalSize](void *insertionPoint)
-                           {
-    memcpy(insertionPoint, physicalSize.data(), sizeof(Eigen::Vector4f));
-  });
+  cubeData.setCustomBufferFor(1, &physicalSize);
 
   auto transferFunctionManager = managers->getTransferFunctionManager();
   transferFunctionRow = transferFunctionManager->add(

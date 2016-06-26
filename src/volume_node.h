@@ -53,6 +53,7 @@ class VolumeNode : public Node, public Graphics::Volume
   Graphics::ObjectData cubeData;
   int transferFunctionRow = -1;
   Graphics::TextureAddress transferFunctionAddress;
+  Eigen::Vector4f physicalSize;
 
   void initialize(Graphics::Gl *gl,
                   std::shared_ptr<Graphics::Managers> managers);
