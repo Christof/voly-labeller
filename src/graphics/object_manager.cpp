@@ -21,7 +21,7 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
     transformBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 {
-  int customBufferCount = 1;
+  int customBufferCount = 2;
   for (int customBufferIndex = 0; customBufferIndex < customBufferCount;
        ++customBufferIndex)
     customBuffers.push_back(ShaderBuffer(GL_SHADER_STORAGE_BUFFER));
@@ -178,7 +178,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
        customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
   {
     customBuffers[customBufferIndex].bindBufferRange(
-        1, customBufferSizes[customBufferIndex]);
+        customBufferIndex + 1, customBufferSizes[customBufferIndex]);
   }
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
