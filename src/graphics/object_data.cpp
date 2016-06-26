@@ -75,6 +75,9 @@ void ObjectData::setCustomBuffer(int size,
 void ObjectData::setCustomBufferFor(int index, int size,
                                     std::function<void(void *)> setFunction)
 {
+  for (int i = customBuffers.size(); i <= index; ++i)
+    customBuffers.push_back(CustomBufferData());
+
   customBuffers[index].size = size;
   customBuffers[index].setBuffer = setFunction;
 }

@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <functional>
+#include <vector>
 
 namespace Graphics
 {
