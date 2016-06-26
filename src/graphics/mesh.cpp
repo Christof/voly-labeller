@@ -165,17 +165,8 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   }
   else
   {
-    objectData.setCustomBufferFor(0, sizeof(PhongMaterial),
-                                  [this](void *insertionPoint)
-                                  {
-      std::memcpy(insertionPoint, &this->phongMaterial, sizeof(PhongMaterial));
-    });
-
-    objectData.setCustomBufferFor(1, sizeof(Eigen::Matrix4f),
-                                  [this](void *insertionPoint)
-                                  {
-      std::memcpy(insertionPoint, &this->normalMatrix, sizeof(Eigen::Matrix4f));
-    });
+    objectData.setCustomBufferFor(0, &this->phongMaterial);
+    objectData.setCustomBufferFor(1, &this->normalMatrix);
   }
 
   return objectData;
