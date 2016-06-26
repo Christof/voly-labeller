@@ -50,6 +50,9 @@ int ObjectData::getShaderProgramId() const
 
 int ObjectData::getCustomBufferSize(int index) const
 {
+  if (index >= static_cast<int>(customBuffers.size()))
+    return 0;
+
   return customBuffers[index].size;
 }
 
