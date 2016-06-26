@@ -99,10 +99,7 @@ void LabelNode::initialize(Graphics::Gl *gl,
   if (!labelConnector.isInitialized())
   {
     labelConnector = connector->getObjectData();
-    labelConnector.setCustomBuffer(sizeof(int), [this](void *insertionPoint)
-                                   {
-      std::memcpy(insertionPoint, &this->layerIndex, sizeof(int));
-    });
+    labelConnector.setCustomBufferFor(1, &this->layerIndex);
   }
 }
 
