@@ -19,9 +19,15 @@ ObjectManager::ObjectManager(std::shared_ptr<TextureManager> textureManager,
   : bufferManager(std::make_shared<BufferManager>()),
     textureManager(textureManager), shaderManager(shaderManager),
     transformBuffer(GL_SHADER_STORAGE_BUFFER),
-    customBuffer(GL_SHADER_STORAGE_BUFFER),
     commandsBuffer(GL_DRAW_INDIRECT_BUFFER)
 {
+  int customBufferCount = 2;
+  for (int customBufferIndex = 0; customBufferIndex < customBufferCount;
+       ++customBufferIndex)
+  {
+    customBuffers.push_back(
+        std::make_shared<ShaderBuffer>(GL_SHADER_STORAGE_BUFFER));
+  }
 }
 
 ObjectManager::~ObjectManager()
@@ -37,7 +43,8 @@ void ObjectManager::initialize(Gl *gl, uint maxObjectCount, uint bufferSize)
 
   commandsBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
   transformBuffer.initialize(gl, 3 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
-  customBuffer.initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
+  for (auto customBuffer : customBuffers)
+    customBuffer->initialize(gl, 24 * maxObjectCount, CREATE_FLAGS, MAP_FLAGS);
 }
 
 ObjectData ObjectManager::addObject(const std::vector<float> &vertices,
@@ -121,14 +128,27 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   uint objectCount = static_cast<uint>(objects.size());
   DrawElementsIndirectCommand *commands = commandsBuffer.reserve(objectCount);
   auto *matrices = transformBuffer.reserve(objectCount);
-  int customBufferSize = objects[0].getCustomBufferSize() * objectCount;
 
-  void *custom = nullptr;
-  if (customBufferSize)
-    custom = customBuffer.reserve(customBufferSize);
+  int customBufferIndex = 0;
+  std::vector<void *> customBufferPointers;
+  std::vector<int> customBufferSizes;
+  for (auto customBuffer : customBuffers)
+  {
+    int customBufferSize =
+        objects[0].getCustomBufferSize(customBufferIndex) * objectCount;
 
-  qCDebug(omChan) << "customBufferSize" << customBufferSize << "custom"
-                  << custom << "matrices" << matrices;
+    if (customBufferSize)
+    {
+      void *custom = customBuffer->reserve(customBufferSize);
+      qCDebug(omChan) << "Index" << customBufferIndex << "customBufferSize"
+                      << customBufferSize << "custom" << custom << "matrices"
+                      << matrices;
+      customBufferPointers.push_back(custom);
+      customBufferSizes.push_back(customBufferSize);
+    }
+
+    ++customBufferIndex;
+  }
 
   int counter = 0;
   for (auto &objectData : objects)
@@ -146,15 +166,23 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     if (objectData.hasCustomBuffer())
     {
-      objectData.fillBufferElement(custom, counter);
+      for (size_t customBufferIndex = 0;
+           customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+        objectData.fillBufferElementFor(customBufferIndex,
+                                        customBufferPointers[customBufferIndex],
+                                        counter);
     }
 
     ++counter;
   }
 
   transformBuffer.bindBufferRange(0, objectCount);
-  if (customBufferSize)
-    customBuffer.bindBufferRange(1, customBufferSize);
+  for (size_t customBufferIndex = 0;
+       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  {
+    customBuffers[customBufferIndex]->bindBufferRange(
+        customBufferIndex + 1, customBufferSizes[customBufferIndex]);
+  }
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
   // glAssert(gl->glMemoryBarrier(GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT));
@@ -172,8 +200,12 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   commandsBuffer.onUsageComplete(objectCount);
   transformBuffer.onUsageComplete(objectCount);
-  if (customBufferSize)
-    customBuffer.onUsageComplete(customBufferSize);
+  for (size_t customBufferIndex = 0;
+       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  {
+    customBuffers[customBufferIndex]->onUsageComplete(
+        customBufferSizes[customBufferIndex]);
+  }
 }
 
 ObjectManager::DrawElementsIndirectCommand

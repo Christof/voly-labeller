@@ -18,23 +18,9 @@ out int outDrawId;
 
 #include "vertexHelper.hglsl"
 
-struct PhongMaterial
+layout(std140, binding = 2) buffer CB2
 {
-  vec4 ambientColor;
-  vec4 diffuseColor;
-  vec4 specularColor;
-  float shininess;
-};
-
-struct CustomBuffer
-{
-  PhongMaterial material;
-  mat4 normalMatrix;
-};
-
-layout(std140, binding = 1) buffer CB1
-{
-  CustomBuffer customBuffer[];
+  mat4 normalMatrices[];
 };
 
 void main()
@@ -46,6 +32,6 @@ void main()
   outEyePosition = viewMatrix * modelMatrix * vec4(pos, 1.0f);
   gl_Position = outPosition;
   outDrawId = drawId;
-  outNormal = normalize((customBuffer[drawId].normalMatrix * vec4(normal, 0)).xyz);
+  outNormal = normalize((normalMatrices[drawId] * vec4(normal, 0)).xyz);
   outTextureCoordinate = texCoord;
 }

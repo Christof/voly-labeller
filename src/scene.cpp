@@ -74,7 +74,6 @@ void Scene::initialize()
   managers->getShaderManager()->initialize(gl, haBuffer);
 
   managers->getObjectManager()->initialize(gl, 128, 10000000);
-  haBuffer->initialize(gl, managers);
   quad->initialize(gl, managers);
   screenQuad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
@@ -82,6 +81,8 @@ void Scene::initialize()
   transparentQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
+
+  haBuffer->initialize(gl, managers);
 
   textureMapperManager->createTextureMappersForLayers(fbo->getLayerCount());
   textureMapperManager->resize(width, height);

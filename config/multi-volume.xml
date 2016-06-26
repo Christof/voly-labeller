@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="13">
+<data class_id="0" tracking_level="0" version="0">
+	<count>3</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.943195581e-01</r0c0>
+				<r0c1>1.490116119e-08</r0c1>
+				<r0c2>-1.064368486e-01</r0c2>
+				<r0c3>-9.781748801e-02</r0c3>
+				<r1c0>7.006642222e-02</r1c0>
+				<r1c1>7.527636290e-01</r1c1>
+				<r1c2>6.545517445e-01</r1c2>
+				<r1c3>2.950741351e-01</r1c3>
+				<r2c0>8.012177795e-02</r2c0>
+				<r2c1>-6.582911015e-01</r2c1>
+				<r2c2>7.484874129e-01</r2c2>
+				<r2c3>-8.057717681e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.852442861e+00</r2c2>
+				<r2c3>-1.561744452e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>6.822226197e-02</x>
+				<y>-1.533949673e-01</y>
+				<z>-2.816953063e-01</z>
+			</origin>
+		</px>
+	</item>
+	<item>
+		<px class_id="5" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/GRCH_Abdomen.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>1.000000000e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>4.878938198e-04</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>1.000000000e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>-1.245121211e-01</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>1.000000000e+00</r2c2>
+				<r2c3>-6.535000801e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="5" object_id="_2">
+			<volumePath>assets/datasets/GRCH_Schaedel_fein_H31.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>1.000000000e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>-9.762123227e-03</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>1.000000000e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>-1.247621328e-01</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>1.000000000e+00</r2c2>
+				<r2c3>-1.668000072e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+

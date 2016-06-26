@@ -4,14 +4,31 @@
 
 #include <Eigen/Core>
 #include <functional>
+#include <vector>
 
 namespace Graphics
 {
 
 /**
+ * \brief Encapsulates data for a custom buffer
+ *
+ * This consists of the data size and a function to copy the data into a buffer
+ * given by the passed insertion point.
+ */
+struct CustomBufferData
+{
+  int size;
+  std::function<void(void *insertionPoint)> setBuffer;
+
+  CustomBufferData() : size(0), setBuffer(nullptr)
+  {
+  }
+};
+
+/**
  * \brief Stores informations to render an object
  *
- * It stores the vertex and index information, the primitive type as well es the
+ * It stores the vertex and index information, the primitive type as well as the
  * used shader program id. The transform matrix is exposed to position the
  * object in world space.
  *
@@ -31,7 +48,7 @@ struct ObjectData
   int getIndexSize() const;
 
   int getShaderProgramId() const;
-  int getCustomBufferSize() const;
+  int getCustomBufferSize(int index = 0) const;
 
   bool hasCustomBuffer() const;
 
@@ -39,9 +56,36 @@ struct ObjectData
 
   bool isInitialized();
 
-  void setCustomBuffer(int size, std::function<void(void *)> setFunction);
+  template <typename T> void setCustomBufferFor(int index, const T *data)
+  {
+    setCustomBufferFor(index, sizeof(T), [data](void *insertionPoint)
+                       {
+      std::memcpy(insertionPoint, data, sizeof(T));
+    });
+  }
 
-  void fillBufferElement(void *bufferStart, int index);
+  template <typename T>
+  void setCustomBufferFor(int index, std::function<T()> getData)
+  {
+    setCustomBufferFor(index, sizeof(T), [getData](void *insertionPoint)
+                       {
+      auto data = getData();
+      std::memcpy(insertionPoint, &data, sizeof(T));
+    });
+  }
+
+  template <typename T>
+  void setCustomBufferFor(int index, const std::vector<T> &data)
+  {
+    int dataSize = sizeof(T) * data.size();
+    setCustomBufferFor(index, dataSize, [data, dataSize](void *insertionPoint)
+                       {
+      std::memcpy(insertionPoint, data.data(), dataSize);
+    });
+  }
+
+  void fillBufferElementFor(int customBufferIndex, void *bufferStart,
+                            int index);
 
  private:
   int id;
@@ -51,8 +95,10 @@ struct ObjectData
   int indexSize;
   int shaderProgramId;
 
-  int customBufferSize;
-  std::function<void(void *)> setBuffer;
+  std::vector<CustomBufferData> customBuffers;
+
+  void setCustomBufferFor(int index, int size,
+                          std::function<void(void *)> setFunction);
 };
 
 }  // namespace Graphics

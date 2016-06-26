@@ -55,12 +55,6 @@ class Mesh : public Renderable
                 std::shared_ptr<ShaderManager> shaderManager);
 
  private:
-  struct CustomBuffer
-  {
-    PhongMaterial material;
-    Eigen::Matrix4f normalMatrix;
-  };
-
   void createObb();
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);

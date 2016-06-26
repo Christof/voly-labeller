@@ -86,23 +86,19 @@ void LabelNode::initialize(Graphics::Gl *gl,
   if (!labelQuad.isInitialized())
   {
     labelQuad = quad->getObjectData();
-    labelQuad.setCustomBuffer(sizeof(Graphics::TextureAddress),
-                              [textureManager, this](void *insertionPoint)
-                              {
-      auto textureAddress = textureManager->getAddressFor(textureId);
-      textureAddress.reserved = this->layerIndex;
-      std::memcpy(insertionPoint, &textureAddress,
-                  sizeof(Graphics::TextureAddress));
-    });
+    labelQuad.setCustomBufferFor<Graphics::TextureAddress>(
+        1, [textureManager, this]()
+        {
+          auto textureAddress = textureManager->getAddressFor(textureId);
+          textureAddress.reserved = this->layerIndex;
+          return textureAddress;
+        });
   }
 
   if (!labelConnector.isInitialized())
   {
     labelConnector = connector->getObjectData();
-    labelConnector.setCustomBuffer(sizeof(int), [this](void *insertionPoint)
-                                   {
-      std::memcpy(insertionPoint, &this->layerIndex, sizeof(int));
-    });
+    labelConnector.setCustomBufferFor(1, &this->layerIndex);
   }
 }
 

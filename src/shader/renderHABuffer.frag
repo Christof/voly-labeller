@@ -47,6 +47,11 @@ layout(std430, binding = 1) buffer CB1
   VolumeData volumes[];
 };
 
+layout(std140, binding = 2) buffer CB2
+{
+  Tex2DAddress noiseAddresses[];
+};
+
 vec4 clampColor(in vec4 color)
 {
   return clamp(color, vec4(0), vec4(1));
@@ -242,7 +247,11 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
   vec4 step_eye = (endPos_eye - segmentStartPos_eye) / sampleSteps;
-  vec4 currentPos_eye = segmentStartPos_eye;  // + noise offset;
+
+  vec2 tc = vec2(gl_FragCoord.xy * 4.0f / 1000.0f + 0.5f);
+  float noiseOffset = Texture(noiseAddresses[0], tc).x;
+
+  vec4 currentPos_eye = segmentStartPos_eye + noiseOffset * step_eye;
 
   // sample ray segment
   for (int stepIndex = 0; stepIndex < sampleSteps; stepIndex++)

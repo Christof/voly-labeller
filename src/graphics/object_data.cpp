@@ -9,7 +9,7 @@ ObjectData::ObjectData(int id, int vertexOffset, int indexOffset, int indexSize,
   : modelMatrix(Eigen::Matrix4f::Identity()), id(id),
     primitiveType(primitiveType), vertexOffset(vertexOffset),
     indexOffset(indexOffset), indexSize(indexSize),
-    shaderProgramId(shaderProgramId), customBufferSize(0), setBuffer(nullptr)
+    shaderProgramId(shaderProgramId), customBuffers(1)
 
 {
 }
@@ -48,14 +48,17 @@ int ObjectData::getShaderProgramId() const
   return shaderProgramId;
 }
 
-int ObjectData::getCustomBufferSize() const
+int ObjectData::getCustomBufferSize(int index) const
 {
-  return customBufferSize;
+  if (index >= static_cast<int>(customBuffers.size()))
+    return 0;
+
+  return customBuffers[index].size;
 }
 
 bool ObjectData::hasCustomBuffer() const
 {
-  return setBuffer && customBufferSize;
+  return customBuffers[0].setBuffer && customBuffers[0].size;
 }
 
 bool ObjectData::isInitialized()
@@ -63,17 +66,24 @@ bool ObjectData::isInitialized()
   return id != -1;
 }
 
-void ObjectData::setCustomBuffer(int size,
-                                 std::function<void(void *)> setFunction)
+void ObjectData::setCustomBufferFor(int index, int size,
+                                    std::function<void(void *)> setFunction)
 {
-  customBufferSize = size;
-  setBuffer = setFunction;
+  --index;
+  for (int i = customBuffers.size(); i <= index; ++i)
+    customBuffers.push_back(CustomBufferData());
+
+  customBuffers[index].size = size;
+  customBuffers[index].setBuffer = setFunction;
 }
 
-void ObjectData::fillBufferElement(void *bufferStart, int index)
+void ObjectData::fillBufferElementFor(int customBufferIndex, void *bufferStart,
+                                      int index)
 {
-  assert(customBufferSize != 0);
-  setBuffer(static_cast<char *>(bufferStart) + index * customBufferSize);
+  CustomBufferData &customBuffer = customBuffers[customBufferIndex];
+  assert(customBuffer.size != 0);
+  customBuffer.setBuffer(static_cast<char *>(bufferStart) +
+                         index * customBuffer.size);
 }
 
 }  // namespace Graphics

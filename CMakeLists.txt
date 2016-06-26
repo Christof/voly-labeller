@@ -116,6 +116,7 @@ set(SOURCES
   src/graphics/drawer.h
   src/graphics/buffer_drawer.cpp
   src/graphics/qimage_drawer.cpp
+  src/graphics/random_texture_generator.cpp
   src/ui.qml
   src/ForcesTableView.qml
   src/LabelsTableView.qml
