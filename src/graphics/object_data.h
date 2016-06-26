@@ -9,10 +9,16 @@
 namespace Graphics
 {
 
+/**
+ * \brief Encapsulates data for a custom buffer
+ *
+ * This consists of the data size and a function to copy the data into a buffer
+ * given by the passed insertion point.
+ */
 struct CustomBufferData
 {
   int size;
-  std::function<void(void *)> setBuffer;
+  std::function<void(void *insertionPoint)> setBuffer;
 
   CustomBufferData() : size(0), setBuffer(nullptr)
   {
