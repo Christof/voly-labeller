@@ -66,12 +66,6 @@ bool ObjectData::isInitialized()
   return id != -1;
 }
 
-void ObjectData::setCustomBuffer(int size,
-                                 std::function<void(void *)> setFunction)
-{
-  setCustomBufferFor(1, size, setFunction);
-}
-
 void ObjectData::setCustomBufferFor(int index, int size,
                                     std::function<void(void *)> setFunction)
 {

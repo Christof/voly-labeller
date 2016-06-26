@@ -50,9 +50,6 @@ struct ObjectData
 
   bool isInitialized();
 
-  void setCustomBuffer(int size, std::function<void(void *)> setFunction);
-  void setCustomBufferFor(int index, int size,
-                          std::function<void(void *)> setFunction);
   template <typename T> void setCustomBufferFor(int index, const T *data)
   {
     setCustomBufferFor(index, sizeof(T), [data](void *insertionPoint)
@@ -93,6 +90,9 @@ struct ObjectData
   int shaderProgramId;
 
   std::vector<CustomBufferData> customBuffers;
+
+  void setCustomBufferFor(int index, int size,
+                          std::function<void(void *)> setFunction);
 };
 
 }  // namespace Graphics
