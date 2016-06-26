@@ -104,6 +104,8 @@ class HABuffer
   float zFar = 5.0f;
   uint *offsets;
 
+  int noiseTexture;
+
   int lastUsedProgram = 0;
 
   Timer clearTimer;

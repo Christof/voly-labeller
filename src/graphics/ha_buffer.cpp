@@ -11,6 +11,7 @@
 #include "./volume_data.h"
 #include "./texture_manager.h"
 #include "./transfer_function_manager.h"
+#include "./random_texture_generator.h"
 #include "../math/eigen.h"
 
 namespace Graphics
@@ -46,6 +47,9 @@ void HABuffer::initialize(Gl *gl, std::shared_ptr<Managers> managers)
   clearTimer.initialize(gl);
   buildTimer.initialize(gl);
   renderTimer.initialize(gl);
+
+  RandomTextureGenerator randomTextureGenerator(managers->getTextureManager());
+  noiseTexture = randomTextureGenerator.create(256, 256);
 }
 
 void HABuffer::updateNearAndFarPlanes(float nearvalue, float farvalue)
@@ -179,6 +183,10 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   auto volumeData = managers->getVolumeManager()->getBufferData();
 
   objectData.setCustomBufferFor(1, volumeData);
+  objectData.setCustomBufferFor<Graphics::TextureAddress>(2, [this, managers]()
+                                                          {
+    return managers->getTextureManager()->getAddressFor(noiseTexture);
+  });
 
   // Ensure that all global memory write are done before resolving
   glAssert(gl->glMemoryBarrier(GL_SHADER_GLOBAL_ACCESS_BARRIER_BIT_NV));
