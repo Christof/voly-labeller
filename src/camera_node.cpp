@@ -1,5 +1,5 @@
 #include "./camera_node.h"
-#include <map>
+#include <vector>
 #include <string>
 #include "./graphics/gl.h"
 #include "./graphics/managers.h"
@@ -10,8 +10,8 @@ CameraNode::CameraNode()
 }
 
 CameraNode::CameraNode(std::shared_ptr<Camera> camera,
-    std::map<std::string, Eigen::Matrix4f> cameraPositions)
-  : camera(camera), cameraPositions(cameraPositions)
+                       std::vector<CameraPosition> cameraPositions)
+  : cameraPositions(cameraPositions), camera(camera)
 {
 }
 

@@ -3,10 +3,10 @@
 #define SRC_CAMERA_NODE_H_
 
 #include <Eigen/Core>
-#include <boost/serialization/map.hpp>
+#include <boost/serialization/vector.hpp>
 #include <boost/serialization/version.hpp>
 #include <memory>
-#include <map>
+#include <vector>
 #include <string>
 #include "./node.h"
 #include "./camera.h"
@@ -16,6 +16,19 @@ namespace Graphics
 class Gl;
 class Managers;
 }
+
+class CameraPosition
+{
+ public:
+  CameraPosition() = default;
+  CameraPosition(std::string name, Eigen::Matrix4f viewMatrix)
+    : name(name), viewMatrix(viewMatrix)
+  {
+  }
+
+  std::string name;
+  Eigen::Matrix4f viewMatrix;
+};
 
 /**
  * \brief Node for a Camera
@@ -27,7 +40,7 @@ class CameraNode : public Node
  public:
   CameraNode();
   CameraNode(std::shared_ptr<Camera> camera,
-             std::map<std::string, Eigen::Matrix4f> cameraPositions);
+             std::vector<CameraPosition> cameraPositions);
 
   std::shared_ptr<Camera> getCamera();
 
@@ -47,9 +60,10 @@ class CameraNode : public Node
     ar << BOOST_SERIALIZATION_NVP(cameraPositions);
   }
 
+  std::vector<CameraPosition> cameraPositions;
+
  private:
   std::shared_ptr<Camera> camera;
-  std::map<std::string, Eigen::Matrix4f> cameraPositions;
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -82,17 +96,38 @@ inline void load_construct_data(Archive &ar, CameraNode *t,
   ar >> BOOST_SERIALIZATION_NVP(projectionMatrix);
   Eigen::Vector3f origin;
   ar >> BOOST_SERIALIZATION_NVP(origin);
-  std::map<std::string, Eigen::Matrix4f> cameraPositions;
-  std::cout << "Version " << version << std::endl;
+  std::vector<CameraPosition> cameraPositions;
   if (version > 0)
     ar >> BOOST_SERIALIZATION_NVP(cameraPositions);
 
   auto camera = std::make_shared<Camera>(viewMatrix, projectionMatrix, origin);
   ::new (t) CameraNode(camera, cameraPositions);
 }
+
+template <class Archive>
+void save(Archive &ar, const CameraPosition &t, unsigned int version)
+{
+  auto name = t.name;
+  ar << BOOST_SERIALIZATION_NVP(name);
+  auto viewMatrix = t.viewMatrix;
+  ar << BOOST_SERIALIZATION_NVP(viewMatrix);
+}
+template <class Archive>
+void load(Archive &ar, CameraPosition &t, unsigned int version)
+{
+  std::string name;
+  ar >> BOOST_SERIALIZATION_NVP(name);
+  Eigen::Matrix4f viewMatrix;
+  ar >> BOOST_SERIALIZATION_NVP(viewMatrix);
+
+  t.name = name;
+  t.viewMatrix = viewMatrix;
+}
+
 }  // namespace serialization
 }  // namespace boost
 
+BOOST_SERIALIZATION_SPLIT_FREE(CameraPosition)
 BOOST_CLASS_VERSION(CameraNode, 1)
 
 #endif  // SRC_CAMERA_NODE_H_
