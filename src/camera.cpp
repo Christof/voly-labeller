@@ -18,7 +18,7 @@ Camera::Camera()
 
 Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
-  : projection(projectionMatrix), view(viewMatrix), origin(origin)
+  : projection(projectionMatrix), view(viewMatrix), origin(-origin)
 {
   position = -viewMatrix.inverse().col(3).head<3>();
   direction = viewMatrix.col(2).head<3>();
