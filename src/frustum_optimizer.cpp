@@ -11,7 +11,7 @@ void FrustumOptimizer::update(Eigen::Matrix4f viewMatrix)
 {
   float fmin = std::numeric_limits<float>::max();
   float fmax = -fmin;
-  for (auto node : nodes->getNodes())
+  for (auto node : nodes->getNodesForObb())
   {
     auto obb = node->getObb();
     if (!obb.isInitialized())

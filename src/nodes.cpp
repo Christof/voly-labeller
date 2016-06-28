@@ -56,6 +56,15 @@ std::vector<std::shared_ptr<Node>> Nodes::getNodes()
   return nodes;
 }
 
+std::vector<std::shared_ptr<Node>> Nodes::getNodesForObb()
+{
+  auto result = getNodes();
+  if (cameraOriginVisualizerNode.get())
+    result.push_back(cameraOriginVisualizerNode);
+
+  return result;
+}
+
 std::shared_ptr<CameraNode> Nodes::getCameraNode()
 {
   return cameraNode;

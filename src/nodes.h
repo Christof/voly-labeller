@@ -42,6 +42,7 @@ class Nodes
   std::vector<std::shared_ptr<LabelNode>> getLabelNodes();
   void removeNode(std::shared_ptr<Node> node);
   std::vector<std::shared_ptr<Node>> getNodes();
+  std::vector<std::shared_ptr<Node>> getNodesForObb();
   std::shared_ptr<CameraNode> getCameraNode();
   void setCameraNode(std::shared_ptr<CameraNode> node);
 
