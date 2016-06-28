@@ -1,4 +1,6 @@
 #include "./camera_node.h"
+#include <map>
+#include <string>
 #include "./graphics/gl.h"
 #include "./graphics/managers.h"
 
@@ -7,8 +9,9 @@ CameraNode::CameraNode()
   camera = std::make_shared<Camera>();
 }
 
-CameraNode::CameraNode(std::shared_ptr<Camera> camera)
-  : camera(camera)
+CameraNode::CameraNode(std::shared_ptr<Camera> camera,
+    std::map<std::string, Eigen::Matrix4f> cameraPositions)
+  : camera(camera), cameraPositions(cameraPositions)
 {
 }
 

@@ -3,7 +3,11 @@
 #define SRC_CAMERA_NODE_H_
 
 #include <Eigen/Core>
+#include <boost/serialization/map.hpp>
+#include <boost/serialization/version.hpp>
 #include <memory>
+#include <map>
+#include <string>
 #include "./node.h"
 #include "./camera.h"
 
@@ -22,7 +26,8 @@ class CameraNode : public Node
 {
  public:
   CameraNode();
-  explicit CameraNode(std::shared_ptr<Camera> camera);
+  CameraNode(std::shared_ptr<Camera> camera,
+             std::map<std::string, Eigen::Matrix4f> cameraPositions);
 
   std::shared_ptr<Camera> getCamera();
 
@@ -39,10 +44,12 @@ class CameraNode : public Node
     ar << BOOST_SERIALIZATION_NVP(viewMatrix);
     ar << BOOST_SERIALIZATION_NVP(projectionMatrix);
     ar << BOOST_SERIALIZATION_NVP(origin);
-  };
+    ar << BOOST_SERIALIZATION_NVP(cameraPositions);
+  }
 
  private:
   std::shared_ptr<Camera> camera;
+  std::map<std::string, Eigen::Matrix4f> cameraPositions;
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -50,7 +57,7 @@ class CameraNode : public Node
   {
     boost::serialization::void_cast_register<CameraNode, Node>(
         static_cast<CameraNode *>(NULL), static_cast<Node *>(NULL));
-  };
+  }
 };
 
 namespace boost
@@ -75,11 +82,17 @@ inline void load_construct_data(Archive &ar, CameraNode *t,
   ar >> BOOST_SERIALIZATION_NVP(projectionMatrix);
   Eigen::Vector3f origin;
   ar >> BOOST_SERIALIZATION_NVP(origin);
+  std::map<std::string, Eigen::Matrix4f> cameraPositions;
+  std::cout << "Version " << version << std::endl;
+  if (version > 0)
+    ar >> BOOST_SERIALIZATION_NVP(cameraPositions);
 
-  ::new (t) CameraNode(
-      std::make_shared<Camera>(viewMatrix, projectionMatrix, origin));
+  auto camera = std::make_shared<Camera>(viewMatrix, projectionMatrix, origin);
+  ::new (t) CameraNode(camera, cameraPositions);
 }
 }  // namespace serialization
 }  // namespace boost
+
+BOOST_CLASS_VERSION(CameraNode, 1)
 
 #endif  // SRC_CAMERA_NODE_H_
