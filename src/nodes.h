@@ -52,6 +52,7 @@ class Nodes
   void importVolume(std::string volumeFilename,
                     std::string transferFunctionFilename);
   void clear();
+  void clearForShutdown();
   void toggleBoundingVolumes();
 
   void addNode(std::shared_ptr<Node> node);

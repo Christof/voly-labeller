@@ -46,7 +46,7 @@ Scene::Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
 
 Scene::~Scene()
 {
-  nodes->clear();
+  nodes->clearForShutdown();
   qInfo() << "Destructor of Scene"
           << "Remaining managers instances" << managers.use_count();
 }
