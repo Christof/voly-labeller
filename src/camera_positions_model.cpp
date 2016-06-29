@@ -86,7 +86,8 @@ void CameraPositionsModel::deletePosition(int row)
   if (row < 0 || row >= static_cast<int>(cameraPositions.size()))
     return;
 
-  cameraPositions.erase(cameraPositions.begin() + row);
+  auto cameraNode = nodes->getCameraNode();
+  cameraNode->removeCameraPosition(row);
 }
 
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)

@@ -61,15 +61,15 @@ Item {
     Row {
       spacing: 10
       Button {
-        text: "Save camera"
+        text: "Save position"
         onClicked: {
           if (cameraPositions) cameraPositions.save();
         }
       }
       Button {
-        text: "Delete Label"
+        text: "Delete position"
         onClicked: {
-          if (labels) labels.deleteLabel(labelsView.currentRow);
+          if (labels) cameraPositions.deletePosition(cameraPositionsTableView.currentRow);
         }
       }
     }

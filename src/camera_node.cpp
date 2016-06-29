@@ -42,3 +42,11 @@ void CameraNode::saveCameraPosition(std::string name,
     onCameraPositionsChanged(cameraPositions);
 }
 
+void CameraNode::removeCameraPosition(int index)
+{
+  cameraPositions.erase(cameraPositions.begin() + index);
+
+  if (onCameraPositionsChanged)
+    onCameraPositionsChanged(cameraPositions);
+}
+
