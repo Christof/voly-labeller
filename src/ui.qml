@@ -252,6 +252,12 @@ FocusScope
         }
       }
 
+      Item {
+        Loader {
+          source: "CameraPositionsView.qml"
+        }
+      }
+
       Label {
           id: averageFrameTimeLabel
           text: (window.averageFrameTime * 1000).toFixed(2) + " ms";

@@ -70,6 +70,7 @@ set(SOURCES
   src/labeller_model.cpp
   src/placement_labeller_model.cpp
   src/labels_model.cpp
+  src/camera_positions_model.cpp
   src/labelling_coordinator.cpp
   src/labelling_controller.cpp
   src/volume_reader.cpp
@@ -121,6 +122,7 @@ set(SOURCES
   src/ForcesTableView.qml
   src/LabelsTableView.qml
   src/PlacementWeightsTableView.qml
+  src/CameraPositionsView.qml
   src/NumberTextSliderInput.qml
   ${RESOURCES})
 

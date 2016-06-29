@@ -37,6 +37,7 @@
         <file>ForcesTableView.qml</file>
         <file>LabelsTableView.qml</file>
         <file>PlacementWeightsTableView.qml</file>
+        <file>CameraPositionsView.qml</file>
         <file>ui.qml</file>
     </qresource>
 </RCC>
