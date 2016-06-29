@@ -21,6 +21,7 @@
 #include "./labelling_controller.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+#include "./camera_node.h"
 #include "./default_scene_creator.h"
 #include "./video_recorder.h"
 #include "./video_recorder_controller.h"
@@ -69,8 +70,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
       std::make_unique<PlacementLabellerModel>(labellingCoordinator);
-  cameraPositionsModel =
-      std::make_unique<CameraPositionsModel>(nodes);
+  cameraPositionsModel = std::make_unique<CameraPositionsModel>(nodes);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
@@ -103,6 +103,12 @@ int Application::execute()
                         {
                           this->onNodeAdded(node);
                         });
+
+  nodes->getCameraNode()->setOnCameraPositionsChanged(
+      [this](std::vector<CameraPosition> cameraPositions)
+      {
+        this->cameraPositionsModel->update(cameraPositions);
+      });
 
   if (parser.positionalArguments().size())
   {
@@ -191,6 +197,17 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   {
     labelNode->anchorSize = nodesController->getAnchorSize();
     labels->add(labelNode->label);
+  }
+
+  std::shared_ptr<CameraNode> cameraNode =
+      std::dynamic_pointer_cast<CameraNode>(node);
+  if (cameraNode.get())
+  {
+    cameraNode->setOnCameraPositionsChanged(
+        [this](std::vector<CameraPosition> cameraPositions)
+        {
+          this->cameraPositionsModel->update(cameraPositions);
+        });
   }
 }
 

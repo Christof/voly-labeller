@@ -4,6 +4,7 @@
 
 #include <QAbstractListModel>
 #include <memory>
+#include "./camera_node.h"
 
 class Nodes;
 
@@ -16,7 +17,7 @@ class CameraPositionsModel : public QAbstractTableModel
 {
   Q_OBJECT
  public:
-  CameraPositionsModel(std::shared_ptr<Nodes> nodes);
+  explicit CameraPositionsModel(std::shared_ptr<Nodes> nodes);
   // virtual ~CameraPositionsModel();
 
   enum CameraPositionRoles
@@ -38,12 +39,16 @@ class CameraPositionsModel : public QAbstractTableModel
   QVariant headerData(int section, Qt::Orientation orientation,
                       int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
+  void update(std::vector<CameraPosition> cameraPositions);
+
  public slots:
   void save();
   void changeName(int row, QString text);
+  void deletePosition(int row);
 
  private:
   std::shared_ptr<Nodes> nodes;
+  std::vector<CameraPosition> cameraPositions;
 };
 
 #endif  // SRC_CAMERA_POSITIONS_MODEL_H_

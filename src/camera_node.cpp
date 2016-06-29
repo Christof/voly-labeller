@@ -25,3 +25,20 @@ std::shared_ptr<Camera> CameraNode::getCamera()
 {
   return camera;
 }
+void CameraNode::setOnCameraPositionsChanged(
+    std::function<void(std::vector<CameraPosition>)> onChanged)
+{
+  onCameraPositionsChanged = onChanged;
+
+  onCameraPositionsChanged(cameraPositions);
+}
+
+void CameraNode::saveCameraPosition(std::string name,
+                                    Eigen::Matrix4f viewMatrix)
+{
+  cameraPositions.push_back(CameraPosition(name, viewMatrix));
+
+  if (onCameraPositionsChanged)
+    onCameraPositionsChanged(cameraPositions);
+}
+

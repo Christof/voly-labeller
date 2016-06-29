@@ -62,8 +62,14 @@ class CameraNode : public Node
 
   std::vector<CameraPosition> cameraPositions;
 
+  void setOnCameraPositionsChanged(
+      std::function<void(std::vector<CameraPosition>)> onChanged);
+
+  void saveCameraPosition(std::string name, Eigen::Matrix4f viewMatrix);
+
  private:
   std::shared_ptr<Camera> camera;
+  std::function<void(std::vector<CameraPosition>)> onCameraPositionsChanged;
 
   friend class boost::serialization::access;
   template <class Archive>

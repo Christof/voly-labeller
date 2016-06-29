@@ -1,7 +1,6 @@
 #include "./camera_positions_model.h"
 #include <iterator>
 #include "./nodes.h"
-#include "./camera_node.h"
 
 CameraPositionsModel::CameraPositionsModel(std::shared_ptr<Nodes> nodes)
   : nodes(nodes)
@@ -19,7 +18,7 @@ QHash<int, QByteArray> CameraPositionsModel::roleNames() const
 int CameraPositionsModel::rowCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
-  return nodes->getCameraNode()->cameraPositions.size();
+  return cameraPositions.size();
 }
 
 int CameraPositionsModel::columnCount(const QModelIndex &parent) const
@@ -30,12 +29,12 @@ int CameraPositionsModel::columnCount(const QModelIndex &parent) const
 
 QVariant CameraPositionsModel::data(const QModelIndex &index, int role) const
 {
-  auto positions = nodes->getCameraNode()->cameraPositions;
-  if (index.row() < 0 || index.row() >= static_cast<int>(positions.size()))
+  if (index.row() < 0 ||
+      index.row() >= static_cast<int>(cameraPositions.size()))
     return QVariant();
 
   if (role == CameraPositionRoles::NameRole)
-    return QVariant(positions[index.row()].name.c_str());
+    return QVariant(cameraPositions[index.row()].name.c_str());
 
   return QVariant();
 }
@@ -65,19 +64,35 @@ QVariant CameraPositionsModel::headerData(int section,
 void CameraPositionsModel::save()
 {
   auto cameraNode = nodes->getCameraNode();
-  cameraNode->cameraPositions.push_back(
-      CameraPosition("New", cameraNode->getCamera()->getViewMatrix()));
-
-  beginResetModel();
-  endResetModel();
+  cameraNode->saveCameraPosition("Position " +
+                                     std::to_string(cameraPositions.size()),
+                                 cameraNode->getCamera()->getViewMatrix());
 }
 
 void CameraPositionsModel::changeName(int row, QString text)
 {
   auto cameraNode = nodes->getCameraNode();
-  auto &positions = cameraNode->cameraPositions;
+  auto positions = cameraNode->cameraPositions;
   if (row < 0 || row >= static_cast<int>(positions.size()))
     return;
 
   positions[row].name = text.toStdString();
+
+  cameraNode->cameraPositions = positions;
 }
+
+void CameraPositionsModel::deletePosition(int row)
+{
+  if (row < 0 || row >= static_cast<int>(cameraPositions.size()))
+    return;
+
+  cameraPositions.erase(cameraPositions.begin() + row);
+}
+
+void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)
+{
+  this->cameraPositions = cameraPositions;
+  beginResetModel();
+  endResetModel();
+}
+
