@@ -3,6 +3,7 @@
 #define SRC_CAMERA_H_
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 /**
  * \brief Camera which can be moved around and uses perspective projection.
@@ -71,6 +72,8 @@ class Camera
   float animationDuration = 0.0f;
   Eigen::Vector3f animationEndPosition;
   Eigen::Vector3f animationStartPosition;
+  Eigen::Quaternionf animationStartRotation;
+  Eigen::Quaternionf animationEndRotation;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);

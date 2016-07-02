@@ -212,6 +212,9 @@ void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
 
   animationStartPosition = position;
   animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
+
+  animationStartRotation = view.block<3, 3>(0, 0);
+  animationEndRotation = viewMatrix.block<3, 3>(0, 0);
 }
 
 void Camera::updateAnimation(double frameTime)
@@ -233,7 +236,21 @@ void Camera::updateAnimation(double frameTime)
   Eigen::Vector3f newPosition = animationStartPosition + diff;
   Eigen::Vector3f originDiff = newPosition - position;
   position = newPosition;
-  origin += originDiff;
+
+  auto rotation = animationStartRotation.slerp(factor, animationEndRotation);
+  Eigen::Matrix3f rotationMatrix = rotation.toRotationMatrix();
+
+  std::cout << "originDiff norm: " << originDiff.norm() << std::endl;
+  direction = rotationMatrix.col(2);
+  origin = originDiff.norm() * direction;
+  up = rotationMatrix.col(1);
+
+  radius = (position - origin).norm();
+
+  Eigen::Vector3f lookAt = (position - origin) / radius;
+  declination = asin(lookAt.y());
+  azimuth = -acos(lookAt.x() / cos(declination));
+
   update();
 }
 
