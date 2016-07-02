@@ -88,6 +88,12 @@ void CameraPositionsModel::deletePosition(int row)
   cameraNode->removeCameraPosition(row);
 }
 
+void CameraPositionsModel::toggleVisibility()
+{
+  isVisible = !isVisible;
+  emit isVisibleChanged();
+}
+
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)
 {
   if (ignoreNextLabelUpdate)
@@ -99,5 +105,10 @@ void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)
   this->cameraPositions = cameraPositions;
   beginResetModel();
   endResetModel();
+}
+
+bool CameraPositionsModel::getIsVisible() const
+{
+  return isVisible;
 }
 

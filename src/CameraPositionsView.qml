@@ -18,8 +18,10 @@ Item {
 
   Column {
     x: 570; y: 250
+    spacing: 4
     width: 430
     height: 170
+    visible: cameraPositions.isVisible
 
     TableView {
       id: cameraPositionsTableView

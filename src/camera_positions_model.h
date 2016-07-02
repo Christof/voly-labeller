@@ -41,14 +41,24 @@ class CameraPositionsModel : public QAbstractTableModel
 
   void update(std::vector<CameraPosition> cameraPositions);
 
+  Q_PROPERTY(bool isVisible MEMBER isVisible READ getIsVisible NOTIFY
+                 isVisibleChanged)
+
+  bool getIsVisible() const;
+
  public slots:
   void save();
   void changeName(int row, QString text);
   void deletePosition(int row);
+  void toggleVisibility();
+
+ signals:
+  void isVisibleChanged();
 
  private:
   std::shared_ptr<Nodes> nodes;
   std::vector<CameraPosition> cameraPositions;
+  bool isVisible = false;
   volatile bool ignoreNextLabelUpdate = false;
 };
 
