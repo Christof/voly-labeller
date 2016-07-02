@@ -94,6 +94,11 @@ void CameraPositionsModel::toggleVisibility()
   emit isVisibleChanged();
 }
 
+void CameraPositionsModel::moveTo(int row)
+{
+  std::cout << "MOVE TO" << row << std::endl;
+}
+
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)
 {
   if (ignoreNextLabelUpdate)

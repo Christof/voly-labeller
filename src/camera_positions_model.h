@@ -51,6 +51,7 @@ class CameraPositionsModel : public QAbstractTableModel
   void changeName(int row, QString text);
   void deletePosition(int row);
   void toggleVisibility();
+  void moveTo(int row);
 
  signals:
   void isVisibleChanged();

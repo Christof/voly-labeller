@@ -31,7 +31,11 @@ Item {
         width: 380
         delegate: cameraPositionNameDelegate
       }
-      width: 400
+      onDoubleClicked: {
+        cameraPositions.moveTo(row);
+      }
+
+      width: 405
       height: 190
       model: cameraPositions
       focus: true
@@ -50,6 +54,12 @@ Item {
         text: "Delete position"
         onClicked: {
           if (cameraPositions) cameraPositions.deletePosition(cameraPositionsTableView.currentRow);
+        }
+      }
+      Button {
+        text: "Move to position"
+        onClicked: {
+          if (cameraPositions) cameraPositions.moveTo(cameraPositionsTableView.currentRow);
         }
       }
     }
