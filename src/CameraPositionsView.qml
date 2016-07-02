@@ -17,7 +17,7 @@ Item {
   }
 
   Column {
-    x: 70; y: 20
+    x: 570; y: 250
     width: 430
     height: 170
 
@@ -26,10 +26,10 @@ Item {
       TableViewColumn {
         role: "name"
         title: "Name"
-        width: 150
+        width: 380
         delegate: cameraPositionNameDelegate
       }
-      width: 417
+      width: 400
       height: 190
       model: cameraPositions
       focus: true
