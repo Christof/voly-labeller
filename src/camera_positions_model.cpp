@@ -96,7 +96,9 @@ void CameraPositionsModel::toggleVisibility()
 
 void CameraPositionsModel::moveTo(int row)
 {
-  std::cout << "MOVE TO" << row << std::endl;
+  auto cameraNode = nodes->getCameraNode();
+  cameraNode->getCamera()->startAnimation(cameraPositions[row].viewMatrix,
+                                          4.0f);
 }
 
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)

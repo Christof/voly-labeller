@@ -205,3 +205,35 @@ bool Camera::needsResizing()
   return aspectRatio == 0.0f;
 }
 
+void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
+{
+  animationTime = 0.0f;
+  animationDuration = duration;
+
+  animationStartPosition = position;
+  animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
+}
+
+void Camera::updateAnimation(double frameTime)
+{
+  if (animationDuration == 0.0f)
+    return;
+
+  animationTime += frameTime;
+  float factor = animationTime / animationDuration;
+  if (animationTime > animationDuration)
+  {
+    factor = 1;
+    animationDuration = 0.0f;
+  }
+
+  Eigen::Vector3f diff =
+      factor * (animationEndPosition - animationStartPosition);
+
+  Eigen::Vector3f newPosition = animationStartPosition + diff;
+  Eigen::Vector3f originDiff = newPosition - position;
+  position = newPosition;
+  origin += originDiff;
+  update();
+}
+

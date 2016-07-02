@@ -45,6 +45,10 @@ class Camera
 
   bool needsResizing();
 
+  void startAnimation(Eigen::Matrix4f viewMatrix, float duration);
+
+  void updateAnimation(double frameTime);
+
  private:
   float nearPlane = 0.1f;
   float farPlane = 5.0f;
@@ -62,6 +66,11 @@ class Camera
 
   float fieldOfView = static_cast<float>(0.25 * M_PI);
   float aspectRatio = 0.0f;
+
+  float animationTime = 0.0f;
+  float animationDuration = 0.0f;
+  Eigen::Vector3f animationEndPosition;
+  Eigen::Vector3f animationStartPosition;
 
   Eigen::Matrix4f createProjection(float fov, float aspectRatio,
                                    float nearPlane, float farPlane);

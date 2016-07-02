@@ -116,6 +116,7 @@ void Scene::update(double frameTime)
   frustumOptimizer.update(camera->getViewMatrix());
   camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                  frustumOptimizer.getFar());
+  camera->updateAnimation(frameTime);
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
