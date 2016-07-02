@@ -71,14 +71,12 @@ void CameraPositionsModel::save()
 
 void CameraPositionsModel::changeName(int row, QString text)
 {
-  auto cameraNode = nodes->getCameraNode();
-  auto positions = cameraNode->cameraPositions;
-  if (row < 0 || row >= static_cast<int>(positions.size()))
+  if (row < 0 || row >= static_cast<int>(cameraPositions.size()))
     return;
 
-  positions[row].name = text.toStdString();
-
-  cameraNode->cameraPositions = positions;
+  ignoreNextLabelUpdate = true;
+  auto cameraNode = nodes->getCameraNode();
+  cameraNode->changeCameraPositionName(row, text.toStdString());
 }
 
 void CameraPositionsModel::deletePosition(int row)
@@ -92,6 +90,12 @@ void CameraPositionsModel::deletePosition(int row)
 
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)
 {
+  if (ignoreNextLabelUpdate)
+  {
+    ignoreNextLabelUpdate = false;
+    return;
+  }
+
   this->cameraPositions = cameraPositions;
   beginResetModel();
   endResetModel();

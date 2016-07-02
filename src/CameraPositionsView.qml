@@ -10,22 +10,8 @@ Item {
         anchors.fill: parent
         text: styleData.value
         onTextChanged: {
-          if (labels) cameraPositions.changeName(styleData.row, text);
+          if (cameraPositions) cameraPositions.changeName(styleData.row, text);
         }
-      }
-    }
-  }
-  Component {
-    id: weightDelegate
-    Item {
-      width: 400; height: 30
-      Row {
-        Text {
-          text: name
-          width: 200
-          focus: true
-        }
-        TextEdit { text: weight }
       }
     }
   }
@@ -34,14 +20,6 @@ Item {
     x: 70; y: 20
     width: 430
     height: 170
-    Row {
-      id: row1
-      spacing: 10
-
-      Label {
-        text: "Someone"
-      }
-    }
 
     TableView {
       id: cameraPositionsTableView
@@ -69,7 +47,7 @@ Item {
       Button {
         text: "Delete position"
         onClicked: {
-          if (labels) cameraPositions.deletePosition(cameraPositionsTableView.currentRow);
+          if (cameraPositions) cameraPositions.deletePosition(cameraPositionsTableView.currentRow);
         }
       }
     }

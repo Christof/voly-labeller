@@ -49,6 +49,7 @@ class CameraPositionsModel : public QAbstractTableModel
  private:
   std::shared_ptr<Nodes> nodes;
   std::vector<CameraPosition> cameraPositions;
+  volatile bool ignoreNextLabelUpdate = false;
 };
 
 #endif  // SRC_CAMERA_POSITIONS_MODEL_H_
