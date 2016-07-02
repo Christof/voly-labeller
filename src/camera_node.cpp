@@ -50,3 +50,11 @@ void CameraNode::removeCameraPosition(int index)
     onCameraPositionsChanged(cameraPositions);
 }
 
+void CameraNode::changeCameraPositionName(int index, std::string newName)
+{
+  cameraPositions[index].name = newName;
+
+  if (onCameraPositionsChanged)
+    onCameraPositionsChanged(cameraPositions);
+}
+

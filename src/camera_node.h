@@ -67,6 +67,7 @@ class CameraNode : public Node
 
   void saveCameraPosition(std::string name, Eigen::Matrix4f viewMatrix);
   void removeCameraPosition(int index);
+  void changeCameraPositionName(int index, std::string newName);
 
  private:
   std::shared_ptr<Camera> camera;
