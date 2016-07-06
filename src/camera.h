@@ -33,6 +33,7 @@ class Camera
   void changeAzimuth(float deltaAngle);
   void changeDeclination(float deltaAngle);
   void changeRadius(float deltaRadius);
+  void rotateAroundOrbit(Eigen::Vector2f delta);
 
   void resize(float width, float height);
 

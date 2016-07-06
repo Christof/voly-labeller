@@ -4,16 +4,18 @@
 
 CameraRotationController::CameraRotationController(
     std::shared_ptr<Camera> camera)
-  : MouseDraggingController(camera, 0.04)
+  : MouseDraggingController(camera, 0.02)
 {
 }
 
 void CameraRotationController::updateFromDiff(Eigen::Vector2f diff)
 {
-  double scaling = frameTime * speedFactor / camera->getRadius();
+  double scaling = frameTime * speedFactor;
   Eigen::Vector2f delta = scaling * diff;
+  // delta.x() = 0;
 
-  camera->changeAzimuth(atan(delta.x()));
-  camera->changeDeclination(-atan(delta.y()));
+  camera->rotateAroundOrbit(delta);
+  // camera->changeAzimuth(atan(delta.x()));
+  // camera->changeDeclination(-atan(delta.y()));
 }
 

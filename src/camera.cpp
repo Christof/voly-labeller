@@ -1,6 +1,7 @@
 #include "./camera.h"
 #include <Eigen/Geometry>
 #include <math.h>
+#include "./math/eigen.h"
 
 #include <iostream>
 
@@ -20,7 +21,7 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
   : projection(projectionMatrix), view(viewMatrix), origin(-origin)
 {
-  position = -viewMatrix.inverse().col(3).head<3>();
+  position = viewMatrix.inverse().col(3).head<3>();
   direction = viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
 
@@ -120,18 +121,62 @@ void Camera::changeRadius(float deltaRadius)
   update();
 }
 
+void Camera::rotateAroundOrbit(Eigen::Vector2f delta)
+{
+  float normSquared = delta.dot(delta);
+  Eigen::Vector3f to;
+  if (normSquared > 1.0)
+  {
+    to = 1.0f / sqrt(normSquared) * Eigen::Vector3f(-delta.x(), delta.y(), 0);
+  }
+  else
+  {
+    to = Eigen::Vector3f(-delta.x(), delta.y(), sqrt(1 - normSquared));
+  }
+
+  Eigen::Quaternionf rotation;
+  rotation.setFromTwoVectors(Eigen::Vector3f(0, 0, 1), to);
+  // Eigen::Vector3f(delta.x(), delta.y(), 1).normalized());
+
+  Eigen::Matrix3f rotationMatrix = rotation.matrix();
+  /*
+  Eigen::Matrix3f rotationMatrix;
+  direction.normalize();
+  auto right = up.cross(direction).normalized();
+  rotationMatrix =
+      Eigen::AngleAxisf(-delta.y(), right) * Eigen::AngleAxisf(-delta.x(), up);
+      */
+
+  // direction = rotationMatrix * direction;
+  // up = rotationMatrix * up;
+
+  Eigen::Vector3f originToCamera = position - origin;
+  /*
+  Eigen::Matrix4f moveToCamera =
+      Eigen::Affine3f(Eigen::Translation3f(originToCamera)).matrix();
+
+  Eigen::Affine3f transformation(Eigen::Translation3f(positionToOrigin) *
+                                 rotationMatrix *
+                                 Eigen::Translation3f(-positionToOrigin));
+                                 */
+  Eigen::Matrix4f rotMat = Eigen::Matrix4f::Identity();
+  rotMat.block<3, 3>(0, 0) = rotationMatrix;
+  position = toVector3f(mul(rotMat, originToCamera)) + origin;
+
+  direction = (origin - position).normalized();
+  auto right = up.cross(direction).normalized();
+  up = direction.cross(right).normalized();
+  // Eigen::Vector3f dirFromPos = (origin - position).normalized();
+  std::cout << "Dir: " << (direction) << std::endl;
+  // update();
+
+  view << right.x(), right.y(), right.z(), right.dot(position), up.x(), up.y(),
+      up.z(), up.dot(position), direction.x(), direction.y(), direction.z(),
+      direction.dot(position), 0, 0, 0, 1;
+}
+
 void Camera::update()
 {
-  radius = (origin - position).norm();
-  position = origin +
-             Eigen::Vector3f(cos(azimuth) * cos(declination), sin(declination),
-                             sin(azimuth) * cos(declination)) *
-                 radius;
-  direction = (origin - position).normalized();
-  float upDeclination = declination - static_cast<float>(M_PI / 2.0);
-  up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
-                        sin(azimuth) * cos(upDeclination)).normalized();
-
   auto n = direction.normalized();
   auto u = up.cross(n).normalized();
   auto v = n.cross(u);
