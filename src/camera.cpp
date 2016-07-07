@@ -123,6 +123,14 @@ void Camera::changeRadius(float deltaRadius)
 
 void Camera::rotateAroundOrbit(Eigen::Vector2f delta)
 {
+  /*
+  Eigen::Vector3f radiusOnUp = (position - origin).norm() * up;
+  float radiusPixel =
+      ndcToPixels(project(projection * view, radiusOnUp).head<2>(),
+                  Eigen::Vector2f(1000, 1000)).norm();
+
+  std::cout << "radius" << radiusPixel << std::endl;
+  delta = 1.0f / radiusPixel * delta;
   float normSquared = delta.dot(delta);
   Eigen::Vector3f to;
   if (normSquared > 1.0)
@@ -138,19 +146,17 @@ void Camera::rotateAroundOrbit(Eigen::Vector2f delta)
   rotation.setFromTwoVectors(Eigen::Vector3f(0, 0, 1), to);
   // Eigen::Vector3f(delta.x(), delta.y(), 1).normalized());
 
-  Eigen::Matrix3f rotationMatrix = rotation.matrix();
-  /*
+  //Eigen::Matrix3f rotationMatrix = rotation.matrix();
+  */
   Eigen::Matrix3f rotationMatrix;
   direction.normalize();
   auto right = up.cross(direction).normalized();
   rotationMatrix =
       Eigen::AngleAxisf(-delta.y(), right) * Eigen::AngleAxisf(-delta.x(), up);
-      */
 
   // direction = rotationMatrix * direction;
   // up = rotationMatrix * up;
 
-  Eigen::Vector3f originToCamera = position - origin;
   /*
   Eigen::Matrix4f moveToCamera =
       Eigen::Affine3f(Eigen::Translation3f(originToCamera)).matrix();
@@ -159,15 +165,23 @@ void Camera::rotateAroundOrbit(Eigen::Vector2f delta)
                                  rotationMatrix *
                                  Eigen::Translation3f(-positionToOrigin));
                                  */
+  Eigen::Vector3f upPoint = position + up;
+
+  Eigen::Vector3f originToCamera = position - origin;
   Eigen::Matrix4f rotMat = Eigen::Matrix4f::Identity();
   rotMat.block<3, 3>(0, 0) = rotationMatrix;
-  position = toVector3f(mul(rotMat, originToCamera)) + origin;
+  position = rotationMatrix * originToCamera + origin;
+
+  Eigen::Vector3f originToUp = upPoint - origin;
+  up = (rotationMatrix * originToUp) + origin - position;
+  up.normalize();
 
   direction = (origin - position).normalized();
-  auto right = up.cross(direction).normalized();
-  up = direction.cross(right).normalized();
+  right = up.cross(direction).normalized();
+  //up = direction.cross(right).normalized();
   // Eigen::Vector3f dirFromPos = (origin - position).normalized();
   std::cout << "Dir: " << (direction) << std::endl;
+  std::cout << "rotationMatrix: " << rotationMatrix << std::endl;
   // update();
 
   view << right.x(), right.y(), right.z(), right.dot(position), up.x(), up.y(),
