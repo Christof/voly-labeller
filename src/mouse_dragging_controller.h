@@ -33,9 +33,13 @@ class MouseDraggingController : public QObject
 
  protected:
   virtual void updateFromDiff(Eigen::Vector2f diff) = 0;
+  virtual void startOfDragging(Eigen::Vector2f startMousePosition)
+  {
+  };
 
   std::shared_ptr<Camera> camera;
   Eigen::Vector2f lastMousePosition;
+  Eigen::Vector2f mousePosition;
   double frameTime;
   double speedFactor;
 

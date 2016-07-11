@@ -50,7 +50,10 @@ class Camera
   float nearPlane = 0.1f;
   float farPlane = 5.0f;
   Eigen::Matrix4f projection;
+ public:
   Eigen::Matrix4f view;
+
+ private:
 
   Eigen::Vector3f origin;
   Eigen::Vector3f position;

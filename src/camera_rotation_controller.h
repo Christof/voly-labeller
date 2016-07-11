@@ -19,6 +19,30 @@ class CameraRotationController : public MouseDraggingController
 
  protected:
   virtual void updateFromDiff(Eigen::Vector2f diff);
+  virtual void startOfDragging(Eigen::Vector2f startMousePosition);
+
+ private:
+  Eigen::Vector3f convertXY(Eigen::Vector2f vec);
+  Eigen::Matrix4f applyTranslationMatrix(bool reverse);
+  void applyRotationMatrix();
+  void stopRotation();
+
+  Eigen::Vector3f startRotationVector;
+  Eigen::Vector3f currentRotationVector;
+
+  Eigen::Vector3f startPosition;
+
+  bool isRotating = false;
+  float transX;
+  float transY;
+
+  float currentTransX;
+  float currentTransY;
+
+  float startTransX;
+  float startTransY;
+
+  Eigen::Matrix4f startMatrix = Eigen::Matrix4f::Identity();
 };
 
 #endif  // SRC_CAMERA_ROTATION_CONTROLLER_H_
