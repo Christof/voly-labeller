@@ -21,10 +21,7 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
   : projection(projectionMatrix), view(viewMatrix), origin(-origin)
 {
-  position = viewMatrix.inverse().col(3).head<3>();
-  direction = viewMatrix.col(2).head<3>();
-  up = viewMatrix.col(1).head<3>();
-
+  setViewMatrix(viewMatrix);
   radius = (position - origin).norm();
 
   Eigen::Vector3f diff = (position - origin) / radius;
@@ -189,6 +186,19 @@ void Camera::setOrigin(Eigen::Vector3f origin)
   declination = asin(diff.y());
   azimuth = -acos(diff.x() / cos(declination));
   update();
+}
+
+void Camera::setViewMatrix(Eigen::Matrix4f viewMatrix)
+{
+  view = viewMatrix;
+
+  position = viewMatrix.inverse().col(3).head<3>();
+  direction = viewMatrix.col(2).head<3>();
+  up = viewMatrix.col(1).head<3>();
+
+  std::cout << "Pos: " << position.transpose()
+            << "\tDir: " << direction.transpose() << "\tUp: " << up.transpose()
+            << std::endl;
 }
 
 bool Camera::needsResizing()

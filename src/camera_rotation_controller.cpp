@@ -36,7 +36,7 @@ CameraRotationController::startOfDragging(Eigen::Vector2f startMousePosition)
 
   currentRotationVector = startRotationVector;
   isRotating = true;
-  startMatrix = camera->view;
+  startMatrix = camera->getViewMatrix();
 
   startPosition = camera->getPosition();
 }
@@ -63,8 +63,10 @@ void CameraRotationController::applyRotationMatrix()
 {
   if (isRotating)
   {  // Do some rotation according to start and current rotation vectors
+    /*
     std::cerr << currentRotationVector.transpose() << "\t"
               << startRotationVector.transpose() << std::endl;
+              */
     if ((currentRotationVector - startRotationVector).norm() > 1E-6)
     {
       Eigen::Vector3f rotationAxis =
@@ -89,12 +91,12 @@ void CameraRotationController::applyRotationMatrix()
           applyTranslationMatrix(false);
           */
       Eigen::Matrix4f view =
-          Eigen::Affine3f(
-              Eigen::Translation3f(startPosition) *
-              Eigen::AngleAxisf(rotationAngle, -rotationAxis) *
-              Eigen::Translation3f(-startPosition)).matrix();
+          Eigen::Affine3f(Eigen::Translation3f(-startPosition) *
+                          Eigen::AngleAxisf(rotationAngle, -rotationAxis) *
+                          Eigen::Translation3f(startPosition)).matrix();
 
-      camera->view = view * startMatrix ;
+
+      camera->setViewMatrix(startMatrix * view);
     }
   }
   // glMultMatrixf(startMatrix);
@@ -112,7 +114,7 @@ void CameraRotationController::stopRotation()
   applyRotationMatrix();
   // set the current matrix as the permanent one
   // glGetFloatv(GL_MODELVIEW_MATRIX, startMatrix);
-  startMatrix = camera->view;
+  startMatrix = camera->getViewMatrix();
   isRotating = false;
 }
 
