@@ -56,6 +56,7 @@ void CameraRotationController::updateFromDiff(Eigen::Vector2f diff)
   // camera->changeDeclination(-atan(delta.y()));
    */
   applyRotationMatrix();
+  startOfDragging(mousePosition);
 }
 
 void CameraRotationController::applyRotationMatrix()
