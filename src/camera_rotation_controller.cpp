@@ -72,7 +72,7 @@ void CameraRotationController::applyRotationMatrix()
 
       double val = currentRotationVector.dot(startRotationVector);
       val = val > (1 - 1E-10) ? 1.0 : val;
-      double rotationAngle = acos(val) * 180.0f / (float)M_PI;
+      double rotationAngle = acos(val);
 
       // rotate around the current position
       /*
