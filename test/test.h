@@ -19,6 +19,17 @@
   EXPECT_NEAR(expected.z(), actual.z(), delta);                                \
   EXPECT_NEAR(expected.w(), actual.w(), delta);
 
+#define EXPECT_Matrix3f_NEAR(expected, actual, delta)                          \
+  EXPECT_NEAR(expected(0, 0), actual(0, 0), delta);                            \
+  EXPECT_NEAR(expected(0, 1), actual(0, 1), delta);                            \
+  EXPECT_NEAR(expected(0, 2), actual(0, 2), delta);                            \
+  EXPECT_NEAR(expected(1, 0), actual(1, 0), delta);                            \
+  EXPECT_NEAR(expected(1, 1), actual(1, 1), delta);                            \
+  EXPECT_NEAR(expected(1, 2), actual(1, 2), delta);                            \
+  EXPECT_NEAR(expected(2, 0), actual(2, 0), delta);                            \
+  EXPECT_NEAR(expected(2, 1), actual(2, 1), delta);                            \
+  EXPECT_NEAR(expected(2, 2), actual(2, 2), delta);                            \
+
 #define EXPECT_Matrix4f_NEAR(expected, actual, delta)                          \
   EXPECT_NEAR(expected(0, 0), actual(0, 0), delta);                            \
   EXPECT_NEAR(expected(0, 1), actual(0, 1), delta);                            \
