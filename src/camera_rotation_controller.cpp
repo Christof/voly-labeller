@@ -13,15 +13,19 @@ Eigen::Vector3f CameraRotationController::convertXY(Eigen::Vector2f vec)
 {
   const float width = 1000;
   const float height = 1000;
-  vec = Eigen::Vector2f(vec.x() - 0.5f * width, 0.5f * height - vec.y());
+  Eigen::Vector2f center(0.5f * width, 0.5f * height);
+  vec = Eigen::Vector2f(vec.x() - center.x(), center.y() - vec.y());
 
-  float d = vec.norm();
+  float normSquared = vec.dot(vec);
   float ballRadius = 500;
   float radiusSquared = ballRadius * ballRadius;
-  if (d > radiusSquared)
-    return Eigen::Vector3f(vec.x(), vec.y(), 0);
+  if (normSquared > radiusSquared)
+  {
+    float factor = 1.0f / sqrt(normSquared);
+    return factor * Eigen::Vector3f(vec.x(), vec.y(), 0);
+  }
 
-  return Eigen::Vector3f(vec.x(), vec.y(), sqrt(radiusSquared - d));
+  return Eigen::Vector3f(vec.x(), vec.y(), sqrt(radiusSquared - normSquared));
 }
 
 void
