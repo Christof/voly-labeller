@@ -61,44 +61,41 @@ void CameraRotationController::updateFromDiff(Eigen::Vector2f diff)
 
 void CameraRotationController::applyRotationMatrix()
 {
-  if (isRotating)
-  {  // Do some rotation according to start and current rotation vectors
-    /*
-    std::cerr << currentRotationVector.transpose() << "\t"
-              << startRotationVector.transpose() << std::endl;
-              */
-    if ((currentRotationVector - startRotationVector).norm() > 1E-6)
-    {
-      Eigen::Vector3f rotationAxis =
-          currentRotationVector.cross(startRotationVector);
-      rotationAxis.normalize();
+  /*
+  std::cerr << currentRotationVector.transpose() << "\t"
+            << startRotationVector.transpose() << std::endl;
+            */
+  if ((currentRotationVector - startRotationVector).norm() <= 1E-6)
+    return;
 
-      double val = currentRotationVector.dot(startRotationVector);
-      val = val > (1 - 1E-10) ? 1.0 : val;
-      double rotationAngle = acos(val);
+  Eigen::Vector3f rotationAxis =
+      currentRotationVector.cross(startRotationVector);
+  rotationAxis.normalize();
 
-      // rotate around the current position
-      /*
-      applyTranslationMatrix(true);
-      glRotatef(rotationAngle * 2, -rotationAxis.x(), -rotationAxis.y(),
-                -rotationAxis.z());
+  double val = currentRotationVector.dot(startRotationVector);
+  val = val > (1 - 1E-10) ? 1.0 : val;
+  double rotationAngle = acos(val);
+
+  // rotate around the current position
+  /*
+  applyTranslationMatrix(true);
+  glRotatef(rotationAngle * 2, -rotationAxis.x(), -rotationAxis.y(),
+            -rotationAxis.z());
+  applyTranslationMatrix(false);
+  */
+  /*
+  Eigen::Matrix4f view =
+      applyTranslationMatrix(true) *
+      Eigen::Affine3f(Eigen::AngleAxisf(rotationAngle, -rotationAxis)) *
       applyTranslationMatrix(false);
       */
-      /*
-      Eigen::Matrix4f view =
-          applyTranslationMatrix(true) *
-          Eigen::Affine3f(Eigen::AngleAxisf(rotationAngle, -rotationAxis)) *
-          applyTranslationMatrix(false);
-          */
-      Eigen::Matrix4f view =
-          Eigen::Affine3f(Eigen::Translation3f(-startPosition) *
-                          Eigen::AngleAxisf(rotationAngle, -rotationAxis) *
-                          Eigen::Translation3f(startPosition)).matrix();
+  Eigen::Matrix4f view =
+      Eigen::Affine3f(Eigen::Translation3f(-startPosition) *
+                      Eigen::AngleAxisf(rotationAngle, -rotationAxis) *
+                      Eigen::Translation3f(startPosition)).matrix();
 
-
-      camera->setViewMatrix(startMatrix * view);
-    }
-  }
+  // camera->setViewMatrix(startMatrix * view);
+  camera->applyToView(view);
   // glMultMatrixf(startMatrix);
 }
 
