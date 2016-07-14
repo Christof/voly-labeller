@@ -1,6 +1,9 @@
 # voly-labeller
 Multiple labeller implementation for volume rendered medical data
 
+# Contributing
+Contribution guidelines are given in [CONTRIBUTING.md](CONTRIBUTING.md).
+
 # Controls
 ## File menu
 The file menu provides items to:
