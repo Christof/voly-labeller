@@ -1,5 +1,6 @@
 #include "./camera_positions_model.h"
 #include <iterator>
+#include <vector>
 #include "./nodes.h"
 
 CameraPositionsModel::CameraPositionsModel(std::shared_ptr<Nodes> nodes)

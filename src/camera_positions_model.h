@@ -4,6 +4,7 @@
 
 #include <QAbstractListModel>
 #include <memory>
+#include <vector>
 #include "./camera_node.h"
 
 class Nodes;

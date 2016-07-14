@@ -2,6 +2,7 @@
 #include <QQmlContext>
 #include <QStateMachine>
 #include <QDebug>
+#include <vector>
 #include "./window.h"
 #include "./scene.h"
 #include "./scene_controller.h"
