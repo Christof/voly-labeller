@@ -2,6 +2,7 @@
 #include <QQmlContext>
 #include <QStateMachine>
 #include <QDebug>
+#include <vector>
 #include "./window.h"
 #include "./scene.h"
 #include "./scene_controller.h"
@@ -15,11 +16,13 @@
 #include "./labeller_model.h"
 #include "./placement_labeller_model.h"
 #include "./labels_model.h"
+#include "./camera_positions_model.h"
 #include "./labelling/labels.h"
 #include "./labelling_coordinator.h"
 #include "./labelling_controller.h"
 #include "./picking_controller.h"
 #include "./forces_visualizer_node.h"
+#include "./camera_node.h"
 #include "./default_scene_creator.h"
 #include "./video_recorder.h"
 #include "./video_recorder_controller.h"
@@ -68,6 +71,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
       std::make_unique<PlacementLabellerModel>(labellingCoordinator);
+  cameraPositionsModel = std::make_unique<CameraPositionsModel>(nodes);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
@@ -100,6 +104,12 @@ int Application::execute()
                         {
                           this->onNodeAdded(node);
                         });
+
+  nodes->getCameraNode()->setOnCameraPositionsChanged(
+      [this](std::vector<CameraPosition> cameraPositions)
+      {
+        this->cameraPositionsModel->update(cameraPositions);
+      });
 
   if (parser.positionalArguments().size())
   {
@@ -152,6 +162,7 @@ void Application::setupWindow()
   context->setContextProperty("scene", sceneController.get());
   context->setContextProperty("labeller", labellerModel.get());
   context->setContextProperty("placement", placementLabellerModel.get());
+  context->setContextProperty("cameraPositions", cameraPositionsModel.get());
   context->setContextProperty("labels", labelsModel.get());
   context->setContextProperty("labelling", labellingController.get());
   context->setContextProperty("videoRecorder", videoRecorderController.get());
@@ -187,6 +198,17 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   {
     labelNode->anchorSize = nodesController->getAnchorSize();
     labels->add(labelNode->label);
+  }
+
+  std::shared_ptr<CameraNode> cameraNode =
+      std::dynamic_pointer_cast<CameraNode>(node);
+  if (cameraNode.get())
+  {
+    cameraNode->setOnCameraPositionsChanged(
+        [this](std::vector<CameraPosition> cameraPositions)
+        {
+          this->cameraPositionsModel->update(cameraPositions);
+        });
   }
 }
 

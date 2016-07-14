@@ -96,6 +96,11 @@ FocusScope
             onTriggered: scene.toggleConstraintOverlay();
           }
           MenuItem {
+            text: "Toggle camera positions"
+            shortcut: "F10"
+            onTriggered: cameraPositions.toggleVisibility();
+          }
+          MenuItem {
             text: "Toggle fullscreen"
             shortcut: "F11"
             onTriggered: window.toggleFullscreen();
@@ -249,6 +254,12 @@ FocusScope
       Item {
         Loader {
           source: "PlacementWeightsTableView.qml"
+        }
+      }
+
+      Item {
+        Loader {
+          source: "CameraPositionsView.qml"
         }
       }
 

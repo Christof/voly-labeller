@@ -166,10 +166,15 @@ void Nodes::saveSceneTo(std::string filename)
 
 void Nodes::clear()
 {
-  nodes.clear();
-  obbNodes.clear();
+  clearForShutdown();
 
   addNode(cameraNode);
+}
+
+void Nodes::clearForShutdown()
+{
+  nodes.clear();
+  obbNodes.clear();
 }
 
 void Nodes::toggleBoundingVolumes()

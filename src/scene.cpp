@@ -46,7 +46,7 @@ Scene::Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
 
 Scene::~Scene()
 {
-  nodes->clear();
+  nodes->clearForShutdown();
   qInfo() << "Destructor of Scene"
           << "Remaining managers instances" << managers.use_count();
 }
@@ -116,6 +116,7 @@ void Scene::update(double frameTime)
   frustumOptimizer.update(camera->getViewMatrix());
   camera->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                  frustumOptimizer.getFar());
+  camera->updateAnimation(frameTime);
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
