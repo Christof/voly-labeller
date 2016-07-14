@@ -116,6 +116,8 @@ void Camera::changeRadius(float deltaRadius)
   radius += deltaRadius;
   position = origin + (position - origin).normalized() * radius;
   update();
+
+  std::cout << "View: " << std::endl << view << std::endl;
 }
 
 void Camera::update()
@@ -195,6 +197,30 @@ void Camera::setViewMatrix(Eigen::Matrix4f viewMatrix)
   position = viewMatrix.inverse().col(3).head<3>();
   direction = viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
+
+  /*
+  std::cout << "Pos: " << position.transpose()
+            << "\tDir: " << direction.transpose() << "\tUp: " << up.transpose()
+            << std::endl;
+            */
+  std::cout << "SetView: " << std::endl << view << std::endl;
+}
+
+void Camera::applyToView(Eigen::Matrix3f matrix)
+{
+  Eigen::Matrix4f rotation = Eigen::Matrix4f::Identity();
+  rotation.block<3, 3>(0, 0) = matrix;
+
+  Eigen::Matrix3f newRotation = view.block<3, 3>(0, 0) * matrix;
+  Eigen::Matrix4f translation =
+      Eigen::Affine3f(Eigen::Translation3f(origin - position)).matrix();
+
+  position = (translation.inverse() * rotation * translation *
+              Eigen::Vector4f(0, 0, -1, 1)).head<3>();
+  direction = newRotation.col(2);
+  up = newRotation.col(1).head<3>();
+
+  update();
 
   std::cout << "Pos: " << position.transpose()
             << "\tDir: " << direction.transpose() << "\tUp: " << up.transpose()

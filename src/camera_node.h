@@ -77,7 +77,7 @@ inline void load_construct_data(Archive &ar, CameraNode *t,
   ar >> BOOST_SERIALIZATION_NVP(origin);
 
   ::new (t) CameraNode(
-      std::make_shared<Camera>(viewMatrix, projectionMatrix, origin));
+      std::make_shared<Camera>());
 }
 }  // namespace serialization
 }  // namespace boost

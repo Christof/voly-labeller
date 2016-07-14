@@ -24,7 +24,6 @@ void MouseDraggingController::startDragging()
 void MouseDraggingController::updateDragging(QEvent *event)
 {
   mousePosition = toEigen(static_cast<QMouseEvent *>(event)->pos());
-  std::cout << "Mouse position: " << mousePosition.transpose() << std::endl;
 
   if (start)
   {

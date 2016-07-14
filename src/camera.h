@@ -43,6 +43,7 @@ class Camera
 
   void setOrigin(Eigen::Vector3f origin);
   void setViewMatrix(Eigen::Matrix4f viewMatrix);
+  void applyToView(Eigen::Matrix3f matrix);
 
   bool needsResizing();
 
@@ -51,8 +52,6 @@ class Camera
   float farPlane = 5.0f;
   Eigen::Matrix4f projection;
   Eigen::Matrix4f view;
-
- private:
 
   Eigen::Vector3f origin;
   Eigen::Vector3f position;
