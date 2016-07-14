@@ -17,7 +17,6 @@ class CameraPositionsModel : public QAbstractTableModel
   Q_OBJECT
  public:
   explicit CameraPositionsModel(std::shared_ptr<Nodes> nodes);
-  // virtual ~CameraPositionsModel();
 
   enum CameraPositionRoles
   {
