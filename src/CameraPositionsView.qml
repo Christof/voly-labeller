@@ -56,10 +56,19 @@ Item {
           if (cameraPositions) cameraPositions.deletePosition(cameraPositionsTableView.currentRow);
         }
       }
+    }
+    Row {
+      spacing: 10
       Button {
         text: "Move to position"
         onClicked: {
           if (cameraPositions) cameraPositions.moveTo(cameraPositionsTableView.currentRow);
+        }
+      }
+      Button {
+        text: "Set position"
+        onClicked: {
+          if (cameraPositions) cameraPositions.setTo(cameraPositionsTableView.currentRow);
         }
       }
     }
