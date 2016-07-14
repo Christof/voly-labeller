@@ -17,6 +17,11 @@ class Gl;
 class Managers;
 }
 
+/**
+ * \brief Encapsulates a camera position consisting of the view matrix and
+ * a name
+ *
+ */
 class CameraPosition
 {
  public:

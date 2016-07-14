@@ -9,8 +9,7 @@
 class Nodes;
 
 /**
- * \brief
- *
+ * \brief Model to add, rename, remove and move to camera positions
  *
  */
 class CameraPositionsModel : public QAbstractTableModel
