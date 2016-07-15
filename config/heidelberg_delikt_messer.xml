@@ -2,10 +2,10 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="13">
 <data class_id="0" tracking_level="0" version="0">
-	<count>2</count>
+	<count>5</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
-		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
 				<r0c0>1.000000000e+00</r0c0>
 				<r0c1>2.117582368e-22</r0c1>
@@ -47,12 +47,19 @@
 				<y>-0.000000000e+00</y>
 				<z>-0.000000000e+00</z>
 			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>0</count>
+				<item_version>0</item_version>
+			</cameraPositions>
 		</px>
 	</item>
 	<item>
-		<px class_id="5" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="6" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
 			<volumePath>assets/datasets/delikt_messer_256.mha</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/hb_messer_weichteil.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
@@ -71,6 +78,40 @@
 				<r3c2>0.000000000e+00</r3c2>
 				<r3c3>1.000000000e+00</r3c3>
 			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="7" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="8" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>liver</label.text>
+				<label.anchorPosition>
+					<x>5.799999833e-01</x>
+					<y>-6.899999976e-01</y>
+					<z>-4.300000072e-01</z>
+				</label.anchorPosition>
+				<label.size class_id="9" tracking_level="0" version="0">
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_3">
+			<label>
+				<label.id>2</label.id>
+				<label.text>rib 6</label.text>
+				<label.anchorPosition>
+					<x>1.189707518e-01</x>
+					<y>2.143407464e-01</y>
+					<z>7.061733305e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
 		</px>
 	</item>
 </data>
