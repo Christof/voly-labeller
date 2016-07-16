@@ -100,7 +100,7 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
       bool onPlacementResult = false;
       double remainingFrameTime = frameData.frameTime;
       LabellerFrameData partialFrameData = frameData;
-      const double stepTime = 0.2;
+      const double stepTime = 0.01;
       do
       {
         partialFrameData.frameTime = std::min(stepTime, remainingFrameTime);
