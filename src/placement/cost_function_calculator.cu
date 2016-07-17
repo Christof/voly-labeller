@@ -203,8 +203,8 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
       static_cast<int>(labelWidthInPixel * 0.5f * widthFactor);
   costEvaluator.halfLabelHeight =
       static_cast<int>(labelHeightInPixel * 0.5f * heightFactor);
-  costEvaluator.oldPositionX = oldPositionX;
-  costEvaluator.oldPositionY = oldPositionY;
+  costEvaluator.oldPositionX = oldPositionX * widthFactor;
+  costEvaluator.oldPositionY = oldPositionY * widthFactor;
 
   MinimumCostOperator<EvalResult> minimumCostOperator;
   EvalResult initialCost;

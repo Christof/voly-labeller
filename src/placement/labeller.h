@@ -68,6 +68,7 @@ class Labeller
   float costSum;
 
   Eigen::Vector2f toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size);
+  Eigen::Vector2f toPixel(Eigen::Vector2f ndc, Eigen::Vector2i size);
 };
 
 }  // namespace Placement

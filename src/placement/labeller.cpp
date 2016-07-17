@@ -97,7 +97,7 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
     Eigen::Vector2f oldPositionPixel =
         ignoreOldPosition
             ? Eigen::Vector2f(0, 0)
-            : 0.5f * oldPositions.at(label.id) + Eigen::Vector2f(0.5f, 0.5f);
+            : toPixel(oldPositions.at(label.id), size);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
@@ -145,13 +145,19 @@ float Labeller::getLastSumOfCosts()
   return costSum;
 }
 
-Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
+Eigen::Vector2f Labeller::toPixel(Eigen::Vector2f ndc, Eigen::Vector2i size)
 {
   const Eigen::Vector2f half(0.5f, 0.5f);
 
   auto zeroToOne = ndc.head<2>().cwiseProduct(half) + half;
 
   return zeroToOne.cwiseProduct(size.cast<float>());
+}
+
+Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
+{
+  Eigen::Vector2f ndc2d = ndc.head<2>();
+  return toPixel(ndc2d, size);
 }
 
 }  // namespace Placement
