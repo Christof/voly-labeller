@@ -19,11 +19,11 @@ class LabelPositions
   void update(int labelId, Eigen::Vector3f positionNDC,
               Eigen::Vector3f position3d);
 
-  int size();
-  int count(int labelId);
+  int size() const;
+  int count(int labelId) const;
 
-  Eigen::Vector3f getNDCFor(int labelId);
-  Eigen::Vector3f get3dFor(int labelId);
+  Eigen::Vector3f getNDCFor(int labelId) const;
+  Eigen::Vector3f get3dFor(int labelId) const;
 
  private:
   std::map<int, Eigen::Vector3f> positionsNDC;

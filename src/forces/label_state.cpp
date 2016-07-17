@@ -13,9 +13,6 @@ LabelState::LabelState(int id, std::string text, Eigen::Vector3f anchorPosition,
 void LabelState::update2dValues(const LabellerFrameData &frameData)
 {
   anchorPosition2D = frameData.project2d(anchorPosition);
-
-  auto label2D = frameData.project(labelPosition);
-  labelPosition2D = label2D.head<2>();
 }
 
 }  // namespace Forces
