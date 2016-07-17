@@ -81,7 +81,7 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   view(2, 3) = -1.94522f;
   view(3, 2) = -1.0f;
   LabellerFrameData frameData(0.02f, projection, view);
-  auto newPositions = labeller->update(frameData);
+  auto newPositions = labeller->update(frameData, false);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
   EXPECT_FLOAT_EQ(0.74639916, labeller->getLastSumOfCosts());
@@ -115,7 +115,7 @@ TEST(Test_PlacementLabellerWithoutFixture,
   LabellerFrameData frameData(0.02f, Eigen::Matrix4f::Identity(),
                               Eigen::Matrix4f::Identity());
 
-  auto newPositions = labeller->update(frameData);
+  auto newPositions = labeller->update(frameData, false);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
   EXPECT_EQ(0, newPositions.size());

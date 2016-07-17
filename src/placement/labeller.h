@@ -39,7 +39,8 @@ class Labeller
    * \brief Calculates new label positions via global minimization and returns
    * them as NDC coordinates.
    */
-  std::map<int, Eigen::Vector2f> update(const LabellerFrameData &frameData);
+  std::map<int, Eigen::Vector2f> update(const LabellerFrameData &frameData,
+                                        bool ignoreOldPosition);
 
   std::map<int, Eigen::Vector2f> getLastPlacementResult();
   float getLastSumOfCosts();

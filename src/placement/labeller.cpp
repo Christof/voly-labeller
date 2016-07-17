@@ -52,7 +52,7 @@ void Labeller::cleanup()
 }
 
 std::map<int, Eigen::Vector2f>
-Labeller::update(const LabellerFrameData &frameData)
+Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
 {
   if (labels->count() == 0)
     return std::map<int, Eigen::Vector2f>();
@@ -93,13 +93,13 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
-    bool hasOldPosition = oldPositions.count(label.id);
+    ignoreOldPosition = ignoreOldPosition || !oldPositions.count(label.id);
     Eigen::Vector2f oldPositionNDC =
-        hasOldPosition ? oldPositions.at(label.id) : Eigen::Vector2f(0, 0);
+        ignoreOldPosition ? Eigen::Vector2f(0, 0) : oldPositions.at(label.id);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(), label.size.y(), !hasOldPosition,
+        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldPosition,
         oldPositionNDC.x(), oldPositionNDC.y());
 
     constraintUpdater->setPosition(label.id, result.position);
