@@ -137,7 +137,6 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
                                 label.labelPosition2D.y(),
                                 label.labelPositionDepth);
     Eigen::Vector3f reprojected = project(inverseViewProjection, positionNDC);
-    reprojected.z() = label.placementPosition.z();
 
     label.labelPosition = reprojected;
     positions.update(label.id, positionNDC, reprojected);
