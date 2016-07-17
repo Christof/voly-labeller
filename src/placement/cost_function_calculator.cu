@@ -135,7 +135,7 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
                  weights.anchorConstraint * anchorConstraint +
                  weights.integralCosts * integralCostsForLabelArea(x, y) +
                  weights.distanceToAnchor * distanceToAnchor +
-                 1e-3f * distanceToOldPosition(x, y) +
+                 weights.distanceToOldPosition * distanceToOldPosition(x, y) +
                  weights.favorHorizontalOrVerticalLines *
                      favorHorizontalOrVerticalLines(x, y);
 
