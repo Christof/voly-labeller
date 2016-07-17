@@ -99,7 +99,7 @@ void CameraPositionsModel::moveTo(int row)
 {
   auto cameraNode = nodes->getCameraNode();
   cameraNode->getCamera()->startAnimation(cameraPositions[row].viewMatrix,
-                                          4.0f);
+                                          8.0f);
 }
 
 void CameraPositionsModel::setTo(int row)
