@@ -109,7 +109,7 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
           forceOnLabel +=
               force->calculateForce(label, labelStates, partialFrameData);
 
-        auto delta = 10 * forceOnLabel * partialFrameData.frameTime;
+        auto delta = 2 * forceOnLabel * partialFrameData.frameTime;
         if (delta.norm() > epsilon)
         {
           label.labelPosition2D += delta;
