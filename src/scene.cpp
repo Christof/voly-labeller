@@ -21,7 +21,6 @@
 #include "./label_node.h"
 #include "./eigen_qdebug.h"
 #include "./utils/path_helper.h"
-#include "./placement/to_gray.h"
 #include "./placement/distance_transform.h"
 #include "./placement/apollonius.h"
 #include "./texture_mapper_manager.h"
