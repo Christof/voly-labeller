@@ -180,7 +180,7 @@ void CostFunctionCalculator::setTextureSize(int width, int height)
 CostFunctionResult CostFunctionCalculator::calculateForLabel(
     const thrust::device_vector<float> &integralCosts, int labelId,
     float anchorX, float anchorY, int labelWidthInPixel, int labelHeightInPixel,
-    int oldPositionX, int oldPositionY)
+    bool ignoreOldPosition, int oldPositionX, int oldPositionY)
 {
   createTextureObject();
 
@@ -188,6 +188,9 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
 
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
+
+  if (ignoreOldPosition)
+    weights.distanceToOldPosition = 0.0f;
 
   CostEvaluator costEvaluator(
       textureWidth, textureHeight, weights, Placement::labelShadowValue,

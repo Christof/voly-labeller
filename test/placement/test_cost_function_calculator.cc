@@ -37,9 +37,10 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
   int expectedX = 9;
   int expectedY = 6;
 
+  bool ignoreOldPosition = false;
   auto result = calculator.calculateForLabel(
       integralCostsDevice, labelId, anchorX, anchorY, labelWidthInPixel,
-      labelHeightInPixel,expectedX, expectedY);
+      labelHeightInPixel,ignoreOldPosition, expectedX, expectedY);
 
   EXPECT_EQ(expectedX, result.position.x());
   EXPECT_EQ(expectedY, result.position.y());

@@ -67,10 +67,11 @@ class CostFunctionCalculator
   void resize(int width, int height);
   void setTextureSize(int width, int height);
 
-  CostFunctionResult calculateForLabel(
-      const thrust::device_vector<float> &integralCosts, int labelId,
-      float anchorX, float anchorY, int labelWidthInPixel,
-      int labelHeightInPixel, int oldPositionX, int oldPositionY);
+  CostFunctionResult
+  calculateForLabel(const thrust::device_vector<float> &integralCosts,
+                    int labelId, float anchorX, float anchorY,
+                    int labelWidthInPixel, int labelHeightInPixel,
+                    bool ignoreOldPosition, int oldPositionX, int oldPositionY);
 
   CostFunctionWeights weights;
 
