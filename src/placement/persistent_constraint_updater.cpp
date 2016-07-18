@@ -11,12 +11,22 @@ PersistentConstraintUpdater::PersistentConstraintUpdater(
 {
 }
 
+void PersistentConstraintUpdater::setAnchorPositions(
+    std::map<int, Eigen::Vector2i> anchorPositions)
+{
+  this->anchorPositions = anchorPositions;
+}
+
 void PersistentConstraintUpdater::updateConstraints(
     int labelId, Eigen::Vector2i anchorForBuffer,
     Eigen::Vector2i labelSizeForBuffer)
 {
   auto startTime = std::chrono::high_resolution_clock::now();
   constraintUpdater->clear();
+
+  for (auto &anchorPosition : anchorPositions)
+    constraintUpdater->drawAnchorRegion(anchorPosition.second,
+                                        labelSizeForBuffer);
 
   for (auto &placedLabelPair : placedLabels)
   {

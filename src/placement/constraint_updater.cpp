@@ -66,8 +66,6 @@ void ConstraintUpdater::drawConstraintRegionFor(
                   << diff.count() << "ms";
 
   drawer->drawElementVector(positions, labelShadowColor);
-
-  drawAnchorRegion(anchorPosition, labelSize);
 }
 
 void ConstraintUpdater::clear()
