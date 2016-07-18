@@ -9,8 +9,8 @@
 class ConstraintUpdater;
 
 /**
- * \brief Uses the ConstraintUpdater to draw constraints and stores each given label
- * to be used as constraint for the next label
+ * \brief Uses the ConstraintUpdater to draw constraints and stores each given
+ * label to be used as constraint for the next label
  *
  * The labels are stored and used until #clear is called. After a label has been
  * positioned #setPosition must be called to complete the information necessary
