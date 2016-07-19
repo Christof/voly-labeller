@@ -208,11 +208,13 @@ void ConstraintUpdater::drawConnectorShadowRegion(
   positions.clear();
 }
 
-void ConstraintUpdater::drawAnchorRegion(Eigen::Vector2i anchorPosition,
-                                         Eigen::Vector2i labelSize)
+void ConstraintUpdater::drawRegionsForAnchors(
+    std::vector<Eigen::Vector2i> anchorPositions, Eigen::Vector2i labelSize)
 {
   positions.clear();
-  drawPolygon(createBoxPolygon(anchorPosition, 2 * labelSize));
+  for (auto &anchorPosition : anchorPositions)
+    drawPolygon(createBoxPolygon(anchorPosition, 2 * labelSize));
+
   drawer->drawElementVector(positions, anchorConstraintColor);
 }
 

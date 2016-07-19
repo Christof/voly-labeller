@@ -39,8 +39,8 @@ class ConstraintUpdater
                                Eigen::Vector2i lastAnchorPosition,
                                Eigen::Vector2i lastLabelPosition,
                                Eigen::Vector2i lastLabelSize);
-  void drawAnchorRegion(Eigen::Vector2i anchorPosition,
-                        Eigen::Vector2i labelSize);
+  void drawRegionsForAnchors(std::vector<Eigen::Vector2i> anchorPositions,
+                             Eigen::Vector2i labelSize);
 
   void clear();
   void setIsConnectorShadowEnabled(bool enabled);

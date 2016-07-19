@@ -29,7 +29,8 @@ class Test_ConstraintUpdater : public ::testing::Test
     Eigen::Vector2i lastAnchorPosition(200, 70);
     Eigen::Vector2i lastLabelPosition(150, 120);
     Eigen::Vector2i lastLabelSize(60, 40);
-    constraintUpdater->drawAnchorRegion(anchorPosition, labelSize);
+    std::vector<Eigen::Vector2i> anchorPositions = { anchorPosition };
+    constraintUpdater->drawRegionsForAnchors(anchorPositions, labelSize);
     constraintUpdater->drawConstraintRegionFor(
         anchorPosition, labelSize, lastAnchorPosition, lastLabelPosition,
         lastLabelSize);

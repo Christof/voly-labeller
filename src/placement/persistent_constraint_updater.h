@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 #include <memory>
 #include <map>
+#include <vector>
 
 class ConstraintUpdater;
 
@@ -24,7 +25,7 @@ class PersistentConstraintUpdater
   PersistentConstraintUpdater(
       std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
-  void setAnchorPositions(std::map<int, Eigen::Vector2i> anchorPositions);
+  void setAnchorPositions(std::vector<Eigen::Vector2i> anchorPositions);
   void updateConstraints(int labelId, Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
   void setPosition(int labelId, Eigen::Vector2i position);
@@ -41,7 +42,7 @@ class PersistentConstraintUpdater
   std::shared_ptr<ConstraintUpdater> constraintUpdater;
 
   std::map<int, PlacedLabelInfo> placedLabels;
-  std::map<int, Eigen::Vector2i> anchorPositions;
+  std::vector<Eigen::Vector2i> anchorPositions;
 };
 
 #endif  // SRC_PLACEMENT_PERSISTENT_CONSTRAINT_UPDATER_H_

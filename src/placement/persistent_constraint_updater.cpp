@@ -1,6 +1,7 @@
 #include "./persistent_constraint_updater.h"
 #include <QLoggingCategory>
 #include <chrono>
+#include <vector>
 #include "./constraint_updater.h"
 
 QLoggingCategory pcuChan("Placement.PersistentConstraintUpdater");
@@ -12,7 +13,7 @@ PersistentConstraintUpdater::PersistentConstraintUpdater(
 }
 
 void PersistentConstraintUpdater::setAnchorPositions(
-    std::map<int, Eigen::Vector2i> anchorPositions)
+    std::vector<Eigen::Vector2i> anchorPositions)
 {
   this->anchorPositions = anchorPositions;
 }
@@ -24,9 +25,7 @@ void PersistentConstraintUpdater::updateConstraints(
   auto startTime = std::chrono::high_resolution_clock::now();
   constraintUpdater->clear();
 
-  for (auto &anchorPosition : anchorPositions)
-    constraintUpdater->drawAnchorRegion(anchorPosition.second,
-                                        labelSizeForBuffer);
+  constraintUpdater->drawRegionsForAnchors(anchorPositions, labelSizeForBuffer);
 
   for (auto &placedLabelPair : placedLabels)
   {
