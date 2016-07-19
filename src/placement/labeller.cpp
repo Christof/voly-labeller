@@ -68,6 +68,17 @@ Labeller::update(const LabellerFrameData &frameData)
   costSum = 0.0f;
   auto labelsInLayer = labelsArranger->getArrangement(frameData, labels);
 
+  std::vector<Eigen::Vector2i> anchorPositionsForBuffer;
+  for (auto &label : labelsInLayer)
+  {
+    auto anchor2D = frameData.project(label.anchorPosition);
+    Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
+
+    anchorPositionsForBuffer.push_back(anchorForBuffer);
+  }
+
+  constraintUpdater->setAnchorPositions(anchorPositionsForBuffer);
+
   for (auto &label : labelsInLayer)
   {
     auto anchor2D = frameData.project(label.anchorPosition);

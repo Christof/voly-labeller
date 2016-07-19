@@ -5,12 +5,13 @@
 #include <Eigen/Core>
 #include <memory>
 #include <map>
+#include <vector>
 
 class ConstraintUpdater;
 
 /**
- * \brief Uses the ConstraintUpdater to draw constraints and stores each given label
- * to be used as constraint for the next label
+ * \brief Uses the ConstraintUpdater to draw constraints and stores each given
+ * label to be used as constraint for the next label
  *
  * The labels are stored and used until #clear is called. After a label has been
  * positioned #setPosition must be called to complete the information necessary
@@ -24,6 +25,7 @@ class PersistentConstraintUpdater
   PersistentConstraintUpdater(
       std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
+  void setAnchorPositions(std::vector<Eigen::Vector2i> anchorPositions);
   void updateConstraints(int labelId, Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
   void setPosition(int labelId, Eigen::Vector2i position);
@@ -40,6 +42,7 @@ class PersistentConstraintUpdater
   std::shared_ptr<ConstraintUpdater> constraintUpdater;
 
   std::map<int, PlacedLabelInfo> placedLabels;
+  std::vector<Eigen::Vector2i> anchorPositions;
 };
 
 #endif  // SRC_PLACEMENT_PERSISTENT_CONSTRAINT_UPDATER_H_
