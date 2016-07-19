@@ -50,7 +50,7 @@ void VolumeNode::render(Graphics::Gl *gl,
   managers->getObjectManager()->renderLater(cubeData);
 }
 
-Graphics::VolumeData VolumeNode::getVolumeData()
+Graphics::VolumeData VolumeNode::getVolumeData(const RenderData &renderData)
 {
   Graphics::VolumeData data;
   data.textureAddress = transferFunctionAddress;

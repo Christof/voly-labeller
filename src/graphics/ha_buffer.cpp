@@ -180,7 +180,7 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   setLayeringUniforms(renderShader, renderData);
 
   ObjectData &objectData = renderQuad->getObjectDataReference();
-  auto volumeData = managers->getVolumeManager()->getBufferData();
+  auto volumeData = managers->getVolumeManager()->getBufferData(renderData);
 
   objectData.setCustomBufferFor(1, volumeData);
   objectData.setCustomBufferFor<Graphics::TextureAddress>(2, [this, managers]()

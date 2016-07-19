@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include "./volume_data.h"
+#include "./render_data.h"
 
 namespace Graphics
 {
@@ -26,7 +27,7 @@ class VolumeManager
   void updateStorage(Gl *gl);
   int addVolume(Volume *volume, Gl *gl);
   void removeVolume(int id);
-  std::vector<VolumeData> getBufferData();
+  std::vector<VolumeData> getBufferData(const RenderData &renderData);
   Eigen::Vector3i getVolumeAtlasSize() const;
 
   void add3dTexture(int volumeId, Eigen::Vector3i size, float *data,
