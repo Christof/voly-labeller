@@ -37,6 +37,7 @@ struct VolumeData
 {
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
+  mat4 normalMatrix;
   int volumeId;
   mat4 objectToDatasetMatrix;
   int transferFunctionRow;
@@ -77,8 +78,8 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z + sampleDistance.z)).x -
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z - sampleDistance.z)).x);
 
-  return normalize(mat3(viewMatrix) *
-                   transpose(mat3(volumes[objectId].textureMatrix)) * -gradient);
+  vec4 transformedGradient = volumes[objectId].normalMatrix * vec4(-gradient, 0);
+  return normalize(transformedGradient.xyz);
 }
 
 // Blending equation for in-order traversal

@@ -56,8 +56,17 @@ Graphics::VolumeData VolumeNode::getVolumeData(const RenderData &renderData)
   data.textureAddress = transferFunctionAddress;
   Eigen::Affine3f positionToTexture(Eigen::Translation3f(0.5f, 0.5f, 0.5f));
   Eigen::Affine3f scale(Eigen::Scaling(volumeReader->getPhysicalSize()));
-  data.textureMatrix = positionToTexture.matrix() *
-                       (cubeData.modelMatrix * scale.matrix()).inverse();
+  Eigen::Matrix4f model = cubeData.modelMatrix * scale.matrix();
+  data.textureMatrix = positionToTexture.matrix() * model.inverse();
+
+  Eigen::Matrix4f textureRotation = Eigen::Matrix4f::Identity();
+  textureRotation.block<3, 3>(0, 0) =
+      renderData.viewMatrix.block<3, 3>(0, 0) *
+      data.textureMatrix.block<3, 3>(0, 0).transpose();
+
+  // Eigen::Matrix4f modelViewMatrix = model * renderData.viewMatrix;
+  data.normalMatrix = textureRotation;
+  // modelViewMatrix.inverse().transpose() * textureRotation.transpose();
   data.volumeId = volumeId;
   data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
   data.transferFunctionRow = transferFunctionRow;
