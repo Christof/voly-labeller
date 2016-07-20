@@ -302,8 +302,9 @@ RenderData Scene::createRenderData()
 {
   auto camera = getCamera();
 
-  return RenderData(camera->getProjectionMatrix(), camera->getViewMatrix(),
-                    camera->getPosition(), Eigen::Vector2f(width, height));
+  return RenderData(frameTime, camera->getProjectionMatrix(),
+                    camera->getViewMatrix(), camera->getPosition(),
+                    Eigen::Vector2f(width, height));
 }
 
 void Scene::pick(int id, Eigen::Vector2f position)

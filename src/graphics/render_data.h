@@ -16,9 +16,11 @@ struct RenderData
 
   RenderData();
 
-  RenderData(Eigen::Matrix4f projectionMatrix, Eigen::Matrix4f viewMatrix,
-             Eigen::Vector3f cameraPosition, Eigen::Vector2f windowPixelSize);
+  RenderData(double frameTime, Eigen::Matrix4f projectionMatrix,
+             Eigen::Matrix4f viewMatrix, Eigen::Vector3f cameraPosition,
+             Eigen::Vector2f windowPixelSize);
 
+  double frameTime;
   Eigen::Matrix4f projectionMatrix;
   Eigen::Matrix4f viewMatrix;
   Eigen::Vector3f cameraPosition;
