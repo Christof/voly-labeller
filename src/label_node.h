@@ -44,14 +44,15 @@ class LabelNode : public Node
 
   int layerIndex = 0;
   float anchorSize = 10.0f;
-  float alpha = 0.1f;
+  float alpha = 1.0f;
 
   void setIsVisible(bool isVisible);
 
  private:
   std::string textureText;
   Eigen::Vector2f labelSize;
-  bool isVisible;
+  bool isVisible = true;
+  float timeSinceIsVisibleChanged = 100.0f;
 
   friend class boost::serialization::access;
   template <class Archive>

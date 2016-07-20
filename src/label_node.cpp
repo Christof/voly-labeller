@@ -50,22 +50,44 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    RenderData renderData)
 {
   if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
-    return;
+  {
+    if (isVisible)
+      setIsVisible(false);
+  }
 
   if (textureId == -1 || textureText != label.text)
   {
     initialize(gl, managers);
   }
 
-  if (isVisible)
+  const float fadeTime = 1.0f;
+  if (isVisible || timeSinceIsVisibleChanged < fadeTime)
   {
-    renderConnector(gl, managers, renderData);
-    renderLabel(gl, managers, renderData);
+    if (timeSinceIsVisibleChanged < fadeTime)
+    {
+      float percent = timeSinceIsVisibleChanged / fadeTime;
+      alpha = isVisible ? percent * percent : percent * (2.0f - percent);
+    }
+    else
+    {
+      alpha = isVisible ? 1.0f : 0.0f;
+    }
+
+    if (alpha > 0)
+    {
+      renderConnector(gl, managers, renderData);
+      renderLabel(gl, managers, renderData);
+    }
+
+    timeSinceIsVisibleChanged += renderData.frameTime;
   }
 }
 
 void LabelNode::setIsVisible(bool isVisible)
 {
+  if (this->isVisible != isVisible)
+    timeSinceIsVisibleChanged = 0.0f;
+
   this->isVisible = isVisible;
 }
 
