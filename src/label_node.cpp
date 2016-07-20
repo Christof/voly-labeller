@@ -32,7 +32,9 @@ void LabelNode::render(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
+  isOutsideFieldOfView =
+      !label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix);
+  if (isOutsideFieldOfView)
     return;
 
   if (textureId == -1 || textureText != label.text || labelSize != label.size)
@@ -49,7 +51,7 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    std::shared_ptr<Graphics::Managers> managers,
                                    RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
+  if (isOutsideFieldOfView)
   {
     if (isVisible)
       setIsVisible(false);
@@ -66,7 +68,8 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
     if (timeSinceIsVisibleChanged < fadeTime)
     {
       float percent = timeSinceIsVisibleChanged / fadeTime;
-      alpha = isVisible ? percent * percent : percent * (2.0f - percent);
+      alpha =
+          isVisible ? percent * percent : (1.0f - percent) * (1.0f + percent);
     }
     else
     {
@@ -85,6 +88,9 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
 
 void LabelNode::setIsVisible(bool isVisible)
 {
+  if (isVisible && isOutsideFieldOfView)
+    return;
+
   if (this->isVisible != isVisible)
     timeSinceIsVisibleChanged = 0.0f;
 

@@ -52,6 +52,7 @@ class LabelNode : public Node
   std::string textureText;
   Eigen::Vector2f labelSize;
   bool isVisible = true;
+  bool isOutsideFieldOfView = false;
   float timeSinceIsVisibleChanged = 100.0f;
 
   friend class boost::serialization::access;
