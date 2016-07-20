@@ -93,12 +93,14 @@ void LabelNode::initialize(Graphics::Gl *gl,
           textureAddress.reserved = this->layerIndex;
           return textureAddress;
         });
+    labelQuad.setCustomBufferFor<float>(2, &this->alpha);
   }
 
   if (!labelConnector.isInitialized())
   {
     labelConnector = connector->getObjectData();
     labelConnector.setCustomBufferFor(1, &this->layerIndex);
+    labelConnector.setCustomBufferFor(2, &this->alpha);
   }
 }
 

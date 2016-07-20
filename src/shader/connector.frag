@@ -11,8 +11,15 @@ layout(std430, binding = 1) buffer CB1
   int layerIndex[];
 };
 
+layout(std430, binding = 2) buffer CB2
+{
+  float alpha[];
+};
+
 void main()
 {
-  setColorForLayer(layerIndex[vertexDrawId], vertexColor);
+  vec4 color = vertexColor;
+  color.a *= alpha[vertexDrawId];
+  setColorForLayer(layerIndex[vertexDrawId], color);
 }
 
