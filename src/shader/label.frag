@@ -11,10 +11,16 @@ layout(std430, binding = 1) buffer CB1
   Tex2DAddress texAddress[];
 };
 
+layout(std430, binding = 2) buffer CB2
+{
+  float alpha[];
+};
+
 void main()
 {
   Tex2DAddress address = texAddress[vertexDrawId];
   vec4 color = Texture(address, vertexTexCoord.xy);
+  color = mix(vec4(0), color, alpha[vertexDrawId]);
   int layerIndex = address.dummy;
   setColorForLayer(layerIndex, color);
 }

@@ -10,6 +10,8 @@
 #include "./math/eigen.h"
 #include "./labelling/labeller_frame_data.h"
 
+const Eigen::Vector4f color = { 0.85f, 0.85f, 0.85f, 1 };
+
 LabelNode::LabelNode(Label label) : label(label)
 {
   Importer importer;
@@ -21,7 +23,7 @@ LabelNode::LabelNode(Label label) : label(label)
   connector = std::make_shared<Graphics::Connector>(
       ":/shader/pass.vert", ":/shader/connector.frag", Eigen::Vector3f(0, 0, 0),
       Eigen::Vector3f(1, 0, 0));
-  connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
+  connector->color = color;
 }
 
 LabelNode::~LabelNode()
@@ -32,7 +34,9 @@ void LabelNode::render(Graphics::Gl *gl,
                        std::shared_ptr<Graphics::Managers> managers,
                        RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
+  isOutsideFieldOfView =
+      !label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix);
+  if (isOutsideFieldOfView)
     return;
 
   if (textureId == -1 || textureText != label.text || labelSize != label.size)
@@ -49,23 +53,39 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
                                    std::shared_ptr<Graphics::Managers> managers,
                                    RenderData renderData)
 {
-  if (!label.isAnchorInsideFieldOfView(renderData.viewProjectionMatrix))
-    return;
+  if (isOutsideFieldOfView)
+  {
+    if (isVisible)
+      setIsVisible(false);
+  }
 
   if (textureId == -1 || textureText != label.text)
   {
     initialize(gl, managers);
   }
 
-  if (isVisible)
+  if (isVisible || timeSinceIsVisibleChanged < fadeTime)
   {
-    renderConnector(gl, managers, renderData);
-    renderLabel(gl, managers, renderData);
+    updateAlphaValue();
+
+    if (alpha > 0)
+    {
+      renderConnector(gl, managers, renderData);
+      renderLabel(gl, managers, renderData);
+    }
+
+    timeSinceIsVisibleChanged += renderData.frameTime;
   }
 }
 
 void LabelNode::setIsVisible(bool isVisible)
 {
+  if (isVisible && isOutsideFieldOfView)
+    return;
+
+  if (this->isVisible != isVisible)
+    timeSinceIsVisibleChanged = 0.0f;
+
   this->isVisible = isVisible;
 }
 
@@ -93,12 +113,14 @@ void LabelNode::initialize(Graphics::Gl *gl,
           textureAddress.reserved = this->layerIndex;
           return textureAddress;
         });
+    labelQuad.setCustomBufferFor<float>(2, &this->alpha);
   }
 
   if (!labelConnector.isInitialized())
   {
     labelConnector = connector->getObjectData();
     labelConnector.setCustomBufferFor(1, &this->layerIndex);
+    labelConnector.setCustomBufferFor(2, &this->alpha);
   }
 }
 
@@ -169,8 +191,9 @@ QImage *LabelNode::renderLabelTextToQImage()
   QPainter painter;
   painter.begin(image);
 
-  painter.setBrush(QBrush(Qt::GlobalColor::lightGray));
-  painter.setPen(Qt::GlobalColor::lightGray);
+  QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
+  painter.setBrush(QBrush(c));
+  painter.setPen(c);
   painter.drawRoundRect(QRectF(0, 0, width, height), 15, 15 * width / height);
 
   painter.setPen(Qt::black);
@@ -185,3 +208,15 @@ QImage *LabelNode::renderLabelTextToQImage()
   return image;
 }
 
+void LabelNode::updateAlphaValue()
+{
+  if (timeSinceIsVisibleChanged < fadeTime)
+  {
+    float percent = timeSinceIsVisibleChanged / fadeTime;
+    alpha = isVisible ? percent : (1.0f - percent);
+  }
+  else
+  {
+    alpha = isVisible ? 1.0f : 0.0f;
+  }
+}
