@@ -54,6 +54,7 @@ class LabelNode : public Node
   bool isVisible = true;
   bool isOutsideFieldOfView = false;
   float timeSinceIsVisibleChanged = 100.0f;
+  const float fadeTime = 1.0f;
 
   friend class boost::serialization::access;
   template <class Archive>
@@ -75,6 +76,7 @@ class LabelNode : public Node
                    std::shared_ptr<Graphics::Managers> managers,
                    RenderData renderData);
   QImage *renderLabelTextToQImage();
+  void updateAlphaValue();
 
   Eigen::Vector3f anchorNDC;
   std::shared_ptr<Graphics::Mesh> anchorMesh;

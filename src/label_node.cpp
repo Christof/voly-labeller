@@ -62,19 +62,9 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
     initialize(gl, managers);
   }
 
-  const float fadeTime = 1.0f;
   if (isVisible || timeSinceIsVisibleChanged < fadeTime)
   {
-    if (timeSinceIsVisibleChanged < fadeTime)
-    {
-      float percent = timeSinceIsVisibleChanged / fadeTime;
-      alpha =
-          isVisible ? percent * percent : (1.0f - percent) * (1.0f + percent);
-    }
-    else
-    {
-      alpha = isVisible ? 1.0f : 0.0f;
-    }
+    updateAlphaValue();
 
     if (alpha > 0)
     {
@@ -215,3 +205,15 @@ QImage *LabelNode::renderLabelTextToQImage()
   return image;
 }
 
+void LabelNode::updateAlphaValue()
+{
+  if (timeSinceIsVisibleChanged < fadeTime)
+  {
+    float percent = timeSinceIsVisibleChanged / fadeTime;
+    alpha = isVisible ? percent : (1.0f - percent);
+  }
+  else
+  {
+    alpha = isVisible ? 1.0f : 0.0f;
+  }
+}
