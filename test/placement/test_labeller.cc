@@ -84,17 +84,17 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   auto newPositions = labeller->update(frameData);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
-  EXPECT_FLOAT_EQ(0.70412385, labeller->getLastSumOfCosts());
+  EXPECT_FLOAT_EQ(0.74639916, labeller->getLastSumOfCosts());
 
   labeller->cleanup();
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
   std::vector<Eigen::Vector2f> expectedPositions = {
-    Eigen::Vector2f(0.179687f, 0.640625f),
+    Eigen::Vector2f(0.1875f, 0.6953125f),
     Eigen::Vector2f(0.335937f, 0.1875f),
-    Eigen::Vector2f(0.78125f, 0.44921875f),
-    Eigen::Vector2f(0.355468f, 0.5625f),
+    Eigen::Vector2f(0.83984375f, 0.44921875f),
+    Eigen::Vector2f(-0.4296875f, 0.45703125f),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
