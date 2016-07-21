@@ -51,7 +51,7 @@ class LabelNode : public Node
  private:
   std::string textureText;
   Eigen::Vector2f labelSize;
-  bool isVisible = true;
+  bool isVisible = false;
   bool isOutsideFieldOfView = false;
   float timeSinceIsVisibleChanged = 100.0f;
   const float fadeTime = 1.0f;
