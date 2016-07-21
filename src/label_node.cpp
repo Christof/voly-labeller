@@ -10,6 +10,8 @@
 #include "./math/eigen.h"
 #include "./labelling/labeller_frame_data.h"
 
+const Eigen::Vector4f color = { 0.85f, 0.85f, 0.85f, 1 };
+
 LabelNode::LabelNode(Label label) : label(label)
 {
   Importer importer;
@@ -21,7 +23,7 @@ LabelNode::LabelNode(Label label) : label(label)
   connector = std::make_shared<Graphics::Connector>(
       ":/shader/pass.vert", ":/shader/connector.frag", Eigen::Vector3f(0, 0, 0),
       Eigen::Vector3f(1, 0, 0));
-  connector->color = Eigen::Vector4f(0.75f, 0.75f, 0.75f, 1);
+  connector->color = color;
 }
 
 LabelNode::~LabelNode()
@@ -189,8 +191,9 @@ QImage *LabelNode::renderLabelTextToQImage()
   QPainter painter;
   painter.begin(image);
 
-  painter.setBrush(QBrush(Qt::GlobalColor::lightGray));
-  painter.setPen(Qt::GlobalColor::lightGray);
+  QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
+  painter.setBrush(QBrush(c));
+  painter.setPen(c);
   painter.drawRoundRect(QRectF(0, 0, width, height), 15, 15 * width / height);
 
   painter.setPen(Qt::black);
