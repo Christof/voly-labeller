@@ -18,8 +18,7 @@ layout(std430, binding = 2) buffer CB2
 
 void main()
 {
-  vec4 color = vertexColor;
-  color.a *= alpha[vertexDrawId];
+  vec4 color = mix(vec4(0), vertexColor, alpha[vertexDrawId]);
   setColorForLayer(layerIndex[vertexDrawId], color);
 }
 

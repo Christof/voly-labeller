@@ -20,7 +20,7 @@ void main()
 {
   Tex2DAddress address = texAddress[vertexDrawId];
   vec4 color = Texture(address, vertexTexCoord.xy);
-  color.a *= alpha[vertexDrawId];
+  color = mix(vec4(0), color, alpha[vertexDrawId]);
   int layerIndex = address.dummy;
   setColorForLayer(layerIndex, color);
 }
