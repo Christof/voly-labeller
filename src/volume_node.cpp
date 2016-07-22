@@ -65,7 +65,7 @@ Graphics::VolumeData VolumeNode::getVolumeData(const RenderData &renderData)
       data.textureMatrix.block<3, 3>(0, 0).transpose();
 
   // Eigen::Matrix4f modelViewMatrix = model * renderData.viewMatrix;
-  data.normalMatrix = textureRotation;
+  data.normalMatrix = textureRotation * scale.matrix();
   // modelViewMatrix.inverse().transpose() * textureRotation.transpose();
   data.volumeId = volumeId;
   data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
