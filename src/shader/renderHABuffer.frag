@@ -38,8 +38,8 @@ struct VolumeData
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
   mat4 gradientMatrix;
-  int volumeId;
   mat4 objectToDatasetMatrix;
+  int volumeId;
   int transferFunctionRow;
 };
 
