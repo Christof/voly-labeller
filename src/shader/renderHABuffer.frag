@@ -37,7 +37,7 @@ struct VolumeData
 {
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
-  mat4 normalMatrix;
+  mat4 gradientMatrix;
   int volumeId;
   mat4 objectToDatasetMatrix;
   int transferFunctionRow;
@@ -78,7 +78,7 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z + sampleDistance.z)).x -
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z - sampleDistance.z)).x);
 
-  vec4 transformedGradient = volumes[objectId].normalMatrix * vec4(-gradient, 0);
+  vec4 transformedGradient = volumes[objectId].gradientMatrix * vec4(-gradient, 0);
   return normalize(transformedGradient.xyz);
 }
 
