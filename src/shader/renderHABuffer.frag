@@ -130,7 +130,7 @@ vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
   const float ambient = 0.3;
   const float diffuse = 0.5;
   const float specular = 0.5;
-  const float shininess = 32.0f;
+  const float shininess = 8.0f;
   const vec3 specularColor = vec3(1.0, 1.0, 1.0);
 
   vec3 specularTerm = (shininess + 2.0f) / (2.0f * 3.1415f) * specular *
