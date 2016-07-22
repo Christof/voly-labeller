@@ -82,7 +82,8 @@ void VolumeManager::removeVolume(int id)
   volumes.erase(volumes.find(id));
 }
 
-std::vector<VolumeData> VolumeManager::getBufferData()
+std::vector<VolumeData>
+VolumeManager::getBufferData(const RenderData &renderData)
 {
   std::vector<VolumeData> data;
   for (int i = 1; i < nextVolumeId; ++i)
@@ -90,7 +91,7 @@ std::vector<VolumeData> VolumeManager::getBufferData()
     VolumeData volumeData;
     if (volumes.count(i))
     {
-      volumeData = volumes[i]->getVolumeData();
+      volumeData = volumes[i]->getVolumeData(renderData);
       volumeData.objectToDatasetMatrix =
           objectToDatasetMatrices[volumeData.volumeId];
     }

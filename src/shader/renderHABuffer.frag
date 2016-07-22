@@ -37,8 +37,9 @@ struct VolumeData
 {
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
-  int volumeId;
+  mat4 gradientMatrix;
   mat4 objectToDatasetMatrix;
+  int volumeId;
   int transferFunctionRow;
 };
 
@@ -77,8 +78,7 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z + sampleDistance.z)).x -
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z - sampleDistance.z)).x);
 
-  return normalize(mat3(viewMatrix) *
-                   transpose(mat3(volumes[objectId].textureMatrix)) * -gradient);
+  return normalize(mat3(volumes[objectId].gradientMatrix) * -gradient);
 }
 
 // Blending equation for in-order traversal
@@ -130,7 +130,7 @@ vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
   const float ambient = 0.3;
   const float diffuse = 0.5;
   const float specular = 0.5;
-  const float shininess = 32.0f;
+  const float shininess = 8.0f;
   const vec3 specularColor = vec3(1.0, 1.0, 1.0);
 
   vec3 specularTerm = (shininess + 2.0f) / (2.0f * 3.1415f) * specular *

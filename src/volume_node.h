@@ -30,7 +30,7 @@ class VolumeNode : public Node, public Graphics::Volume
                       std::shared_ptr<Graphics::Managers> managers,
                       RenderData renderData);
 
-  virtual Graphics::VolumeData getVolumeData();
+  virtual Graphics::VolumeData getVolumeData(const RenderData &renderData);
   virtual float *getData();
   virtual Eigen::Vector3i getDataSize();
 

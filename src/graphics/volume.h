@@ -29,7 +29,7 @@ class Volume
     this->volumeManager = volumeManager;
   };
 
-  virtual VolumeData getVolumeData() = 0;
+  virtual VolumeData getVolumeData(const RenderData &renderData) = 0;
   virtual float *getData() = 0;
   virtual Eigen::Vector3i getDataSize() = 0;
 

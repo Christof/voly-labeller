@@ -15,8 +15,9 @@ struct VolumeData
 {
   TextureAddress textureAddress;
   Eigen::Matrix4f textureMatrix;
-  int volumeId;
+  Eigen::Matrix4f gradientMatrix;
   Eigen::Matrix4f objectToDatasetMatrix;
+  int volumeId;
   int transferFunctionRow;
   // int transferFunctionRowCount;
 };
