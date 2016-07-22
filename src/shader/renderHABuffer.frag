@@ -78,8 +78,7 @@ vec3 getVolumeSampleGradient(in int objectId, in vec3 texturePos)
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z + sampleDistance.z)).x -
       texture(volumeSampler, vec3(texturePos.xy, texturePos.z - sampleDistance.z)).x);
 
-  vec4 transformedGradient = volumes[objectId].gradientMatrix * vec4(-gradient, 0);
-  return normalize(transformedGradient.xyz);
+  return normalize(mat3(volumes[objectId].gradientMatrix) * -gradient);
 }
 
 // Blending equation for in-order traversal
