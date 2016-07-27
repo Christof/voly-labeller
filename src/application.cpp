@@ -159,6 +159,9 @@ void Application::setupWindow()
 {
   window->setResizeMode(QQuickView::SizeRootObjectToView);
   auto context = window->rootContext();
+  context->setContextProperty(
+      "assetsPath", QUrl::fromLocalFile(
+                        absolutePathOfProjectRelativePath(QString("assets"))));
   context->setContextProperty("window", window.get());
   context->setContextProperty("nodes", nodesController.get());
   context->setContextProperty("bufferTextures",

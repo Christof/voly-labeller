@@ -197,6 +197,7 @@ FocusScope
           id: importVolumeDialog
           title: "Please choose a volume to import"
           nameFilters: [ "Volume files (*.mhd *.mha *.img)", "All files (*)" ]
+          folder: assetsPath + "/datasets/"
           onAccepted: {
               nodes.setVolumeToImport(fileUrl);
               importTransferFunctionDialog.open();
@@ -207,6 +208,7 @@ FocusScope
           id: importTransferFunctionDialog
           title: "Please choose a transfer function"
           nameFilters: [ "Transfer function gradient (*.gra)", "All files (*)" ]
+          folder: assetsPath + "/transferfunctions/"
           onAccepted: {
               nodes.importVolume(fileUrl);
           }
