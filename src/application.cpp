@@ -35,6 +35,10 @@ const int LAYER_COUNT = 4;
 
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
+  application.setApplicationName("voly-labeller");
+  application.setApplicationVersion("0.0.1");
+  application.setOrganizationName("LBI");
+
   setupCommandLineParser();
   parser.process(application);
   invokeManager = std::make_shared<InvokeManager>();
