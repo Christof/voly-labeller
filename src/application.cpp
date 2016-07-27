@@ -117,8 +117,8 @@ int Application::execute()
 
   if (parser.positionalArguments().size())
   {
-    auto filename = absolutePathToProjectRelativePath(
-        QDir(parser.positionalArguments()[0]).absolutePath());
+    auto absolutePath = QDir(parser.positionalArguments()[0]).absolutePath();
+    auto filename = absolutePathToProjectRelativePath(absolutePath);
     qInfo() << "import scene:" << filename;
     nodesController->addSceneNodesFrom(filename);
   }
@@ -159,9 +159,13 @@ void Application::setupWindow()
 {
   window->setResizeMode(QQuickView::SizeRootObjectToView);
   auto context = window->rootContext();
-  context->setContextProperty(
-      "assetsPath", QUrl::fromLocalFile(
-                        absolutePathOfProjectRelativePath(QString("assets"))));
+  auto assetsPath =
+      QUrl::fromLocalFile(absolutePathOfProjectRelativePath(QString("assets")));
+  context->setContextProperty("assetsPath", assetsPath);
+  auto projectRootPath =
+      QUrl::fromLocalFile(absolutePathOfProjectRelativePath(QString(".")));
+  context->setContextProperty("projectRootPath", projectRootPath);
+
   context->setContextProperty("window", window.get());
   context->setContextProperty("nodes", nodesController.get());
   context->setContextProperty("bufferTextures",

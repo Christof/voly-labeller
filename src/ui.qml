@@ -178,6 +178,7 @@ FocusScope
       FileDialog {
           id: addSceneNodesFromDialog
           title: "Please choose a scene file"
+          folder: projectRootPath + "/config/"
           nameFilters: [ "Xml files (*.xml)" ]
           onAccepted: {
               nodes.addSceneNodesFrom(fileUrl);
@@ -188,6 +189,7 @@ FocusScope
           id: importDialog
           title: "Please choose a file to import"
           nameFilters: [ "Collada files (*.dae)", , "All files (*)" ]
+          folder: assetsPath
           onAccepted: {
               nodes.importMeshFrom(fileUrl);
           }
@@ -218,6 +220,7 @@ FocusScope
           id: saveSceneDialog
           selectExisting: false
           title: "Please choose a scene file"
+          folder: projectRootPath + "/config/"
           nameFilters: [ "Xml files (*.xml)" ]
           onAccepted: {
               nodes.saveSceneTo(fileUrl);
