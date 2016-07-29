@@ -116,7 +116,7 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
                    2.0f * lower + rightLower;
 
   float magnitudeSquared = resultX * resultX + resultY * resultY;
-  surf2Dwrite(1e-5f * magnitudeSquared, output, xOutput * sizeof(float),
+  surf2Dwrite(magnitudeSquared, output, xOutput * sizeof(float),
               yOutput);
 }
 

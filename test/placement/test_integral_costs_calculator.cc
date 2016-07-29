@@ -9,7 +9,7 @@ TEST(Test_IntegraclCostsCalculator, IntegralCostsCalculator)
   auto occlusionProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, occlusionData, cudaCreateChannelDesc<float>());
 
-  std::vector<float> saliencyData = { 0.2f, 0.1f, 0.4f, 0.6f };
+  std::vector<float> saliencyData = { 0.2e5f, 0.1e5f, 0.4e5f, 0.6e5f };
   auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, saliencyData, cudaCreateChannelDesc<float>());
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
