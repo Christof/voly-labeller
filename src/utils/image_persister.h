@@ -3,6 +3,7 @@
 #define SRC_UTILS_IMAGE_PERSISTER_H_
 
 #include <Eigen/Core>
+#include <QImage>
 #include <boost/filesystem.hpp>
 #include <string>
 #include <vector>
@@ -30,6 +31,13 @@ class ImagePersister
     Magick::Image image(width, height, "R", Magick::StorageType::FloatPixel,
                         data);
     image.write(filename);
+  }
+
+  static void saveR8I(unsigned char *data, int width, int height,
+                      std::string filename)
+  {
+    QImage image(data, width, height, QImage::Format_Grayscale8);
+    image.save(QString(filename.c_str()));
   }
 
   static std::vector<Eigen::Vector4f> loadRGBA32F(std::string filename)
