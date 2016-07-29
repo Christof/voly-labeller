@@ -157,6 +157,11 @@ FocusScope
             onTriggered: labelling.saveOcclusion();
           }
           MenuItem {
+            text: "Save saliency"
+            shortcut: "C"
+            onTriggered: bufferTextures.saveSaliency();
+          }
+          MenuItem {
             text: "Save distance transform"
             shortcut: "I"
             onTriggered: bufferTextures.saveDistanceTransform();

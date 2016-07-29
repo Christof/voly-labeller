@@ -101,6 +101,12 @@ void TextureMapperManager::bindOcclusionTexture()
 void TextureMapperManager::bindSaliencyTexture()
 {
   saliencyTexture->bind();
+
+  if (saveSaliencyOnNextBind)
+  {
+    saliencyTexture->save("saliency.tiff");
+    saveSaliencyOnNextBind = false;
+  }
 }
 
 void TextureMapperManager::bindDistanceTransform(int layerIndex)
@@ -176,6 +182,11 @@ void TextureMapperManager::cleanup()
 void TextureMapperManager::saveOcclusion(std::string filename)
 {
   occlusionTexture->save(filename);
+}
+
+void TextureMapperManager::saveSaliency()
+{
+  saveSaliencyOnNextBind = true;
 }
 
 void TextureMapperManager::saveDistanceTransform()
