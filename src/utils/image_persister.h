@@ -67,6 +67,17 @@ class ImagePersister
 
     return result;
   }
+
+  static std::vector<unsigned char> loadR8I(std::string filename)
+  {
+    QImage image(filename.c_str());
+
+    std::vector<unsigned char> result(image.byteCount());
+
+    std::memcpy(result.data(), image.bits(), image.byteCount());
+
+    return result;
+  }
 };
 
 #endif  // SRC_UTILS_IMAGE_PERSISTER_H_
