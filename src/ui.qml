@@ -101,14 +101,18 @@ FocusScope
             onTriggered: cameraPositions.toggleVisibility();
           }
           MenuItem {
-            text: "Toggle fullscreen"
+            text: "Toggle camera origin visualizer"
             shortcut: "F11"
-            onTriggered: window.toggleFullscreen();
+            onTriggered: nodes.toggleCameraOriginVisualizer();
           }
           MenuItem {
             text: "Toggle coordinate system"
             shortcut: "F12"
             onTriggered: nodes.toggleCoordinateSystem();
+          }
+          MenuItem {
+            text: "Toggle fullscreen"
+            onTriggered: window.toggleFullscreen();
           }
         }
         Menu {

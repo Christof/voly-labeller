@@ -210,6 +210,11 @@ void Nodes::toggleCoordinateSystem()
   }
 }
 
+void Nodes::toggleCameraOriginVisualizer()
+{
+  cameraOriginVisualizerNode->toggleVisibility();
+}
+
 void Nodes::addForcesVisualizerNode(std::shared_ptr<Node> node)
 {
   forcesVisualizerNode = node;

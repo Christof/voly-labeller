@@ -38,6 +38,7 @@ class NodesController : public QObject
 
   void toggleBoundingVolumes();
   void toggleCoordinateSystem();
+  void toggleCameraOriginVisualizer();
 
   void changeAnchorSize(float size);
 

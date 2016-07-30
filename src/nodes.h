@@ -56,6 +56,7 @@ class Nodes
   void clearForShutdown();
   void toggleBoundingVolumes();
   void toggleCoordinateSystem();
+  void toggleCameraOriginVisualizer();
 
   void addNode(std::shared_ptr<Node> node);
   void addForcesVisualizerNode(std::shared_ptr<Node> node);
