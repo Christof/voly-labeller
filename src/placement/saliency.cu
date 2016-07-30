@@ -115,9 +115,8 @@ __global__ void saliencyKernel(cudaTextureObject_t input,
   float3 resultY = -leftUpper - 2.0f * upper - rightUpper + leftLower +
                    2.0f * lower + rightLower;
 
-  float magnitudeSquared = resultX * resultX + resultY * resultY;
-  surf2Dwrite(magnitudeSquared, output, xOutput * sizeof(float),
-              yOutput);
+  float magnitude = sqrt(resultX * resultX + resultY * resultY);
+  surf2Dwrite(magnitude, output, xOutput * sizeof(float), yOutput);
 }
 
 namespace Placement
