@@ -37,6 +37,7 @@ class NodesController : public QObject
   void clear();
 
   void toggleBoundingVolumes();
+  void toggleCoordinateSystem();
 
   void changeAnchorSize(float size);
 

@@ -14,7 +14,9 @@
 
 Nodes::Nodes()
 {
-  addNode(std::make_shared<CoordinateSystemNode>());
+  coordinateSystemNode = std::make_shared<CoordinateSystemNode>();
+  addNode(coordinateSystemNode);
+
   cameraNode = std::make_shared<CameraNode>();
   addNode(cameraNode);
 }
@@ -191,6 +193,20 @@ void Nodes::toggleBoundingVolumes()
         obbNodes.push_back(std::make_shared<ObbNode>(node->getObb()));
       }
     }
+  }
+}
+
+void Nodes::toggleCoordinateSystem()
+{
+  if (coordinateSystemNode.get())
+  {
+    removeNode(coordinateSystemNode);
+    coordinateSystemNode.reset();
+  }
+  else
+  {
+    coordinateSystemNode = std::make_shared<CoordinateSystemNode>();
+    addNode(coordinateSystemNode);
   }
 }
 

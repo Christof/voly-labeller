@@ -46,6 +46,11 @@ void NodesController::toggleBoundingVolumes()
   nodes->toggleBoundingVolumes();
 }
 
+void NodesController::toggleCoordinateSystem()
+{
+  nodes->toggleCoordinateSystem();
+}
+
 void NodesController::changeAnchorSize(float size)
 {
   labelAnchorSize = size;

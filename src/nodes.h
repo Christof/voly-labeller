@@ -14,6 +14,7 @@
 class LabelNode;
 class CameraNode;
 class MeshNode;
+class CoordinateSystemNode;
 
 /**
  * \brief Manages a collection of nodes which is rendered
@@ -54,6 +55,7 @@ class Nodes
   void clear();
   void clearForShutdown();
   void toggleBoundingVolumes();
+  void toggleCoordinateSystem();
 
   void addNode(std::shared_ptr<Node> node);
   void addForcesVisualizerNode(std::shared_ptr<Node> node);
@@ -65,6 +67,7 @@ class Nodes
   std::vector<std::shared_ptr<Node>> nodes;
   bool showBoundingVolumes = false;
   std::vector<std::shared_ptr<Node>> obbNodes;
+  std::shared_ptr<CoordinateSystemNode> coordinateSystemNode;
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<MeshNode> cameraOriginVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;

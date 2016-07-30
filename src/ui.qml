@@ -105,6 +105,11 @@ FocusScope
             shortcut: "F11"
             onTriggered: window.toggleFullscreen();
           }
+          MenuItem {
+            text: "Toggle coordinate system"
+            shortcut: "F12"
+            onTriggered: nodes.toggleCoordinateSystem();
+          }
         }
         Menu {
           title: "Simulation"
