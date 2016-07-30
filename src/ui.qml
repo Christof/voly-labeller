@@ -158,12 +158,11 @@ FocusScope
           }
           MenuItem {
             text: "Save saliency"
-            shortcut: "C"
+            shortcut: "I"
             onTriggered: bufferTextures.saveSaliency();
           }
           MenuItem {
             text: "Save distance transform"
-            shortcut: "I"
             onTriggered: bufferTextures.saveDistanceTransform();
           }
           MenuItem {
