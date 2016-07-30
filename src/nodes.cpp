@@ -198,16 +198,7 @@ void Nodes::toggleBoundingVolumes()
 
 void Nodes::toggleCoordinateSystem()
 {
-  if (coordinateSystemNode.get())
-  {
-    removeNode(coordinateSystemNode);
-    coordinateSystemNode.reset();
-  }
-  else
-  {
-    coordinateSystemNode = std::make_shared<CoordinateSystemNode>();
-    addNode(coordinateSystemNode);
-  }
+  coordinateSystemNode->toggleVisibility();
 }
 
 void Nodes::toggleCameraOriginVisualizer()
