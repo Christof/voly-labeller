@@ -46,12 +46,11 @@ class LabelNode : public Node
   float anchorSize = 10.0f;
   float alpha = 1.0f;
 
-  void setIsVisible(bool isVisible);
+  virtual void setIsVisible(bool isVisible);
 
  private:
   std::string textureText;
   Eigen::Vector2f labelSize;
-  bool isVisible = false;
   bool isOutsideFieldOfView = false;
   float timeSinceIsVisibleChanged = 100.0f;
   const float fadeTime = 1.0f;
