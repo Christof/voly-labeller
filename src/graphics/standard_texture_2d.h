@@ -3,6 +3,7 @@
 #define SRC_GRAPHICS_STANDARD_TEXTURE_2D_H_
 
 #include <string>
+#include <vector>
 
 namespace Graphics
 {
@@ -43,6 +44,8 @@ class StandardTexture2d
   Gl *gl;
 
   int getComponentsPerPixel();
+  void convertToR8IAndSave(const std::vector<float> &pixels,
+                           std::string filename);
 };
 
 }  // namespace Graphics
