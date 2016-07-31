@@ -14,6 +14,7 @@ const Eigen::Vector4f color = { 0.85f, 0.85f, 0.85f, 1 };
 
 LabelNode::LabelNode(Label label) : label(label)
 {
+  isVisible = false;
   Importer importer;
 
   anchorMesh = importer.import("assets/anchor.dae", 0);

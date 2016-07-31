@@ -89,6 +89,12 @@ void TextureMapperManager::resize(int width, int height)
 
 void TextureMapperManager::update()
 {
+  if (saveSaliencyInNextFrame)
+  {
+    saliencyTexture->save("saliency.tiff");
+    saveSaliencyInNextFrame = false;
+  }
+
   for (auto mappers : mappersForLayers)
     mappers->update();
 }
@@ -176,6 +182,11 @@ void TextureMapperManager::cleanup()
 void TextureMapperManager::saveOcclusion(std::string filename)
 {
   occlusionTexture->save(filename);
+}
+
+void TextureMapperManager::saveSaliency()
+{
+  saveSaliencyInNextFrame = true;
 }
 
 void TextureMapperManager::saveDistanceTransform()

@@ -16,3 +16,8 @@ void TextureMapperManagerController::saveApollonius()
 {
   textureMapperManager->saveApollonius();
 }
+
+void TextureMapperManagerController::saveSaliency()
+{
+  textureMapperManager->saveSaliency();
+}

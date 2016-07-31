@@ -42,12 +42,23 @@ class Node
     return persistable;
   }
 
+  virtual void setIsVisible(bool isVisible)
+  {
+    this->isVisible = isVisible;
+  }
+
+  void toggleVisibility()
+  {
+    setIsVisible(!isVisible);
+  }
+
  protected:
   Node()
   {
   }
 
   bool persistable = true;
+  bool isVisible = true;
   Math::Obb obb;
 
  private:

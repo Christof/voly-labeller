@@ -58,6 +58,7 @@ class TextureMapperManager
   void saveOcclusion(std::string filename);
   void saveDistanceTransform();
   void saveApollonius();
+  void saveSaliency();
 
   int getBufferSize();
 
@@ -65,6 +66,7 @@ class TextureMapperManager
   int bufferSize;
   int width;
   int height;
+  bool saveSaliencyInNextFrame = false;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
 
   std::shared_ptr<CudaTextureMapper> accumulatedLayersTextureMapper;

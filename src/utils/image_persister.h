@@ -3,6 +3,7 @@
 #define SRC_UTILS_IMAGE_PERSISTER_H_
 
 #include <Eigen/Core>
+#include <QImage>
 #include <boost/filesystem.hpp>
 #include <string>
 #include <vector>
@@ -32,6 +33,13 @@ class ImagePersister
     image.write(filename);
   }
 
+  static void saveR8I(unsigned char *data, int width, int height,
+                      std::string filename)
+  {
+    QImage image(data, width, height, QImage::Format_Grayscale8);
+    image.save(QString(filename.c_str()));
+  }
+
   static std::vector<Eigen::Vector4f> loadRGBA32F(std::string filename)
   {
     if (!boost::filesystem::exists(filename))
@@ -56,6 +64,17 @@ class ImagePersister
 
     image.write(0, 0, image.columns(), image.rows(), "R",
                 Magick::StorageType::FloatPixel, result.data());
+
+    return result;
+  }
+
+  static std::vector<unsigned char> loadR8I(std::string filename)
+  {
+    QImage image(filename.c_str());
+
+    std::vector<unsigned char> result(image.byteCount());
+
+    std::memcpy(result.data(), image.bits(), image.byteCount());
 
     return result;
   }

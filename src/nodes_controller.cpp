@@ -46,6 +46,16 @@ void NodesController::toggleBoundingVolumes()
   nodes->toggleBoundingVolumes();
 }
 
+void NodesController::toggleCoordinateSystem()
+{
+  nodes->toggleCoordinateSystem();
+}
+
+void NodesController::toggleCameraOriginVisualizer()
+{
+  nodes->toggleCameraOriginVisualizer();
+}
+
 void NodesController::changeAnchorSize(float size)
 {
   labelAnchorSize = size;

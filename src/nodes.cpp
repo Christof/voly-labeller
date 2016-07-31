@@ -14,7 +14,9 @@
 
 Nodes::Nodes()
 {
-  addNode(std::make_shared<CoordinateSystemNode>());
+  coordinateSystemNode = std::make_shared<CoordinateSystemNode>();
+  addNode(coordinateSystemNode);
+
   cameraNode = std::make_shared<CameraNode>();
   addNode(cameraNode);
 }
@@ -192,6 +194,16 @@ void Nodes::toggleBoundingVolumes()
       }
     }
   }
+}
+
+void Nodes::toggleCoordinateSystem()
+{
+  coordinateSystemNode->toggleVisibility();
+}
+
+void Nodes::toggleCameraOriginVisualizer()
+{
+  cameraOriginVisualizerNode->toggleVisibility();
 }
 
 void Nodes::addForcesVisualizerNode(std::shared_ptr<Node> node)

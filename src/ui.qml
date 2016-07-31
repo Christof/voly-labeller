@@ -101,8 +101,17 @@ FocusScope
             onTriggered: cameraPositions.toggleVisibility();
           }
           MenuItem {
-            text: "Toggle fullscreen"
+            text: "Toggle camera origin visualizer"
             shortcut: "F11"
+            onTriggered: nodes.toggleCameraOriginVisualizer();
+          }
+          MenuItem {
+            text: "Toggle coordinate system"
+            shortcut: "F12"
+            onTriggered: nodes.toggleCoordinateSystem();
+          }
+          MenuItem {
+            text: "Toggle fullscreen"
             onTriggered: window.toggleFullscreen();
           }
         }
@@ -157,8 +166,12 @@ FocusScope
             onTriggered: labelling.saveOcclusion();
           }
           MenuItem {
-            text: "Save distance transform"
+            text: "Save saliency"
             shortcut: "I"
+            onTriggered: bufferTextures.saveSaliency();
+          }
+          MenuItem {
+            text: "Save distance transform"
             onTriggered: bufferTextures.saveDistanceTransform();
           }
           MenuItem {
