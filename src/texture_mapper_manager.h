@@ -66,7 +66,7 @@ class TextureMapperManager
   int bufferSize;
   int width;
   int height;
-  bool saveSaliencyOnNextBind = false;
+  bool saveSaliencyInNextFrame = false;
   std::vector<std::shared_ptr<TextureMappersForLayer>> mappersForLayers;
 
   std::shared_ptr<CudaTextureMapper> accumulatedLayersTextureMapper;
