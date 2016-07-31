@@ -51,6 +51,9 @@ void StandardTexture2d::save(std::string filename)
   int pixelCount = width * height;
   std::vector<float> pixels(pixelCount * componets);
 
+  int usedBuffer = 0;
+  gl->glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &usedBuffer);
+
   unsigned int fboId = 0;
   gl->glGenFramebuffers(1, &fboId);
   gl->glBindFramebuffer(GL_FRAMEBUFFER, fboId);
@@ -70,7 +73,7 @@ void StandardTexture2d::save(std::string filename)
     ::ImagePersister::saveRGBA32F(pixels.data(), width, height, filename);
   }
 
-  gl->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  gl->glBindFramebuffer(GL_FRAMEBUFFER, usedBuffer);
   gl->glDeleteBuffers(1, &fboId);
 }
 
