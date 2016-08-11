@@ -30,6 +30,7 @@ uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
 uniform sampler3D volumeSampler;
 
 const float DEPTH_NOT_SET = -10.0f;
+const float EARLY_RAY_TERMINATION_ALPHA = 0.999f;
 
 #define transferFunctionRowCount 64.0f
 
@@ -268,7 +269,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     }
 
     // early ray termination
-    if (fragmentColor.a > 0.999)
+    if (fragmentColor.a > EARLY_RAY_TERMINATION_ALPHA)
       break;
 
     currentPos_eye += step_eye;
@@ -397,7 +398,7 @@ void main()
       accumulatedOutputColor = blend(accumulatedOutputColor, currentFragment.color);
     }
 
-    if (finalColor.a > 0.999)
+    if (finalColor.a > EARLY_RAY_TERMINATION_ALPHA)
       break;
 
     // break; // just the first fragment
