@@ -30,7 +30,7 @@ uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
 uniform sampler3D volumeSampler;
 
 const float DEPTH_NOT_SET = -10.0f;
-const float EARLY_RAY_TERMINATION_ALPHA = 0.999f;
+const float EARLY_RAY_TERMINATION_ALPHA = 0.95f;
 
 #define transferFunctionRowCount 64.0f
 
