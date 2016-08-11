@@ -59,8 +59,7 @@ make
 - Clipper 6.2.1
 
 Some of these can be installed by running `scripts/install_dependencies.sh`.
-For ITK 4.7 is no package available, it must be downloaded and compiled separately.
-Boost, CUDA (including THRUST), Qt5.5 and OpenGL 4.5 must also be installed separately.
+CUDA (including THRUST), Qt5.5 and OpenGL 4.5 must be installed separately.
 
 ### Clipper
 Clipper can be downloaded [here](http://www.angusj.com/delphi/clipper.php).
