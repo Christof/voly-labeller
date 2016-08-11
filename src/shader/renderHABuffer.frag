@@ -372,6 +372,9 @@ void main()
         accumulatedOutputColor =
             accumulatedOutputColor +
             fragmentColor * (1.0f - accumulatedOutputColor.a);
+
+        if (accumulatedOutputColor.a > EARLY_RAY_TERMINATION_ALPHA)
+          break;
       }
 
       setColorForLayer(layerIndex, finalColor);
