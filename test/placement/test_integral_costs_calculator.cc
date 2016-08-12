@@ -15,8 +15,11 @@ TEST(Test_IntegraclCostsCalculator, IntegralCostsCalculator)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::IntegralCostsCalculator(occlusionProvider, saliencyProvider,
-                                     outputProvider).runKernel();
+  Placement::IntegralCostsCalculator calculator(occlusionProvider, saliencyProvider,
+                                     outputProvider);
+  calculator.occlusionWeight = 1.0f;
+  calculator.saliencyWeight = 1e-3f;
+  calculator.runKernel();
 
   auto result = outputProvider->copyDataFromGpu();
 
