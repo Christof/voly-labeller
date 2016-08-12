@@ -52,11 +52,12 @@ void Labeller::cleanup()
 }
 
 std::map<int, Eigen::Vector2f>
-Labeller::update(const LabellerFrameData &frameData)
+Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
 {
   if (labels->count() == 0)
     return std::map<int, Eigen::Vector2f>();
 
+  oldPositions = newPositions;
   newPositions.clear();
   if (!integralCosts.get())
     return newPositions;
@@ -92,9 +93,16 @@ Labeller::update(const LabellerFrameData &frameData)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
+    ignoreOldPosition = ignoreOldPosition || !oldPositions.count(label.id);
+    Eigen::Vector2f oldPositionPixel =
+        ignoreOldPosition
+            ? Eigen::Vector2f(0, 0)
+            : toPixel(oldPositions.at(label.id), size);
+
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(), label.size.y());
+        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldPosition,
+        oldPositionPixel.x(), oldPositionPixel.y());
 
     constraintUpdater->setPosition(label.id, result.position);
     costSum += result.cost;
@@ -137,13 +145,19 @@ float Labeller::getLastSumOfCosts()
   return costSum;
 }
 
-Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
+Eigen::Vector2f Labeller::toPixel(Eigen::Vector2f ndc, Eigen::Vector2i size)
 {
   const Eigen::Vector2f half(0.5f, 0.5f);
 
   auto zeroToOne = ndc.head<2>().cwiseProduct(half) + half;
 
   return zeroToOne.cwiseProduct(size.cast<float>());
+}
+
+Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
+{
+  Eigen::Vector2f ndc2d = ndc.head<2>();
+  return toPixel(ndc2d, size);
 }
 
 }  // namespace Placement

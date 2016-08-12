@@ -61,7 +61,7 @@ Item {
     }
     x: 570; y: 51
     width: 430
-    height: 170
+    height: 200
     model: placement
     focus: true
     clip: true

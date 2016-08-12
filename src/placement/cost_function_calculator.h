@@ -22,8 +22,9 @@ struct CostFunctionWeights
 {
   float labelShadowConstraint = 1e2f;
   float integralCosts = 1.0f;
-  float distanceToAnchor = 1e-3f;
-  float favorHorizontalOrVerticalLines = 1e-1f;
+  float distanceToAnchor = 1e-2f;
+  float distanceToOldPosition = 1e5f;
+  float favorHorizontalOrVerticalLines = 1.0f;
   float connectorShadowConstraint = 1e1f;
   float anchorConstraint = 1e2f;
 };
@@ -66,10 +67,11 @@ class CostFunctionCalculator
   void resize(int width, int height);
   void setTextureSize(int width, int height);
 
-  CostFunctionResult calculateForLabel(
-      const thrust::device_vector<float> &integralCosts, int labelId,
-      float anchorX, float anchorY, int labelWidthInPixel,
-      int labelHeightInPixel);
+  CostFunctionResult
+  calculateForLabel(const thrust::device_vector<float> &integralCosts,
+                    int labelId, float anchorX, float anchorY,
+                    int labelWidthInPixel, int labelHeightInPixel,
+                    bool ignoreOldPosition, int oldPositionX, int oldPositionY);
 
   CostFunctionWeights weights;
 

@@ -25,6 +25,10 @@ class IntegralCostsCalculator
 
   void runKernel();
 
+  float occlusionWeight = 1.0f;
+  float saliencyWeight = 1e-3f;
+
+
  private:
   std::shared_ptr<CudaArrayProvider> occlusionProvider;
   std::shared_ptr<CudaArrayProvider> saliencyProvider;

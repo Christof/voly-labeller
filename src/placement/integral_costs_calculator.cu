@@ -56,9 +56,6 @@ void IntegralCostsCalculator::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  float occlusionWeight = 1.0f;
-  float saliencyWeight = 1e-3f;
-
   sumWeightedCosts<<<dimGrid, dimBlock>>>(occlusion, occlusionWeight,
                                           saliency, saliencyWeight, output,
                                           outputWidth, outputHeight);
