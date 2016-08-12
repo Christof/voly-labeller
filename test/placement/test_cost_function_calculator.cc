@@ -34,8 +34,8 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
   int anchorY = 12;
   int labelWidthInPixel = 3;
   int labelHeightInPixel = 3;
-  int expectedX = 9;
-  int expectedY = 6;
+  int expectedX = 1;
+  int expectedY = 1;
 
   bool ignoreOldPosition = false;
   auto result = calculator.calculateForLabel(
