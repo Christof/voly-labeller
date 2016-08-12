@@ -21,8 +21,8 @@ TEST(Test_IntegraclCostsCalculator, IntegralCostsCalculator)
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_FLOAT_EQ(0.3f, result[0]);
-  EXPECT_FLOAT_EQ(0.8f, result[1]);
-  EXPECT_FLOAT_EQ(0.8f, result[2]);
-  EXPECT_FLOAT_EQ(0.9f, result[3]);
+  EXPECT_FLOAT_EQ(20.1f, result[0]);
+  EXPECT_FLOAT_EQ(10.7f, result[1]);
+  EXPECT_FLOAT_EQ(40.4f, result[2]);
+  EXPECT_FLOAT_EQ(60.3f, result[3]);
 }
