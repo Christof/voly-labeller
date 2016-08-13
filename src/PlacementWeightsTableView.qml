@@ -23,6 +23,12 @@ Item {
       Loader {
         id: numberTextDelegate
         source: "NumberTextSliderInput.qml"
+        onLoaded: {
+          item.minSliderValue = 0
+          item.maxSliderValue = 1e5
+          item.minTextValue = 0
+          item.maxTextValue = 1e5
+        }
       }
 
       Connections {
