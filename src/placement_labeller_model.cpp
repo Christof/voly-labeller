@@ -5,7 +5,7 @@
 #include "./placement_labeller_model.h"
 #include "./labelling_coordinator.h"
 
-const int ROW_COUNT = 7;
+const int ROW_COUNT = 9;
 
 PlacementLabellerModel::PlacementLabellerModel(
     std::shared_ptr<LabellingCoordinator> coordinator)
@@ -92,6 +92,12 @@ void PlacementLabellerModel::changeWeight(int row, QVariant newValue)
     case 6:
       weights.distanceToOldPosition = value;
       break;
+    case 7:
+      integralCostsWeights.saliency = value;
+      break;
+    case 8:
+      integralCostsWeights.occlusion = value;
+      break;
     }
   }
 
@@ -122,6 +128,10 @@ QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
     return "Anchor constraint";
   case 6:
     return "Distance to old position";
+  case 7:
+    return "Saliency";
+  case 8:
+    return "Occlusion";
   }
 
   return "Unknown";
@@ -145,6 +155,10 @@ float PlacementLabellerModel::getWeightValueForRowIndex(int rowIndex) const
     return weights.anchorConstraint;
   case 6:
     return weights.distanceToOldPosition;
+  case 7:
+    return integralCostsWeights.saliency;
+  case 8:
+    return integralCostsWeights.occlusion;
   }
 
   return 0.0f;

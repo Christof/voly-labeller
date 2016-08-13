@@ -5,6 +5,7 @@
 #include <QAbstractTableModel>
 #include <memory>
 #include "./placement/cost_function_calculator.h"
+#include "./placement/integral_costs_calculator.h"
 
 class LabellingCoordinator;
 
@@ -52,6 +53,7 @@ class PlacementLabellerModel : public QAbstractTableModel
   std::shared_ptr<LabellingCoordinator> coordinator;
 
   Placement::CostFunctionWeights weights;
+  Placement::IntegralCostsWeights integralCostsWeights;
 
   QString getWeightNameForRowIndex(int rowIndex) const;
   float getWeightValueForRowIndex(int rowIndex) const;
