@@ -17,8 +17,8 @@ TEST(Test_IntegraclCostsCalculator, IntegralCostsCalculator)
 
   Placement::IntegralCostsCalculator calculator(occlusionProvider, saliencyProvider,
                                      outputProvider);
-  calculator.occlusionWeight = 1.0f;
-  calculator.saliencyWeight = 1e-3f;
+  calculator.weights.occlusion = 1.0f;
+  calculator.weights.saliency = 1e-3f;
   calculator.runKernel();
 
   auto result = outputProvider->copyDataFromGpu();

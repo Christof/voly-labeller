@@ -56,8 +56,8 @@ void IntegralCostsCalculator::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  sumWeightedCosts<<<dimGrid, dimBlock>>>(occlusion, occlusionWeight,
-                                          saliency, saliencyWeight, output,
+  sumWeightedCosts<<<dimGrid, dimBlock>>>(occlusion, weights.occlusion,
+                                          saliency, weights.saliency, output,
                                           outputWidth, outputHeight);
 
   HANDLE_ERROR(cudaThreadSynchronize());

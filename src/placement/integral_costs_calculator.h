@@ -9,6 +9,15 @@ namespace Placement
 {
 
 /**
+ * \brief Weights for integral costs.
+ */
+struct IntegralCostsWeights
+{
+  float occlusion = 1.0f;
+  float saliency = 1e-3f;
+};
+
+/**
  * \brief Computes the weighted sum of the integral costs
  *
  * The integral costs constist of:
@@ -25,9 +34,7 @@ class IntegralCostsCalculator
 
   void runKernel();
 
-  float occlusionWeight = 1.0f;
-  float saliencyWeight = 1e-3f;
-
+  IntegralCostsWeights weights;
 
  private:
   std::shared_ptr<CudaArrayProvider> occlusionProvider;
