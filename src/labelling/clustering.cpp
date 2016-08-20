@@ -106,8 +106,8 @@ Clustering::getMedianClusterMembersWithLabelIds()
 
   for (float median : medians)
   {
-    for (auto iterator = labelIndicesToPlace.cbegin();
-         iterator != labelIndicesToPlace.cend();)
+    for (auto iterator = labelIndicesToPlace.begin();
+         iterator != labelIndicesToPlace.end();)
     {
       auto labelIndex = *iterator;
       if (zValues[labelIndex] <= median)
