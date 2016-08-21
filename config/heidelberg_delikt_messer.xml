@@ -2,23 +2,23 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>9</count>
+	<count>10</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
-				<r0c0>9.986272454e-01</r0c0>
-				<r0c1>0.000000000e+00</r0c1>
-				<r0c2>-5.237891898e-02</r0c2>
-				<r0c3>-8.876574039e-02</r0c3>
-				<r1c0>-9.781843051e-03</r1c0>
-				<r1c1>9.824071527e-01</r1c1>
-				<r1c2>-1.864951700e-01</r1c2>
-				<r1c3>-2.678704858e-01</r1c3>
-				<r2c0>5.145743117e-02</r2c0>
-				<r2c1>1.867515296e-01</r2c1>
-				<r2c2>9.810586572e-01</r2c2>
-				<r2c3>-9.755501747e-01</r2c3>
+				<r0c0>9.887988567e-01</r0c0>
+				<r0c1>3.725290298e-09</r0c1>
+				<r0c2>-1.492543966e-01</r0c2>
+				<r0c3>-2.980232239e-08</r0c3>
+				<r1c0>-6.545199454e-02</r1c0>
+				<r1c1>8.987183571e-01</r1c1>
+				<r1c2>-4.336144328e-01</r1c2>
+				<r1c3>-8.195638657e-08</r1c3>
+				<r2c0>1.341376454e-01</r2c0>
+				<r2c1>4.385264218e-01</r2c1>
+				<r2c2>8.886516094e-01</r2c2>
+				<r2c3>-1.015545130e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
@@ -35,17 +35,17 @@
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.000871181e+00</r2c2>
-				<r2c3>-2.000871347e-03</r2c3>
+				<r2c2>-1.000775218e+00</r2c2>
+				<r2c3>-2.000775188e-03</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
 				<r3c3>0.000000000e+00</r3c3>
 			</projectionMatrix>
 			<origin class_id="4" tracking_level="0" version="0">
-				<x>6.773485988e-02</x>
-				<y>1.967835724e-01</y>
-				<z>-4.032892287e-01</z>
+				<x>8.896255288e-09</x>
+				<y>2.584543424e-08</y>
+				<z>-5.296776351e-08</z>
 			</origin>
 			<cameraPositions class_id="5" tracking_level="0" version="0">
 				<count>1</count>
@@ -137,7 +137,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_4">
-			<volumePath>/home/christof/Documents/master/voly-labeller/assets/datasets/delikt_messer_256_lung_and_stich.mha</volumePath>
+			<volumePath>/home/christof/Documents/master/voly-labeller/assets/datasets/delikt_messer_256_air.mha</volumePath>
 			<transferFunctionPath>/home/christof/Documents/master/voly-labeller/assets/transferfunctions/air_cavities_lung.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
@@ -204,7 +204,24 @@
 					<z>5.270540342e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.280000000e+02</x>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_8">
+			<label>
+				<label.id>6</label.id>
+				<label.text>shoulder wound</label.text>
+				<label.anchorPosition>
+					<x>1.291521341e-01</x>
+					<y>4.565577209e-01</y>
+					<z>-3.841095790e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
