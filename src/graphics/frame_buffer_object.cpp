@@ -106,9 +106,10 @@ void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
 
 void FrameBufferObject::resizeAndSetDepthAttachment(int width, int height)
 {
-  resizeTexture(depthTexture, width, height, GL_DEPTH_COMPONENT,
-                GL_DEPTH_COMPONENT32F, GL_FLOAT);
-  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+  resizeTexture(depthTexture, width, height, GL_DEPTH_STENCIL,
+                GL_DEPTH32F_STENCIL8, GL_FLOAT_32_UNSIGNED_INT_24_8_REV);
+  glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER,
+                                      GL_DEPTH_STENCIL_ATTACHMENT,
                                       GL_TEXTURE_2D, depthTexture, 0));
 }
 
