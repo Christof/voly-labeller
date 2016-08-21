@@ -71,8 +71,14 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
 
     if (alpha > 0)
     {
-      renderConnector(gl, managers, renderData);
+      gl->glStencilFunc(GL_ALWAYS, 1, 0xFF);
+      gl->glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+      gl->glStencilMask(0xFF);
       renderLabel(gl, managers, renderData);
+
+      gl->glStencilFunc(GL_EQUAL, 0, 0xFF);
+      renderConnector(gl, managers, renderData);
+      glStencilMask(0x00);
     }
 
     timeSinceIsVisibleChanged += renderData.frameTime;
