@@ -74,6 +74,13 @@ class ObjectManager
     GLuint baseInstance;
   };
 
+  struct CustomBufferData
+  {
+    void* pointer;
+    int size;
+    int index;
+  };
+
   int nextFreeId = 1;
 
   const GLbitfield MAP_FLAGS = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;

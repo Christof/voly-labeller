@@ -130,8 +130,7 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   auto *matrices = transformBuffer.reserve(objectCount);
 
   int customBufferIndex = 0;
-  std::vector<void *> customBufferPointers;
-  std::vector<int> customBufferSizes;
+  std::vector<CustomBufferData> customBuffersData;
   for (auto customBuffer : customBuffers)
   {
     int customBufferSize =
@@ -140,11 +139,13 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
     if (customBufferSize)
     {
       void *custom = customBuffer->reserve(customBufferSize);
-      qCDebug(omChan) << "Index" << customBufferIndex << "customBufferSize"
+      qCDebug(omChan) << "Buffer" << customBuffer.get() << "Index"
+                      << customBufferIndex << "customBufferSize"
                       << customBufferSize << "custom" << custom << "matrices"
                       << matrices;
-      customBufferPointers.push_back(custom);
-      customBufferSizes.push_back(customBufferSize);
+      customBuffersData.push_back({.pointer = custom,
+                                   .size = customBufferSize,
+                                   .index = customBufferIndex });
     }
 
     ++customBufferIndex;
@@ -166,10 +167,8 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
     if (objectData.hasCustomBuffer())
     {
-      for (size_t customBufferIndex = 0;
-           customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
-        objectData.fillBufferElementFor(customBufferIndex,
-                                        customBufferPointers[customBufferIndex],
+      for (auto &bufferData : customBuffersData)
+        objectData.fillBufferElementFor(bufferData.index, bufferData.pointer,
                                         counter);
     }
 
@@ -177,11 +176,10 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
   }
 
   transformBuffer.bindBufferRange(0, objectCount);
-  for (size_t customBufferIndex = 0;
-       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  for (auto &bufferData : customBuffersData)
   {
-    customBuffers[customBufferIndex]->bindBufferRange(
-        customBufferIndex + 1, customBufferSizes[customBufferIndex]);
+    customBuffers[bufferData.index]->bindBufferRange(
+        bufferData.index + 1, bufferData.size);
   }
 
   // We didn't use MAP_COHERENT here - make sure data is on the gpu
@@ -200,11 +198,9 @@ void ObjectManager::renderObjects(std::vector<ObjectData> objects)
 
   commandsBuffer.onUsageComplete(objectCount);
   transformBuffer.onUsageComplete(objectCount);
-  for (size_t customBufferIndex = 0;
-       customBufferIndex < customBufferPointers.size(); ++customBufferIndex)
+  for (auto &bufferData : customBuffersData)
   {
-    customBuffers[customBufferIndex]->onUsageComplete(
-        customBufferSizes[customBufferIndex]);
+    customBuffers[bufferData.index]->onUsageComplete(bufferData.size);
   }
 }
 
