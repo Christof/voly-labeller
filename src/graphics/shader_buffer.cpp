@@ -69,7 +69,7 @@ void *ShaderBuffer::reserve(GLsizeiptr count)
            << "head" << head << "this->count" << this->count;
   assert(count <= this->count);
 
-  if (head + count > this->count)
+  if (head + count >= this->count)
     head = 0;
 
   GLsizeiptr lockStart = head;
