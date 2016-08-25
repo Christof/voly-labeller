@@ -5,6 +5,8 @@
 namespace Graphics
 {
 
+QLoggingCategory sbChan("Graphics.ShaderBuffer");
+
 ShaderBuffer::ShaderBuffer(GLenum target, bool runUpdatesOnCPU)
   : lockManager(runUpdatesOnCPU), target(target)
 {
@@ -12,7 +14,7 @@ ShaderBuffer::ShaderBuffer(GLenum target, bool runUpdatesOnCPU)
 
 ShaderBuffer::~ShaderBuffer()
 {
-  qInfo() << "Destructor of ShaderBuffer";
+  qCInfo(sbChan) << "Destructor of ShaderBuffer";
   terminate();
 }
 
@@ -25,7 +27,7 @@ bool ShaderBuffer::initialize(Gl *gl, GLuint count, GLbitfield createFlags,
   this->head = 0;
 
   gl->glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &offsetAlignment);
-  qDebug() << "Offset alignment" << offsetAlignment;
+  qCDebug(sbChan) << "Offset alignment" << offsetAlignment;
 
   if (bufferContent)
     terminate();
@@ -40,7 +42,7 @@ bool ShaderBuffer::initialize(Gl *gl, GLuint count, GLbitfield createFlags,
 
   if (!bufferContent)
   {
-    qWarning() << "glMapBufferRange failed, probable bug.";
+    qCWarning(sbChan) << "glMapBufferRange failed, probable bug.";
     return false;
   }
 
@@ -63,11 +65,11 @@ void ShaderBuffer::terminate()
 
 void *ShaderBuffer::reserve(GLsizeiptr count)
 {
-  qDebug() << "Reserve" << count << "bytes"
-           << "head" << head;
+  qCDebug(sbChan) << this << "Reserve" << count << "bytes"
+           << "head" << head << "this->count" << this->count;
   assert(count <= this->count);
 
-  if (head + count > this->count)
+  if (head + count >= this->count)
     head = 0;
 
   GLsizeiptr lockStart = head;
@@ -80,6 +82,9 @@ void ShaderBuffer::onUsageComplete(GLsizeiptr count)
 {
   int alignedCount =
       std::ceil(count / static_cast<float>(offsetAlignment)) * offsetAlignment;
+  qCDebug(sbChan) << this << "onUsageComplete: count" << count << "aligendCount"
+    << alignedCount;
+
 
   lockManager.lockRange(head, alignedCount);
   head += alignedCount;
@@ -87,6 +92,8 @@ void ShaderBuffer::onUsageComplete(GLsizeiptr count)
 
 void ShaderBuffer::bindBufferRange(GLuint index, GLsizeiptr count)
 {
+  qCDebug(sbChan) << this << "bindBufferRange: count" << count << "head"
+    << head << "this->count" << this->count;
   assert(count <= this->count);
   assert(head + count <= this->count);
 
