@@ -90,6 +90,8 @@ flags = [
 '-isystem',
 '/usr/local/Qt/5.7/gcc_64/include/QtQml',
 '-isystem',
+'/usr/include/eigen3/',
+'-isystem',
 '/usr/local/include/eigen3/',
 '-isystem',
 '/usr/local/include/ITK-4.7/',
