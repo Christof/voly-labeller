@@ -99,6 +99,7 @@
       <invoke targettype="cameraRotation" src="startDragging"/>
     </initial>
     <state id="rotate-pick-origin">
+      <transition event="window.uiGotFocus" target="qt-ui"/>
       <transition event="Event.MouseMove" target="rotate-move-pick">
         <invoke targettype="picking" src="pickRotationPosition"/>
       </transition>
