@@ -31,14 +31,14 @@ void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
       Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitX()));
 
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lesion2_extracted.mha",
+      "assets/datasets/LIDC-IDRI_lesion2_extracted.mha",
       "assets/transferfunctions/LIDC_IDRI_lesions.gra", trans.matrix(), false));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lesion1_extracted.mha",
+      "assets/datasets/LIDC-IDRI_lesion1_extracted.mha",
       "assets/transferfunctions/LIDC_IDRI_lesions.gra", trans.matrix(), false));
 
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lung.mha",
+      "assets/datasets/LIDC-IDRI_lung.mha",
       "assets/transferfunctions/LIDC_IDRI.gra", trans.matrix(), false));
 }
 
