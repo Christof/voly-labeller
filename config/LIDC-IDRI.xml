@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>3</count>
+	<count>4</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -55,21 +55,21 @@
 	</item>
 	<item>
 		<px class_id="6" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lung.mha</volumePath>
-			<transferFunctionPath>assets/transferfunctions/LIDC_IDRI.gra</transferFunctionPath>
+			<volumePath>assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lesion2_extracted.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/LIDC_IDRI_lesions.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>-1.999999881e+00</r0c0>
 				<r0c1>-1.748455531e-07</r0c1>
 				<r0c2>7.642741861e-15</r0c2>
-				<r0c3>-2.980232239e-08</r0c3>
+				<r0c3>9.100824594e-02</r0c3>
 				<r1c0>0.000000000e+00</r1c0>
 				<r1c1>-8.742277657e-08</r1c1>
 				<r1c2>-2.000000000e+00</r1c2>
-				<r1c3>-1.800003648e-02</r1c3>
+				<r1c3>1.969999969e-01</r1c3>
 				<r2c0>1.748455389e-07</r2c0>
 				<r2c1>-2.000000000e+00</r2c1>
 				<r2c2>8.742277657e-08</r2c2>
-				<r2c3>0.000000000e+00</r2c3>
+				<r2c3>-1.944257021e-01</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
@@ -94,6 +94,30 @@
 				<r2c1>-2.000000000e+00</r2c1>
 				<r2c2>8.742277657e-08</r2c2>
 				<r2c3>-1.296165884e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="6" object_id="_3">
+			<volumePath>assets/datasets/LIDC-IDRI-1.3.6.1.4.1.14519.5.2.1.6279.6001.168037818448885856452592057286_lung.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/LIDC_IDRI.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>-1.999999881e+00</r0c0>
+				<r0c1>-1.748455531e-07</r0c1>
+				<r0c2>7.642741861e-15</r0c2>
+				<r0c3>-2.980232239e-08</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-8.742277657e-08</r1c1>
+				<r1c2>-2.000000000e+00</r1c2>
+				<r1c3>-1.800003648e-02</r1c3>
+				<r2c0>1.748455389e-07</r2c0>
+				<r2c1>-2.000000000e+00</r2c1>
+				<r2c2>8.742277657e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
