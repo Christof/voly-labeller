@@ -109,7 +109,7 @@ void Camera::changeDeclination(float deltaAngle)
 void Camera::changeRadius(float deltaRadius)
 {
   auto radius = getRadius() + deltaRadius;
-  position = origin - getNonnormalizedLookAt().normalized() * radius;
+  position = origin - getLookAt() * radius;
   update();
 }
 
@@ -121,13 +121,13 @@ Eigen::Vector3f unitVectorFromAngles(float azimuth, float declination)
 
 void Camera::update()
 {
-  auto radius = getNonnormalizedLookAt().norm();
+  auto radius = getRadius();
   position = origin + unitVectorFromAngles(azimuth, declination) * radius;
 
   float upDeclination = declination - 0.5f * static_cast<float>(M_PI);
   up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
-  auto n = getNonnormalizedLookAt().normalized();
+  auto n = getLookAt();
   auto u = up.cross(n).normalized();
   auto v = n.cross(u);
   auto e = position;
@@ -185,15 +185,15 @@ float Camera::getFarPlane()
   return this->farPlane;
 }
 
-Eigen::Vector3f Camera::getNonnormalizedLookAt() const
+Eigen::Vector3f Camera::getLookAt() const
 {
-  return origin - position;
+  return (origin - position).normalized();
 }
 
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
   this->origin = origin;
-  Eigen::Vector3f diff = -getNonnormalizedLookAt().normalized();
+  Eigen::Vector3f diff = -getLookAt();
 
   setAnglesFromUnitVector(diff);
   update();
@@ -246,7 +246,7 @@ void Camera::updateAnimation(double frameTime)
   origin = originDiff.norm() * direction;
   up = rotationMatrix.col(1);
 
-  Eigen::Vector3f lookAt = getNonnormalizedLookAt() / getRadius();
+  Eigen::Vector3f lookAt = getLookAt();
   setAnglesFromUnitVector(lookAt);
 
   update();

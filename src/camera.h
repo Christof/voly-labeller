@@ -81,7 +81,7 @@ class Camera
   void update();
   void setPosDirUpFrom(Eigen::Matrix4f viewMatrix);
   void setAnglesFromUnitVector(Eigen::Vector3f diff);
-  Eigen::Vector3f getNonnormalizedLookAt() const;
+  Eigen::Vector3f getLookAt() const;
 };
 
 #endif  // SRC_CAMERA_H_
