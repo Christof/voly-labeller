@@ -20,15 +20,12 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
   : projection(projectionMatrix), view(viewMatrix), origin(origin)
 {
-  position = -viewMatrix.inverse().col(3).head<3>();
-  direction = viewMatrix.col(2).head<3>();
-  up = viewMatrix.col(1).head<3>();
+  setPosDirUpFrom(viewMatrix);
 
   radius = (position - origin).norm();
 
   Eigen::Vector3f diff = (position - origin) / radius;
-  declination = asin(diff.y());
-  azimuth = -acos(diff.x() / cos(declination));
+  setAnglesFormUnitVector(diff);
 }
 
 Camera::~Camera()
@@ -248,9 +245,29 @@ void Camera::updateAnimation(double frameTime)
   radius = (position - origin).norm();
 
   Eigen::Vector3f lookAt = (position - origin) / radius;
-  declination = asin(lookAt.y());
-  azimuth = -acos(lookAt.x() / cos(declination));
+  setAnglesFormUnitVector(lookAt);
 
   update();
+}
+
+void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
+{
+  position = -viewMatrix.inverse().col(3).head<3>();
+  direction = viewMatrix.col(2).head<3>();
+  up = viewMatrix.col(1).head<3>();
+}
+
+void Camera::setAnglesFormUnitVector(Eigen::Vector3f diff)
+{
+  declination = asin(diff.y());
+  /*
+  if (diff.x() < 0)
+  {
+    declination = M_PI - declination;
+  }
+  azimuth = atan2(diff.x(), diff.z());
+  */
+
+  azimuth = -acos(diff.x() / cos(declination));
 }
 
