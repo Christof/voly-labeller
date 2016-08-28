@@ -81,7 +81,7 @@ class Camera
                                                float nearPlane, float farPlane);
   void update();
   void setPosDirUpFrom(Eigen::Matrix4f viewMatrix);
-  void setAnglesFormUnitVector(Eigen::Vector3f diff);
+  void setAnglesFromUnitVector(Eigen::Vector3f diff);
 };
 
 #endif  // SRC_CAMERA_H_
