@@ -6,12 +6,14 @@
 
 Camera::Camera()
   : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, 1.0f),
-    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
-    azimuth(1.5f * M_PI), declination(0.0f)
+    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f)
 {
   projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
   // projection = createOrthographicProjection(aspectRatio, nearPlane,
   // farPlane);
+
+  Eigen::Vector3f diff = (position - origin) / radius;
+  setAnglesFormUnitVector(diff);
 
   update();
 }
