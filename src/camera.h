@@ -61,7 +61,6 @@ class Camera
   Eigen::Vector3f direction;
   Eigen::Vector3f up;
 
-  float radius;
   float azimuth;
   float declination;
 
@@ -82,6 +81,7 @@ class Camera
   void update();
   void setPosDirUpFrom(Eigen::Matrix4f viewMatrix);
   void setAnglesFromUnitVector(Eigen::Vector3f diff);
+  Eigen::Vector3f getNonnormalizedLookAt() const;
 };
 
 #endif  // SRC_CAMERA_H_

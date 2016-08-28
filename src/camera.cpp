@@ -6,16 +6,13 @@
 
 Camera::Camera()
   : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, 1.0f),
-    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f)
+    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f)
 {
   projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
   // projection = createOrthographicProjection(aspectRatio, nearPlane,
   // farPlane);
 
-  Eigen::Vector3f diff = (position - origin) / radius;
-  setAnglesFromUnitVector(diff);
-
-  update();
+  setOrigin(origin);
 }
 
 Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
@@ -24,10 +21,7 @@ Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
 {
   setPosDirUpFrom(viewMatrix);
 
-  radius = (position - origin).norm();
-
-  Eigen::Vector3f diff = (position - origin) / radius;
-  setAnglesFromUnitVector(diff);
+  setOrigin(origin);
 }
 
 Camera::~Camera()
@@ -114,8 +108,8 @@ void Camera::changeDeclination(float deltaAngle)
 
 void Camera::changeRadius(float deltaRadius)
 {
-  radius += deltaRadius;
-  position = origin + (position - origin).normalized() * radius;
+  auto radius = getRadius() + deltaRadius;
+  position = origin - getNonnormalizedLookAt().normalized() * radius;
   update();
 }
 
@@ -127,14 +121,13 @@ Eigen::Vector3f unitVectorFromAngles(float azimuth, float declination)
 
 void Camera::update()
 {
-  radius = (origin - position).norm();
+  auto radius = getNonnormalizedLookAt().norm();
   position = origin + unitVectorFromAngles(azimuth, declination) * radius;
 
-  direction = (origin - position).normalized();
   float upDeclination = declination - 0.5f * static_cast<float>(M_PI);
   up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
-  auto n = direction.normalized();
+  auto n = getNonnormalizedLookAt().normalized();
   auto u = up.cross(n).normalized();
   auto v = n.cross(u);
   auto e = position;
@@ -192,10 +185,15 @@ float Camera::getFarPlane()
   return this->farPlane;
 }
 
+Eigen::Vector3f Camera::getNonnormalizedLookAt() const
+{
+  return origin - position;
+}
+
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
   this->origin = origin;
-  Eigen::Vector3f diff = (position - this->origin).normalized();
+  Eigen::Vector3f diff = -getNonnormalizedLookAt().normalized();
 
   setAnglesFromUnitVector(diff);
   update();
@@ -208,14 +206,16 @@ bool Camera::needsResizing()
 
 void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
 {
+  targetViewMatrix = viewMatrix;
+
   animationTime = 0.0f;
   animationDuration = duration;
 
   animationStartPosition = position;
-  animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
 
   animationStartRotation = view.block<3, 3>(0, 0);
   animationEndRotation = viewMatrix.block<3, 3>(0, 0);
+  animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
 }
 
 void Camera::updateAnimation(double frameTime)
@@ -246,9 +246,7 @@ void Camera::updateAnimation(double frameTime)
   origin = originDiff.norm() * direction;
   up = rotationMatrix.col(1);
 
-  radius = (position - origin).norm();
-
-  Eigen::Vector3f lookAt = (position - origin) / radius;
+  Eigen::Vector3f lookAt = getNonnormalizedLookAt() / getRadius();
   setAnglesFromUnitVector(lookAt);
 
   update();
