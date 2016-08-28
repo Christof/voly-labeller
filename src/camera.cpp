@@ -193,9 +193,9 @@ Eigen::Vector3f Camera::getLookAt() const
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
   this->origin = origin;
-  Eigen::Vector3f diff = -getLookAt();
+  Eigen::Vector3f originToPositionNormalized = -getLookAt();
 
-  setAnglesFromUnitVector(diff);
+  setAnglesFromUnitVector(originToPositionNormalized);
   update();
 }
 
