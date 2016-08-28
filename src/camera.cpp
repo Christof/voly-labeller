@@ -119,17 +119,20 @@ void Camera::changeRadius(float deltaRadius)
   update();
 }
 
+Eigen::Vector3f unitVectorFromAngles(float azimuth, float declination)
+{
+  return Eigen::Vector3f(sin(azimuth) * sin(declination), cos(declination),
+                         cos(azimuth) * sin(declination));
+}
+
 void Camera::update()
 {
   radius = (origin - position).norm();
-  position = origin +
-             Eigen::Vector3f(cos(azimuth) * cos(declination), sin(declination),
-                             sin(azimuth) * cos(declination)) *
-                 radius;
+  position = origin + unitVectorFromAngles(azimuth, declination) * radius;
+
   direction = (origin - position).normalized();
-  float upDeclination = declination - static_cast<float>(M_PI / 2.0);
-  up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
-                        sin(azimuth) * cos(upDeclination)).normalized();
+  float upDeclination = declination - 0.5f * static_cast<float>(M_PI);
+  up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
   auto n = direction.normalized();
   auto u = up.cross(n).normalized();
@@ -194,8 +197,7 @@ void Camera::setOrigin(Eigen::Vector3f origin)
   this->origin = origin;
   Eigen::Vector3f diff = (position - this->origin).normalized();
 
-  declination = asin(diff.y());
-  azimuth = -acos(diff.x() / cos(declination));
+  setAnglesFormUnitVector(diff);
   update();
 }
 
@@ -261,15 +263,13 @@ void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
 
 void Camera::setAnglesFormUnitVector(Eigen::Vector3f diff)
 {
-  declination = asin(diff.y());
+  declination = acos(diff.y());
   /*
   if (diff.x() < 0)
   {
     declination = M_PI - declination;
   }
-  azimuth = atan2(diff.x(), diff.z());
   */
-
-  azimuth = -acos(diff.x() / cos(declination));
+  azimuth = atan2(diff.x(), diff.z());
 }
 
