@@ -5,9 +5,9 @@
 #include <iostream>
 
 Camera::Camera()
-  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, -1.0f),
-    direction(0.0f, 0.0f, 1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
-    azimuth(static_cast<float>(-M_PI / 2.0)), declination(0.0f)
+  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, 1.0f),
+    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
+    azimuth(1.5f * M_PI), declination(0.0f)
 {
   projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
   // projection = createOrthographicProjection(aspectRatio, nearPlane,
