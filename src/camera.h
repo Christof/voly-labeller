@@ -81,6 +81,10 @@ class Camera
   void update();
   void setPosDirUpFrom(Eigen::Matrix4f viewMatrix);
   void setAnglesFromUnitVector(Eigen::Vector3f diff);
+
+  /**
+   * \brief Returns the normalized look at vector, i.e. origin - position normalized
+   */
   Eigen::Vector3f getLookAt() const;
 };
 
