@@ -128,12 +128,13 @@ void Camera::update()
   up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
   direction = getLookAt();
-  auto right = up.cross(direction).normalized();
-  up = direction.cross(right);
+  auto zAxis = -direction;
+  auto xAxis = up.cross(zAxis).normalized();
+  up = zAxis.cross(xAxis);
 
-  view << right.x(), right.y(), right.z(), right.dot(position), up.x(), up.y(),
-      up.z(), up.dot(position), direction.x(), direction.y(), direction.z(),
-      direction.dot(position), 0, 0, 0, 1;
+  view << xAxis.x(), xAxis.y(), xAxis.z(), -xAxis.dot(position), up.x(), up.y(),
+      up.z(), -up.dot(position), zAxis.x(), zAxis.y(), zAxis.z(),
+      -zAxis.dot(position), 0, 0, 0, 1;
 }
 
 Eigen::Matrix4f Camera::getViewMatrix() const
@@ -254,7 +255,7 @@ void Camera::updateAnimation(double frameTime)
 
 void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
 {
-  position = -viewMatrix.inverse().col(3).head<3>();
+  position = viewMatrix.inverse().col(3).head<3>();
   direction = viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
 }
