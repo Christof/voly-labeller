@@ -127,13 +127,13 @@ void Camera::update()
   float upDeclination = declination - 0.5f * static_cast<float>(M_PI);
   up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
-  auto n = getLookAt();
-  auto u = up.cross(n).normalized();
-  auto v = n.cross(u);
-  auto e = position;
+  direction = getLookAt();
+  auto right = up.cross(direction).normalized();
+  up = direction.cross(right);
 
-  view << u.x(), u.y(), u.z(), u.dot(e), v.x(), v.y(), v.z(), v.dot(e), n.x(),
-      n.y(), n.z(), n.dot(e), 0, 0, 0, 1;
+  view << right.x(), right.y(), right.z(), right.dot(position), up.x(), up.y(),
+      up.z(), up.dot(position), direction.x(), direction.y(), direction.z(),
+      direction.dot(position), 0, 0, 0, 1;
 }
 
 Eigen::Matrix4f Camera::getViewMatrix() const
