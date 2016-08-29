@@ -14,6 +14,6 @@ void CameraRotationController::updateFromDiff(Eigen::Vector2f diff)
   Eigen::Vector2f delta = scaling * diff;
 
   camera->changeAzimuth(-atan2(delta.x(), 1));
-  camera->changeDeclination(atan2(delta.y(), 1));
+  camera->changeDeclination(-atan2(delta.y(), 1));
 }
 
