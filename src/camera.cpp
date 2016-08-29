@@ -247,7 +247,7 @@ void Camera::updateAnimation(double frameTime)
   up = rotationMatrix.col(1);
 
   Eigen::Vector3f lookAt = getLookAt();
-  setAnglesFromUnitVector(lookAt);
+  setAnglesFromUnitVector(-lookAt);
 
   update();
 }
