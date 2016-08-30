@@ -240,15 +240,9 @@ void Camera::updateAnimation(double frameTime)
 
   direction = -rotationMatrix.col(2).normalized();
   up = rotationMatrix.col(1).normalized();
-  // origin = position + direction;  // originDiff.norm() * direction;
-  setOrigin(position + direction);
-
-  /*
+  origin = position + direction;
   setAnglesFromUnitVector(-direction);
-
   update();
-  //setOrigin(origin);
-  */
 }
 
 void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
