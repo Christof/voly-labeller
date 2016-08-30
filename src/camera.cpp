@@ -215,6 +215,11 @@ void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
   animationEndPosition = viewMatrix.inverse().col(3).head<3>();
 }
 
+float easeInOutQuad(float t)
+{
+  return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
 void Camera::updateAnimation(double frameTime)
 {
   if (animationDuration == 0.0f)
@@ -228,7 +233,7 @@ void Camera::updateAnimation(double frameTime)
     animationDuration = 0.0f;
   }
 
-  // factor = easeInOutQuad(factor);
+  factor = easeInOutQuad(factor);
 
   Eigen::Vector3f diff =
       factor * (animationEndPosition - animationStartPosition);
