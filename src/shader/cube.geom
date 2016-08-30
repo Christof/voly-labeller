@@ -114,8 +114,8 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
 
   for (int i = 0; i < 3; ++i)
   {
-    vec4 inPos = triangle[i];
-    bool isPosInFOV = dot(inPos, nearPlane) > cutOffZ;
+    const vec4 inPos = triangle[i];
+    const bool isPosInFOV = dot(inPos, nearPlane) > cutOffZ;
     if (isPosInFOV)
     {
       emittedVertexCount = emitWithPrimitiveHandling(
@@ -125,15 +125,15 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
         firstPosition = inPos;
     }
 
-    vec4 nextPos = triangle[(i + 1) % 3];
-    bool isNextPosInFOV = dot(nextPos, nearPlane) > cutOffZ;
+    const vec4 nextPos = triangle[(i + 1) % 3];
+    const bool isNextPosInFOV = dot(nextPos, nearPlane) > cutOffZ;
     if ((isPosInFOV && !isNextPosInFOV) || (!isPosInFOV && isNextPosInFOV))
     {
       triangleSplittingNecessary = true;
-      vec4 edge = inPos - nextPos;
-      float lambda = (cutOffZ - dot(nearPlane, inPos)) / dot(nearPlane, edge);
+      const vec4 edge = inPos - nextPos;
+      const float lambda = (cutOffZ - dot(nearPlane, inPos)) / dot(nearPlane, edge);
 
-      vec4 newPos = inPos + lambda * edge;
+      const vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
       emittedVertexCount = emitWithPrimitiveHandling(
           matrix, newPos, triangleSplittingNecessary, emittedVertexCount);
