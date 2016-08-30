@@ -156,7 +156,7 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
  * \brief Generates two triangles from the given data and processes them
  *
  * The side of the cube is calculated by generating a quad in the plane
- * which is determined by the side vector. The plane is has side as
+ * which is determined by the side vector. The plane has side as
  * normal and is 0.5 units away from the center point.
  */
 void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
