@@ -2,8 +2,6 @@
 #include <Eigen/Geometry>
 #include <math.h>
 
-#include <iostream>
-
 Camera::Camera()
   : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, 1.0f),
     direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f)
@@ -207,16 +205,14 @@ bool Camera::needsResizing()
 
 void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
 {
-  targetViewMatrix = viewMatrix;
-
   animationTime = 0.0f;
   animationDuration = duration;
 
   animationStartPosition = position;
 
-  animationStartRotation = view.block<3, 3>(0, 0);
-  animationEndRotation = viewMatrix.block<3, 3>(0, 0);
-  animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
+  animationStartRotation = view.block<3, 3>(0, 0).inverse();
+  animationEndRotation = viewMatrix.block<3, 3>(0, 0).inverse();
+  animationEndPosition = viewMatrix.inverse().col(3).head<3>();
 }
 
 void Camera::updateAnimation(double frameTime)
@@ -232,31 +228,33 @@ void Camera::updateAnimation(double frameTime)
     animationDuration = 0.0f;
   }
 
+  // factor = easeInOutQuad(factor);
+
   Eigen::Vector3f diff =
       factor * (animationEndPosition - animationStartPosition);
 
-  Eigen::Vector3f newPosition = animationStartPosition + diff;
-  Eigen::Vector3f originDiff = newPosition - position;
-  position = newPosition;
+  position = animationStartPosition + diff;
 
   auto rotation = animationStartRotation.slerp(factor, animationEndRotation);
   Eigen::Matrix3f rotationMatrix = rotation.toRotationMatrix();
 
-  std::cout << "originDiff norm: " << originDiff.norm() << std::endl;
-  direction = rotationMatrix.col(2);
-  origin = originDiff.norm() * direction;
-  up = rotationMatrix.col(1);
+  direction = -rotationMatrix.col(2).normalized();
+  up = rotationMatrix.col(1).normalized();
+  // origin = position + direction;  // originDiff.norm() * direction;
+  setOrigin(position + direction);
 
-  Eigen::Vector3f lookAt = getLookAt();
-  setAnglesFromUnitVector(-lookAt);
+  /*
+  setAnglesFromUnitVector(-direction);
 
   update();
+  //setOrigin(origin);
+  */
 }
 
 void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
 {
   position = viewMatrix.inverse().col(3).head<3>();
-  direction = viewMatrix.col(2).head<3>();
+  direction = -viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
 }
 
