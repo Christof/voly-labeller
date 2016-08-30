@@ -61,7 +61,6 @@ class Camera
   Eigen::Vector3f direction;
   Eigen::Vector3f up;
 
-  float radius;
   float azimuth;
   float declination;
 
@@ -80,6 +79,13 @@ class Camera
   Eigen::Matrix4f createOrthographicProjection(float aspectRatio,
                                                float nearPlane, float farPlane);
   void update();
+  void setPosDirUpFrom(Eigen::Matrix4f viewMatrix);
+  void setAnglesFromUnitVector(Eigen::Vector3f diff);
+
+  /**
+   * \brief Returns the normalized look at vector, i.e. origin - position normalized
+   */
+  Eigen::Vector3f getLookAt() const;
 };
 
 #endif  // SRC_CAMERA_H_

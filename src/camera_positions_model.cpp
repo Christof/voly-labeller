@@ -105,8 +105,8 @@ void CameraPositionsModel::moveTo(int row)
 void CameraPositionsModel::setTo(int row)
 {
   auto cameraNode = nodes->getCameraNode();
-  cameraNode->getCamera()->startAnimation(cameraPositions[row].viewMatrix,
-                                          1e-9f);
+  auto target = cameraPositions[row].viewMatrix;
+  cameraNode->getCamera()->startAnimation(target, 1e-9f);
 }
 
 void CameraPositionsModel::update(std::vector<CameraPosition> cameraPositions)

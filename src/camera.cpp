@@ -2,37 +2,38 @@
 #include <Eigen/Geometry>
 #include <math.h>
 
-#include <iostream>
-
 Camera::Camera()
-  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, -1.0f),
-    direction(0.0f, 0.0f, 1.0f), up(0.0f, 1.0f, 0.0f), radius(1.0f),
-    azimuth(static_cast<float>(-M_PI / 2.0)), declination(0.0f)
+  : origin(0.0f, 0.0f, 0.0f), position(0.0f, 0.0f, 1.0f),
+    direction(0.0f, 0.0f, -1.0f), up(0.0f, 1.0f, 0.0f)
 {
   projection = createProjection(fieldOfView, aspectRatio, nearPlane, farPlane);
   // projection = createOrthographicProjection(aspectRatio, nearPlane,
   // farPlane);
 
-  update();
+  setOrigin(origin);
 }
 
 Camera::Camera(Eigen::Matrix4f viewMatrix, Eigen::Matrix4f projectionMatrix,
                Eigen::Vector3f origin)
-  : projection(projectionMatrix), view(viewMatrix), origin(-origin)
+  : projection(projectionMatrix), view(viewMatrix), origin(origin)
 {
-  position = -viewMatrix.inverse().col(3).head<3>();
-  direction = viewMatrix.col(2).head<3>();
-  up = viewMatrix.col(1).head<3>();
+  setPosDirUpFrom(viewMatrix);
 
-  radius = (position - origin).norm();
-
-  Eigen::Vector3f diff = (position - origin) / radius;
-  declination = asin(diff.y());
-  azimuth = -acos(diff.x() / cos(declination));
+  setOrigin(origin);
 }
 
 Camera::~Camera()
 {
+}
+
+Eigen::Matrix3f getRotationFrom(Eigen::Matrix4f viewMatrix)
+{
+  return viewMatrix.block<3, 3>(0, 0).inverse();
+}
+
+Eigen::Vector3f getPositionFrom(Eigen::Matrix4f viewMatrix)
+{
+  return viewMatrix.inverse().col(3).head<3>();
 }
 
 Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
@@ -115,30 +116,33 @@ void Camera::changeDeclination(float deltaAngle)
 
 void Camera::changeRadius(float deltaRadius)
 {
-  radius += deltaRadius;
-  position = origin + (position - origin).normalized() * radius;
+  auto radius = getRadius() + deltaRadius;
+  position = origin - getLookAt() * radius;
   update();
+}
+
+Eigen::Vector3f unitVectorFromAngles(float azimuth, float declination)
+{
+  return Eigen::Vector3f(sin(azimuth) * sin(declination), cos(declination),
+                         cos(azimuth) * sin(declination));
 }
 
 void Camera::update()
 {
-  radius = (origin - position).norm();
-  position = origin +
-             Eigen::Vector3f(cos(azimuth) * cos(declination), sin(declination),
-                             sin(azimuth) * cos(declination)) *
-                 radius;
-  direction = (origin - position).normalized();
-  float upDeclination = declination - static_cast<float>(M_PI / 2.0);
-  up = -Eigen::Vector3f(cos(azimuth) * cos(upDeclination), sin(upDeclination),
-                        sin(azimuth) * cos(upDeclination)).normalized();
+  auto radius = getRadius();
+  position = origin + unitVectorFromAngles(azimuth, declination) * radius;
 
-  auto n = direction.normalized();
-  auto u = up.cross(n).normalized();
-  auto v = n.cross(u);
-  auto e = position;
+  float upDeclination = declination - 0.5f * static_cast<float>(M_PI);
+  up = unitVectorFromAngles(azimuth, upDeclination).normalized();
 
-  view << u.x(), u.y(), u.z(), u.dot(e), v.x(), v.y(), v.z(), v.dot(e), n.x(),
-      n.y(), n.z(), n.dot(e), 0, 0, 0, 1;
+  direction = getLookAt();
+  auto zAxis = -direction;
+  auto xAxis = up.cross(zAxis).normalized();
+  up = zAxis.cross(xAxis);
+
+  view << xAxis.x(), xAxis.y(), xAxis.z(), -xAxis.dot(position), up.x(), up.y(),
+      up.z(), -up.dot(position), zAxis.x(), zAxis.y(), zAxis.z(),
+      -zAxis.dot(position), 0, 0, 0, 1;
 }
 
 Eigen::Matrix4f Camera::getViewMatrix() const
@@ -158,7 +162,7 @@ Eigen::Vector3f Camera::getPosition() const
 
 Eigen::Vector3f Camera::getOrigin() const
 {
-  return -origin;
+  return origin;
 }
 
 float Camera::getRadius() const
@@ -190,13 +194,17 @@ float Camera::getFarPlane()
   return this->farPlane;
 }
 
+Eigen::Vector3f Camera::getLookAt() const
+{
+  return (origin - position).normalized();
+}
+
 void Camera::setOrigin(Eigen::Vector3f origin)
 {
-  this->origin = -origin;
-  Eigen::Vector3f diff = (position - this->origin).normalized();
+  this->origin = origin;
+  Eigen::Vector3f originToPositionNormalized = -getLookAt();
 
-  declination = asin(diff.y());
-  azimuth = -acos(diff.x() / cos(declination));
+  setAnglesFromUnitVector(originToPositionNormalized);
   update();
 }
 
@@ -211,10 +219,15 @@ void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
   animationDuration = duration;
 
   animationStartPosition = position;
-  animationEndPosition = -viewMatrix.inverse().col(3).head<3>();
 
-  animationStartRotation = view.block<3, 3>(0, 0);
-  animationEndRotation = viewMatrix.block<3, 3>(0, 0);
+  animationStartRotation = getRotationFrom(view);
+  animationEndRotation = getRotationFrom(viewMatrix);
+  animationEndPosition = getPositionFrom(viewMatrix);
+}
+
+float easeInOutQuad(float t)
+{
+  return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 }
 
 void Camera::updateAnimation(double frameTime)
@@ -230,27 +243,33 @@ void Camera::updateAnimation(double frameTime)
     animationDuration = 0.0f;
   }
 
+  factor = easeInOutQuad(factor);
+
   Eigen::Vector3f diff =
       factor * (animationEndPosition - animationStartPosition);
 
-  Eigen::Vector3f newPosition = animationStartPosition + diff;
-  Eigen::Vector3f originDiff = newPosition - position;
-  position = newPosition;
+  position = animationStartPosition + diff;
 
   auto rotation = animationStartRotation.slerp(factor, animationEndRotation);
   Eigen::Matrix3f rotationMatrix = rotation.toRotationMatrix();
 
-  std::cout << "originDiff norm: " << originDiff.norm() << std::endl;
-  direction = rotationMatrix.col(2);
-  origin = originDiff.norm() * direction;
-  up = rotationMatrix.col(1);
-
-  radius = (position - origin).norm();
-
-  Eigen::Vector3f lookAt = (position - origin) / radius;
-  declination = asin(lookAt.y());
-  azimuth = -acos(lookAt.x() / cos(declination));
-
+  direction = -rotationMatrix.col(2).normalized();
+  up = rotationMatrix.col(1).normalized();
+  origin = position + direction;
+  setAnglesFromUnitVector(-direction);
   update();
+}
+
+void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
+{
+  position = getPositionFrom(viewMatrix);
+  direction = -viewMatrix.col(2).head<3>();
+  up = viewMatrix.col(1).head<3>();
+}
+
+void Camera::setAnglesFromUnitVector(Eigen::Vector3f unitVectorInSphere)
+{
+  declination = acos(unitVectorInSphere.y());
+  azimuth = atan2(unitVectorInSphere.x(), unitVectorInSphere.z());
 }
 

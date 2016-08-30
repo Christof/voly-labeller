@@ -47,3 +47,29 @@ TEST(Test_Camera, ConstructorFromMatricesAfterRotation)
   EXPECT_TRUE(camera.needsResizing());
 }
 
+TEST(Test_Camera, AnimationToTheSamePosition)
+{
+  Camera camera;
+  Eigen::Matrix4f viewMatrix = camera.getViewMatrix();
+  camera.startAnimation(viewMatrix, 1.0f);
+
+  camera.updateAnimation(1.0f);
+
+  EXPECT_Matrix4f_NEAR(viewMatrix, camera.getViewMatrix(), 1e-5f);
+}
+
+TEST(Test_Camera, AnimationToAnotherPositionAndOrientation)
+{
+  Camera camera;
+
+  Eigen::Affine3f transformation(
+      Eigen::Translation3f(Eigen::Vector3f(2, 1, 0)) *
+      Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitY()));
+  Eigen::Matrix4f targetViewMatrix = transformation.matrix();
+
+  camera.startAnimation(targetViewMatrix, 1.0f);
+
+  camera.updateAnimation(1.0f);
+
+  EXPECT_Matrix4f_NEAR(targetViewMatrix, camera.getViewMatrix(), 1e-5f);
+}
