@@ -26,6 +26,16 @@ Camera::~Camera()
 {
 }
 
+Eigen::Matrix3f getRotationFrom(Eigen::Matrix4f viewMatrix)
+{
+  return viewMatrix.block<3, 3>(0, 0).inverse();
+}
+
+Eigen::Vector3f getPositionFrom(Eigen::Matrix4f viewMatrix)
+{
+  return viewMatrix.inverse().col(3).head<3>();
+}
+
 Eigen::Matrix4f Camera::createProjection(float fov, float aspectRatio,
                                          float nearPlane, float farPlane)
 {
@@ -210,9 +220,9 @@ void Camera::startAnimation(Eigen::Matrix4f viewMatrix, float duration)
 
   animationStartPosition = position;
 
-  animationStartRotation = view.block<3, 3>(0, 0).inverse();
-  animationEndRotation = viewMatrix.block<3, 3>(0, 0).inverse();
-  animationEndPosition = viewMatrix.inverse().col(3).head<3>();
+  animationStartRotation = getRotationFrom(view);
+  animationEndRotation = getRotationFrom(viewMatrix);
+  animationEndPosition = getPositionFrom(viewMatrix);
 }
 
 float easeInOutQuad(float t)
@@ -252,7 +262,7 @@ void Camera::updateAnimation(double frameTime)
 
 void Camera::setPosDirUpFrom(Eigen::Matrix4f viewMatrix)
 {
-  position = viewMatrix.inverse().col(3).head<3>();
+  position = getPositionFrom(viewMatrix);
   direction = -viewMatrix.col(2).head<3>();
   up = viewMatrix.col(1).head<3>();
 }
