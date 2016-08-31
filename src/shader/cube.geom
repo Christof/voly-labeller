@@ -225,7 +225,7 @@ void fillHole(const mat4 matrix)
     return;
   }
 
-  vec4 center = sortCutPositions(matrix);
+  const vec4 center = sortCutPositions(matrix);
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
   {
