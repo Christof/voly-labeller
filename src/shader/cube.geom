@@ -10,12 +10,11 @@
 #version 440
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 78) out;
+layout(triangle_strip, max_vertices = 113) out;
 
 in int vDrawId[];
 
 out vec4 vertexPos;
-out vec4 vertexColor;
 out vec4 vertexEyePos;
 out int volumeId;
 
@@ -35,16 +34,11 @@ int cutPositionCount = 0;
 /**
  * \brief Emits the vertex position defined by matrix * pos
  *
- * This consists of setting the vertexPos and vertexColor
- * as well as the gl_Position. The color is calculated
- * from the position so that it can be used as texture coordinate.
+ * This consists of setting the vertexPos and as well as the gl_Position.
  */
 void emit(const mat4 matrix, vec4 pos)
 {
   vertexPos = matrix * pos;
-  // vertexColor = vec4(physicalSize[vDrawId[0]].xyz, 1);
-  // vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
-  vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
   const vec4 size = physicalSize[vDrawId[0]];
   pos.xyz *= size.xyz;
   vertexEyePos = viewMatrix * getModelMatrix(vDrawId[0]) * pos;
