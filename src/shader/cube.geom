@@ -227,6 +227,7 @@ void fillHole(const mat4 matrix)
     emit(matrix, cutPositions[0]);
     emit(matrix, cutPositions[1]);
     emit(matrix, cutPositions[2]);
+    EndPrimitive();
     return;
   }
 
