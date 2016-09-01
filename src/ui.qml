@@ -13,8 +13,8 @@ FocusScope
     id: root
     x: 0
     y: 0
-    width: 1024
-    height: 1024
+    width: 512
+    height: 512
 
     Item {
       id: menuWrapper
