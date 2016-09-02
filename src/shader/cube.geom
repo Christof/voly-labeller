@@ -10,12 +10,11 @@
 #version 440
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 78) out;
+layout(triangle_strip, max_vertices = 113) out;
 
 in int vDrawId[];
 
 out vec4 vertexPos;
-out vec4 vertexColor;
 out vec4 vertexEyePos;
 out int volumeId;
 
@@ -35,16 +34,11 @@ int cutPositionCount = 0;
 /**
  * \brief Emits the vertex position defined by matrix * pos
  *
- * This consists of setting the vertexPos and vertexColor
- * as well as the gl_Position. The color is calculated
- * from the position so that it can be used as texture coordinate.
+ * This consists of setting the vertexPos and as well as the gl_Position.
  */
 void emit(const mat4 matrix, vec4 pos)
 {
   vertexPos = matrix * pos;
-  // vertexColor = vec4(physicalSize[vDrawId[0]].xyz, 1);
-  // vertexColor = pos + vec4(0.5, 0.5, 0.5, 0);
-  vertexColor = vec4(0.0, 0.0, 0.0, 0.0);
   const vec4 size = physicalSize[vDrawId[0]];
   pos.xyz *= size.xyz;
   vertexEyePos = viewMatrix * getModelMatrix(vDrawId[0]) * pos;
@@ -114,8 +108,8 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
 
   for (int i = 0; i < 3; ++i)
   {
-    vec4 inPos = triangle[i];
-    bool isPosInFOV = dot(inPos, nearPlane) > cutOffZ;
+    const vec4 inPos = triangle[i];
+    const bool isPosInFOV = dot(inPos, nearPlane) > cutOffZ;
     if (isPosInFOV)
     {
       emittedVertexCount = emitWithPrimitiveHandling(
@@ -125,15 +119,15 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
         firstPosition = inPos;
     }
 
-    vec4 nextPos = triangle[(i + 1) % 3];
-    bool isNextPosInFOV = dot(nextPos, nearPlane) > cutOffZ;
+    const vec4 nextPos = triangle[(i + 1) % 3];
+    const bool isNextPosInFOV = dot(nextPos, nearPlane) > cutOffZ;
     if ((isPosInFOV && !isNextPosInFOV) || (!isPosInFOV && isNextPosInFOV))
     {
       triangleSplittingNecessary = true;
-      vec4 edge = inPos - nextPos;
-      float lambda = (cutOffZ - dot(nearPlane, inPos)) / dot(nearPlane, edge);
+      const vec4 edge = inPos - nextPos;
+      const float lambda = (cutOffZ - dot(nearPlane, inPos)) / dot(nearPlane, edge);
 
-      vec4 newPos = inPos + lambda * edge;
+      const vec4 newPos = inPos + lambda * edge;
       addCutPositionIfNew(newPos);
       emittedVertexCount = emitWithPrimitiveHandling(
           matrix, newPos, triangleSplittingNecessary, emittedVertexCount);
@@ -156,7 +150,7 @@ void processTriangle(const mat4 matrix, const vec4 nearPlane,
  * \brief Generates two triangles from the given data and processes them
  *
  * The side of the cube is calculated by generating a quad in the plane
- * which is determined by the side vector. The plane is has side as
+ * which is determined by the side vector. The plane has side as
  * normal and is 0.5 units away from the center point.
  */
 void processSide(const mat4 matrix, const vec4 nearPlane, const vec4 center,
@@ -222,15 +216,7 @@ void fillHole(const mat4 matrix)
   if (cutPositionCount < 3)
     return;
 
-  if (cutPositionCount == 3)
-  {
-    emit(matrix, cutPositions[0]);
-    emit(matrix, cutPositions[1]);
-    emit(matrix, cutPositions[2]);
-    return;
-  }
-
-  vec4 center = sortCutPositions(matrix);
+  const vec4 center = sortCutPositions(matrix);
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
   {
