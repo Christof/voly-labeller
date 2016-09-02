@@ -216,15 +216,6 @@ void fillHole(const mat4 matrix)
   if (cutPositionCount < 3)
     return;
 
-  if (cutPositionCount == 3)
-  {
-    emit(matrix, cutPositions[0]);
-    emit(matrix, cutPositions[1]);
-    emit(matrix, cutPositions[2]);
-    EndPrimitive();
-    return;
-  }
-
   const vec4 center = sortCutPositions(matrix);
   cutPositions[cutPositionCount++] = cutPositions[0];
   for (int i = 0; i < cutPositionCount - 1; ++i)
