@@ -26,13 +26,14 @@ void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   Eigen::Affine3f trans(
       Eigen::Scaling(2.0f) *
-      Eigen::Translation3f(Eigen::Vector3f(0.176499968f, 0.15f, 0.176499968f)) *
+      Eigen::Translation3f(Eigen::Vector3f(0.15, 0.145f, 0.15)) *
       Eigen::AngleAxisf(M_PI, Eigen::Vector3f::UnitY()) *
       Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitX()));
 
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/LIDC-IDRI_lesion2_extracted.mha",
-      "assets/transferfunctions/LIDC_IDRI_lesions.gra", trans.matrix(), false));
+      "assets/datasets/LIDC-IDRI-0469_lung.mha",
+      "assets/transferfunctions/LIDC-IDRI-0469.gra", trans.matrix(), false));
+  /*
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI_lesion1_extracted.mha",
       "assets/transferfunctions/LIDC_IDRI_lesions.gra", trans.matrix(), false));
@@ -40,6 +41,7 @@ void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI_lung.mha",
       "assets/transferfunctions/LIDC_IDRI.gra", trans.matrix(), false));
+      */
 }
 
 void DefaultSceneCreator::create()
