@@ -15,6 +15,7 @@
 Nodes::Nodes()
 {
   coordinateSystemNode = std::make_shared<CoordinateSystemNode>();
+  coordinateSystemNode->setIsVisible(false);
   addNode(coordinateSystemNode);
 
   cameraNode = std::make_shared<CameraNode>();
@@ -231,6 +232,7 @@ void Nodes::createCameraOriginVisualizer()
 
   cameraOriginVisualizerNode = std::make_shared<MeshNode>(
       filename, 0, cameraOriginSphere, Eigen::Matrix4f::Identity());
+  cameraOriginVisualizerNode->setIsVisible(false);
 }
 
 void Nodes::renderCameraOriginVisualizer(

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="13">
+<boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
 	<count>14</count>
 	<item_version>1</item_version>
@@ -344,9 +344,9 @@
 				<label.id>10</label.id>
 				<label.text>T1</label.text>
 				<label.anchorPosition>
-					<x>-8.808070794e-03</x>
-					<y>5.756550431e-01</y>
-					<z>-2.064877190e-03</z>
+					<x>1.317036059e-02</x>
+					<y>5.758267641e-01</y>
+					<z>1.414681552e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>1.280000000e+02</x>
@@ -361,9 +361,9 @@
 				<label.id>11</label.id>
 				<label.text>C5</label.text>
 				<label.anchorPosition>
-					<x>-1.021288056e-02</x>
-					<y>6.233102083e-01</y>
-					<z>4.757774062e-03</z>
+					<x>5.482296459e-03</x>
+					<y>6.293503046e-01</y>
+					<z>3.543085186e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>1.280000000e+02</x>

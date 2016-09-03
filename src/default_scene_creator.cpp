@@ -27,10 +27,10 @@ void DefaultSceneCreator::create()
   // addMeshNodesTo(sceneNodes);
   // addLabelNodesTo(sceneNodes);
   Eigen::Affine3f trans(
-      Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitY()) *
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/v1.mhd", "assets/transferfunctions/v1-custom.gra",
+      "assets/datasets/delikt_messer_256.mha",
+      "assets/transferfunctions/scapula4.gra",
       trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 

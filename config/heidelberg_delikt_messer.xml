@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>9</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.999650121e-01</r0c0>
+				<r0c1>-4.547473509e-13</r0c1>
+				<r0c2>-8.367961273e-03</r0c2>
+				<r0c3>-1.862645149e-09</r0c3>
+				<r1c0>-4.842992439e-06</r1c0>
+				<r1c1>9.999998808e-01</r1c1>
+				<r1c2>-5.787339760e-04</r1c2>
+				<r1c3>1.362394642e-10</r1c3>
+				<r2c0>8.367960341e-03</r2c0>
+				<r2c1>5.787542323e-04</r2c1>
+				<r2c2>9.999648333e-01</r2c2>
+				<r2c3>-1.873431087e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.689432383e+00</r2c2>
+				<r2c3>-2.056123495e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>2.479355957e-11</x>
+				<y>-2.706569968e-10</y>
+				<z>-5.813807036e-08</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>5</count>
+				<item_version>0</item_version>
+				<item class_id="6" tracking_level="0" version="0">
+					<name>Position 0</name>
+					<viewMatrix>
+						<r0c0>9.999999404e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>-4.264553427e-04</r0c2>
+						<r0c3>-1.487792190e-02</r0c3>
+						<r1c0>1.985305971e-06</r1c0>
+						<r1c1>9.999892116e-01</r1c1>
+						<r1c2>4.655366298e-03</r1c2>
+						<r1c3>-9.805477224e-03</r1c3>
+						<r2c0>4.264507152e-04</r2c0>
+						<r2c1>-4.655366763e-03</r2c1>
+						<r2c2>9.999890924e-01</r2c2>
+						<r2c3>-1.873346448e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>Position 1</name>
+					<viewMatrix>
+						<r0c0>9.999271631e-01</r0c0>
+						<r0c1>1.164153218e-10</r0c1>
+						<r0c2>1.207675599e-02</r0c2>
+						<r0c3>-3.186929971e-02</r0c3>
+						<r1c0>-1.422676258e-03</r1c0>
+						<r1c1>9.930371642e-01</r1c1>
+						<r1c2>1.177942529e-01</r1c2>
+						<r1c3>-2.105114013e-01</r1c3>
+						<r2c0>-1.199266501e-02</r2c0>
+						<r2c1>-1.178028360e-01</r2c1>
+						<r2c2>9.929646254e-01</r2c2>
+						<r2c3>-1.139385819e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>Position 2</name>
+					<viewMatrix>
+						<r0c0>9.998500943e-01</r0c0>
+						<r0c1>4.656612873e-10</r0c1>
+						<r0c2>-1.731515676e-02</r0c2>
+						<r0c3>-1.271724999e-01</r0c3>
+						<r1c0>-1.425290364e-03</r1c0>
+						<r1c1>9.966064095e-01</r1c1>
+						<r1c2>-8.230224252e-02</r1c2>
+						<r1c3>-4.025436044e-01</r1c3>
+						<r2c0>1.725639589e-02</r2c0>
+						<r2c1>8.231458068e-02</r2c1>
+						<r2c2>9.964569807e-01</r2c2>
+						<r2c3>-5.946817994e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>Position 3</name>
+					<viewMatrix>
+						<r0c0>9.938296080e-01</r0c0>
+						<r0c1>-7.450579709e-09</r0c1>
+						<r0c2>1.109177023e-01</r0c2>
+						<r0c3>-1.490885615e-01</r0c3>
+						<r1c0>9.080822021e-02</r1c0>
+						<r1c1>5.742229819e-01</r1c1>
+						<r1c2>-8.136473298e-01</r1c2>
+						<r1c3>-9.544083476e-02</r1c3>
+						<r2c0>-6.369148940e-02</r2c0>
+						<r2c1>8.186990023e-01</r2c1>
+						<r2c2>5.706797838e-01</r2c2>
+						<r2c3>-7.390165329e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>Position 4</name>
+					<viewMatrix>
+						<r0c0>9.997384548e-01</r0c0>
+						<r0c1>9.313225746e-10</r0c1>
+						<r0c2>2.287041396e-02</r0c2>
+						<r0c3>-8.763072640e-02</r0c3>
+						<r1c0>1.810741611e-02</r1c0>
+						<r1c1>6.108586192e-01</r1c1>
+						<r1c2>-7.915326953e-01</r1c2>
+						<r1c3>-4.253162146e-01</r1c3>
+						<r2c0>-1.397058927e-02</r2c0>
+						<r2c1>7.917397618e-01</r2c1>
+						<r2c2>6.106988192e-01</r2c2>
+						<r2c3>-1.314558268e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/delikt_messer_256_extracted.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/hb_messer_weichteilxy.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="9" tracking_level="0" version="0">
+				<label.id>2</label.id>
+				<label.text>rib 6</label.text>
+				<label.anchorPosition>
+					<x>1.674686521e-01</x>
+					<y>2.560493946e-01</y>
+					<z>1.595781371e-02</z>
+				</label.anchorPosition>
+				<label.size class_id="10" tracking_level="0" version="0">
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_3">
+			<volumePath>/home/christof/Documents/master/voly-labeller/assets/datasets/delikt_messer_256_air.mha</volumePath>
+			<transferFunctionPath>/home/christof/Documents/master/voly-labeller/assets/transferfunctions/air_cavities_lung.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_4">
+			<label>
+				<label.id>3</label.id>
+				<label.text>stab entry</label.text>
+				<label.anchorPosition>
+					<x>1.813666523e-01</x>
+					<y>2.601702511e-01</y>
+					<z>6.283749640e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>gash</label.text>
+				<label.anchorPosition>
+					<x>1.728440523e-01</x>
+					<y>2.424845397e-01</y>
+					<z>4.905659333e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_6">
+			<label>
+				<label.id>5</label.id>
+				<label.text>rib 5 wound</label.text>
+				<label.anchorPosition>
+					<x>1.371796280e-01</x>
+					<y>2.670114338e-01</y>
+					<z>5.270540342e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_7">
+			<label>
+				<label.id>6</label.id>
+				<label.text>shoulder wound</label.text>
+				<label.anchorPosition>
+					<x>1.291521341e-01</x>
+					<y>4.565577209e-01</y>
+					<z>-3.841095790e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.560000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
