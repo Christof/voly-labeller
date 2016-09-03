@@ -201,7 +201,7 @@ QImage *LabelNode::renderLabelTextToQImage()
   QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
   painter.setBrush(QBrush(c));
   painter.setPen(c);
-  painter.drawRoundRect(QRectF(0, 0, width, height), 15, 15 * width / height);
+  painter.drawRect(QRectF(0, 0, width, height));
 
   painter.setPen(Qt::black);
   painter.setFont(QFont("Arial", 72));
