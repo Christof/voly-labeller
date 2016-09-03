@@ -49,6 +49,8 @@ class Labeller
 
   bool updatePositions = true;
 
+  float overallForceFactor = 2.0f;
+
  private:
   std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;

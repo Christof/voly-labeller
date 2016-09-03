@@ -119,7 +119,12 @@ void Scene::update(double frameTime)
   haBuffer->updateNearAndFarPlanes(frustumOptimizer.getNear(),
                                    frustumOptimizer.getFar());
 
-  labellingCoordinator->update(frameTime, camera->getProjectionMatrix(),
+  RenderData newRenderData = createRenderData();
+  bool isIdle =
+      newRenderData.viewProjectionMatrix == renderData.viewProjectionMatrix;
+  renderData = newRenderData;
+
+  labellingCoordinator->update(frameTime, isIdle, camera->getProjectionMatrix(),
                                camera->getViewMatrix(), activeLayerNumber);
 }
 
@@ -138,19 +143,13 @@ void Scene::render()
   glAssert(gl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f));
   glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-  RenderData newRenderData = createRenderData();
-  bool isIdle =
-      newRenderData.viewProjectionMatrix == renderData.viewProjectionMatrix;
-
-  renderData = newRenderData;
-
   renderNodesWithHABufferIntoFBO();
 
   textureMapperManager->update();
 
   constraintBufferObject->bind();
 
-  labellingCoordinator->updatePlacement(isIdle);
+  labellingCoordinator->updatePlacement();
 
   constraintBufferObject->unbind();
 

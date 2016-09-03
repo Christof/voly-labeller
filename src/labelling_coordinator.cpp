@@ -97,9 +97,11 @@ void LabellingCoordinator::cleanup()
     placementLabeller->cleanup();
 }
 
-void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
+void LabellingCoordinator::update(double frameTime, bool isIdle,
+                                  Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
+  this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
 
   saliency->runKernel();
@@ -116,7 +118,7 @@ void LabellingCoordinator::update(double frameTime, Eigen::Matrix4f projection,
   updateLabelPositionsInLabelNodes(labelPositions);
 }
 
-void LabellingCoordinator::updatePlacement(bool isIdle)
+void LabellingCoordinator::updatePlacement()
 {
   bool optimize = isIdle && optimizeOnIdle;
   bool ignoreOldPosition = !isIdle;
@@ -214,6 +216,7 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
   if (firstFramesWithoutPlacement && placementPositions.size())
   {
     firstFramesWithoutPlacement = false;
+    forcesLabeller->overallForceFactor = isIdle ? 6.0f : 3.0f;
     forcesLabeller->setPositions(labellerFrameData, placementPositions);
   }
 

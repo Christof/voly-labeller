@@ -49,9 +49,9 @@ class LabellingCoordinator
                   int widht, int height);
   void cleanup();
 
-  void update(double frameTime, Eigen::Matrix4f projection,
+  void update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
-  void updatePlacement(bool isIdle);
+  void updatePlacement();
   std::vector<float> updateClusters();
 
   void resize(int width, int height);
@@ -81,6 +81,7 @@ class LabellingCoordinator
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
   std::map<int, int> labelIdToLayerIndex;
   std::map<int, float> labelIdToZValue;
+  bool isIdle;
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
