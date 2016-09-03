@@ -67,7 +67,7 @@ TEST(Test_Occlusion, OccupancyWithSamplingShouldUseMaxAlphaValue)
   EXPECT_EQ(0.9f, result[3]);
 }
 
-TEST(Test_Occlusion, AddOcclusion)
+TEST(Test_Occlusion, AddOcclusionAddsUpTheAlhpaValuesAndLimitsThemTo1)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
@@ -88,7 +88,7 @@ TEST(Test_Occlusion, AddOcclusion)
 
   ASSERT_EQ(4, result.size());
   EXPECT_EQ(0.2f, result[0]);
-  EXPECT_EQ(1.4f, result[1]);
+  EXPECT_EQ(1.0f, result[1]);
   EXPECT_EQ(0.8f, result[2]);
   EXPECT_EQ(0.6f, result[3]);
 }

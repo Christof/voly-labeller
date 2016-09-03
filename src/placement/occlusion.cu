@@ -32,7 +32,8 @@ __global__ void occlusionKernel(cudaTextureObject_t positions,
     float value;
     surf2Dread(&value,  output, x * sizeof(float), y);
 
-    surf2Dwrite(value + minTransparency, output, x * sizeof(float), y);
+    float newValue = fmin(value + minTransparency, 1.0f);
+    surf2Dwrite(newValue, output, x * sizeof(float), y);
   }
   else
   {
