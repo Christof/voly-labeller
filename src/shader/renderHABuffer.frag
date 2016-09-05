@@ -304,9 +304,9 @@ void main()
   uint age = 1;
   while (!nextFragmentReadStatus && age <= maxAge)
   {
-      nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
-      endPos_eye = nextFragment.eyePos;
-      ++age;
+    nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
+    endPos_eye = nextFragment.eyePos;
+    ++age;
   }
 
   int layerIndex = 0;
