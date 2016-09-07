@@ -157,7 +157,9 @@ void Scene::render()
 
   fbo->bind();
   glAssert(gl->glDisable(GL_DEPTH_TEST));
+  glAssert(gl->glEnable(GL_STENCIL_TEST));
   nodes->renderLabels(gl, managers, renderData);
+  glAssert(gl->glDisable(GL_STENCIL_TEST));
   fbo->unbind();
   renderScreenQuad();
   nodes->renderOverlays(gl, managers, renderData);
@@ -178,7 +180,8 @@ void Scene::renderNodesWithHABufferIntoFBO()
 {
   fbo->bind();
   glAssert(gl->glViewport(0, 0, width, height));
-  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+  glAssert(gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+                       GL_STENCIL_BUFFER_BIT));
 
   haBuffer->clearAndPrepare(managers);
 
