@@ -78,7 +78,6 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
 
       gl->glStencilFunc(GL_EQUAL, 0, 0xFF);
       renderConnector(gl, managers, renderData);
-      glStencilMask(0x00);
     }
 
     timeSinceIsVisibleChanged += renderData.frameTime;
