@@ -71,12 +71,13 @@ LabelNode::renderLabelAndConnector(Graphics::Gl *gl,
 
     if (alpha > 0)
     {
-      gl->glStencilFunc(GL_ALWAYS, 1, 0xFF);
-      gl->glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+      gl->glStencilFunc(GL_ALWAYS, 255, 0xFF);
+      gl->glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
       gl->glStencilMask(0xFF);
       renderLabel(gl, managers, renderData);
 
       gl->glStencilFunc(GL_EQUAL, 0, 0xFF);
+      gl->glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
       renderConnector(gl, managers, renderData);
     }
 
