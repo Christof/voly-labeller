@@ -14,8 +14,6 @@ layout(location = 4) out vec4 accumulatedOutputColor;
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
