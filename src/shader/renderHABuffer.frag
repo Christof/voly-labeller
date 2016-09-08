@@ -162,14 +162,14 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   {
     int currentObjectId = calculateNextObjectId(activeObjects);
 
-    vec4 textureStartPos = volumes[currentObjectId].textureMatrix *
-                           inverseViewMatrix * currentFragmentPos_eye;
-    vec4 textureEndPos = volumes[currentObjectId].textureMatrix *
-                         inverseViewMatrix * nextFragmentPos_eye;
+    mat4 toTexturePos = volumes[currentObjectId].objectToDatasetMatrix *
+      volumes[currentObjectId].textureMatrix * inverseViewMatrix;
+    vec4 textureStartPos = toTexturePos * currentFragmentPos_eye;
+    vec4 textureEndPos = toTexturePos * nextFragmentPos_eye;
 
-    segmentTextureLength = max(distance(textureStartPos.xyz * textureAtlasSize,
-                                        textureEndPos.xyz * textureAtlasSize),
-                               segmentTextureLength);
+    float probeLength = distance(textureStartPos.xyz * textureAtlasSize,
+      textureEndPos.xyz * textureAtlasSize);
+    segmentTextureLength = max(probeLength, segmentTextureLength);
   }
 
   return segmentTextureLength;
