@@ -92,8 +92,8 @@ VolumeManager::getBufferData(const RenderData &renderData)
     if (volumes.count(i))
     {
       volumeData = volumes[i]->getVolumeData(renderData);
-      volumeData.objectToDatasetMatrix =
-          objectToDatasetMatrices[volumeData.volumeId];
+      volumeData.textureMatrix = objectToDatasetMatrices[volumeData.volumeId] *
+        volumeData.textureMatrix * renderData.viewMatrix.inverse();
     }
 
     data.push_back(volumeData);

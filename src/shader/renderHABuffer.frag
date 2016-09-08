@@ -14,8 +14,6 @@ layout(location = 4) out vec4 accumulatedOutputColor;
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 inverseViewMatrix;
 uniform vec3 textureAtlasSize;
 uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
@@ -39,7 +37,6 @@ struct VolumeData
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
   mat4 gradientMatrix;
-  mat4 objectToDatasetMatrix;
   int volumeId;
   int transferFunctionRow;
 };
@@ -162,14 +159,13 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   {
     int currentObjectId = calculateNextObjectId(activeObjects);
 
-    vec4 textureStartPos = volumes[currentObjectId].textureMatrix *
-                           inverseViewMatrix * currentFragmentPos_eye;
-    vec4 textureEndPos = volumes[currentObjectId].textureMatrix *
-                         inverseViewMatrix * nextFragmentPos_eye;
+    mat4 toTexturePos = volumes[currentObjectId].textureMatrix;
+    vec4 textureStartPos = toTexturePos * currentFragmentPos_eye;
+    vec4 textureEndPos = toTexturePos * nextFragmentPos_eye;
 
-    segmentTextureLength = max(distance(textureStartPos.xyz * textureAtlasSize,
-                                        textureEndPos.xyz * textureAtlasSize),
-                               segmentTextureLength);
+    float probeLength = distance(textureStartPos.xyz * textureAtlasSize,
+      textureEndPos.xyz * textureAtlasSize);
+    segmentTextureLength = max(probeLength, segmentTextureLength);
   }
 
   return segmentTextureLength;
@@ -216,10 +212,8 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     if (currentObjectId < 0)
       break;
 
-    vec3 textureSamplePos =
-      (volumes[currentObjectId].objectToDatasetMatrix *
-       volumes[currentObjectId].textureMatrix * inverseViewMatrix *
-       currentPos_eye).xyz;
+    vec3 textureSamplePos = (volumes[currentObjectId].textureMatrix *
+      currentPos_eye).xyz;
 
     float density = getVolumeSampleDensity(textureSamplePos);
     vec4 currentColor = transferFunctionLookUp(currentObjectId, density);

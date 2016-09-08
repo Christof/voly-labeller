@@ -66,7 +66,6 @@ Graphics::VolumeData VolumeNode::getVolumeData(const RenderData &renderData)
 
   data.gradientMatrix = textureRotation * scale.matrix();
   data.volumeId = volumeId;
-  data.objectToDatasetMatrix = Eigen::Matrix4f::Identity();
   data.transferFunctionRow = transferFunctionRow;
 
   return data;
