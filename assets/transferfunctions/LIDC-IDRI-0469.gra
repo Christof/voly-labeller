@@ -4,7 +4,7 @@
   <colorData a="0" g="255" b="255" r="255"/>
  </stopData>
  <stopData position="0.487238">
-  <colorData a="11" g="132" b="252" r="100"/>
+  <colorData a="31" g="132" b="252" r="100"/>
  </stopData>
  <stopData position="0.502092">
   <colorData a="0" g="245" b="255" r="151"/>
@@ -13,7 +13,7 @@
   <colorData a="0" g="245" b="255" r="151"/>
  </stopData>
  <stopData position="0.767782">
-  <colorData a="140" g="216" b="219" r="254"/>
+  <colorData a="30" g="216" b="219" r="254"/>
  </stopData>
  <stopData position="0.983264">
   <colorData a="0" g="154" b="161" r="174"/>
