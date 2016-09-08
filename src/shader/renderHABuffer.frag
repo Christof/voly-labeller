@@ -39,7 +39,6 @@ struct VolumeData
   Tex2DAddress textureAddress;
   mat4 textureMatrix;
   mat4 gradientMatrix;
-  mat4 objectToDatasetMatrix;
   int volumeId;
   int transferFunctionRow;
 };
@@ -162,8 +161,8 @@ float calculateSegmentTextureLength(int activeObjectCount, uint activeObjects,
   {
     int currentObjectId = calculateNextObjectId(activeObjects);
 
-    mat4 toTexturePos = volumes[currentObjectId].objectToDatasetMatrix *
-      volumes[currentObjectId].textureMatrix * inverseViewMatrix;
+    mat4 toTexturePos = volumes[currentObjectId].textureMatrix *
+      inverseViewMatrix;
     vec4 textureStartPos = toTexturePos * currentFragmentPos_eye;
     vec4 textureEndPos = toTexturePos * nextFragmentPos_eye;
 
@@ -216,10 +215,8 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
     if (currentObjectId < 0)
       break;
 
-    vec3 textureSamplePos =
-      (volumes[currentObjectId].objectToDatasetMatrix *
-       volumes[currentObjectId].textureMatrix * inverseViewMatrix *
-       currentPos_eye).xyz;
+    vec3 textureSamplePos = (volumes[currentObjectId].textureMatrix *
+      inverseViewMatrix * currentPos_eye).xyz;
 
     float density = getVolumeSampleDensity(textureSamplePos);
     vec4 currentColor = transferFunctionLookUp(currentObjectId, density);
