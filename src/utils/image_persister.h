@@ -33,6 +33,20 @@ class ImagePersister
     image.write(filename);
   }
 
+  static void saveRGBA8I(unsigned char *data, int width, int height,
+                      std::string filename)
+  {
+    QImage image(data, width, height, QImage::Format_RGBA8888);
+    image.save(QString(filename.c_str()));
+  }
+
+  static void flipAndSaveRGBA8I(unsigned char *data, int width, int height,
+                      std::string filename)
+  {
+    QImage image(data, width, height, QImage::Format_RGBA8888);
+    image.mirrored(false, true).save(QString(filename.c_str()));
+  }
+
   static void saveR8I(unsigned char *data, int width, int height,
                       std::string filename)
   {
