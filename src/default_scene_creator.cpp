@@ -35,16 +35,20 @@ void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
       "assets/transferfunctions/LIDC-IDRI-0469.gra", trans.matrix(), false));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI-0469_lesion1_mask_extracted_blurred.mha",
-      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(), false));
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI-0469_lesion2_mask_extracted_blurred.mha",
-      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(), false));
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI-0469_lesion3_mask_extracted_blurred.mha",
-      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(), false));
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/LIDC-IDRI-0469_lesion4_mask_extracted_blurred.mha",
-      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(), false));
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
 }
 
 void DefaultSceneCreator::create()
@@ -56,8 +60,7 @@ void DefaultSceneCreator::create()
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/delikt_messer_256.mha",
-      "assets/transferfunctions/scapula4.gra",
-      trans.matrix(), true));
+      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");
