@@ -57,4 +57,9 @@ inline std::string replaceBackslashesWithSlashes(std::string path)
   return path;
 }
 
+inline std::string filenameWithoutExtension(std::string path)
+{
+  return QFileInfo(path.c_str()).baseName().toStdString();
+}
+
 #endif  // SRC_UTILS_PATH_HELPER_H_
