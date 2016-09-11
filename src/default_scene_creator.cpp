@@ -1,4 +1,5 @@
 #include "./default_scene_creator.h"
+#include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
@@ -21,6 +22,35 @@ DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
 {
 }
 
+void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::Scaling(2.0f) *
+      Eigen::Translation3f(Eigen::Vector3f(0.15, 0.145f, 0.15)) *
+      Eigen::AngleAxisf(M_PI, Eigen::Vector3f::UnitY()) *
+      Eigen::AngleAxisf(0.5 * M_PI, Eigen::Vector3f::UnitX()));
+
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/LIDC-IDRI-0469_lung2.mha",
+      "assets/transferfunctions/LIDC-IDRI-0469.gra", trans.matrix(), false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/LIDC-IDRI-0469_lesion1_mask_extracted_blurred.mha",
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/LIDC-IDRI-0469_lesion2_mask_extracted_blurred.mha",
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/LIDC-IDRI-0469_lesion3_mask_extracted_blurred.mha",
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/LIDC-IDRI-0469_lesion4_mask_extracted_blurred.mha",
+      "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
+      false));
+}
+
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
@@ -30,8 +60,7 @@ void DefaultSceneCreator::create()
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/delikt_messer_256.mha",
-      "assets/transferfunctions/scapula4.gra",
-      trans.matrix(), true));
+      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");

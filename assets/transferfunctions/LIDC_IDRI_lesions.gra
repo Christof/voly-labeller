@@ -1,0 +1,18 @@
+<!DOCTYPE Gradient>
+<gradientData type="LinearGradient" coordinateMode="StretchToDeviceMode" startX="0" startY="0.5" spread="PadSpread" endX="1" endY="0.5">
+ <stopData position="0">
+  <colorData b="0" a="0" r="106" g="0"/>
+ </stopData>
+ <stopData position="0.252723">
+  <colorData b="0" a="0" r="200" g="0"/>
+ </stopData>
+ <stopData position="0.3">
+  <colorData b="0" a="8" r="200" g="10"/>
+ </stopData>
+ <stopData position="0.35">
+  <colorData b="0" a="0" r="200" g="200"/>
+ </stopData>
+ <stopData position="1">
+  <colorData b="0" a="0" r="255" g="255"/>
+ </stopData>
+</gradientData>

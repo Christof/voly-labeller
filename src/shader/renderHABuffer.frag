@@ -103,7 +103,7 @@ bool fetchFragment(in uvec2 ij, in uint age, out FragmentData fragment)
   return false;
 }
 
-void updateActiveObjects(inout int objectId, inout int activeObjects)
+void updateActiveObjects(in int objectId, inout int activeObjects)
 {
   if (objectId > 0)
   {
@@ -111,8 +111,7 @@ void updateActiveObjects(inout int objectId, inout int activeObjects)
   }
   else if (objectId < 0)
   {
-    objectId = -objectId;
-    activeObjects &= (~(1 << (objectId - 1)));
+    activeObjects &= (~(1 << (-objectId - 1)));
   }
 }
 
@@ -304,9 +303,9 @@ void main()
   uint age = 1;
   while (!nextFragmentReadStatus && age <= maxAge)
   {
-      nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
-      endPos_eye = nextFragment.eyePos;
-      ++age;
+    nextFragmentReadStatus = fetchFragment(ij, age, nextFragment);
+    endPos_eye = nextFragment.eyePos;
+    ++age;
   }
 
   int layerIndex = 0;
