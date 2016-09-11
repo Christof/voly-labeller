@@ -30,6 +30,7 @@
 #include "./texture_mapper_manager_controller.h"
 #include "./utils/memory.h"
 #include "./utils/path_helper.h"
+#include "./recording_automation.h"
 #include "./recording_automation_controller.h"
 
 const int LAYER_COUNT = 4;
@@ -58,9 +59,10 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       std::make_shared<VideoRecorder>(synchronousCapturing, offlineFPS);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
+  recordingAutomation = std::make_shared<RecordingAutomation>(
+      labellingCoordinator, videoRecorder);
   recordingAutomationController =
-      std::make_shared<RecordingAutomationController>(labellingCoordinator,
-                                                      videoRecorder);
+      std::make_unique<RecordingAutomationController>(recordingAutomation);
 
   const int postProcessingTextureSize = 512;
   textureMapperManager =
@@ -69,7 +71,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       std::make_unique<TextureMapperManagerController>(textureMapperManager);
   scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
                                   labellingCoordinator, textureMapperManager,
-                                  recordingAutomationController);
+                                  recordingAutomation);
 
   float offlineRenderingFrameTime =
       parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;

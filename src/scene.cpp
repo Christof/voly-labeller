@@ -26,18 +26,17 @@
 #include "./texture_mapper_manager.h"
 #include "./constraint_buffer_object.h"
 #include "./labelling_coordinator.h"
-#include "./recording_automation_controller.h"
+#include "./recording_automation.h"
 
 Scene::Scene(int layerCount, std::shared_ptr<InvokeManager> invokeManager,
              std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
              std::shared_ptr<LabellingCoordinator> labellingCoordinator,
              std::shared_ptr<TextureMapperManager> textureMapperManager,
-             std::shared_ptr<RecordingAutomationController>
-                 recordingAutomationController)
+             std::shared_ptr<RecordingAutomation> recordingAutomation)
 
   : nodes(nodes), labels(labels), labellingCoordinator(labellingCoordinator),
     frustumOptimizer(nodes), textureMapperManager(textureMapperManager),
-    recordingAutomationController(recordingAutomationController)
+    recordingAutomation(recordingAutomation)
 {
   cameraControllers =
       std::make_shared<CameraControllers>(invokeManager, getCamera());
@@ -98,8 +97,8 @@ void Scene::initialize()
   labellingCoordinator->initialize(textureMapperManager->getBufferSize(),
                                    drawer, textureMapperManager, width, height);
 
-  recordingAutomationController->initialize(gl);
-  recordingAutomationController->resize(width, height);
+  recordingAutomation->initialize(gl);
+  recordingAutomation->resize(width, height);
 }
 
 void Scene::cleanup()
@@ -186,7 +185,7 @@ void Scene::render()
 
   glAssert(gl->glEnable(GL_DEPTH_TEST));
 
-  recordingAutomationController->update();
+  recordingAutomation->update();
 }
 
 void Scene::renderNodesWithHABufferIntoFBO()
@@ -310,7 +309,7 @@ void Scene::resize(int width, int height)
   shouldResize = true;
 
   labellingCoordinator->resize(width, height);
-  recordingAutomationController->resize(width, height);
+  recordingAutomation->resize(width, height);
 }
 
 RenderData Scene::createRenderData()

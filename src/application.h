@@ -28,6 +28,7 @@ class LabelsModel;
 class QStateMachine;
 class VideoRecorder;
 class VideoRecorderController;
+class RecordingAutomation;
 class RecordingAutomationController;
 
 /**
@@ -65,7 +66,8 @@ class Application : public QObject
   std::unique_ptr<VideoRecorderController> videoRecorderController;
   std::unique_ptr<Window> window;
   std::unique_ptr<SceneController> sceneController;
-  std::shared_ptr<RecordingAutomationController> recordingAutomationController;
+  std::shared_ptr<RecordingAutomation> recordingAutomation;
+  std::unique_ptr<RecordingAutomationController> recordingAutomationController;
   std::unique_ptr<LabellerModel> labellerModel;
   std::unique_ptr<PlacementLabellerModel> placementLabellerModel;
   std::unique_ptr<CameraPositionsModel> cameraPositionsModel;

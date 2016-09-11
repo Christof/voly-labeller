@@ -22,7 +22,7 @@ class TextureMapperManager;
 class ConstraintBufferObject;
 class Labels;
 class LabellingCoordinator;
-class RecordingAutomationController;
+class RecordingAutomation;
 
 /**
  * \brief Default implementation of AbstractScene
@@ -38,7 +38,7 @@ class Scene : public AbstractScene
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
         std::shared_ptr<LabellingCoordinator> labellingCoordinator,
         std::shared_ptr<TextureMapperManager> textureMapperManager,
-        std::shared_ptr<RecordingAutomationController>
+        std::shared_ptr<RecordingAutomation>
             recordingAutomationController);
   ~Scene();
 
@@ -94,7 +94,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Camera> getCamera();
 
   std::shared_ptr<TextureMapperManager> textureMapperManager;
-  std::shared_ptr<RecordingAutomationController> recordingAutomationController;
+  std::shared_ptr<RecordingAutomation> recordingAutomation;
   RenderData renderData;
 };
 
