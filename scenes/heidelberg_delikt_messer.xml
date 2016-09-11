@@ -48,7 +48,7 @@
 				<z>-5.813807036e-08</z>
 			</origin>
 			<cameraPositions class_id="5" tracking_level="0" version="0">
-				<count>5</count>
+				<count>6</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
 					<name>Position 0</name>
@@ -149,6 +149,27 @@
 						<r2c1>7.917397618e-01</r2c1>
 						<r2c2>6.106988192e-01</r2c2>
 						<r2c3>-1.314558268e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>Screenshot</name>
+					<viewMatrix>
+						<r0c0>9.774646759e-01</r0c0>
+						<r0c1>3.725290298e-09</r0c1>
+						<r0c2>-2.110993117e-01</r0c2>
+						<r0c3>-1.140934229e-01</r0c3>
+						<r1c0>-5.335801840e-02</r1c0>
+						<r1c1>9.675284624e-01</r1c1>
+						<r1c2>-2.470665276e-01</r1c2>
+						<r1c3>-3.218822777e-01</r1c3>
+						<r2c0>2.042445689e-01</r2c0>
+						<r2c1>2.527626157e-01</r2c1>
+						<r2c2>9.457247853e-01</r2c2>
+						<r2c3>-6.718261838e-01</r2c3>
 						<r3c0>0.000000000e+00</r3c0>
 						<r3c1>0.000000000e+00</r3c1>
 						<r3c2>0.000000000e+00</r3c2>
