@@ -3,9 +3,11 @@
 #define SRC_RECORDING_AUTOMATION_H_
 
 #include <memory>
+#include <string>
 #include "./graphics/gl.h"
 
 class LabellingCoordinator;
+class Nodes;
 class VideoRecorder;
 
 /**
@@ -18,6 +20,7 @@ class RecordingAutomation
  public:
   RecordingAutomation(
       std::shared_ptr<LabellingCoordinator> labellingCoordinator,
+      std::shared_ptr<Nodes> nodes,
       std::shared_ptr<VideoRecorder> videoRecorder);
 
   void update();
@@ -28,8 +31,11 @@ class RecordingAutomation
 
   void takeScreenshotOfNextFrame();
 
+  void takeScreenshotOf(std::string cameraPositionName);
+
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;
+  std::shared_ptr<Nodes> nodes;
   std::shared_ptr<VideoRecorder> videoRecorder;
 
   Graphics::Gl *gl;
@@ -37,6 +43,11 @@ class RecordingAutomation
   int height;
 
   bool takeScreenshot;
+  std::string cameraPositionName;
+
+  int unchangedCount = 0;
+
+  void moveToCameraPosition(std::string name);
 };
 
 #endif  // SRC_RECORDING_AUTOMATION_H_

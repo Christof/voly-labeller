@@ -60,7 +60,11 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
   recordingAutomation = std::make_shared<RecordingAutomation>(
-      labellingCoordinator, videoRecorder);
+      labellingCoordinator, nodes, videoRecorder);
+  if (parser.isSet("screenshot"))
+    recordingAutomation->takeScreenshotOf(
+        parser.value("screenshot").toStdString());
+
   recordingAutomationController =
       std::make_unique<RecordingAutomationController>(recordingAutomation);
 
@@ -157,6 +161,12 @@ void Application::setupCommandLineParser()
   QCommandLineOption offlineRenderingOption("offline",
                                             "Enables offline rendering");
   parser.addOption(offlineRenderingOption);
+
+  QCommandLineOption screenshotOption(
+      QStringList() << "s"
+                    << "screenshot",
+      "Takes a screenshot of the given camera position", "Camera Position");
+  parser.addOption(screenshotOption);
 }
 
 void Application::setupWindow()
