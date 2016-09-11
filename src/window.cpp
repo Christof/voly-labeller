@@ -10,7 +10,6 @@
 #include "./graphics/gl.h"
 #include "./abstract_scene.h"
 #include "./video_recorder.h"
-#include "./utils/image_persister.h"
 
 QLoggingCategory openGlChan("OpenGl");
 
@@ -125,18 +124,6 @@ void Window::render()
 
   QQuickView::update();
 
-  if (takeScreenshot)
-  {
-    int width = size().width();
-    int height = size().height();
-    std::vector<unsigned char> pixels(width * height * 4);
-    gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-                     pixels.data());
-    ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height,
-                                      "screenshot.png");
-    takeScreenshot = false;
-  }
-
   videoRecorder->captureVideoFrame();
 }
 
@@ -194,11 +181,6 @@ void Window::uiFocusChanged(bool hasFocus)
     emit uiGotFocus();
   else
     emit uiLostFocus();
-}
-
-void Window::takeScreenshotOfNextFrame()
-{
-  takeScreenshot = true;
 }
 
 void Window::onMessageLogged(QOpenGLDebugMessage message)

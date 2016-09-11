@@ -61,7 +61,6 @@ signals:
   void onInvalidated();
 
   void uiFocusChanged(bool hasFocus);
-  void takeScreenshotOfNextFrame();
 
  private:
   QSurfaceFormat createSurfaceFormat();
@@ -85,7 +84,6 @@ signals:
 
   std::shared_ptr<VideoRecorder> videoRecorder;
   double offlineRenderingFrameTime;
-  bool takeScreenshot;
 };
 
 #endif  // SRC_WINDOW_H_

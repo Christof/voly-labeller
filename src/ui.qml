@@ -108,7 +108,7 @@ FocusScope
           MenuItem {
             text: "Take screenshot"
             shortcut: "F12"
-            onTriggered: window.takeScreenshotOfNextFrame();
+            onTriggered: automation.takeScreenshotOfNextFrame();
           }
           MenuItem {
             text: "Toggle coordinate system"

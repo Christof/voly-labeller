@@ -30,6 +30,7 @@
 #include "./texture_mapper_manager_controller.h"
 #include "./utils/memory.h"
 #include "./utils/path_helper.h"
+#include "./recording_automation_controller.h"
 
 const int LAYER_COUNT = 4;
 
@@ -51,20 +52,24 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   auto labellingCoordinator = std::make_shared<LabellingCoordinator>(
       LAYER_COUNT, forcesLabeller, labels, nodes);
 
-  const int postProcessingTextureSize = 512;
-  textureMapperManager =
-      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
-  textureMapperManagerController =
-      std::make_unique<TextureMapperManagerController>(textureMapperManager);
-  scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
-                                  labellingCoordinator, textureMapperManager);
-
   bool synchronousCapturing = parser.isSet("offline");
   const float offlineFPS = 24;
   videoRecorder =
       std::make_shared<VideoRecorder>(synchronousCapturing, offlineFPS);
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
+  recordingAutomationController =
+      std::make_shared<RecordingAutomationController>(labellingCoordinator,
+                                                      videoRecorder);
+
+  const int postProcessingTextureSize = 512;
+  textureMapperManager =
+      std::make_shared<TextureMapperManager>(postProcessingTextureSize);
+  textureMapperManagerController =
+      std::make_unique<TextureMapperManagerController>(textureMapperManager);
+  scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
+                                  labellingCoordinator, textureMapperManager,
+                                  recordingAutomationController);
 
   float offlineRenderingFrameTime =
       parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;
@@ -104,14 +109,11 @@ int Application::execute()
 
   forcesLabeller->resize(window->size().width(), window->size().height());
 
-  nodes->setOnNodeAdded([this](std::shared_ptr<Node> node)
-                        {
-                          this->onNodeAdded(node);
-                        });
+  nodes->setOnNodeAdded(
+      [this](std::shared_ptr<Node> node) { this->onNodeAdded(node); });
 
   nodes->getCameraNode()->setOnCameraPositionsChanged(
-      [this](std::vector<CameraPosition> cameraPositions)
-      {
+      [this](std::vector<CameraPosition> cameraPositions) {
         this->cameraPositionsModel->update(cameraPositions);
       });
 
@@ -177,6 +179,8 @@ void Application::setupWindow()
   context->setContextProperty("labels", labelsModel.get());
   context->setContextProperty("labelling", labellingController.get());
   context->setContextProperty("videoRecorder", videoRecorderController.get());
+  context->setContextProperty("automation",
+                              recordingAutomationController.get());
 }
 
 void Application::createAndStartStateMachine()
@@ -216,8 +220,7 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   if (cameraNode.get())
   {
     cameraNode->setOnCameraPositionsChanged(
-        [this](std::vector<CameraPosition> cameraPositions)
-        {
+        [this](std::vector<CameraPosition> cameraPositions) {
           this->cameraPositionsModel->update(cameraPositions);
         });
   }
@@ -228,10 +231,9 @@ void Application::onLabelChangedUpdateLabelNodes(Labels::Action action,
 {
   auto labelNodes = nodes->getLabelNodes();
   auto labelNode = std::find_if(labelNodes.begin(), labelNodes.end(),
-                                [label](std::shared_ptr<LabelNode> labelNode)
-                                {
-    return labelNode->label.id == label.id;
-  });
+                                [label](std::shared_ptr<LabelNode> labelNode) {
+                                  return labelNode->label.id == label.id;
+                                });
 
   if (labelNode == labelNodes.end())
   {
