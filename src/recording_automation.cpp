@@ -4,9 +4,9 @@
 #include "./labelling_coordinator.h"
 #include "./video_recorder.h"
 #include "./nodes.h"
-#include "./utils/image_persister.h"
 #include "./camera_node.h"
 #include "./camera.h"
+#include "./utils/image_persister.h"
 
 QLoggingCategory recordingAutomationChan("RecordingAutomation");
 
@@ -34,13 +34,12 @@ void RecordingAutomation::update()
   if (!takeScreenshot)
     return;
 
-  if (cameraPositionName.size())
+  if (shouldMoveToPosition)
   {
     moveToCameraPosition(cameraPositionName);
-    cameraPositionName = "";
+    shouldMoveToPosition = false;
     return;
   }
-
 
   if (labellingCoordinator->haveLabelPositionsChanged())
   {
@@ -56,7 +55,8 @@ void RecordingAutomation::update()
     std::vector<unsigned char> pixels(width * height * 4);
     gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
                      pixels.data());
-    std::string filename = "screenshot.png";
+    std::string filename =
+        nodes->getSceneName() + "_" + cameraPositionName + ".png";
     ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
     takeScreenshot = false;
     qCWarning(recordingAutomationChan) << "Took screenshot:"
@@ -72,6 +72,7 @@ void RecordingAutomation::takeScreenshotOfNextFrame()
 void RecordingAutomation::takeScreenshotOf(std::string cameraPositionName)
 {
   this->cameraPositionName = cameraPositionName;
+  shouldMoveToPosition = true;
   takeScreenshot = true;
 }
 

@@ -42,7 +42,8 @@ class RecordingAutomation
   int width;
   int height;
 
-  bool takeScreenshot;
+  bool takeScreenshot = false;
+  bool shouldMoveToPosition = false;
   std::string cameraPositionName;
 
   int unchangedCount = 0;
