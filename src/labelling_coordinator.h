@@ -63,6 +63,8 @@ class LabellingCoordinator
   void updatePlacement();
   std::vector<float> updateClusters();
 
+  bool haveLabelPositionsChanged();
+
   void resize(int width, int height);
 
   void saveOcclusion();
@@ -71,6 +73,7 @@ class LabellingCoordinator
   bool forcesEnabled = true;
   bool optimizeOnIdle = false;
   bool useApollonius = false;
+  bool hasChanges;
 
  private:
   int layerCount;
@@ -102,7 +105,7 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
   LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
-  bool updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
+  void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
 
   std::map<int, Eigen::Vector3f>
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);

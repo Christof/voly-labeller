@@ -127,7 +127,9 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
   distributeLabelsToLayers();
 
-  return updateLabelPositionsInLabelNodes(labelPositions);
+  updateLabelPositionsInLabelNodes(labelPositions);
+
+  return hasChanges;
 }
 
 void LabellingCoordinator::updatePlacement()
@@ -178,6 +180,11 @@ std::vector<float> LabellingCoordinator::updateClusters()
 
   clustering.update(labellerFrameData.viewProjection);
   return clustering.getMedianClusterMembers();
+}
+
+bool LabellingCoordinator::haveLabelPositionsChanged()
+{
+  return hasChanges;
 }
 
 void LabellingCoordinator::resize(int width, int height)
@@ -261,10 +268,10 @@ void LabellingCoordinator::distributeLabelsToLayers()
   }
 }
 
-bool LabellingCoordinator::updateLabelPositionsInLabelNodes(
+void LabellingCoordinator::updateLabelPositionsInLabelNodes(
     LabelPositions labelPositions)
 {
-  bool hasChanges = false;
+  hasChanges = false;
   for (auto &labelNode : nodes->getLabelNodes())
   {
     int labelId = labelNode->label.id;
@@ -286,8 +293,6 @@ bool LabellingCoordinator::updateLabelPositionsInLabelNodes(
       labelNode->setIsVisible(false);
     }
   }
-
-  return hasChanges;
 }
 
 std::map<int, Eigen::Vector3f> LabellingCoordinator::addDepthValueNDC(
