@@ -4,6 +4,7 @@
 #include <vector>
 #include "./math/eigen.h"
 #include "./utils/persister.h"
+#include "./utils/path_helper.h"
 #include "./importer.h"
 #include "./mesh_node.h"
 #include "./volume_node.h"
@@ -84,6 +85,7 @@ void Nodes::setCameraNode(std::shared_ptr<CameraNode> node)
 
 void Nodes::addSceneNodesFrom(std::string filename)
 {
+  sceneName = filenameWithoutExtension(filename);
   qDebug() << "Nodes::addSceneNodesFrom" << filename.c_str();
   auto loadedNodes =
       Persister::load<std::vector<std::shared_ptr<Node>>>(filename);
@@ -251,6 +253,11 @@ void Nodes::setOnNodeAdded(
     std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
   this->onNodeAdded = onNodeAdded;
+}
+
+std::string Nodes::getSceneName() const
+{
+  return sceneName;
 }
 
 void Nodes::createCameraOriginVisualizer()
