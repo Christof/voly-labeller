@@ -51,7 +51,14 @@ class LabellingCoordinator
 
   void setEnabled(bool enabled);
 
-  void update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
+  /**
+   * \brief Updates the label positions by calculating the placement results and
+   * converting it into forces.
+   *
+   * @retval true if any position has changed
+   * @retval false if no position has changed
+   */
+  bool update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
   void updatePlacement();
   std::vector<float> updateClusters();
@@ -95,7 +102,7 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
   LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
-  void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
+  bool updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
 
   std::map<int, Eigen::Vector3f>
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);

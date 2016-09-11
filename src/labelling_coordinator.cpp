@@ -106,12 +106,12 @@ void LabellingCoordinator::setEnabled(bool enabled)
   }
 }
 
-void LabellingCoordinator::update(double frameTime, bool isIdle,
+bool LabellingCoordinator::update(double frameTime, bool isIdle,
                                   Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
   if (!labellingEnabled)
-    return;
+    return false;
 
   this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
@@ -127,7 +127,7 @@ void LabellingCoordinator::update(double frameTime, bool isIdle,
 
   distributeLabelsToLayers();
 
-  updateLabelPositionsInLabelNodes(labelPositions);
+  return updateLabelPositionsInLabelNodes(labelPositions);
 }
 
 void LabellingCoordinator::updatePlacement()
@@ -261,14 +261,21 @@ void LabellingCoordinator::distributeLabelsToLayers()
   }
 }
 
-void LabellingCoordinator::updateLabelPositionsInLabelNodes(
+bool LabellingCoordinator::updateLabelPositionsInLabelNodes(
     LabelPositions labelPositions)
 {
+  bool hasChanges = false;
   for (auto &labelNode : nodes->getLabelNodes())
   {
     int labelId = labelNode->label.id;
     if (labelPositions.count(labelId))
     {
+      auto newPosition = labelPositions.get3dFor(labelId);
+      if (!hasChanges && (labelNode->labelPosition - newPosition).norm() > 1e-7)
+      {
+        hasChanges = true;
+      }
+
       labelNode->setIsVisible(true);
       labelNode->labelPosition = labelPositions.get3dFor(labelId);
       labelNode->labelPositionNDC = labelPositions.getNDCFor(labelId);
@@ -279,6 +286,8 @@ void LabellingCoordinator::updateLabelPositionsInLabelNodes(
       labelNode->setIsVisible(false);
     }
   }
+
+  return hasChanges;
 }
 
 std::map<int, Eigen::Vector3f> LabellingCoordinator::addDepthValueNDC(
