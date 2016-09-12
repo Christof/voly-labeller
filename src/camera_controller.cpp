@@ -33,6 +33,16 @@ void CameraController::strafeRight()
   camera->strafeRight(frameTime * cameraSpeed);
 }
 
+void CameraController::moveUp()
+{
+  camera->moveVertical(frameTime * cameraSpeed);
+}
+
+void CameraController::moveDown()
+{
+  camera->moveVertical(-frameTime * cameraSpeed);
+}
+
 void CameraController::azimuthLeft()
 {
   camera->changeAzimuth(frameTime);

@@ -27,6 +27,8 @@ class CameraController : public QObject
   void moveBackward();
   void strafeLeft();
   void strafeRight();
+  void moveUp();
+  void moveDown();
   void azimuthLeft();
   void azimuthRight();
   void increaseDeclination();
