@@ -98,7 +98,7 @@ std::shared_ptr<Graphics::Mesh> Importer::import(std::string filename,
   auto importedMesh = scene->mMeshes[meshIndex];
 
   return std::shared_ptr<Graphics::Mesh>(new Graphics::Mesh(
-      importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
+      filename, importedMesh, scene->mMaterials[importedMesh->mMaterialIndex]));
 }
 
 std::vector<std::shared_ptr<Graphics::Mesh>>

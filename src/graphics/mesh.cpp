@@ -16,7 +16,8 @@ namespace Graphics
 
 QLoggingCategory meshChan("Graphics.Mesh");
 
-Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
+Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
+  : filename(filename)
 {
   qCInfo(meshChan) << "Loading " << mesh->mName.C_Str();
 
@@ -102,7 +103,7 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
-  qCInfo(meshChan) << "Destructor of mesh";
+  qCInfo(meshChan) << "Destructor of mesh" << filename.c_str();
   delete[] indexData;
   delete[] positionData;
   delete[] normalData;
@@ -157,8 +158,7 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
     int textureId = textureManager->addTexture(
         absolutePathOfProjectRelativePath(std::string(textureFilePath)));
     objectData.setCustomBufferFor<Graphics::TextureAddress>(
-        1, [textureManager, textureId]()
-        {
+        1, [textureManager, textureId]() {
           return textureManager->getAddressFor(textureId);
         });
   }

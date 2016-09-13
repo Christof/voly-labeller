@@ -40,7 +40,7 @@ class Mesh : public Renderable
 {
  public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-  Mesh(aiMesh *mesh, aiMaterial *material);
+  Mesh(std::string filename, aiMesh *mesh, aiMaterial *material);
   virtual ~Mesh();
 
   Math::Obb obb;
@@ -60,6 +60,7 @@ class Mesh : public Renderable
                                           aiMaterial *material);
   float loadFloatFromMaterial(const char *key, aiMaterial *material);
 
+  std::string filename;
   int vertexCount;
   int indexCount;
   unsigned int *indexData;
