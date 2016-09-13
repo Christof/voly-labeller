@@ -68,12 +68,14 @@ Eigen::Matrix4f Camera::createOrthographicProjection(float aspectRatio,
 void Camera::moveForward(float distance)
 {
   position += distance * direction;
+  origin += distance * direction;
   update();
 }
 
 void Camera::moveBackward(float distance)
 {
   position -= distance * direction;
+  origin -= distance * direction;
   update();
 }
 
