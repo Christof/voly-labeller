@@ -1,5 +1,6 @@
 #include "./mesh.h"
 #include <Eigen/Geometry>
+#include <boost/filesystem.hpp>
 #include <QDebug>
 #include <QLoggingCategory>
 #include <string>
@@ -77,8 +78,11 @@ Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
     if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, nullptr,
                              nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
     {
-      std::string textureName(texturePath.C_Str());
-      textureFilePath = "assets/" + textureName;
+      std::string textureName =
+          replaceBackslashesWithSlashes(texturePath.C_Str());
+      auto baseFolder = boost::filesystem::path{ filename }.parent_path();
+      auto texturePath = baseFolder / textureName;
+      textureFilePath = texturePath.string();
       qCDebug(meshChan) << "texture" << textureFilePath.c_str();
     }
     else
