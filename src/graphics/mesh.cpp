@@ -60,7 +60,14 @@ Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
   positionData = new float[mesh->mNumVertices * 3];
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
   normalData = new float[mesh->mNumVertices * 3];
-  memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+  if (mesh->mNormals)
+  {
+    memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+  }
+  else
+  {
+    qCWarning(meshChan) << "No normals in" << mesh->mName.C_Str();
+  }
   textureCoordinateData = new float[mesh->mNumVertices * 2];
 
   hasTexture = mesh->GetNumUVChannels() > 0;
