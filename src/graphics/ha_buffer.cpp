@@ -61,7 +61,7 @@ void HABuffer::updateNearAndFarPlanes(float nearvalue, float farvalue)
 void HABuffer::initializeBufferHash()
 {
   habufferScreenSize = std::max(size[0], size[1]);
-  uint recordCount = habufferScreenSize * habufferScreenSize * 8;
+  uint recordCount = habufferScreenSize * habufferScreenSize * 16;
   habufferTableSize =
       std::max(habufferScreenSize,
                static_cast<uint>(ceil(sqrt(static_cast<float>(recordCount)))));
