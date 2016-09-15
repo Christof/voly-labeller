@@ -7,7 +7,6 @@ MeshesNode::MeshesNode(std::string assetFilename,
                        Eigen::Matrix4f transformation)
   : assetFilename(assetFilename), transformation(transformation)
 {
-  // obb = mesh->obb * transformation;
 }
 
 MeshesNode::~MeshesNode()
@@ -46,10 +45,17 @@ void MeshesNode::loadMeshes()
   Importer importer;
 
   meshes = importer.importAll(assetFilename);
+  Eigen::MatrixXf data(3, 8 * meshes.size());
+  size_t cornerIndex = 0;
   for (size_t index = 0; index < meshes.size(); ++index)
   {
     transformations.push_back(
         importer.getTransformationFor(assetFilename, index));
+
+    for (auto &corner : meshes[index]->obb.corners)
+      data.col(cornerIndex++) = corner;
   }
+
+  obb = Math::Obb(data) * transformation;
 }
 
