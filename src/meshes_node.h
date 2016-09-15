@@ -9,6 +9,7 @@
 #include <boost/serialization/export.hpp>
 #include <QDebug>
 #include <memory>
+#include <vector>
 #include <string>
 #include "./node.h"
 #include "./math/obb.h"
