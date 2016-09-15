@@ -6,6 +6,7 @@
 #include "./importer.h"
 #include "./nodes.h"
 #include "./mesh_node.h"
+#include "./meshes_node.h"
 #include "./label_node.h"
 #include "./volume_node.h"
 #include "./camera_node.h"
@@ -13,6 +14,7 @@
 
 BOOST_CLASS_EXPORT_GUID(LabelNode, "LabelNode")
 BOOST_CLASS_EXPORT_GUID(MeshNode, "MeshNode")
+BOOST_CLASS_EXPORT_GUID(MeshesNode, "MeshesNode")
 BOOST_CLASS_EXPORT_GUID(VolumeNode, "VolumeNode")
 BOOST_CLASS_EXPORT_GUID(CameraNode, "CameraNode")
 
@@ -49,6 +51,15 @@ void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
       "assets/datasets/LIDC-IDRI-0469_lesion4_mask_extracted_blurred.mha",
       "assets/transferfunctions/LIDC_IDRI_lesions_mask.gra", trans.matrix(),
       false));
+}
+
+void addSponza(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/crytek-sponza/sponza.obj";
+  Eigen::Affine3f scaling(Eigen::Scaling(0.01f));
+  Eigen::Matrix4f scalingMatrix = scaling.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
 }
 
 void DefaultSceneCreator::create()

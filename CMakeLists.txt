@@ -43,6 +43,7 @@ set(SOURCES
   src/camera.cpp
   src/importer.cpp
   src/mesh_node.cpp
+  src/meshes_node.cpp
   src/label_node.cpp
   src/obb_node.cpp
   src/volume_node.cpp

@@ -51,4 +51,10 @@ inline std::string absolutePathOfProjectRelativePath(std::string relativePath)
       .toStdString();
 }
 
+inline std::string replaceBackslashesWithSlashes(std::string path)
+{
+  std::replace(path.begin(), path.end(), '\\', '/');
+  return path;
+}
+
 #endif  // SRC_UTILS_PATH_HELPER_H_

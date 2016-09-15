@@ -21,7 +21,11 @@ TextureManager::~TextureManager()
 
 int TextureManager::addTexture(std::string path)
 {
+  if (texturesCache.count(path))
+    return texturesCache[path];
+
   int id = static_cast<int>(textures.size());
+  texturesCache[path] = id;
 
   textures.push_back(newTexture2d(path));
 
@@ -139,6 +143,7 @@ bool TextureManager::initialize(Gl *gl, bool sparse, int maxTextureArrayLevels)
 void TextureManager::shutdown()
 {
   textures.clear();
+  texturesCache.clear();
 
   for (auto containIt = textureContainers.begin();
        containIt != textureContainers.end(); ++containIt)

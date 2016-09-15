@@ -57,6 +57,7 @@ class TextureManager
  private:
   Gl *gl;
   std::vector<std::shared_ptr<Texture2d>> textures;
+  std::map<std::string, int> texturesCache;
   std::map<TextureSpaceDescription, std::vector<TextureContainer *>>
       textureContainers;
   int maxTextureArrayLevels;

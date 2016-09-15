@@ -1,5 +1,6 @@
 #include "./mesh.h"
 #include <Eigen/Geometry>
+#include <boost/filesystem.hpp>
 #include <QDebug>
 #include <QLoggingCategory>
 #include <string>
@@ -16,7 +17,8 @@ namespace Graphics
 
 QLoggingCategory meshChan("Graphics.Mesh");
 
-Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
+Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
+  : filename(filename)
 {
   qCInfo(meshChan) << "Loading " << mesh->mName.C_Str();
 
@@ -59,7 +61,14 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
   positionData = new float[mesh->mNumVertices * 3];
   memcpy(positionData, mesh->mVertices, sizeof(float) * 3 * mesh->mNumVertices);
   normalData = new float[mesh->mNumVertices * 3];
-  memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+  if (mesh->mNormals)
+  {
+    memcpy(normalData, mesh->mNormals, sizeof(float) * 3 * mesh->mNumVertices);
+  }
+  else
+  {
+    qCWarning(meshChan) << "No normals in" << mesh->mName.C_Str();
+  }
   textureCoordinateData = new float[mesh->mNumVertices * 2];
 
   hasTexture = mesh->GetNumUVChannels() > 0;
@@ -69,8 +78,11 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
     if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath, nullptr,
                              nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS)
     {
-      std::string textureName(texturePath.C_Str());
-      textureFilePath = "assets/" + textureName;
+      std::string textureName =
+          replaceBackslashesWithSlashes(texturePath.C_Str());
+      auto baseFolder = boost::filesystem::path{ filename }.parent_path();
+      auto texturePath = baseFolder / textureName;
+      textureFilePath = texturePath.string();
       qCDebug(meshChan) << "texture" << textureFilePath.c_str();
     }
     else
@@ -102,7 +114,7 @@ Mesh::Mesh(aiMesh *mesh, aiMaterial *material)
 
 Mesh::~Mesh()
 {
-  qCInfo(meshChan) << "Destructor of mesh";
+  qCInfo(meshChan) << "Destructor of mesh" << filename.c_str();
   delete[] indexData;
   delete[] positionData;
   delete[] normalData;
@@ -157,8 +169,7 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
     int textureId = textureManager->addTexture(
         absolutePathOfProjectRelativePath(std::string(textureFilePath)));
     objectData.setCustomBufferFor<Graphics::TextureAddress>(
-        1, [textureManager, textureId]()
-        {
+        1, [textureManager, textureId]() {
           return textureManager->getAddressFor(textureId);
         });
   }

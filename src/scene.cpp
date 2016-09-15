@@ -72,7 +72,7 @@ void Scene::initialize()
       std::make_shared<Graphics::HABuffer>(Eigen::Vector2i(width, height));
   managers->getShaderManager()->initialize(gl, haBuffer);
 
-  managers->getObjectManager()->initialize(gl, 128, 10000000);
+  managers->getObjectManager()->initialize(gl, 512, 10000000);
   quad->initialize(gl, managers);
   screenQuad->initialize(gl, managers);
   positionQuad->initialize(gl, managers);
