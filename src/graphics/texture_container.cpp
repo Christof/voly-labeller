@@ -18,10 +18,14 @@ TextureContainer::TextureContainer(Gl *gl, bool sparse,
 {
   glAssert(gl->glGenTextures(1, &textureId));
   glAssert(gl->glBindTexture(GL_TEXTURE_2D_ARRAY, textureId));
+  float maxAnisotropy = 0.0f;
+  glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
   glAssert(gl->glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER,
                                GL_LINEAR));
   glAssert(gl->glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER,
                                GL_LINEAR_MIPMAP_LINEAR));
+  glAssert(gl->glTexParameterf(GL_TEXTURE_2D_ARRAY,
+                               GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAnisotropy));
 
   if (sparse)
   {
