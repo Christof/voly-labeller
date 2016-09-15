@@ -17,7 +17,10 @@
 #include "./graphics/gl.h"
 
 /**
- * \brief Node which renders a Mesh
+ * \brief Node which renders all Meshes of a model file
+ *
+ * This increases the performance for model files with many meshes considerable
+ * compared to loading them into own MeshNode instances.
  */
 class MeshesNode : public Node
 {
