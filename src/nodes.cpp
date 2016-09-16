@@ -217,8 +217,38 @@ void Nodes::removeForcesVisualizerNode()
   forcesVisualizerNode.reset();
 }
 
-void
-Nodes::setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded)
+void Nodes::applyTransformationToAllNodes(Eigen::Matrix4f transformation)
+{
+  for (auto &node : nodes)
+  {
+    std::shared_ptr<VolumeNode> volumeNode =
+        std::dynamic_pointer_cast<VolumeNode>(node);
+    if (volumeNode.get())
+    {
+      volumeNode->setTransformation(transformation *
+                                    volumeNode->getTransformation());
+    }
+
+    std::shared_ptr<MeshNode> meshNode =
+        std::dynamic_pointer_cast<MeshNode>(node);
+    if (meshNode.get())
+    {
+      meshNode->setTransformation(transformation *
+                                  meshNode->getTransformation());
+    }
+
+    std::shared_ptr<LabelNode> labelNode =
+        std::dynamic_pointer_cast<LabelNode>(node);
+    if (labelNode.get())
+    {
+      labelNode->label.anchorPosition =
+          mul(transformation, labelNode->label.anchorPosition).head<3>();
+    }
+  }
+}
+
+void Nodes::setOnNodeAdded(
+    std::function<void(std::shared_ptr<Node>)> onNodeAdded)
 {
   this->onNodeAdded = onNodeAdded;
 }
