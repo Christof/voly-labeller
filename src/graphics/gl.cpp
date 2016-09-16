@@ -46,6 +46,12 @@ void Gl::initialize(QOpenGLContext *context, QSize size)
 
   glTexturePageCommitmentEXT = reinterpret_cast<TexturePageCommitmentEXT>(
       context->getProcAddress("glTexturePageCommitmentEXT"));
+
+  bool hasAnisotropicFiltering =
+      context->hasExtension("GL_EXT_texture_filter_anisotropic");
+  qCInfo(openGlChan) << "Has GL_EXT_texture_filter_anisotropic:"
+                     << hasAnisotropicFiltering;
+  glCheckError();
 #endif
 
   paintDevice = new QOpenGLPaintDevice();
