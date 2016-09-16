@@ -42,6 +42,7 @@ class VolumeNode : public Node, public Graphics::Volume
   };
 
   Eigen::Matrix4f getTransformation();
+  void setTransformation(Eigen::Matrix4f transformation);
 
  private:
   std::string volumePath;
