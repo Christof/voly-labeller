@@ -79,7 +79,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/hb_schuss_cal45_gk1_vlowres.mha</volumePath>
+			<volumePath>assets/datasets/hb_schuss_cal45_gk1.mha</volumePath>
 			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>1.000000000e+00</r0c0>
