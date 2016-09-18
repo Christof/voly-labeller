@@ -49,6 +49,7 @@ class Scene : public AbstractScene
 
   void enableBufferDebuggingViews(bool enable);
   void enableConstraingOverlay(bool enable);
+  void enableLabelling(bool enable);
   void setRenderLayer(int layerNumber);
 
  private:
@@ -75,6 +76,7 @@ class Scene : public AbstractScene
   bool shouldResize = false;
   bool showBufferDebuggingViews = false;
   bool showConstraintOverlay = false;
+  bool labellingEnabled = true;
   int activeLayerNumber = 0;
 
   void updateLabelling();

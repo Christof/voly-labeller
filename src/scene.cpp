@@ -155,12 +155,16 @@ void Scene::render()
 
   glAssert(gl->glViewport(0, 0, width, height));
 
-  fbo->bind();
-  glAssert(gl->glDisable(GL_DEPTH_TEST));
-  glAssert(gl->glEnable(GL_STENCIL_TEST));
-  nodes->renderLabels(gl, managers, renderData);
-  glAssert(gl->glDisable(GL_STENCIL_TEST));
-  fbo->unbind();
+  if (labellingEnabled)
+  {
+    fbo->bind();
+    glAssert(gl->glDisable(GL_DEPTH_TEST));
+    glAssert(gl->glEnable(GL_STENCIL_TEST));
+    nodes->renderLabels(gl, managers, renderData);
+    glAssert(gl->glDisable(GL_STENCIL_TEST));
+    fbo->unbind();
+  }
+
   renderScreenQuad();
   nodes->renderOverlays(gl, managers, renderData);
 
@@ -322,6 +326,12 @@ void Scene::enableBufferDebuggingViews(bool enable)
 void Scene::enableConstraingOverlay(bool enable)
 {
   showConstraintOverlay = enable;
+}
+
+void Scene::enableLabelling(bool enable)
+{
+  labellingEnabled = enable;
+  labellingCoordinator->setEnabled(enable);
 }
 
 std::shared_ptr<Camera> Scene::getCamera()
