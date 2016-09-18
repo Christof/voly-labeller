@@ -97,10 +97,22 @@ void LabellingCoordinator::cleanup()
     placementLabeller->cleanup();
 }
 
+void LabellingCoordinator::setEnabled(bool enabled)
+{
+  labellingEnabled = enabled;
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    labelNode->setIsVisible(!enabled);
+  }
+}
+
 void LabellingCoordinator::update(double frameTime, bool isIdle,
                                   Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
+  if (!labellingEnabled)
+    return;
+
   this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
 
@@ -120,6 +132,9 @@ void LabellingCoordinator::update(double frameTime, bool isIdle,
 
 void LabellingCoordinator::updatePlacement()
 {
+  if (!labellingEnabled)
+    return;
+
   bool optimize = isIdle && optimizeOnIdle;
   bool ignoreOldPosition = !isIdle;
 
@@ -158,6 +173,9 @@ void LabellingCoordinator::updatePlacement()
 
 std::vector<float> LabellingCoordinator::updateClusters()
 {
+  if (!labellingEnabled)
+    return std::vector<float>{ 1.0f };
+
   clustering.update(labellerFrameData.viewProjection);
   return clustering.getMedianClusterMembers();
 }

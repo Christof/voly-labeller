@@ -49,6 +49,8 @@ class LabellingCoordinator
                   int widht, int height);
   void cleanup();
 
+  void setEnabled(bool enabled);
+
   void update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
   void updatePlacement();
@@ -87,6 +89,7 @@ class LabellingCoordinator
   Clustering clustering;
   float sumOfCosts = 0.0f;
   bool preserveLastResult = false;
+  bool labellingEnabled = true;
   std::map<int, Eigen::Vector2f> lastPlacementResult;
 
   std::map<int, Eigen::Vector2f> getPlacementPositions(int activeLayerNumber);
