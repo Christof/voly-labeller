@@ -257,7 +257,7 @@ void Nodes::createCameraOriginVisualizer()
 {
   Importer importer;
 
-  std::string filename = "assets/cameraOrigin.dae";
+  std::string filename = "assets/models/cameraOrigin.dae";
   auto cameraOriginSphere = importer.import(filename, 0);
 
   cameraOriginVisualizerNode = std::make_shared<MeshNode>(
