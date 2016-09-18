@@ -17,6 +17,12 @@ void SceneController::toggleConstraintOverlay()
   scene->enableConstraingOverlay(showConstraintOverlay);
 }
 
+void SceneController::toggleLabelling()
+{
+  labellingEnabled = !labellingEnabled;
+  scene->enableLabelling(labellingEnabled);
+}
+
 void SceneController::compositeLayers()
 {
   scene->setRenderLayer(0);

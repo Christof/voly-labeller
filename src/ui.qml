@@ -118,6 +118,13 @@ FocusScope
         Menu {
           title: "Simulation"
           MenuItem {
+            text: "Enable labelling"
+            shortcut: "Pause"
+            checkable: true
+            checked: true
+            onTriggered: scene.toggleLabelling();
+          }
+          MenuItem {
             text: "Update labels"
             shortcut: "Space"
             checkable: true

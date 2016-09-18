@@ -20,6 +20,7 @@ class SceneController : public QObject
  public slots:
   void toggleBufferViews();
   void toggleConstraintOverlay();
+  void toggleLabelling();
   void compositeLayers();
   void renderFirstLayer();
   void renderSecondLayer();
@@ -32,6 +33,7 @@ class SceneController : public QObject
 
   bool showBufferDebuggingViews = false;
   bool showConstraintOverlay = false;
+  bool labellingEnabled = true;
 };
 
 #endif  // SRC_SCENE_CONTROLLER_H_
