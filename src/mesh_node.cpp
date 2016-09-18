@@ -34,5 +34,6 @@ Eigen::Matrix4f MeshNode::getTransformation()
 void MeshNode::setTransformation(Eigen::Matrix4f transformation)
 {
   this->transformation = transformation;
+  obb = mesh->obb * transformation;
 }
 

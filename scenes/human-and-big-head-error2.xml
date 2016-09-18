@@ -54,7 +54,7 @@
 	</item>
 	<item>
 		<px class_id="5" class_name="MeshNode" tracking_level="1" version="0" object_id="_1">
-			<assetFilename>assets/human-edited.dae</assetFilename>
+      <assetFilename>assets/models/human-edited.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>1.000000000e+00</r0c0>
@@ -78,7 +78,7 @@
 	</item>
 	<item>
 		<px class_id_reference="5" object_id="_2">
-			<assetFilename>assets/human-edited.dae</assetFilename>
+      <assetFilename>assets/models/human-edited.dae</assetFilename>
 			<meshIndex>1</meshIndex>
 			<transformation>
 				<r0c0>1.000000000e+00</r0c0>

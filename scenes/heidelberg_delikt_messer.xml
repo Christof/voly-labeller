@@ -204,8 +204,8 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_3">
-			<volumePath>/home/christof/Documents/master/voly-labeller/assets/datasets/delikt_messer_256_air.mha</volumePath>
-			<transferFunctionPath>/home/christof/Documents/master/voly-labeller/assets/transferfunctions/air_cavities_lung.gra</transferFunctionPath>
+			<volumePath>assets/datasets/delikt_messer_256_air.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/air_cavities_lung.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>

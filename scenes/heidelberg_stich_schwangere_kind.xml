@@ -80,7 +80,7 @@
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
 			<volumePath>assets/datasets/test3.mha</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/hb_testcrop.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>2.999999762e+00</r0c0>
 				<r0c1>0.000000000e+00</r0c1>

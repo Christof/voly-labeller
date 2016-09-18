@@ -17,7 +17,7 @@ LabelNode::LabelNode(Label label) : label(label)
   isVisible = false;
   Importer importer;
 
-  anchorMesh = importer.import("assets/anchor.dae", 0);
+  anchorMesh = importer.import("assets/models/anchor.dae", 0);
   quad = std::make_shared<Graphics::Quad>(":/shader/label.vert",
                                           ":/shader/label.frag");
 

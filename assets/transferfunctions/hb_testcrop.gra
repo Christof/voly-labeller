@@ -1,0 +1,39 @@
+<!DOCTYPE Gradient>
+<gradientData startX="0" type="LinearGradient" startY="0.5" spread="PadSpread" endY="0.5" coordinateMode="StretchToDeviceMode" endX="1">
+ <stopData position="0.095057">
+  <colorData b="50" a="0" r="255" g="126"/>
+ </stopData>
+ <stopData position="0.15019">
+  <colorData b="50" a="44" r="255" g="126"/>
+ </stopData>
+ <stopData position="0.176806">
+  <colorData b="50" a="0" r="124" g="255"/>
+ </stopData>
+ <stopData position="0.264259">
+  <colorData b="50" a="0" r="124" g="255"/>
+ </stopData>
+ <stopData position="0.274951">
+  <colorData b="0" a="7" r="92" g="255"/>
+ </stopData>
+ <stopData position="0.280713">
+  <colorData b="125" a="0" r="172" g="255"/>
+ </stopData>
+ <stopData position="0.290503">
+  <colorData b="255" a="0" r="255" g="255"/>
+ </stopData>
+ <stopData position="0.31958">
+  <colorData b="132" a="113" r="255" g="132"/>
+ </stopData>
+ <stopData position="0.333008">
+  <colorData b="255" a="178" r="255" g="255"/>
+ </stopData>
+ <stopData position="0.690918">
+  <colorData b="255" a="178" r="255" g="255"/>
+ </stopData>
+ <stopData position="0.695312">
+  <colorData b="207" a="89" r="207" g="207"/>
+ </stopData>
+ <stopData position="0.699951">
+  <colorData b="79" a="0" r="79" g="79"/>
+ </stopData>
+</gradientData>

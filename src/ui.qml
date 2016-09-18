@@ -191,7 +191,7 @@ FocusScope
       FileDialog {
           id: addSceneNodesFromDialog
           title: "Please choose a scene file"
-          folder: projectRootPath + "/config/"
+          folder: projectRootPath + "/scenes/"
           nameFilters: [ "Xml files (*.xml)" ]
           onAccepted: {
               nodes.addSceneNodesFrom(fileUrl);
@@ -233,7 +233,7 @@ FocusScope
           id: saveSceneDialog
           selectExisting: false
           title: "Please choose a scene file"
-          folder: projectRootPath + "/config/"
+          folder: projectRootPath + "/scenes/"
           nameFilters: [ "Xml files (*.xml)" ]
           onAccepted: {
               nodes.saveSceneTo(fileUrl);

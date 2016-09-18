@@ -61,6 +61,14 @@ class Nodes
   void addForcesVisualizerNode(std::shared_ptr<Node> node);
   void removeForcesVisualizerNode();
 
+  /**
+   * \brief Applies the given transformation to (nearly) all nodes
+   *
+   * %Nodes considered are VolumeNode%s, MeshNode%s and LabelNode%s.
+   *
+   */
+  void applyTransformationToAllNodes(Eigen::Matrix4f transformation);
+
   void setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded);
 
  private:
