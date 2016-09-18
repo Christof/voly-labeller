@@ -26,8 +26,9 @@ The simulation menu has items to:
 ## 3D control and states
 The 3D controls and state transitions are defined in `config/states.xml`.
 Camera movements are defined to move forward and backward (`W` and `S` respectively),
-to strafe left or right (`A` and `D`), to increase and decrease declination (`R` and `F`)
-as well as to change the azimuth (`Q` and `E`). The camera can also be rotated around the
+to strafe left or right (`A` and `D`), to move up and down (`R` and `F`),
+to increase and decrease declination (`R` and `F`)
+as well as to change the azimuth (`T` and `G`). The camera can also be rotated around the
 origin using mouse movement while holding the left mouse button. While holding the control key
 and the left mouse button, the zoom mode is enabled. Moving the mouse up zooms into the scene;
 moving the mouse down zooms out of the scene. Holding the shift key and the left mouse button,
@@ -47,7 +48,7 @@ make
 ```
 
 # Dependencies
-- Qt5.5
+- Qt5.7
 - OpenGL 4.5
 - Eigen3
 - Assimp
@@ -59,7 +60,7 @@ make
 - Clipper 6.2.1
 
 Some of these can be installed by running `scripts/install_dependencies.sh`.
-CUDA (including THRUST), Qt5.5 and OpenGL 4.5 must be installed separately.
+CUDA (including THRUST), Qt5.7 and OpenGL 4.5 must be installed separately.
 
 ### Clipper
 Clipper can be downloaded [here](http://www.angusj.com/delphi/clipper.php).
