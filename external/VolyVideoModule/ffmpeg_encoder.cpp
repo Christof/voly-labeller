@@ -96,7 +96,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
     av_opt_set(m_context->priv_data,"subq","6",0);
     av_opt_set(m_context->priv_data,"crf","20.0",0);
     av_opt_set(m_context->priv_data,"weighted_p_pred","0",0);
-    av_opt_set(m_context->priv_data,"profile","baseline",AV_OPT_SEARCH_CHILDREN);
+    av_opt_set(m_context->priv_data,"profile","high",AV_OPT_SEARCH_CHILDREN);
     //The setting below can be used to adjust CPU usage: fast -> lower CPU usage, bigger files
     av_opt_set(m_context->priv_data,"preset","medium",0);
     av_opt_set(m_context->priv_data,"tune","zerolatency",0);
