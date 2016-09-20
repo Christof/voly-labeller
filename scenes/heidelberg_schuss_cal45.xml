@@ -222,7 +222,7 @@
 	</item>
 	<item>
 		<px class_id="11" class_name="MeshNode" tracking_level="1" version="0" object_id="_9">
-      <assetFilename>assets/models/cal45_pistole.dae</assetFilename>
+			<assetFilename>assets/models/cal45_pistole.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>2.210932784e-03</r0c0>
@@ -246,7 +246,7 @@
 	</item>
 	<item>
 		<px class_id_reference="11" object_id="_10">
-      <assetFilename>assets/models/cal45_pfeil.dae</assetFilename>
+			<assetFilename>assets/models/cal45_pfeil.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>4.119351506e-03</r0c0>
@@ -270,7 +270,7 @@
 	</item>
 	<item>
 		<px class_id_reference="11" object_id="_11">
-      <assetFilename>assets/models/cal45_pfeil.dae</assetFilename>
+			<assetFilename>assets/models/cal45_pfeil.dae</assetFilename>
 			<meshIndex>1</meshIndex>
 			<transformation>
 				<r0c0>4.119351506e-03</r0c0>
