@@ -37,10 +37,16 @@ Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
       loadVector4FromMaterial("$clr.specular", material);
   phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
 
+  float readAlpha;
+  alpha = loadFloatFromMaterialSave("$mat.opacity", material, readAlpha)
+              ? readAlpha
+              : 1.0f;
+
   qCDebug(meshChan) << "diffuse: " << phongMaterial.diffuseColor
                     << " ambient: " << phongMaterial.ambientColor
                     << " specular: " << phongMaterial.specularColor
-                    << " shininess: " << phongMaterial.shininess;
+                    << " shininess: " << phongMaterial.shininess
+                    << " alpha: " << alpha;
 
   unsigned int indicesPerFace = mesh->mFaces[0].mNumIndices;
   indexCount = indicesPerFace * mesh->mNumFaces;
@@ -153,6 +159,12 @@ ObjectData Mesh::createBuffers(std::shared_ptr<ObjectManager> objectManager,
   std::vector<float> tex(textureCoordinateData,
                          textureCoordinateData + vertexCount * 2);
   std::vector<float> col(vertexCount * 4, 1.0f);
+  if (alpha != 1.0f)
+  {
+    for (int index = 0; index < vertexCount; ++index)
+      col[index * 4 + 3] = alpha;
+  }
+
   std::vector<unsigned int> idx(indexData, indexData + indexCount);
 
   int shaderProgramId = hasTexture
@@ -196,7 +208,13 @@ Eigen::Vector4f Mesh::loadVector4FromMaterial(const char *key,
   return Eigen::Vector4f(values[0], values[1], values[2], values[3]);
 }
 
-float Mesh::loadFloatFromMaterial(const char *key, aiMaterial *material)
+bool Mesh::loadFloatFromMaterialSave(const char *key,
+                                     const aiMaterial *material, float &value)
+{
+  return material->Get(key, 0, 0, value) == 0;
+}
+
+float Mesh::loadFloatFromMaterial(const char *key, const aiMaterial *material)
 {
   float result;
   if (material->Get(key, 0, 0, result) != 0)

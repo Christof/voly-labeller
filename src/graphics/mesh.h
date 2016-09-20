@@ -58,7 +58,9 @@ class Mesh : public Renderable
   void createObb();
   Eigen::Vector4f loadVector4FromMaterial(const char *key,
                                           aiMaterial *material);
-  float loadFloatFromMaterial(const char *key, aiMaterial *material);
+  float loadFloatFromMaterial(const char *key, const aiMaterial *material);
+  bool loadFloatFromMaterialSave(const char *key, const aiMaterial *material,
+                                 float &value);
 
   std::string filename;
   int vertexCount;
@@ -70,6 +72,7 @@ class Mesh : public Renderable
   PhongMaterial phongMaterial;
 
   bool hasTexture;
+  float alpha;
   std::string textureFilePath;
   Eigen::Matrix4f normalMatrix = Eigen::Matrix4f::Identity();
 };
