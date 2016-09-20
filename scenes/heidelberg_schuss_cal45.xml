@@ -107,9 +107,9 @@
 				<label.id>1</label.id>
 				<label.text>bullet path (air)</label.text>
 				<label.anchorPosition>
-					<x>9.041950107e-02</x>
-					<y>6.291532516e-02</y>
-					<z>-2.319192328e-02</z>
+					<x>6.229477376e-02</x>
+					<y>2.869295888e-02</y>
+					<z>-1.027448475e-01</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
 					<x>2.560000000e+02</x>
@@ -141,9 +141,9 @@
 				<label.id>3</label.id>
 				<label.text>fracture system</label.text>
 				<label.anchorPosition>
-					<x>8.116573095e-03</x>
-					<y>7.099890709e-02</y>
-					<z>2.816049196e-02</z>
+					<x>4.727274179e-03</x>
+					<y>6.544743478e-02</y>
+					<z>8.901986293e-03</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
@@ -158,9 +158,9 @@
 				<label.id>4</label.id>
 				<label.text>Krepitationen</label.text>
 				<label.anchorPosition>
-					<x>6.897933781e-03</x>
-					<y>4.730653763e-02</y>
-					<z>5.189810321e-02</z>
+					<x>1.303709485e-02</x>
+					<y>4.632372782e-02</y>
+					<z>3.539490700e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
@@ -175,9 +175,9 @@
 				<label.id>5</label.id>
 				<label.text>maxillary fracture</label.text>
 				<label.anchorPosition>
-					<x>2.050237358e-02</x>
-					<y>-5.635023117e-03</y>
-					<z>1.022028178e-01</z>
+					<x>5.247169640e-03</x>
+					<y>1.934252912e-03</y>
+					<z>6.756234914e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
@@ -192,9 +192,9 @@
 				<label.id>6</label.id>
 				<label.text>mandibular fracture</label.text>
 				<label.anchorPosition>
-					<x>2.061654627e-02</x>
-					<y>-5.824017525e-02</y>
-					<z>1.058255956e-01</z>
+					<x>2.269025706e-02</x>
+					<y>-5.251814425e-02</y>
+					<z>7.961948961e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
@@ -209,9 +209,9 @@
 				<label.id>7</label.id>
 				<label.text>bullet hole</label.text>
 				<label.anchorPosition>
-					<x>-2.648293972e-03</x>
-					<y>-8.885300159e-02</y>
-					<z>1.109344885e-01</z>
+					<x>1.023316476e-02</x>
+					<y>-7.325467467e-02</y>
+					<z>9.821547568e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.560000000e+02</x>
