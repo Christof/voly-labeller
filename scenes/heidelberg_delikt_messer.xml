@@ -184,7 +184,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/delikt_messer_256_extracted.mha</volumePath>
+      <volumePath>assets/datasets/heidelberg_delikt_messer_1_clipped.mhd</volumePath>
 			<transferFunctionPath>assets/transferfunctions/hb_messer_weichteilxy.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
