@@ -51,6 +51,7 @@ class LabelNode : public Node
  private:
   std::string textureText;
   Eigen::Vector2f labelSize;
+  Eigen::Vector2f maxTextureCoordinates;
   bool isOutsideFieldOfView = false;
   float timeSinceIsVisibleChanged = 100.0f;
   const float fadeTime = 1.0f;
