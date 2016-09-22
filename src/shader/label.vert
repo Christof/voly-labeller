@@ -8,6 +8,7 @@ layout(location = 4) in int drawId;
 
 uniform mat4 viewProjectionMatrix;
 uniform mat4 viewMatrix;
+uniform vec2 maxTextureCoord;
 
 out vec2 vertexTexCoord;
 out int vertexDrawId;
@@ -18,9 +19,9 @@ void main()
 {
   mat4 modelMatrix = getModelMatrix(drawId);
 
-  vec3 cameraRight = vec3(1, 0, 0);
-  vec3 cameraUp = vec3(0, 1, 0);
-  vec3 labelPositionNDC = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
+  const vec3 cameraRight = vec3(1, 0, 0);
+  const vec3 cameraUp = vec3(0, 1, 0);
+  const vec3 labelPositionNDC = vec3(modelMatrix[3][0], modelMatrix[3][1], modelMatrix[3][2]);
   vec2 sizeNDC = vec2(modelMatrix[0][0], modelMatrix[1][1]);
   vec3 position = labelPositionNDC +
       cameraRight * pos.x * sizeNDC.x +
@@ -28,6 +29,6 @@ void main()
 
   vec4 vertexPos = vec4(position, 1);
   gl_Position = vertexPos;
-  vertexTexCoord = texCoord;
+  vertexTexCoord = texCoord * maxTextureCoord.xy;
   vertexDrawId = drawId;
 }
