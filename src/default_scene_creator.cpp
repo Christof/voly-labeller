@@ -70,8 +70,8 @@ void DefaultSceneCreator::create()
   Eigen::Affine3f trans(
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/delikt_messer_256.mha",
-      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
+      "assets/datasets/dice.mha",
+      "assets/transferfunctions/dice4.gra", trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");
