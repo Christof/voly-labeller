@@ -7,6 +7,7 @@ include("${CMAKE_SOURCE_DIR}/add_dependencies.cmake")
 set(SOURCES
   aabb2d.cpp
   obb.cpp
+  utils.cpp
   )
 
 if(MSVC)
