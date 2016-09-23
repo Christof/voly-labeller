@@ -7,18 +7,18 @@
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
-				<r0c0>8.749333024e-01</r0c0>
-				<r0c1>0.000000000e+00</r0c1>
-				<r0c2>-4.842434525e-01</r0c2>
-				<r0c3>-5.971252918e-03</r0c3>
-				<r1c0>-5.871985108e-02</r1c0>
-				<r1c1>9.926206470e-01</r1c1>
+				<r0c0>8.749332428e-01</r0c0>
+				<r0c1>-3.725290298e-09</r0c1>
+				<r0c2>-4.842435420e-01</r0c2>
+				<r0c3>-5.971223116e-03</r0c3>
+				<r1c0>-5.871986225e-02</r1c0>
+				<r1c1>9.926205873e-01</r1c1>
 				<r1c2>-1.060952991e-01</r1c2>
 				<r1c3>6.701476127e-02</r1c3>
-				<r2c0>4.806700647e-01</r2c0>
-				<r2c1>1.212610155e-01</r2c1>
-				<r2c2>8.684768677e-01</r2c2>
-				<r2c3>-5.998306870e-01</r2c3>
+				<r2c0>4.806701541e-01</r2c0>
+				<r2c1>1.212610230e-01</r2c1>
+				<r2c2>8.684768081e-01</r2c2>
+				<r2c3>-5.998306274e-01</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
@@ -112,7 +112,7 @@
 					<z>-1.027448475e-01</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
-					<x>2.560000000e+02</x>
+					<x>2.000000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -129,7 +129,7 @@
 					<z>-7.549005002e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>2.660000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -146,7 +146,7 @@
 					<z>8.901986293e-03</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>2.000000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -156,14 +156,14 @@
 		<px class_id_reference="8" object_id="_5">
 			<label>
 				<label.id>4</label.id>
-				<label.text>Krepitationen</label.text>
+				<label.text>crepitations</label.text>
 				<label.anchorPosition>
 					<x>1.303709485e-02</x>
 					<y>4.632372782e-02</y>
 					<z>3.539490700e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>1.600000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -180,7 +180,7 @@
 					<z>6.756234914e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>2.100000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -197,7 +197,7 @@
 					<z>7.961948961e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>2.400000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -214,7 +214,7 @@
 					<z>9.821547568e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>1.400000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
