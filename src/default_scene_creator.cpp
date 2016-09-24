@@ -62,6 +62,15 @@ void addSponza(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
 }
 
+void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/artificial.dae";
+  Eigen::Affine3f scaling(Eigen::Scaling(1.0f));
+  Eigen::Matrix4f scalingMatrix = scaling.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
+}
+
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
