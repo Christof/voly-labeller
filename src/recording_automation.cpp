@@ -55,8 +55,8 @@ void RecordingAutomation::update()
     std::vector<unsigned char> pixels(width * height * 4);
     gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
                      pixels.data());
-    std::string filename =
-        nodes->getSceneName() + "_" + cameraPositionName + ".png";
+    std::string filename = "screenshot_" + nodes->getSceneName() + "_" +
+                           cameraPositionName + ".png";
     ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
     takeScreenshot = false;
     qCWarning(recordingAutomationChan) << "Took screenshot:"
