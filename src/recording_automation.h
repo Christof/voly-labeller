@@ -11,9 +11,11 @@ class Nodes;
 class VideoRecorder;
 
 /**
- * \brief
+ * \brief Automation for taking a screenshot, with support for moving to a
+ * camera position and wait for the labels to have reached their position
  *
- *
+ * #initialize and #resize must be called at startup. Each frame #update must be
+ * called.
  */
 class RecordingAutomation
 {

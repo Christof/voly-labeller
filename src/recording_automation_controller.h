@@ -8,8 +8,7 @@
 class RecordingAutomation;
 
 /**
- * \brief
- *
+ * \brief Wrapper around RecordingAutomation to provide access for the UI
  *
  */
 class RecordingAutomationController : public QObject
