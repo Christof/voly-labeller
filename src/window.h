@@ -68,6 +68,7 @@ signals:
   void handleLazyInitialization();
   void initializeOpenGL();
   void updateAverageFrameTime(double frameTime);
+  void takeScreenshotAndSaveToFile();
 
   QElapsedTimer timer;
   QOpenGLContext *context;

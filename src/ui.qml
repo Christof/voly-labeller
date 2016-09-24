@@ -106,8 +106,13 @@ FocusScope
             onTriggered: nodes.toggleCameraOriginVisualizer();
           }
           MenuItem {
-            text: "Toggle coordinate system"
+            text: "Take screenshot"
             shortcut: "F12"
+            onTriggered: automation.takeScreenshotOfNextFrame();
+          }
+          MenuItem {
+            text: "Toggle coordinate system"
+            shortcut: "Ctrl+F12"
             onTriggered: nodes.toggleCoordinateSystem();
           }
           MenuItem {

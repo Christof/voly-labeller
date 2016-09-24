@@ -51,10 +51,19 @@ class LabellingCoordinator
 
   void setEnabled(bool enabled);
 
-  void update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
+  /**
+   * \brief Updates the label positions by calculating the placement results and
+   * converting it into forces.
+   *
+   * @retval true if any position has changed
+   * @retval false if no position has changed
+   */
+  bool update(double frameTime, bool isIdle, Eigen::Matrix4f projection,
               Eigen::Matrix4f view, int activeLayerNumber = 0);
   void updatePlacement();
   std::vector<float> updateClusters();
+
+  bool haveLabelPositionsChanged();
 
   void resize(int width, int height);
 
@@ -64,6 +73,7 @@ class LabellingCoordinator
   bool forcesEnabled = true;
   bool optimizeOnIdle = false;
   bool useApollonius = false;
+  bool hasChanges;
 
  private:
   int layerCount;

@@ -71,6 +71,8 @@ class Nodes
 
   void setOnNodeAdded(std::function<void(std::shared_ptr<Node>)> onNodeAdded);
 
+  std::string getSceneName() const;
+
  private:
   std::vector<std::shared_ptr<Node>> nodes;
   bool showBoundingVolumes = false;
@@ -79,6 +81,7 @@ class Nodes
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<MeshNode> cameraOriginVisualizerNode;
   std::shared_ptr<CameraNode> cameraNode;
+  std::string sceneName;
 
   std::function<void(std::shared_ptr<Node>)> onNodeAdded;
 

@@ -5,6 +5,23 @@ Multiple labeller implementation for volume rendered medical data
 Contribution guidelines are given in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 # Controls
+## Command-line interface
+
+```
+Usage: ./voly-labeller [options] scene
+Multiple labelling implementations for volume rendered medical data
+
+Options:
+  -h, --help                          Displays this help.
+  -v, --version                       Displays version information.
+  --offline                           Enables offline rendering
+  -s, --screenshot <Camera Position>  Takes a screenshot of the given camera
+                                      position
+
+Arguments:
+  scene                               Scene file to load.
+```
+
 ## File menu
 The file menu provides items to:
 - open a scene (`Ctrl+O`)
