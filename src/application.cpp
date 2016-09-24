@@ -62,7 +62,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   recordingAutomation = std::make_shared<RecordingAutomation>(
       labellingCoordinator, nodes, videoRecorder);
   if (parser.isSet("screenshot"))
-    recordingAutomation->takeScreenshotOf(
+    recordingAutomation->takeScreenshotOfPositionAndExit(
         parser.value("screenshot").toStdString());
 
   recordingAutomationController =

@@ -32,6 +32,7 @@ class RecordingAutomation
   void takeScreenshotOfNextFrame();
 
   void takeScreenshotOf(std::string cameraPositionName);
+  void takeScreenshotOfPositionAndExit(std::string cameraPositionName);
 
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;
@@ -45,6 +46,7 @@ class RecordingAutomation
   bool takeScreenshot = false;
   bool shouldMoveToPosition = false;
   std::string cameraPositionName;
+  bool exitAfterScreenshot = false;
 
   int unchangedCount = 0;
 

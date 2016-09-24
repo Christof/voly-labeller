@@ -61,6 +61,9 @@ void RecordingAutomation::update()
     takeScreenshot = false;
     qCWarning(recordingAutomationChan) << "Took screenshot:"
                                        << filename.c_str();
+
+    if (exitAfterScreenshot)
+      exit(0);
   }
 }
 
@@ -74,6 +77,13 @@ void RecordingAutomation::takeScreenshotOf(std::string cameraPositionName)
   this->cameraPositionName = cameraPositionName;
   shouldMoveToPosition = true;
   takeScreenshot = true;
+}
+
+void RecordingAutomation::takeScreenshotOfPositionAndExit(
+    std::string cameraPositionName)
+{
+  exitAfterScreenshot = true;
+  takeScreenshotOf(cameraPositionName);
 }
 
 void RecordingAutomation::moveToCameraPosition(std::string name)
