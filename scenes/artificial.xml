@@ -304,7 +304,7 @@
 					<z>1.204900742e+00</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
-					<x>1.280000000e+02</x>
+					<x>7.000000000e+01</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -321,7 +321,7 @@
 					<z>7.200262547e-01</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.280000000e+02</x>
+					<x>1.000000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -338,7 +338,7 @@
 					<z>1.313108683e+00</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.280000000e+02</x>
+					<x>1.000000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
