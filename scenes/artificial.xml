@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>15</count>
+	<count>16</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -10,7 +10,7 @@
 				<r0c0>2.458687574e-01</r0c0>
 				<r0c1>-3.725290298e-09</r0c1>
 				<r0c2>-9.693031311e-01</r0c2>
-				<r0c3>1.200426817e+00</r0c3>
+				<r0c3>1.200427055e+00</r0c3>
 				<r1c0>-9.082328528e-02</r1c0>
 				<r1c1>9.956004620e-01</r1c1>
 				<r1c2>-2.303780057e-02</r1c2>
@@ -45,13 +45,13 @@
 			<origin class_id="4" tracking_level="0" version="0">
 				<x>2.605952978e+00</x>
 				<y>6.866075993e-01</y>
-				<z>1.899456620e+00</z>
+				<z>1.899456859e+00</z>
 			</origin>
 			<cameraPositions class_id="5" tracking_level="0" version="0">
 				<count>9</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
-					<name>Position 0</name>
+					<name>Position 01</name>
 					<viewMatrix>
 						<r0c0>2.458686978e-01</r0c0>
 						<r0c1>0.000000000e+00</r0c1>
@@ -462,24 +462,48 @@
 		</px>
 	</item>
 	<item>
-		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_10">
+		<px class_id_reference="7" object_id="_10">
+			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<meshIndex>9</meshIndex>
+			<transformation>
+				<r0c0>2.036608011e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>-3.548214138e-01</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>0.000000000e+00</r1c1>
+				<r1c2>2.036608011e-01</r1c2>
+				<r1c3>3.197538853e-01</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-2.036608011e-01</r2c1>
+				<r2c2>0.000000000e+00</r2c2>
+				<r2c3>1.103472948e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_11">
 			<label class_id="9" tracking_level="0" version="0">
 				<label.id>1</label.id>
-				<label.text>box</label.text>
+				<label.text>sphere</label.text>
 				<label.anchorPosition>
-					<x>2.336290628e-01</x>
-					<y>6.564216018e-01</y>
-					<z>1.204900742e+00</z>
+					<x>-1.827342659e-01</x>
+					<y>3.015812337e-01</y>
+					<z>1.210486412e+00</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
-					<x>7.000000000e+01</x>
+					<x>9.000000000e+01</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="8" object_id="_11">
+		<px class_id_reference="8" object_id="_12">
 			<label>
 				<label.id>2</label.id>
 				<label.text>cylinder</label.text>
@@ -496,7 +520,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="8" object_id="_12">
+		<px class_id_reference="8" object_id="_13">
 			<label>
 				<label.id>3</label.id>
 				<label.text>red box</label.text>
@@ -513,7 +537,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="8" object_id="_13">
+		<px class_id_reference="8" object_id="_14">
 			<label>
 				<label.id>4</label.id>
 				<label.text>back wall</label.text>
