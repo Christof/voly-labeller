@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>10</count>
+	<count>12</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -215,6 +215,40 @@
 				</label.anchorPosition>
 				<label.size>
 					<x>6.000000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_9">
+			<label>
+				<label.id>8</label.id>
+				<label.text>Broken Sternum</label.text>
+				<label.anchorPosition>
+					<x>3.333158325e-03</x>
+					<y>4.852338433e-01</y>
+					<z>6.239841133e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.850000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_10">
+			<label>
+				<label.id>9</label.id>
+				<label.text>Fractured Shoulder</label.text>
+				<label.anchorPosition>
+					<x>-6.586857140e-02</x>
+					<y>6.275455952e-01</y>
+					<z>-5.559984595e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.150000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
