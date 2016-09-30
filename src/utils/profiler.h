@@ -6,9 +6,10 @@
 #include <QElapsedTimer>
 
 /**
- * \brief
+ * \brief Measures its lifetime and logs it in the destructor
  *
- *
+ * Pass the name of the profiled method or block and a QLoggingCategory to the
+ * constructor. These are used for the output in the destructor.
  */
 class Profiler
 {
