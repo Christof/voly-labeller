@@ -13,6 +13,7 @@ set(SOURCES
   persister.h
   gradient_utils.cpp
   profiler.cpp
+  profiling_statistics.cpp
   image_persister.h
   memory.h
   logging.h
