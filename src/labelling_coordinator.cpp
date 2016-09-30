@@ -25,6 +25,7 @@
 #include "./label_node.h"
 #include "./texture_mapper_manager.h"
 #include "./utils/profiler.h"
+#include "./utils/profiling_statistics.h"
 
 QLoggingCategory lcChan("LabellingCoordinator");
 
@@ -32,7 +33,8 @@ LabellingCoordinator::LabellingCoordinator(
     int layerCount, std::shared_ptr<Forces::Labeller> forcesLabeller,
     std::shared_ptr<Labels> labels, std::shared_ptr<Nodes> nodes)
   : layerCount(layerCount), forcesLabeller(forcesLabeller), labels(labels),
-    nodes(nodes), clustering(labels, layerCount - 1)
+    nodes(nodes), clustering(labels, layerCount - 1),
+    profilingStatistics("LabellingCoordinator", lcChan)
 {
   occlusionCalculator =
       std::make_shared<Placement::OcclusionCalculator>(layerCount);
@@ -115,7 +117,7 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
                                   Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
-  Profiler profiler("update", lcChan);
+  Profiler profiler("update", lcChan, &profilingStatistics);
 
   if (!labellingEnabled)
     return false;
@@ -141,7 +143,7 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
 void LabellingCoordinator::updatePlacement()
 {
-  Profiler profiler("updatePlacement", lcChan);
+  Profiler profiler("updatePlacement", lcChan, &profilingStatistics);
 
   if (!labellingEnabled)
     return;

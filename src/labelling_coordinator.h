@@ -12,6 +12,7 @@
 #include "./labelling/clustering.h"
 #include "./labelling/label_positions.h"
 #include "./graphics/buffer_drawer.h"
+#include "./utils/profiling_statistics.h"
 
 class PersistentConstraintUpdater;
 class LabelsContainer;
@@ -111,6 +112,8 @@ class LabellingCoordinator
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);
   std::map<int, Eigen::Vector3f>
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
+
+  ProfilingStatistics profilingStatistics;
 };
 
 #endif  // SRC_LABELLING_COORDINATOR_H_
