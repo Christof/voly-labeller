@@ -7,6 +7,7 @@
 #include <vector>
 #include <utility>
 #include <memory>
+#include "./constraint_updater_base.h"
 #include "../graphics/drawer.h"
 
 /**
@@ -28,7 +29,7 @@
  * Afterwards #drawConstraintRegionFor must be called for each already placed
  * label.
  */
-class ConstraintUpdater
+class ConstraintUpdater : public ConstraintUpdaterBase
 {
  public:
   ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer, int width,

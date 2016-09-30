@@ -2,12 +2,12 @@
 #include <QLoggingCategory>
 #include <chrono>
 #include <vector>
-#include "./constraint_updater.h"
+#include "./constraint_updater_base.h"
 
 QLoggingCategory pcuChan("Placement.PersistentConstraintUpdater");
 
 PersistentConstraintUpdater::PersistentConstraintUpdater(
-    std::shared_ptr<ConstraintUpdater> constraintUpdater)
+    std::shared_ptr<ConstraintUpdaterBase> constraintUpdater)
   : constraintUpdater(constraintUpdater)
 {
 }

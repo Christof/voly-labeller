@@ -16,6 +16,7 @@ set(SOURCES
   cost_function_calculator.cu
   labeller.cpp
   cuda_texture_mapper.cpp
+  constraint_updater_base.h
   constraint_updater.cpp
   persistent_constraint_updater.cpp
   labels_arranger.h
