@@ -18,6 +18,7 @@ set(SOURCES
   cuda_texture_mapper.cpp
   constraint_updater_base.h
   constraint_updater.cpp
+  constraint_updater_using_geometry_shader.cpp
   persistent_constraint_updater.cpp
   labels_arranger.h
   insertion_order_labels_arranger.cpp
