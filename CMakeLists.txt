@@ -4,6 +4,9 @@ project(voly-labeller)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 
+# Enable profiling of application
+add_definitions(-DPROFILE)
+
 add_subdirectory(src/math)
 add_subdirectory(src/input)
 add_subdirectory(src/utils)
