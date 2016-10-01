@@ -94,8 +94,9 @@ void Scene::initialize()
       textureMapperManager->getBufferSize(),
       textureMapperManager->getBufferSize(), gl, managers->getShaderManager());
 
-  labellingCoordinator->initialize(textureMapperManager->getBufferSize(),
-                                   drawer, textureMapperManager, width, height);
+  labellingCoordinator->initialize(gl, textureMapperManager->getBufferSize(),
+                                   drawer, managers, textureMapperManager,
+                                   width, height);
 
   recordingAutomation->initialize(gl);
   recordingAutomation->resize(width, height);
@@ -136,6 +137,7 @@ void Scene::update(double frameTime)
 
 void Scene::render()
 {
+  qInfo() << "Scene::render";
   auto camera = getCamera();
 
   if (shouldResize)

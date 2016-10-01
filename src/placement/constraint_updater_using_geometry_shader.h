@@ -4,7 +4,14 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <memory>
 #include "./constraint_updater_base.h"
+
+namespace Graphics
+{
+  class Gl;
+  class ShaderManager;
+}
 
 /**
  * \brief
@@ -14,7 +21,9 @@
 class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
 {
  public:
-  ConstraintUpdaterUsingGeometryShader();
+  ConstraintUpdaterUsingGeometryShader(
+      int width, int height, Graphics::Gl *gl,
+      std::shared_ptr<Graphics::ShaderManager> shaderManager);
   virtual ~ConstraintUpdaterUsingGeometryShader();
 
   void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
@@ -29,7 +38,12 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   void setIsConnectorShadowEnabled(bool enabled);
 
  private:
-  /* data */
+  int width;
+  int height;
+  Graphics::Gl *gl;
+  std::shared_ptr<Graphics::ShaderManager> shaderManager;
+  Eigen::Matrix4f pixelToNDC;
+  int shaderId;
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_

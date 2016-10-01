@@ -19,6 +19,11 @@ class LabelsContainer;
 class Labels;
 class Nodes;
 class TextureMapperManager;
+namespace Graphics
+{
+class Gl;
+class Managers;
+}
 namespace Placement
 {
 class OcclusionCalculator;
@@ -44,8 +49,9 @@ class LabellingCoordinator
                        std::shared_ptr<Labels> labels,
                        std::shared_ptr<Nodes> nodes);
 
-  void initialize(int bufferSize,
+  void initialize(Graphics::Gl *gl, int bufferSize,
                   std::shared_ptr<Graphics::BufferDrawer> drawer,
+                  std::shared_ptr<Graphics::Managers> managers,
                   std::shared_ptr<TextureMapperManager> textureMapperManager,
                   int widht, int height);
   void cleanup();

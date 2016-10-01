@@ -11,6 +11,7 @@
 #include "./labelling/labels.h"
 #include "./placement/occlusion_calculator.h"
 #include "./placement/constraint_updater.h"
+#include "./placement/constraint_updater_using_geometry_shader.h"
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/integral_costs_calculator.h"
@@ -26,6 +27,7 @@
 #include "./texture_mapper_manager.h"
 #include "./utils/profiler.h"
 #include "./utils/profiling_statistics.h"
+#include "./graphics/managers.h"
 
 QLoggingCategory lcChan("LabellingCoordinator");
 
@@ -41,9 +43,11 @@ LabellingCoordinator::LabellingCoordinator(
 }
 
 void LabellingCoordinator::initialize(
-    int bufferSize, std::shared_ptr<Graphics::BufferDrawer> drawer,
-    std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
-    int height)
+    Graphics::Gl *gl, int bufferSize,
+    std::shared_ptr<Graphics::BufferDrawer> drawer,
+    std::shared_ptr<Graphics::Managers> managers,
+    std::shared_ptr<TextureMapperManager> textureMapperManager,
+    int width, int height)
 {
   qCInfo(lcChan) << "Initialize";
   saliency = std::make_shared<Placement::Saliency>(
@@ -56,8 +60,13 @@ void LabellingCoordinator::initialize(
           textureMapperManager->getOcclusionTextureMapper(),
           textureMapperManager->getSaliencyTextureMapper(),
           textureMapperManager->getIntegralCostsTextureMapper());
+  /*
   auto constraintUpdater =
       std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
+      */
+  auto constraintUpdater =
+      std::make_shared<ConstraintUpdaterUsingGeometryShader>(
+          bufferSize, bufferSize, gl, managers->getShaderManager());
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
