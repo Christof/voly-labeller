@@ -27,11 +27,9 @@ void main()
   EmitVertex();
 
   gl_Position = vConnectorEnd[0];
-  //gl_Position = vec4(1, -1, 0, 1);
   EmitVertex();
 
   gl_Position = vConnectorStart[0];
-  //gl_Position = vec4(1, 1, 0, 1);
   EmitVertex();
   EndPrimitive();
 }

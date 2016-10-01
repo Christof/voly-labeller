@@ -15,8 +15,8 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
                                       ":/shader/colorImmediate.frag");
 
   Eigen::Affine3f pixelToNDCTransform(
-      Eigen::Translation3f(Eigen::Vector3f(-1, 1, 0)) *
-      Eigen::Scaling(Eigen::Vector3f(2.0f / width, -2.0f / height, 1)));
+      Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
+      Eigen::Scaling(Eigen::Vector3f(2.0f / width, 2.0f / height, 1)));
   pixelToNDC = pixelToNDCTransform.matrix();
 }
 
