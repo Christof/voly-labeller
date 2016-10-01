@@ -159,22 +159,42 @@ void drawConnectorConstraint(in vec2 anchor, in vec2 connectorStart,
   const vec2 anchorToEnd = normalize(connectorEnd - anchor);
   const vec2 connectorEndShadow = connectorEnd + 2.0f * anchorToEnd;
 
+  /*
   drawDilatedLine(connectorStartShadow, connectorStart, connectorEnd);
   drawDilatedLine(connectorStart, connectorEnd, connectorEndShadow);
   drawDilatedLine(connectorEnd, connectorEndShadow, connectorStartShadow);
 
   drawPositions();
-  /*
-  emitVertex(connectorStart);
-  emitVertex(connectorStartShadow);
-  emitVertex(connectorEnd);
-  EndPrimitive();
-
-  emitVertex(connectorEnd);
-  emitVertex(connectorStartShadow);
-  emitVertex(connectorEndShadow);
-  EndPrimitive();
   */
+
+  // Triangle: connectorStart, connectorEnd, connectorStartShadow
+  vec2 v = connectorEnd - connectorStart;
+  float areaOfFirstTriangle = v.x * anchorToStart.y - v.y * anchorToStart.x;
+  const bool isCCW = areaOfFirstTriangle > 0;
+  if (isCCW)
+  {
+    emitVertex(connectorStart);
+    emitVertex(connectorEnd);
+    emitVertex(connectorStartShadow);
+    EndPrimitive();
+
+    emitVertex(connectorStartShadow);
+    emitVertex(connectorEnd);
+    emitVertex(connectorEndShadow);
+    EndPrimitive();
+  }
+  else
+  {
+    emitVertex(connectorStart);
+    emitVertex(connectorStartShadow);
+    emitVertex(connectorEnd);
+    EndPrimitive();
+
+    emitVertex(connectorEnd);
+    emitVertex(connectorStartShadow);
+    emitVertex(connectorEndShadow);
+    EndPrimitive();
+  }
 }
 
 void main()
