@@ -24,6 +24,24 @@ DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
 {
 }
 
+void addPedestrianNodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/fussgaenger_graz_iterative.mhd",
+      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
+
+  const std::string filename = "assets/models/RekoCT2_01-8.dae";
+  Importer importer;
+
+  unsigned int meshIndex = 0;
+  auto mesh = importer.import(filename, meshIndex);
+  auto transformation = importer.getTransformationFor(filename, meshIndex);
+  auto node = new MeshNode(filename, meshIndex, mesh, transformation);
+  sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
+}
+
 void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   Eigen::Affine3f trans(
