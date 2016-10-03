@@ -44,6 +44,10 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   std::shared_ptr<Graphics::ShaderManager> shaderManager;
   Eigen::Matrix4f pixelToNDC;
   int shaderId;
+
+  float labelShadowColor;
+  float connectorShadowColor;
+  float anchorConstraintColor;
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_

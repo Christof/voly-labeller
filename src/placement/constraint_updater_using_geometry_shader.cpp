@@ -3,6 +3,7 @@
 #include "../graphics/shader_manager.h"
 #include "../graphics/shader_program.h"
 #include "../graphics/vertex_array.h"
+#include "./placement.h"
 #include <Eigen/Geometry>
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
@@ -18,6 +19,10 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
       Eigen::Scaling(Eigen::Vector3f(2.0f / width, 2.0f / height, 1)));
   pixelToNDC = pixelToNDCTransform.matrix();
+
+  labelShadowColor = Placement::labelShadowValue / 255.0f;
+  connectorShadowColor = Placement::connectorShadowValue / 255.0f;
+  anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
 }
 
 ConstraintUpdaterUsingGeometryShader::~ConstraintUpdaterUsingGeometryShader()
@@ -57,7 +62,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   renderData.viewProjectionMatrix = pixelToNDC;
   // move to ConstraintUpdater
   auto shader = shaderManager->getShader(shaderId);
-  shader->setUniform("color", 1.0f);
+  shader->setUniform("color", connectorShadowColor);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
