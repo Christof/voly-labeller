@@ -11,9 +11,12 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
     std::shared_ptr<Graphics::ShaderManager> shaderManager)
   : width(width), height(height), gl(gl), shaderManager(shaderManager)
 {
-  shaderId = shaderManager->addShader(":/shader/constraint2.vert",
-                                      ":/shader/constraint.geom",
-                                      ":/shader/colorImmediate.frag");
+  dialatingShaderId = shaderManager->addShader(":/shader/constraint2.vert",
+                                               ":/shader/constraint.geom",
+                                               ":/shader/colorImmediate.frag");
+  quadShaderId =
+      shaderManager->addShader(":/shader/constraint.vert", ":/shader/quad.geom",
+                               ":/shader/colorImmediate.frag");
 
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -61,7 +64,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
   // move to ConstraintUpdater
-  auto shader = shaderManager->getShader(shaderId);
+  auto shader = shaderManager->getShader(dialatingShaderId);
   shader->setUniform("color", connectorShadowColor);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
@@ -69,7 +72,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   Eigen::Vector2f labelHalfSizeNDC =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
   shader->setUniform("labelHalfSize", labelHalfSizeNDC);
-  shaderManager->bind(shaderId, renderData);
+  shaderManager->bind(dialatingShaderId, renderData);
   vertexArray->draw();
 
   if (isBlendingEnabled)
@@ -84,6 +87,43 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
 void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
     std::vector<Eigen::Vector2i> anchorPositions, Eigen::Vector2i labelSize)
 {
+  std::vector<float> positions(anchorPositions.size() * 2);
+  size_t index = 0;
+  for (auto &anchorPosition : anchorPositions)
+  {
+    positions[index++] = anchorPosition.x();
+    positions[index++] = anchorPosition.y();
+  }
+  assert(positions.size() == index);
+
+  Graphics::VertexArray vertexArray(gl, GL_POINTS, 2);
+  vertexArray.addStream(positions, 2);
+
+  GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
+  gl->glEnable(GL_BLEND);
+  GLint logicOperationMode;
+  gl->glGetIntegerv(GL_LOGIC_OP_MODE, &logicOperationMode);
+  gl->glEnable(GL_COLOR_LOGIC_OP);
+  gl->glLogicOp(GL_OR);
+
+  RenderData renderData;
+  renderData.viewMatrix = pixelToNDC;
+  renderData.viewProjectionMatrix = pixelToNDC;
+  // move to ConstraintUpdater
+  auto shader = shaderManager->getShader(quadShaderId);
+  shader->setUniform("color", anchorConstraintColor);
+  Eigen::Vector2f constraintSize = 2.0f * labelSize.cast<float>();
+  Eigen::Vector2f labelHalfSizeNDC =
+      constraintSize.cwiseQuotient(0.5 * Eigen::Vector2f(width, height));
+  shader->setUniform("halfSize", labelHalfSizeNDC);
+  shaderManager->bind(quadShaderId, renderData);
+  vertexArray.draw();
+
+  if (isBlendingEnabled)
+    gl->glEnable(GL_BLEND);
+
+  gl->glLogicOp(logicOperationMode);
+  gl->glDisable(GL_COLOR_LOGIC_OP);
 }
 
 void ConstraintUpdaterUsingGeometryShader::clear()

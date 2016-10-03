@@ -43,7 +43,8 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   Graphics::Gl *gl;
   std::shared_ptr<Graphics::ShaderManager> shaderManager;
   Eigen::Matrix4f pixelToNDC;
-  int shaderId;
+  int dialatingShaderId;
+  int quadShaderId;
 
   float labelShadowColor;
   float connectorShadowColor;

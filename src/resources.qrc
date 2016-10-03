@@ -24,6 +24,7 @@
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/combineLayers.frag</file>
         <file>shader/positionRenderTarget.frag</file>
+        <file>shader/quad.geom</file>
         <file>shader/cube.geom</file>
         <file>shader/cube.vert</file>
         <file>shader/volume_cube.frag</file>
