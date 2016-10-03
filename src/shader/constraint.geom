@@ -15,10 +15,7 @@ in vec4 vConnectorEnd[];
 in vec4 vVertexColor[];
 
 out vec4 vertexColor;
-out int volumeId;
 
-uniform mat4 viewMatrix;
-uniform mat4 viewProjectionMatrix;
 uniform vec2 labelHalfSize = vec2(0.2, 0.05);
 
 vec2 positions[18];
