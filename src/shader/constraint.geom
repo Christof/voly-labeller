@@ -35,22 +35,19 @@ void drawDilatedLine(in vec2 prevPos, in vec2 currentPos, in vec2 nextPos)
   vec3 plane[2];
 
   vec2 prevToCurrent = currentPos - prevPos;
+  // cross(prevToCurrent.xyw, prevPos.xyw)
   plane[0] = vec3(prevToCurrent.y, -prevToCurrent.x,
-                  prevToCurrent.x * prevPos.y -
-                      prevToCurrent.y * prevPos.x);  // cross(currentPos.xyw -
-                                                     // prevPos.xyw,
-                                                     // prevPos.xyw);
+                  prevToCurrent.x * prevPos.y - prevToCurrent.y * prevPos.x);
+
   vec2 currentToNext = nextPos - currentPos;
-  plane[1] = vec3(currentToNext.y, -currentToNext.x,
-                  currentToNext.x * currentPos.y -
-                      currentToNext.y * currentPos.x);  // cross(nextPos.xyw -
-                                                        // currentPos.xyw,
-                                                        // currentPos.xyw);
+  // cross(currentToNext.xyw, currentPos.xyw)
+  plane[1] =
+      vec3(currentToNext.y, -currentToNext.x,
+           currentToNext.x * currentPos.y - currentToNext.y * currentPos.x);
 
   // Compute the semi diagonals in the same quadrants as the plane normal. Note
   // that the use of the step function here is the same as sign(), but do not
-  // return zero foran input value of zero (which sign() unfortunately does)
-
+  // return zero for an input value of zero (which sign() unfortunately does)
   vec2 semiDiagonal[2];
   semiDiagonal[0] = (step(vec2(0, 0), plane[0].xy) - 0.5) * 2.0;
   semiDiagonal[1] = (step(vec2(0, 0), plane[1].xy) - 0.5) * 2.0;
@@ -123,9 +120,7 @@ vec2 sortPositions()
   {
     vec2 temp = positions[i];
     int j = i - 1;
-    while (hasSmallerAngle(center, temp,
-                           positions[j]) &&
-           j >= 0)
+    while (hasSmallerAngle(center, temp, positions[j]) && j >= 0)
     {
       positions[j + 1] = positions[j];
       j = j - 1;
