@@ -116,6 +116,9 @@ vec2 sortPositions()
     center += positions[i];
   center = center / positionsCount;
 
+  return center;
+
+  /*
   for (int i = 0; i < positionsCount; ++i)
   {
     vec2 temp = positions[i];
@@ -129,6 +132,7 @@ vec2 sortPositions()
   }
 
   return center;
+  */
 }
 
 void drawPositions()
