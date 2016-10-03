@@ -37,6 +37,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
+  /*
   std::vector<float> anchors = { static_cast<float>(anchorPosition.x()),
                                  static_cast<float>(anchorPosition.y()) };
   std::vector<float> connectorStart = {
@@ -46,6 +47,67 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   std::vector<float> connectorEnd = { static_cast<float>(lastLabelPosition.x()),
                                       static_cast<float>(
                                           lastLabelPosition.y()) };
+                                          */
+
+  Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
+  std::vector<Eigen::Vector2f> corners = {
+    Eigen::Vector2f(lastLabelPosition.x() + lastHalfSize.x(),
+                    lastLabelPosition.y() + lastHalfSize.y()),
+    Eigen::Vector2f(lastLabelPosition.x() - lastHalfSize.x(),
+                    lastLabelPosition.y() + lastHalfSize.y()),
+    Eigen::Vector2f(lastLabelPosition.x() - lastHalfSize.x(),
+                    lastLabelPosition.y() - lastHalfSize.y()),
+    Eigen::Vector2f(lastLabelPosition.x() + lastHalfSize.x(),
+                    lastLabelPosition.y() - lastHalfSize.y()),
+  };
+  Eigen::Vector2f anchor = anchorPosition.cast<float>();
+  std::vector<float> cornerAnchorDistances;
+  for (auto corner : corners)
+    cornerAnchorDistances.push_back((corner - anchor).squaredNorm());
+
+  int maxIndex = std::distance(cornerAnchorDistances.begin(),
+                               std::max_element(cornerAnchorDistances.begin(),
+                                                cornerAnchorDistances.end()));
+
+  std::vector<float> anchors = { anchor.x(), anchor.y(), anchor.x(),
+                                 anchor.y() };
+  std::vector<float> connectorStart;
+  std::vector<float> connectorEnd;
+  if (maxIndex == 2 || maxIndex == 3)
+  {
+    connectorStart.push_back(corners[0].x());
+    connectorStart.push_back(corners[0].y());
+
+    connectorEnd.push_back(corners[1].x());
+    connectorEnd.push_back(corners[1].y());
+  }
+
+  if (maxIndex == 0 || maxIndex == 3)
+  {
+    connectorStart.push_back(corners[1].x());
+    connectorStart.push_back(corners[1].y());
+
+    connectorEnd.push_back(corners[2].x());
+    connectorEnd.push_back(corners[2].y());
+  }
+
+  if (maxIndex == 0 || maxIndex == 1)
+  {
+    connectorStart.push_back(corners[2].x());
+    connectorStart.push_back(corners[2].y());
+
+    connectorEnd.push_back(corners[3].x());
+    connectorEnd.push_back(corners[3].y());
+  }
+
+  if (maxIndex == 1 || maxIndex == 2)
+  {
+    connectorStart.push_back(corners[3].x());
+    connectorStart.push_back(corners[3].y());
+
+    connectorEnd.push_back(corners[0].x());
+    connectorEnd.push_back(corners[0].y());
+  }
 
   Graphics::VertexArray *vertexArray =
       new Graphics::VertexArray(gl, GL_POINTS, 2);
