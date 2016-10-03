@@ -56,7 +56,14 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
   // move to ConstraintUpdater
-  shaderManager->getShader(shaderId)->setUniform("color", 1.0f);
+  auto shader = shaderManager->getShader(shaderId);
+  shader->setUniform("color", 1.0f);
+
+  Eigen::Vector2f borderPixel(2.0f, 2.0f);
+  Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
+  Eigen::Vector2f labelHalfSizeNDC =
+      sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
+  shader->setUniform("labelHalfSize", labelHalfSizeNDC);
   shaderManager->bind(shaderId, renderData);
   vertexArray->draw();
 
