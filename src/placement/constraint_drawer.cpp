@@ -1,4 +1,5 @@
 #include "./constraint_drawer.h"
+#include <string>
 #include "../graphics/gl.h"
 #include "../graphics/shader_manager.h"
 #include "../graphics/shader_program.h"

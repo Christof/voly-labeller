@@ -2,8 +2,9 @@
 
 #define SRC_PLACEMENT_CONSTRAINT_DRAWER_H_
 
-#include <memory>
 #include <Eigen/Core>
+#include <memory>
+#include <string>
 
 class RenderData;
 

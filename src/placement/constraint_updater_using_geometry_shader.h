@@ -9,9 +9,9 @@
 
 namespace Graphics
 {
-  class Gl;
-  class ShaderManager;
-  class VertexArray;
+class Gl;
+class ShaderManager;
+class VertexArray;
 }
 class ConstraintDrawer;
 
@@ -57,8 +57,8 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   std::unique_ptr<Graphics::VertexArray> vertexArrayForAnchors;
 
   void fillForConnectorShadowRegion(Eigen::Vector2i anchorPosition,
-                                 Eigen::Vector2i lastAnchorPosition,
-                                 Eigen::Vector2i lastLabelPosition);
+                                    Eigen::Vector2i lastAnchorPosition,
+                                    Eigen::Vector2i lastLabelPosition);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_

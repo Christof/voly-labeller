@@ -3,6 +3,7 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_BASE_H_
 
 #include <Eigen/Core>
+#include <vector>
 
 /*
  * \brief Interface for updating the constraint buffer by drawing occupied

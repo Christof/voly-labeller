@@ -1,4 +1,6 @@
 #include "./constraint_updater_using_geometry_shader.h"
+#include <Eigen/Geometry>
+#include <vector>
 #include "../graphics/gl.h"
 #include "../graphics/shader_manager.h"
 #include "../graphics/shader_program.h"
@@ -6,7 +8,6 @@
 #include "./placement.h"
 #include "./constraint_drawer.h"
 #include "../utils/memory.h"
-#include <Eigen/Geometry>
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
     int width, int height, Graphics::Gl *gl,
