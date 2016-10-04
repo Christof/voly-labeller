@@ -36,7 +36,7 @@ void VertexArray::updateStream(size_t index, std::vector<float> stream)
   data[index]->update(stream);
 }
 
-void VertexArray::draw()
+void VertexArray::draw() const
 {
   gl->glBindVertexArray(vertexArrayId);
 
