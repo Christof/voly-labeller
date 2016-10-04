@@ -52,6 +52,11 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   float anchorConstraintColor;
 
   std::unique_ptr<Graphics::VertexArray> vertexArray;
+  std::unique_ptr<Graphics::VertexArray> vertexArrayForConnectors;
+
+  void fillForConnectorShadowRegion(Eigen::Vector2i anchorPosition,
+                                 Eigen::Vector2i lastAnchorPosition,
+                                 Eigen::Vector2i lastLabelPosition);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_

@@ -28,11 +28,16 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
 
-  vertexArray =
+  vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
+  vertexArray->addStream(100, 2);
+  vertexArray->addStream(100, 2);
+  vertexArray->addStream(100, 2);
+
+  vertexArrayForConnectors =
       std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(100, 2);
-  vertexArray->addStream(100, 2);
-  vertexArray->addStream(100, 2);
+  vertexArrayForConnectors->addStream(100, 2);
+  vertexArrayForConnectors->addStream(100, 2);
+  vertexArrayForConnectors->addStream(100, 2);
 }
 
 ConstraintUpdaterUsingGeometryShader::~ConstraintUpdaterUsingGeometryShader()
@@ -44,17 +49,8 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
-  /*
-  std::vector<float> anchors = { static_cast<float>(anchorPosition.x()),
-                                 static_cast<float>(anchorPosition.y()) };
-  std::vector<float> connectorStart = {
-    static_cast<float>(lastAnchorPosition.x()),
-    static_cast<float>(lastAnchorPosition.y())
-  };
-  std::vector<float> connectorEnd = { static_cast<float>(lastLabelPosition.x()),
-                                      static_cast<float>(
-                                          lastLabelPosition.y()) };
-                                          */
+  fillForConnectorShadowRegion(anchorPosition, lastAnchorPosition,
+                               lastLabelPosition);
 
   Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
   std::vector<Eigen::Vector2f> corners = {
@@ -132,7 +128,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   renderData.viewProjectionMatrix = pixelToNDC;
   // move to ConstraintUpdater
   auto shader = shaderManager->getShader(dialatingShaderId);
-  shader->setUniform("color", connectorShadowColor);
+  shader->setUniform("color", labelShadowColor);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
@@ -142,11 +138,33 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   shaderManager->bind(dialatingShaderId, renderData);
   vertexArray->draw();
 
+  shader->setUniform("color", connectorShadowColor);
+  vertexArrayForConnectors->draw();
+
   if (isBlendingEnabled)
     gl->glEnable(GL_BLEND);
 
   gl->glLogicOp(logicOperationMode);
   gl->glDisable(GL_COLOR_LOGIC_OP);
+}
+
+void ConstraintUpdaterUsingGeometryShader::fillForConnectorShadowRegion(
+    Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
+    Eigen::Vector2i lastLabelPosition)
+{
+  std::vector<float> anchors = { static_cast<float>(anchorPosition.x()),
+                                 static_cast<float>(anchorPosition.y()) };
+  std::vector<float> connectorStart = {
+    static_cast<float>(lastAnchorPosition.x()),
+    static_cast<float>(lastAnchorPosition.y())
+  };
+  std::vector<float> connectorEnd = { static_cast<float>(lastLabelPosition.x()),
+                                      static_cast<float>(
+                                          lastLabelPosition.y()) };
+
+  vertexArrayForConnectors->updateStream(0, anchors);
+  vertexArrayForConnectors->updateStream(1, connectorStart);
+  vertexArrayForConnectors->updateStream(2, connectorEnd);
 }
 
 void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
