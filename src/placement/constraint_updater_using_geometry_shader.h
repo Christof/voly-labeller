@@ -13,6 +13,7 @@ namespace Graphics
   class ShaderManager;
   class VertexArray;
 }
+class ConstraintDrawer;
 
 /**
  * \brief
@@ -45,7 +46,7 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   std::shared_ptr<Graphics::ShaderManager> shaderManager;
   Eigen::Matrix4f pixelToNDC;
   int dialatingShaderId;
-  int quadShaderId;
+  std::unique_ptr<ConstraintDrawer> quadDrawer;
 
   float labelShadowColor;
   float connectorShadowColor;

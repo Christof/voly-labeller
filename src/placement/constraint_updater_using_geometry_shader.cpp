@@ -4,6 +4,7 @@
 #include "../graphics/shader_program.h"
 #include "../graphics/vertex_array.h"
 #include "./placement.h"
+#include "./constraint_drawer.h"
 #include "../utils/memory.h"
 #include <Eigen/Geometry>
 
@@ -15,9 +16,8 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   dialatingShaderId = shaderManager->addShader(":/shader/constraint2.vert",
                                                ":/shader/constraint.geom",
                                                ":/shader/colorImmediate.frag");
-  quadShaderId =
-      shaderManager->addShader(":/shader/constraint.vert", ":/shader/quad.geom",
-                               ":/shader/colorImmediate.frag");
+  quadDrawer = std::make_unique<ConstraintDrawer>(
+      gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");
 
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -185,31 +185,17 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
 
   vertexArrayForAnchors->updateStream(0, positions);
 
-  GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
-  gl->glEnable(GL_BLEND);
-  GLint logicOperationMode;
-  gl->glGetIntegerv(GL_LOGIC_OP_MODE, &logicOperationMode);
-  gl->glEnable(GL_COLOR_LOGIC_OP);
-  gl->glLogicOp(GL_OR);
-
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-  // move to ConstraintUpdater
-  auto shader = shaderManager->getShader(quadShaderId);
-  shader->setUniform("color", anchorConstraintColor);
+
   Eigen::Vector2f constraintSize = 2.0f * labelSize.cast<float>();
-  Eigen::Vector2f labelHalfSizeNDC =
+  Eigen::Vector2f halfSize =
       constraintSize.cwiseQuotient(0.5 * Eigen::Vector2f(width, height));
-  shader->setUniform("halfSize", labelHalfSizeNDC);
-  shaderManager->bind(quadShaderId, renderData);
+
+  quadDrawer->draw(vertexArrayForAnchors.get(), renderData,
+                   anchorConstraintColor, halfSize);
   vertexArrayForAnchors->draw();
-
-  if (isBlendingEnabled)
-    gl->glEnable(GL_BLEND);
-
-  gl->glLogicOp(logicOperationMode);
-  gl->glDisable(GL_COLOR_LOGIC_OP);
 }
 
 void ConstraintUpdaterUsingGeometryShader::clear()
