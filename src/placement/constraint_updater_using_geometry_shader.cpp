@@ -13,9 +13,9 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
     std::shared_ptr<Graphics::ShaderManager> shaderManager)
   : width(width), height(height), gl(gl), shaderManager(shaderManager)
 {
-  dialatingShaderId = shaderManager->addShader(":/shader/constraint2.vert",
-                                               ":/shader/constraint.geom",
-                                               ":/shader/colorImmediate.frag");
+  dilatingDrawer = std::make_unique<ConstraintDrawer>(
+      gl, shaderManager, ":/shader/constraint2.vert",
+      ":/shader/constraint.geom");
   quadDrawer = std::make_unique<ConstraintDrawer>(
       gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");
 
@@ -120,36 +120,20 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   vertexArray->updateStream(1, connectorStart);
   vertexArray->updateStream(2, connectorEnd);
 
-  GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
-  gl->glEnable(GL_BLEND);
-  GLint logicOperationMode;
-  gl->glGetIntegerv(GL_LOGIC_OP_MODE, &logicOperationMode);
-  gl->glEnable(GL_COLOR_LOGIC_OP);
-  gl->glLogicOp(GL_OR);
-
   RenderData renderData;
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-  // move to ConstraintUpdater
-  auto shader = shaderManager->getShader(dialatingShaderId);
-  shader->setUniform("color", labelShadowColor);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
-  Eigen::Vector2f labelHalfSizeNDC =
+  Eigen::Vector2f halfSize =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
-  shader->setUniform("halfSize", labelHalfSizeNDC);
-  shaderManager->bind(dialatingShaderId, renderData);
-  vertexArray->draw();
 
-  shader->setUniform("color", connectorShadowColor);
-  vertexArrayForConnectors->draw();
+  dilatingDrawer->draw(vertexArray.get(), renderData, labelShadowColor,
+                       halfSize);
 
-  if (isBlendingEnabled)
-    gl->glEnable(GL_BLEND);
-
-  gl->glLogicOp(logicOperationMode);
-  gl->glDisable(GL_COLOR_LOGIC_OP);
+  dilatingDrawer->draw(vertexArrayForConnectors.get(), renderData,
+                       connectorShadowColor, halfSize);
 }
 
 void ConstraintUpdaterUsingGeometryShader::fillForConnectorShadowRegion(
