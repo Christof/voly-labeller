@@ -4,6 +4,7 @@
 #include "../graphics/shader_program.h"
 #include "../graphics/vertex_array.h"
 #include "./placement.h"
+#include "../utils/memory.h"
 #include <Eigen/Geometry>
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
@@ -26,6 +27,12 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
+
+  vertexArray =
+      std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
+  vertexArray->addStream(100, 2);
+  vertexArray->addStream(100, 2);
+  vertexArray->addStream(100, 2);
 }
 
 ConstraintUpdaterUsingGeometryShader::~ConstraintUpdaterUsingGeometryShader()
@@ -109,11 +116,9 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
     connectorEnd.push_back(corners[0].y());
   }
 
-  Graphics::VertexArray *vertexArray =
-      new Graphics::VertexArray(gl, GL_POINTS, 2);
-  vertexArray->addStream(anchors, 2);
-  vertexArray->addStream(connectorStart, 2);
-  vertexArray->addStream(connectorEnd, 2);
+  vertexArray->updateStream(0, anchors);
+  vertexArray->updateStream(1, connectorStart);
+  vertexArray->updateStream(2, connectorEnd);
 
   GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
   gl->glEnable(GL_BLEND);
@@ -142,8 +147,6 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
 
   gl->glLogicOp(logicOperationMode);
   gl->glDisable(GL_COLOR_LOGIC_OP);
-
-  delete vertexArray;
 }
 
 void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(

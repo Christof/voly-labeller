@@ -11,6 +11,7 @@ namespace Graphics
 {
   class Gl;
   class ShaderManager;
+  class VertexArray;
 }
 
 /**
@@ -49,6 +50,8 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   float labelShadowColor;
   float connectorShadowColor;
   float anchorConstraintColor;
+
+  std::unique_ptr<Graphics::VertexArray> vertexArray;
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_
