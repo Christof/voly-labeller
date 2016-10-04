@@ -19,6 +19,7 @@ set(SOURCES
   constraint_updater_base.h
   constraint_updater.cpp
   constraint_updater_using_geometry_shader.cpp
+  constraint_drawer.cpp
   persistent_constraint_updater.cpp
   labels_arranger.h
   insertion_order_labels_arranger.cpp
