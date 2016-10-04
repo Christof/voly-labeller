@@ -29,16 +29,17 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
 
+  const int maxLabelCount = 100;
   vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(100, 2);
-  vertexArray->addStream(100, 2);
-  vertexArray->addStream(100, 2);
+  vertexArray->addStream(maxLabelCount, 2);
+  vertexArray->addStream(maxLabelCount, 2);
+  vertexArray->addStream(maxLabelCount, 2);
 
   vertexArrayForConnectors =
       std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArrayForConnectors->addStream(100, 2);
-  vertexArrayForConnectors->addStream(100, 2);
-  vertexArrayForConnectors->addStream(100, 2);
+  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
+  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
+  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
 
   vertexArrayForAnchors =
       std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
@@ -54,8 +55,9 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
     Eigen::Vector2i lastAnchorPosition, Eigen::Vector2i lastLabelPosition,
     Eigen::Vector2i lastLabelSize)
 {
-  fillForConnectorShadowRegion(anchorPosition, lastAnchorPosition,
-                               lastLabelPosition);
+  this->labelSize = labelSize.cast<float>();
+
+  addConnectorShadow(anchorPosition, lastAnchorPosition, lastLabelPosition);
 
   Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
   std::vector<Eigen::Vector2f> corners = {
@@ -82,78 +84,16 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   std::vector<float> connectorStart;
   std::vector<float> connectorEnd;
   if (maxIndex == 2 || maxIndex == 3)
-  {
-    connectorStart.push_back(corners[0].x());
-    connectorStart.push_back(corners[0].y());
-
-    connectorEnd.push_back(corners[1].x());
-    connectorEnd.push_back(corners[1].y());
-  }
+    addLineShadow(anchor, corners[0], corners[1]);
 
   if (maxIndex == 0 || maxIndex == 3)
-  {
-    connectorStart.push_back(corners[1].x());
-    connectorStart.push_back(corners[1].y());
-
-    connectorEnd.push_back(corners[2].x());
-    connectorEnd.push_back(corners[2].y());
-  }
+    addLineShadow(anchor, corners[1], corners[2]);
 
   if (maxIndex == 0 || maxIndex == 1)
-  {
-    connectorStart.push_back(corners[2].x());
-    connectorStart.push_back(corners[2].y());
-
-    connectorEnd.push_back(corners[3].x());
-    connectorEnd.push_back(corners[3].y());
-  }
+    addLineShadow(anchor, corners[2], corners[3]);
 
   if (maxIndex == 1 || maxIndex == 2)
-  {
-    connectorStart.push_back(corners[3].x());
-    connectorStart.push_back(corners[3].y());
-
-    connectorEnd.push_back(corners[0].x());
-    connectorEnd.push_back(corners[0].y());
-  }
-
-  vertexArray->updateStream(0, anchors);
-  vertexArray->updateStream(1, connectorStart);
-  vertexArray->updateStream(2, connectorEnd);
-
-  RenderData renderData;
-  renderData.viewMatrix = pixelToNDC;
-  renderData.viewProjectionMatrix = pixelToNDC;
-
-  Eigen::Vector2f borderPixel(2.0f, 2.0f);
-  Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
-  Eigen::Vector2f halfSize =
-      sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
-
-  dilatingDrawer->draw(vertexArray.get(), renderData, labelShadowColor,
-                       halfSize);
-
-  dilatingDrawer->draw(vertexArrayForConnectors.get(), renderData,
-                       connectorShadowColor, halfSize);
-}
-
-void ConstraintUpdaterUsingGeometryShader::fillForConnectorShadowRegion(
-    Eigen::Vector2i anchorPosition, Eigen::Vector2i lastAnchorPosition,
-    Eigen::Vector2i lastLabelPosition)
-{
-  std::vector<float> anchors = { static_cast<float>(anchorPosition.x()),
-                                 static_cast<float>(anchorPosition.y()) };
-  std::vector<float> connectorStart = {
-    static_cast<float>(lastAnchorPosition.x()),
-    static_cast<float>(lastAnchorPosition.y())
-  };
-  std::vector<float> connectorEnd = { static_cast<float>(lastLabelPosition.x()),
-                                      static_cast<float>(
-                                          lastLabelPosition.y()) };
-
-  vertexArrayForConnectors->updateStream(0, anchors);
-  vertexArrayForConnectors->updateStream(1, connectorStart);
-  vertexArrayForConnectors->updateStream(2, connectorEnd);
+    addLineShadow(anchor, corners[3], corners[0]);
 }
 
 void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
@@ -188,9 +128,70 @@ void ConstraintUpdaterUsingGeometryShader::clear()
   gl->glViewport(0, 0, width, height);
   gl->glClearColor(0, 0, 0, 0);
   gl->glClear(GL_COLOR_BUFFER_BIT);
+
+  sources.clear();
+  starts.clear();
+  ends.clear();
+
+  anchors.clear();
+  connectorStart.clear();
+  connectorEnd.clear();
+}
+
+void ConstraintUpdaterUsingGeometryShader::finish()
+{
+  vertexArray->updateStream(0, sources);
+  vertexArray->updateStream(1, starts);
+  vertexArray->updateStream(2, ends);
+
+  vertexArrayForConnectors->updateStream(0, anchors);
+  vertexArrayForConnectors->updateStream(1, connectorStart);
+  vertexArrayForConnectors->updateStream(2, connectorEnd);
+
+  RenderData renderData;
+  renderData.viewMatrix = pixelToNDC;
+  renderData.viewProjectionMatrix = pixelToNDC;
+
+  Eigen::Vector2f borderPixel(2.0f, 2.0f);
+  Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
+  Eigen::Vector2f halfSize =
+      sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
+
+  dilatingDrawer->draw(vertexArray.get(), renderData, labelShadowColor,
+                       halfSize);
+
+  dilatingDrawer->draw(vertexArrayForConnectors.get(), renderData,
+                       connectorShadowColor, halfSize);
 }
 
 void ConstraintUpdaterUsingGeometryShader::setIsConnectorShadowEnabled(
     bool enabled)
 {
+}
+
+void ConstraintUpdaterUsingGeometryShader::addConnectorShadow(
+    Eigen::Vector2i anchor, Eigen::Vector2i start, Eigen::Vector2i end)
+{
+  anchors.push_back(anchor.x());
+  anchors.push_back(anchor.y());
+
+  connectorStart.push_back(start.x());
+  connectorStart.push_back(start.y());
+
+  connectorEnd.push_back(end.x());
+  connectorEnd.push_back(end.y());
+}
+
+void ConstraintUpdaterUsingGeometryShader::addLineShadow(Eigen::Vector2f source,
+                                                         Eigen::Vector2f start,
+                                                         Eigen::Vector2f end)
+{
+  sources.push_back(source.x());
+  sources.push_back(source.y());
+
+  starts.push_back(start.x());
+  starts.push_back(start.y());
+
+  ends.push_back(end.x());
+  ends.push_back(end.y());
 }

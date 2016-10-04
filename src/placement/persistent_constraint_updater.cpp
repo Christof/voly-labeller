@@ -35,6 +35,8 @@ void PersistentConstraintUpdater::updateConstraints(
         placedLabel.labelPosition, placedLabel.size);
   }
 
+  constraintUpdater->finish();
+
   placedLabels[labelId] = PlacedLabelInfo{ labelSizeForBuffer, anchorForBuffer,
                                            Eigen::Vector2i(-1, -1) };
 

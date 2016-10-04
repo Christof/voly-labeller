@@ -37,6 +37,9 @@ class ConstraintUpdaterBase
                         Eigen::Vector2i labelSize) = 0;
 
   virtual void clear() = 0;
+  virtual void finish()
+  {
+  };
   virtual void setIsConnectorShadowEnabled(bool enabled) = 0;
 };
 
