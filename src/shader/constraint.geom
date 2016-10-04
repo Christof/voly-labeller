@@ -57,37 +57,23 @@ void drawDilatedLine(in vec2 prevPos, in vec2 currentPos, in vec2 nextPos)
   if (dp > THRESHOLD)
   {
     // The plane normals are in the same quadrant -> One vertex generated.
-    // diag = semiDiagonal[0];
     positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
   }
   else if (dp >= -THRESHOLD)
   {
     // The plane normals are in neighboring quadrants -> Two vertices generated
-    // diag = (In.index == 0 ? semiDiagonal[0] : semiDiagonal[1]);
     positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
     positions[positionsCount++] = currentPos + semiDiagonal[1] * halfSize;
   }
   else
   {
     // The plane normals are in opposite quadrants -> Three vertices generated
-    /*
-    if (In.index == 1)
-      // Special vertex inserted in the mid-quadrant
-      diag = vec2(semiDiagonal[0].x * semiDiagonal[0].y * semiDiagonal[1].x,
-                    semiDiagonal[0].y * semiDiagonal[1].x * semiDiagonal[1].y);
-    else
-    {
-      //diag = (In.index == 0 ? semiDiagonal[0] : semiDiagonal[1]);
-    }
-    */
     positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
     vec2 diag = vec2(semiDiagonal[0].x * semiDiagonal[0].y * semiDiagonal[1].x,
                      semiDiagonal[0].y * semiDiagonal[1].x * semiDiagonal[1].y);
     positions[positionsCount++] = currentPos + diag * halfSize;
     positions[positionsCount++] = currentPos + semiDiagonal[1] * halfSize;
   }
-
-  // finalPos.xy += hPixel.xy * diag * finalPos.w;
 }
 
 /**
