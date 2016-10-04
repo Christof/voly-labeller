@@ -53,6 +53,7 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
 
   std::unique_ptr<Graphics::VertexArray> vertexArray;
   std::unique_ptr<Graphics::VertexArray> vertexArrayForConnectors;
+  std::unique_ptr<Graphics::VertexArray> vertexArrayForAnchors;
 
   void fillForConnectorShadowRegion(Eigen::Vector2i anchorPosition,
                                  Eigen::Vector2i lastAnchorPosition,

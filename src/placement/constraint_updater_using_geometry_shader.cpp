@@ -38,6 +38,10 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   vertexArrayForConnectors->addStream(100, 2);
   vertexArrayForConnectors->addStream(100, 2);
   vertexArrayForConnectors->addStream(100, 2);
+
+  vertexArrayForAnchors =
+      std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
+  vertexArrayForAnchors->addStream(100, 2);
 }
 
 ConstraintUpdaterUsingGeometryShader::~ConstraintUpdaterUsingGeometryShader()
@@ -179,8 +183,7 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
   }
   assert(positions.size() == index);
 
-  Graphics::VertexArray vertexArray(gl, GL_POINTS, 2);
-  vertexArray.addStream(positions, 2);
+  vertexArrayForAnchors->updateStream(0, positions);
 
   GLboolean isBlendingEnabled = gl->glIsEnabled(GL_BLEND);
   gl->glEnable(GL_BLEND);
@@ -200,7 +203,7 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
       constraintSize.cwiseQuotient(0.5 * Eigen::Vector2f(width, height));
   shader->setUniform("halfSize", labelHalfSizeNDC);
   shaderManager->bind(quadShaderId, renderData);
-  vertexArray.draw();
+  vertexArrayForAnchors->draw();
 
   if (isBlendingEnabled)
     gl->glEnable(GL_BLEND);
