@@ -35,6 +35,8 @@ class VertexArray
   void draw();
 
   void addStream(std::vector<float> stream, int elementSize = 3);
+  void addStream(size_t count, int elementSize = 3);
+  void updateStream(size_t index, std::vector<float> stream);
 
  private:
   Gl *gl;
