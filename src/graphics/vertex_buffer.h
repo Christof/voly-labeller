@@ -29,6 +29,15 @@ class VertexBuffer
     size = data.size();
   }
 
+  VertexBuffer(Gl *gl, int elementCount, int elementSize)
+    : gl(gl), size(elementCount), elementSize(elementSize)
+  {
+    gl->glGenBuffers(1, &id);
+    gl->glBindBuffer(GL_ARRAY_BUFFER, id);
+    gl->glBufferData(GL_ARRAY_BUFFER, elementCount * sizeof(float), nullptr,
+                     GL_DYNAMIC_DRAW);
+  }
+
   ~VertexBuffer()
   {
     gl->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -38,6 +47,13 @@ class VertexBuffer
   void bind()
   {
     gl->glBindBuffer(GL_ARRAY_BUFFER, id);
+  }
+
+  void update(std::vector<float> data)
+  {
+    bind();
+    gl->glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0],
+                     GL_DYNAMIC_DRAW);
   }
 
   size_t getSize()
