@@ -16,7 +16,7 @@ in vec4 vVertexColor[];
 
 out vec4 vertexColor;
 
-uniform vec2 labelHalfSize = vec2(0.2, 0.05);
+uniform vec2 halfSize = vec2(0.2, 0.05);
 
 vec2 positions[18];
 int positionsCount = 0;
@@ -58,14 +58,14 @@ void drawDilatedLine(in vec2 prevPos, in vec2 currentPos, in vec2 nextPos)
   {
     // The plane normals are in the same quadrant -> One vertex generated.
     // diag = semiDiagonal[0];
-    positions[positionsCount++] = currentPos + semiDiagonal[0] * labelHalfSize;
+    positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
   }
   else if (dp >= -THRESHOLD)
   {
     // The plane normals are in neighboring quadrants -> Two vertices generated
     // diag = (In.index == 0 ? semiDiagonal[0] : semiDiagonal[1]);
-    positions[positionsCount++] = currentPos + semiDiagonal[0] * labelHalfSize;
-    positions[positionsCount++] = currentPos + semiDiagonal[1] * labelHalfSize;
+    positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
+    positions[positionsCount++] = currentPos + semiDiagonal[1] * halfSize;
   }
   else
   {
@@ -80,11 +80,11 @@ void drawDilatedLine(in vec2 prevPos, in vec2 currentPos, in vec2 nextPos)
       //diag = (In.index == 0 ? semiDiagonal[0] : semiDiagonal[1]);
     }
     */
-    positions[positionsCount++] = currentPos + semiDiagonal[0] * labelHalfSize;
+    positions[positionsCount++] = currentPos + semiDiagonal[0] * halfSize;
     vec2 diag = vec2(semiDiagonal[0].x * semiDiagonal[0].y * semiDiagonal[1].x,
                      semiDiagonal[0].y * semiDiagonal[1].x * semiDiagonal[1].y);
-    positions[positionsCount++] = currentPos + diag * labelHalfSize;
-    positions[positionsCount++] = currentPos + semiDiagonal[1] * labelHalfSize;
+    positions[positionsCount++] = currentPos + diag * halfSize;
+    positions[positionsCount++] = currentPos + semiDiagonal[1] * halfSize;
   }
 
   // finalPos.xy += hPixel.xy * diag * finalPos.w;

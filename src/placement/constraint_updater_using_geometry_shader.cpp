@@ -138,7 +138,7 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
   Eigen::Vector2f labelHalfSizeNDC =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
-  shader->setUniform("labelHalfSize", labelHalfSizeNDC);
+  shader->setUniform("halfSize", labelHalfSizeNDC);
   shaderManager->bind(dialatingShaderId, renderData);
   vertexArray->draw();
 
