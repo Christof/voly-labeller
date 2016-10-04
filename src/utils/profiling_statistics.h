@@ -2,8 +2,9 @@
 
 #define SRC_UTILS_PROFILING_STATISTICS_H_
 
-#include <map>
 #include <QLoggingCategory>
+#include <map>
+#include <string>
 
 /**
  * \brief Calculates statistics (for now only average) for Profiler instances

@@ -1,4 +1,5 @@
 #include "./profiling_statistics.h"
+#include <string>
 
 ProfilingStatistics::ProfilingStatistics(const char *name,
                                          const QLoggingCategory &channel)
