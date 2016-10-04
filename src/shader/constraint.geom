@@ -103,38 +103,21 @@ bool hasSmallerAngle(const vec2 center, const vec2 pos1, const vec2 pos2)
 }
 
 /**
- * \brief Sort all positions generated from intersections by
- * their angle in respect to their center
+ * \brief Calculate the center of all positions
+ *
  */
-vec2 sortPositions()
+vec2 calculateCenter()
 {
-  vec2 center = vec2(0);
+  vec2 sum = vec2(0);
   for (int i = 0; i < positionsCount; ++i)
-    center += positions[i];
-  center = center / positionsCount;
+    sum += positions[i];
 
-  return center;
-
-  /*
-  for (int i = 0; i < positionsCount; ++i)
-  {
-    vec2 temp = positions[i];
-    int j = i - 1;
-    while (hasSmallerAngle(center, temp, positions[j]) && j >= 0)
-    {
-      positions[j + 1] = positions[j];
-      j = j - 1;
-    }
-    positions[j + 1] = temp;
-  }
-
-  return center;
-  */
+  return sum / positionsCount;
 }
 
 void drawPositions()
 {
-  const vec2 center = sortPositions();
+  const vec2 center = calculateCenter();
 
   positions[positionsCount++] = positions[0];
   for (int i = 0; i < positionsCount - 1; ++i)
