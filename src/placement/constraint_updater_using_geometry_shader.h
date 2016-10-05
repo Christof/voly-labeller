@@ -16,9 +16,12 @@ class VertexArray;
 class ConstraintDrawer;
 
 /**
- * \brief
+ * \brief ConstraintUpdaterBase implementation using a geometry shader
  *
- *
+ * The dilation in the geometry shader `constraint.geom` is adapted from
+ * Hasselgren, J., Akenine-Möller, T., & Ohlsson, L. (2005).
+ * Conservative rasterization. GPU Gems, 2, 677–690. article.
+ * (http://http.developer.nvidia.com/GPUGems2/gpugems2_chapter42.html)
  */
 class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
 {
@@ -68,9 +71,11 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   Eigen::Vector2f labelSize;
 
   void addConnectorShadow(Eigen::Vector2i anchor, Eigen::Vector2i start,
-                     Eigen::Vector2i end);
+                          Eigen::Vector2i end);
   void addLineShadow(Eigen::Vector2f anchor, Eigen::Vector2f start,
                      Eigen::Vector2f end);
+  std::vector<Eigen::Vector2f> getCornersFor(Eigen::Vector2i position,
+                                             Eigen::Vector2f halfSize);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_USING_GEOMETRY_SHADER_H_

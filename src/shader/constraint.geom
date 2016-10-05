@@ -1,5 +1,12 @@
 /**
- * \brief TODO
+ * \brief Geometry shader which constructs a dilated shadow
+ *
+ * The shadow is created by the `gl_Position` input as source and a line
+ * between vConnectorStart and vConnectorEnd.
+ *
+ * The dilation is adapted from Hasselgren, J., Akenine-Möller, T.,
+ * & Ohlsson, L. (2005). Conservative rasterization. GPU Gems, 2, 677–690.
+ * (http://http.developer.nvidia.com/GPUGems2/gpugems2_chapter42.html)
  */
 
 #version 440

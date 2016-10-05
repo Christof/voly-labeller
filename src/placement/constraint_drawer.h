@@ -16,9 +16,12 @@ class VertexArray;
 }
 
 /**
- * \brief
+ * \brief Helper class to draw constraints provided by a Graphics::VertexArray
  *
- *
+ * The given vertexShader and geometryShader is combined with
+ * `colorImmediate.frag` into a Graphics::ShaderProgram. Before the
+ * Graphics::VertexArray is drawn, a logical or operation for drawing is
+ * configured and afterwards reset to the initial value.
  */
 class ConstraintDrawer
 {

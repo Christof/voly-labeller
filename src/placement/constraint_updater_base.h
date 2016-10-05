@@ -5,7 +5,7 @@
 #include <Eigen/Core>
 #include <vector>
 
-/*
+/**
  * \brief Interface for updating the constraint buffer by drawing occupied
  * regions for already placed labels
  *
@@ -22,7 +22,7 @@
  * For each newly placed label the already bound ConstraintBufferObject must
  * be cleared by calling #clear.
  * Afterwards #drawConstraintRegionFor must be called for each already placed
- * label.
+ * label. Following that, #finish be invoked.
  */
 class ConstraintUpdaterBase
 {

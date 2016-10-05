@@ -1,5 +1,8 @@
 /**
- * \brief TODO
+ * \brief Geometry shader which constructs a screen aligned quad
+ *
+ * The quad is given by the `gl_Position` input and the `halfSize` uniform,
+ * which contains half the width and hieght.
  */
 
 #version 440
