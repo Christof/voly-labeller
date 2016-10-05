@@ -205,7 +205,7 @@ add_custom_target(doc-open xdg-open ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.h
 set(executable "./${PROJECT_NAME}")
 set(profile profile_${PROJECT_NAME})
 add_custom_target(profile_${PROJECT_NAME}
-  COMMAND LD_PRELOAD=/usr/local/lib/libprofiler.so CPUPROFILE=${profile} ${executable} \${PARAMS} && pprof ${executable} ${profile} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+  COMMAND LD_PRELOAD=/usr/lib/libprofiler.so.0 CPUPROFILE=${profile} ${executable} \${PARAMS} && google-pprof ${executable} ${profile} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 add_custom_target(callgrind_${PROJECT_NAME}
   COMMAND pprof --callgrind ${executable} ${profile} > ${profile}.callgrind && kcachegrind ${profile}.callgrind WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 
