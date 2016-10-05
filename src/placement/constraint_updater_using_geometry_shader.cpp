@@ -60,16 +60,8 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
   addConnectorShadow(anchorPosition, lastAnchorPosition, lastLabelPosition);
 
   Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
-  std::vector<Eigen::Vector2f> corners = {
-    Eigen::Vector2f(lastLabelPosition.x() + lastHalfSize.x(),
-                    lastLabelPosition.y() + lastHalfSize.y()),
-    Eigen::Vector2f(lastLabelPosition.x() - lastHalfSize.x(),
-                    lastLabelPosition.y() + lastHalfSize.y()),
-    Eigen::Vector2f(lastLabelPosition.x() - lastHalfSize.x(),
-                    lastLabelPosition.y() - lastHalfSize.y()),
-    Eigen::Vector2f(lastLabelPosition.x() + lastHalfSize.x(),
-                    lastLabelPosition.y() - lastHalfSize.y()),
-  };
+  std::vector<Eigen::Vector2f> corners =
+      getCornersFor(lastLabelPosition, lastHalfSize);
   Eigen::Vector2f anchor = anchorPosition.cast<float>();
   std::vector<float> cornerAnchorDistances;
   for (auto corner : corners)
@@ -194,4 +186,18 @@ void ConstraintUpdaterUsingGeometryShader::addLineShadow(Eigen::Vector2f source,
 
   ends.push_back(end.x());
   ends.push_back(end.y());
+}
+
+std::vector<Eigen::Vector2f>
+ConstraintUpdaterUsingGeometryShader::getCornersFor(Eigen::Vector2i position,
+                                                    Eigen::Vector2f halfSize)
+{
+  std::vector<Eigen::Vector2f> corners = {
+    Eigen::Vector2f(position.x() + halfSize.x(), position.y() + halfSize.y()),
+    Eigen::Vector2f(position.x() - halfSize.x(), position.y() + halfSize.y()),
+    Eigen::Vector2f(position.x() - halfSize.x(), position.y() - halfSize.y()),
+    Eigen::Vector2f(position.x() + halfSize.x(), position.y() - halfSize.y()),
+  };
+
+  return corners;
 }
