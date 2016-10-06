@@ -15,7 +15,7 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   : width(width), height(height), gl(gl), shaderManager(shaderManager)
 {
   dilatingDrawer = std::make_unique<ConstraintDrawer>(
-      gl, shaderManager, ":/shader/constraint2.vert",
+      gl, shaderManager, ":/shader/line_constraint.vert",
       ":/shader/constraint.geom");
   quadDrawer = std::make_unique<ConstraintDrawer>(
       gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");

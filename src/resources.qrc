@@ -33,7 +33,7 @@
         <file>shader/distanceTransform.frag</file>
         <file>shader/textureImmediate.frag</file>
         <file>shader/constraint.vert</file>
-        <file>shader/constraint2.vert</file>
+        <file>shader/line_constraint.vert</file>
         <file>shader/constraint.geom</file>
         <file>shader/transparentOverlay.frag</file>
         <file>NumberTextSliderInput.qml</file>
