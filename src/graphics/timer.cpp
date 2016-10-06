@@ -55,7 +55,7 @@ double Timer::waitResult()
     if (count % 100 == 0)
       std::this_thread::yield();
 
-    if (count > 5000)
+    if (count > 5000000)
       return -1.0;
   }
 }
