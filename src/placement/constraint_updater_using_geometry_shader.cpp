@@ -178,6 +178,17 @@ void ConstraintUpdaterUsingGeometryShader::addLabelShadow(
                                std::max_element(cornerAnchorDistances.begin(),
                                                 cornerAnchorDistances.end()));
 
+  // Just add a line shadow for two edges of the label.
+  // The other two, which are connected to the farthest corner
+  // would produce an area which is included in the first one.
+  // The following table illustrates which lines must be drawn,
+  // between which corners (given by index)
+  //
+  // maxIndex  line 1  line 2
+  // 0         1 to 2  2 to 3
+  // 1         2 to 3  3 to 0
+  // 2         0 to 1  3 to 0
+  // 3         0 to 1  1 to 2
   if (maxIndex == 2 || maxIndex == 3)
     addLineShadow(anchor, corners[0], corners[1]);
 
