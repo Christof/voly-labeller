@@ -4,6 +4,7 @@
 
 #include "./labelling_coordinator.h"
 #include <QtOpenGLExtensions>
+#include <QLoggingCategory>
 #include <map>
 #include <vector>
 #include "./labelling/clustering.h"
@@ -23,12 +24,17 @@
 #include "./math/eigen.h"
 #include "./label_node.h"
 #include "./texture_mapper_manager.h"
+#include "./utils/profiler.h"
+#include "./utils/profiling_statistics.h"
+
+QLoggingCategory lcChan("LabellingCoordinator");
 
 LabellingCoordinator::LabellingCoordinator(
     int layerCount, std::shared_ptr<Forces::Labeller> forcesLabeller,
     std::shared_ptr<Labels> labels, std::shared_ptr<Nodes> nodes)
   : layerCount(layerCount), forcesLabeller(forcesLabeller), labels(labels),
-    nodes(nodes), clustering(labels, layerCount - 1)
+    nodes(nodes), clustering(labels, layerCount - 1),
+    profilingStatistics("LabellingCoordinator", lcChan)
 {
   occlusionCalculator =
       std::make_shared<Placement::OcclusionCalculator>(layerCount);
@@ -39,6 +45,7 @@ void LabellingCoordinator::initialize(
     std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
     int height)
 {
+  qCInfo(lcChan) << "Initialize";
   saliency = std::make_shared<Placement::Saliency>(
       textureMapperManager->getAccumulatedLayersTextureMapper(),
       textureMapperManager->getSaliencyTextureMapper());
@@ -110,6 +117,8 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
                                   Eigen::Matrix4f projection,
                                   Eigen::Matrix4f view, int activeLayerNumber)
 {
+  Profiler profiler("update", lcChan, &profilingStatistics);
+
   if (!labellingEnabled)
     return false;
 
@@ -134,6 +143,8 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
 void LabellingCoordinator::updatePlacement()
 {
+  Profiler profiler("updatePlacement", lcChan, &profilingStatistics);
+
   if (!labellingEnabled)
     return;
 
