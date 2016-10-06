@@ -59,33 +59,9 @@ void ConstraintUpdaterUsingGeometryShader::drawConstraintRegionFor(
 
   addConnectorShadow(anchorPosition, lastAnchorPosition, lastLabelPosition);
 
-  Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
-  std::vector<Eigen::Vector2f> corners =
-      getCornersFor(lastLabelPosition, lastHalfSize);
   Eigen::Vector2f anchor = anchorPosition.cast<float>();
-  std::vector<float> cornerAnchorDistances;
-  for (auto corner : corners)
-    cornerAnchorDistances.push_back((corner - anchor).squaredNorm());
-
-  int maxIndex = std::distance(cornerAnchorDistances.begin(),
-                               std::max_element(cornerAnchorDistances.begin(),
-                                                cornerAnchorDistances.end()));
-
-  std::vector<float> anchors = { anchor.x(), anchor.y(), anchor.x(),
-                                 anchor.y() };
-  std::vector<float> connectorStart;
-  std::vector<float> connectorEnd;
-  if (maxIndex == 2 || maxIndex == 3)
-    addLineShadow(anchor, corners[0], corners[1]);
-
-  if (maxIndex == 0 || maxIndex == 3)
-    addLineShadow(anchor, corners[1], corners[2]);
-
-  if (maxIndex == 0 || maxIndex == 1)
-    addLineShadow(anchor, corners[2], corners[3]);
-
-  if (maxIndex == 1 || maxIndex == 2)
-    addLineShadow(anchor, corners[3], corners[0]);
+  Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
+  addLabelShadow(anchor, lastLabelPosition, lastHalfSize);
 }
 
 void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
@@ -186,6 +162,33 @@ void ConstraintUpdaterUsingGeometryShader::addLineShadow(Eigen::Vector2f source,
 
   ends.push_back(end.x());
   ends.push_back(end.y());
+}
+
+void ConstraintUpdaterUsingGeometryShader::addLabelShadow(
+    Eigen::Vector2f anchor, Eigen::Vector2i lastLabelPosition,
+    Eigen::Vector2f lastHalfSize)
+{
+  std::vector<Eigen::Vector2f> corners =
+      getCornersFor(lastLabelPosition, lastHalfSize);
+  std::vector<float> cornerAnchorDistances;
+  for (auto corner : corners)
+    cornerAnchorDistances.push_back((corner - anchor).squaredNorm());
+
+  int maxIndex = std::distance(cornerAnchorDistances.begin(),
+                               std::max_element(cornerAnchorDistances.begin(),
+                                                cornerAnchorDistances.end()));
+
+  if (maxIndex == 2 || maxIndex == 3)
+    addLineShadow(anchor, corners[0], corners[1]);
+
+  if (maxIndex == 0 || maxIndex == 3)
+    addLineShadow(anchor, corners[1], corners[2]);
+
+  if (maxIndex == 0 || maxIndex == 1)
+    addLineShadow(anchor, corners[2], corners[3]);
+
+  if (maxIndex == 1 || maxIndex == 2)
+    addLineShadow(anchor, corners[3], corners[0]);
 }
 
 std::vector<Eigen::Vector2f>

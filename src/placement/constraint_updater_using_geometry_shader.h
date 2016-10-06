@@ -72,6 +72,8 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
 
   void addConnectorShadow(Eigen::Vector2i anchor, Eigen::Vector2i start,
                           Eigen::Vector2i end);
+  void addLabelShadow(Eigen::Vector2f anchor, Eigen::Vector2i lastLabelPosition,
+                          Eigen::Vector2f lastHalfSize);
   void addLineShadow(Eigen::Vector2f anchor, Eigen::Vector2f start,
                      Eigen::Vector2f end);
   std::vector<Eigen::Vector2f> getCornersFor(Eigen::Vector2i position,
