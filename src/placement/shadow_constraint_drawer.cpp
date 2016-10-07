@@ -9,6 +9,7 @@
 ShadowConstraintDrawer::ShadowConstraintDrawer(
     int width, int height, Graphics::Gl *gl,
     std::shared_ptr<Graphics::ShaderManager> shaderManager)
+  : width(width), height(height), gl(gl)
 {
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -38,8 +39,14 @@ void ShadowConstraintDrawer::update(const std::vector<float> &sources,
   vertexArray->updateStream(2, ends);
 }
 
-void ShadowConstraintDrawer::draw(const RenderData &renderData, float color,
-                                  Eigen::Vector2f halfSize)
+void ShadowConstraintDrawer::draw(float color, Eigen::Vector2f halfSize)
 {
   constraintDrawer->draw(vertexArray.get(), renderData, color, halfSize);
+}
+
+void ShadowConstraintDrawer::clear()
+{
+  gl->glViewport(0, 0, width, height);
+  gl->glClearColor(0, 0, 0, 0);
+  gl->glClear(GL_COLOR_BUFFER_BIT);
 }
