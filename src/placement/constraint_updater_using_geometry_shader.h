@@ -14,6 +14,7 @@ class ShaderManager;
 class VertexArray;
 }
 class ConstraintDrawer;
+class ShadowConstraintDrawer;
 
 /**
  * \brief ConstraintUpdaterBase implementation using a geometry shader
@@ -50,14 +51,13 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   std::shared_ptr<Graphics::ShaderManager> shaderManager;
   Eigen::Matrix4f pixelToNDC;
   std::unique_ptr<ConstraintDrawer> quadDrawer;
-  std::unique_ptr<ConstraintDrawer> dilatingDrawer;
+  std::unique_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
+  std::unique_ptr<ShadowConstraintDrawer> shadowDrawer;
 
   float labelShadowColor;
   float connectorShadowColor;
   float anchorConstraintColor;
 
-  std::unique_ptr<Graphics::VertexArray> vertexArray;
-  std::unique_ptr<Graphics::VertexArray> vertexArrayForConnectors;
   std::unique_ptr<Graphics::VertexArray> vertexArrayForAnchors;
 
   std::vector<float> sources;

@@ -7,6 +7,7 @@
 #include "../graphics/vertex_array.h"
 #include "./placement.h"
 #include "./constraint_drawer.h"
+#include "./shadow_constraint_drawer.h"
 #include "../utils/memory.h"
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
@@ -14,11 +15,13 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
     std::shared_ptr<Graphics::ShaderManager> shaderManager)
   : width(width), height(height), gl(gl), shaderManager(shaderManager)
 {
-  dilatingDrawer = std::make_unique<ConstraintDrawer>(
-      gl, shaderManager, ":/shader/line_constraint.vert",
-      ":/shader/constraint.geom");
   quadDrawer = std::make_unique<ConstraintDrawer>(
       gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");
+
+  connectorShadowDrawer = std::make_unique<ShadowConstraintDrawer>(
+      width, height, gl, shaderManager);
+  shadowDrawer = std::make_unique<ShadowConstraintDrawer>(width, height, gl,
+                                                          shaderManager);
 
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -28,18 +31,6 @@ ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
-
-  const int maxLabelCount = 100;
-  vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(maxLabelCount, 2);
-  vertexArray->addStream(maxLabelCount, 2);
-  vertexArray->addStream(maxLabelCount, 2);
-
-  vertexArrayForConnectors =
-      std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
-  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
-  vertexArrayForConnectors->addStream(2 * maxLabelCount, 2);
 
   vertexArrayForAnchors =
       std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
@@ -93,9 +84,7 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
 
 void ConstraintUpdaterUsingGeometryShader::clear()
 {
-  gl->glViewport(0, 0, width, height);
-  gl->glClearColor(0, 0, 0, 0);
-  gl->glClear(GL_COLOR_BUFFER_BIT);
+  shadowDrawer->clear();
 
   sources.clear();
   starts.clear();
@@ -108,28 +97,16 @@ void ConstraintUpdaterUsingGeometryShader::clear()
 
 void ConstraintUpdaterUsingGeometryShader::finish()
 {
-  vertexArray->updateStream(0, sources);
-  vertexArray->updateStream(1, starts);
-  vertexArray->updateStream(2, ends);
-
-  vertexArrayForConnectors->updateStream(0, anchors);
-  vertexArrayForConnectors->updateStream(1, connectorStart);
-  vertexArrayForConnectors->updateStream(2, connectorEnd);
-
-  RenderData renderData;
-  renderData.viewMatrix = pixelToNDC;
-  renderData.viewProjectionMatrix = pixelToNDC;
+  shadowDrawer->update(sources, starts, ends);
+  connectorShadowDrawer->update(anchors, connectorStart, connectorEnd);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
   Eigen::Vector2f halfSize =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
 
-  dilatingDrawer->draw(vertexArray.get(), renderData, labelShadowColor,
-                       halfSize);
-
-  dilatingDrawer->draw(vertexArrayForConnectors.get(), renderData,
-                       connectorShadowColor, halfSize);
+  shadowDrawer->draw(labelShadowColor, halfSize);
+  connectorShadowDrawer->draw(connectorShadowColor, halfSize);
 }
 
 void ConstraintUpdaterUsingGeometryShader::setIsConnectorShadowEnabled(
