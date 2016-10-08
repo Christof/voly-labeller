@@ -13,8 +13,8 @@ class Gl;
 class ShaderManager;
 class VertexArray;
 }
-class ConstraintDrawer;
 class ShadowConstraintDrawer;
+class AnchorConstraintDrawer;
 
 /**
  * \brief ConstraintUpdaterBase implementation using a geometry shader
@@ -47,18 +47,13 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
  private:
   int width;
   int height;
-  Graphics::Gl *gl;
-  std::shared_ptr<Graphics::ShaderManager> shaderManager;
-  Eigen::Matrix4f pixelToNDC;
-  std::unique_ptr<ConstraintDrawer> quadDrawer;
+  std::unique_ptr<AnchorConstraintDrawer> anchorConstraintDrawer;
   std::unique_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
   std::unique_ptr<ShadowConstraintDrawer> shadowDrawer;
 
   float labelShadowColor;
   float connectorShadowColor;
   float anchorConstraintColor;
-
-  std::unique_ptr<Graphics::VertexArray> vertexArrayForAnchors;
 
   std::vector<float> sources;
   std::vector<float> starts;

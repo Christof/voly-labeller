@@ -6,35 +6,26 @@
 #include "../graphics/shader_program.h"
 #include "../graphics/vertex_array.h"
 #include "./placement.h"
-#include "./constraint_drawer.h"
 #include "./shadow_constraint_drawer.h"
+#include "./anchor_constraint_drawer.h"
 #include "../utils/memory.h"
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
     int width, int height, Graphics::Gl *gl,
     std::shared_ptr<Graphics::ShaderManager> shaderManager)
-  : width(width), height(height), gl(gl), shaderManager(shaderManager)
+  : width(width), height(height)
 {
-  quadDrawer = std::make_unique<ConstraintDrawer>(
-      gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");
+  anchorConstraintDrawer = std::make_unique<AnchorConstraintDrawer>(
+      width, height, gl, shaderManager);
 
   connectorShadowDrawer = std::make_unique<ShadowConstraintDrawer>(
       width, height, gl, shaderManager);
   shadowDrawer = std::make_unique<ShadowConstraintDrawer>(width, height, gl,
                                                           shaderManager);
 
-  Eigen::Affine3f pixelToNDCTransform(
-      Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
-      Eigen::Scaling(Eigen::Vector3f(2.0f / width, 2.0f / height, 1)));
-  pixelToNDC = pixelToNDCTransform.matrix();
-
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
-
-  vertexArrayForAnchors =
-      std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArrayForAnchors->addStream(100, 2);
 }
 
 ConstraintUpdaterUsingGeometryShader::~ConstraintUpdaterUsingGeometryShader()
@@ -67,19 +58,13 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
   }
   assert(positions.size() == index);
 
-  vertexArrayForAnchors->updateStream(0, positions);
-
-  RenderData renderData;
-  renderData.viewMatrix = pixelToNDC;
-  renderData.viewProjectionMatrix = pixelToNDC;
+  anchorConstraintDrawer->update(positions);
 
   Eigen::Vector2f constraintSize = 2.0f * labelSize.cast<float>();
   Eigen::Vector2f halfSize =
       constraintSize.cwiseQuotient(0.5 * Eigen::Vector2f(width, height));
 
-  quadDrawer->draw(vertexArrayForAnchors.get(), renderData,
-                   anchorConstraintColor, halfSize);
-  vertexArrayForAnchors->draw();
+  anchorConstraintDrawer->draw(anchorConstraintColor, halfSize);
 }
 
 void ConstraintUpdaterUsingGeometryShader::clear()
