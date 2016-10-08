@@ -26,6 +26,7 @@ class ShadowConstraintDrawer
   ShadowConstraintDrawer(
       int width, int height, Graphics::Gl *gl,
       std::shared_ptr<Graphics::ShaderManager> shaderManager);
+  ~ShadowConstraintDrawer();
 
   void update(const std::vector<float> &sources,
               const std::vector<float> &starts, const std::vector<float> &ends);

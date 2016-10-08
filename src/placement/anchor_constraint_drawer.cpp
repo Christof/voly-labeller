@@ -28,6 +28,10 @@ AnchorConstraintDrawer::AnchorConstraintDrawer(
   vertexArray->addStream(maxLabelCount, 2);
 }
 
+AnchorConstraintDrawer::~AnchorConstraintDrawer()
+{
+}
+
 void AnchorConstraintDrawer::update(const std::vector<float> &anchors)
 {
   vertexArray->updateStream(0, anchors);

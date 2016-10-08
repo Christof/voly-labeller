@@ -30,6 +30,10 @@ ShadowConstraintDrawer::ShadowConstraintDrawer(
   vertexArray->addStream(maxLabelCount, 2);
 }
 
+ShadowConstraintDrawer::~ShadowConstraintDrawer()
+{
+}
+
 void ShadowConstraintDrawer::update(const std::vector<float> &sources,
                                     const std::vector<float> &starts,
                                     const std::vector<float> &ends)
