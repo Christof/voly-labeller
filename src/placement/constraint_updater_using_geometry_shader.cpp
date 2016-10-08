@@ -1,28 +1,21 @@
 #include "./constraint_updater_using_geometry_shader.h"
 #include <Eigen/Geometry>
 #include <vector>
-#include "../graphics/gl.h"
-#include "../graphics/shader_manager.h"
-#include "../graphics/shader_program.h"
-#include "../graphics/vertex_array.h"
+#include <memory>
 #include "./placement.h"
 #include "./shadow_constraint_drawer.h"
 #include "./anchor_constraint_drawer.h"
-#include "../utils/memory.h"
 
 ConstraintUpdaterUsingGeometryShader::ConstraintUpdaterUsingGeometryShader(
-    int width, int height, Graphics::Gl *gl,
-    std::shared_ptr<Graphics::ShaderManager> shaderManager)
-  : width(width), height(height)
+    int width, int height,
+    std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer,
+    std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer,
+    std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer)
+  : width(width), height(height),
+    anchorConstraintDrawer(anchorConstraintDrawer),
+    connectorShadowDrawer(connectorShadowDrawer),
+    shadowConstraintDrawer(shadowConstraintDrawer)
 {
-  anchorConstraintDrawer = std::make_unique<AnchorConstraintDrawer>(
-      width, height, gl, shaderManager);
-
-  connectorShadowDrawer = std::make_unique<ShadowConstraintDrawer>(
-      width, height, gl, shaderManager);
-  shadowDrawer = std::make_unique<ShadowConstraintDrawer>(width, height, gl,
-                                                          shaderManager);
-
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
@@ -69,7 +62,7 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
 
 void ConstraintUpdaterUsingGeometryShader::clear()
 {
-  shadowDrawer->clear();
+  shadowConstraintDrawer->clear();
 
   sources.clear();
   starts.clear();
@@ -82,7 +75,7 @@ void ConstraintUpdaterUsingGeometryShader::clear()
 
 void ConstraintUpdaterUsingGeometryShader::finish()
 {
-  shadowDrawer->update(sources, starts, ends);
+  shadowConstraintDrawer->update(sources, starts, ends);
   connectorShadowDrawer->update(anchors, connectorStart, connectorEnd);
 
   Eigen::Vector2f borderPixel(2.0f, 2.0f);
@@ -90,7 +83,7 @@ void ConstraintUpdaterUsingGeometryShader::finish()
   Eigen::Vector2f halfSize =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));
 
-  shadowDrawer->draw(labelShadowColor, halfSize);
+  shadowConstraintDrawer->draw(labelShadowColor, halfSize);
   connectorShadowDrawer->draw(connectorShadowColor, halfSize);
 }
 

@@ -7,12 +7,6 @@
 #include <memory>
 #include "./constraint_updater_base.h"
 
-namespace Graphics
-{
-class Gl;
-class ShaderManager;
-class VertexArray;
-}
 class ShadowConstraintDrawer;
 class AnchorConstraintDrawer;
 
@@ -28,8 +22,10 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
 {
  public:
   ConstraintUpdaterUsingGeometryShader(
-      int width, int height, Graphics::Gl *gl,
-      std::shared_ptr<Graphics::ShaderManager> shaderManager);
+      int width, int height,
+      std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer,
+      std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer,
+      std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer);
   virtual ~ConstraintUpdaterUsingGeometryShader();
 
   void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
@@ -47,9 +43,9 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
  private:
   int width;
   int height;
-  std::unique_ptr<AnchorConstraintDrawer> anchorConstraintDrawer;
-  std::unique_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
-  std::unique_ptr<ShadowConstraintDrawer> shadowDrawer;
+  std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer;
+  std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
+  std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer;
 
   float labelShadowColor;
   float connectorShadowColor;
@@ -68,7 +64,7 @@ class ConstraintUpdaterUsingGeometryShader : public ConstraintUpdaterBase
   void addConnectorShadow(Eigen::Vector2i anchor, Eigen::Vector2i start,
                           Eigen::Vector2i end);
   void addLabelShadow(Eigen::Vector2f anchor, Eigen::Vector2i lastLabelPosition,
-                          Eigen::Vector2f lastHalfSize);
+                      Eigen::Vector2f lastHalfSize);
   void addLineShadow(Eigen::Vector2f anchor, Eigen::Vector2f start,
                      Eigen::Vector2f end);
   std::vector<Eigen::Vector2f> getCornersFor(Eigen::Vector2i position,
