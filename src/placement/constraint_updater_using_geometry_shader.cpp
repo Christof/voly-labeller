@@ -55,7 +55,7 @@ void ConstraintUpdaterUsingGeometryShader::drawRegionsForAnchors(
 
   Eigen::Vector2f constraintSize = 2.0f * labelSize.cast<float>();
   Eigen::Vector2f halfSize =
-      constraintSize.cwiseQuotient(0.5 * Eigen::Vector2f(width, height));
+      constraintSize.cwiseQuotient(Eigen::Vector2f(width, height));
 
   anchorConstraintDrawer->draw(anchorConstraintColor, halfSize);
 }
