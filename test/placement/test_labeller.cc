@@ -37,11 +37,11 @@ class Test_PlacementLabeller : public ::testing::Test
         std::make_shared<CudaArrayMapper<unsigned char>>(
             width, height, constraintImage, byteChannelDesc);
 
-    auto anchorConstraintDrawer =
+    anchorConstraintDrawer =
         std::make_shared<Mock_AnchorConstraintDrawer>(width, height);
-    auto connectorShadowDrawer =
+    connectorShadowDrawer =
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
-    auto shadowConstraintDrawer =
+    shadowConstraintDrawer =
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
     auto constraintUpdater = std::make_shared<ConstraintUpdater>(
         width, height, anchorConstraintDrawer, connectorShadowDrawer,
@@ -73,6 +73,10 @@ class Test_PlacementLabeller : public ::testing::Test
  public:
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Placement::Labeller> labeller;
+
+  std::shared_ptr<Mock_AnchorConstraintDrawer> anchorConstraintDrawer;
+  std::shared_ptr<Mock_ShadowConstraintDrawer> connectorShadowDrawer;
+  std::shared_ptr<Mock_ShadowConstraintDrawer> shadowConstraintDrawer;
 };
 
 TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
@@ -114,6 +118,16 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
     EXPECT_Vector2f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
                          1e-5f);
   }
+
+  EXPECT_EQ(8, anchorConstraintDrawer->anchors.size());
+
+  EXPECT_EQ(6, connectorShadowDrawer->sources.size());
+  EXPECT_EQ(6, connectorShadowDrawer->starts.size());
+  EXPECT_EQ(6, connectorShadowDrawer->ends.size());
+
+  EXPECT_EQ(12, shadowConstraintDrawer->sources.size());
+  EXPECT_EQ(12, shadowConstraintDrawer->starts.size());
+  EXPECT_EQ(12, shadowConstraintDrawer->ends.size());
 }
 
 TEST(Test_PlacementLabellerWithoutFixture,
