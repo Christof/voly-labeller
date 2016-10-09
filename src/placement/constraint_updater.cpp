@@ -32,7 +32,8 @@ void ConstraintUpdater::drawConstraintRegionFor(
 {
   this->labelSize = labelSize.cast<float>();
 
-  addConnectorShadow(anchorPosition, lastAnchorPosition, lastLabelPosition);
+  if (isConnectorShadowEnabled)
+    addConnectorShadow(anchorPosition, lastAnchorPosition, lastLabelPosition);
 
   Eigen::Vector2f anchor = anchorPosition.cast<float>();
   Eigen::Vector2f lastHalfSize = 0.5f * lastLabelSize.cast<float>();
@@ -89,6 +90,7 @@ void ConstraintUpdater::finish()
 
 void ConstraintUpdater::setIsConnectorShadowEnabled(bool enabled)
 {
+  isConnectorShadowEnabled = enabled;
 }
 
 void ConstraintUpdater::addConnectorShadow(Eigen::Vector2i anchor,

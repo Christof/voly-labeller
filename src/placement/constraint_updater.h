@@ -60,6 +60,8 @@ class ConstraintUpdater
 
   Eigen::Vector2f labelSize;
 
+  bool isConnectorShadowEnabled = true;
+
   void addConnectorShadow(Eigen::Vector2i anchor, Eigen::Vector2i start,
                           Eigen::Vector2i end);
   void addLabelShadow(Eigen::Vector2f anchor, Eigen::Vector2i lastLabelPosition,

@@ -103,5 +103,35 @@ TEST_F(Test_ConstraintUpdater, DrawWithoutConnectorShadows)
   EXPECT_EQ(2, anchors.size());
   EXPECT_FLOAT_EQ(100.0f, anchors[0]);
   EXPECT_FLOAT_EQ(50.0f, anchors[1]);
+
+  auto connectorSources = connectorShadowDrawer->sources;
+  EXPECT_EQ(0, connectorSources.size());
+
+  auto connectorStarts = connectorShadowDrawer->starts;
+  EXPECT_EQ(0, connectorStarts.size());
+
+  auto connectorEnds = connectorShadowDrawer->ends;
+  EXPECT_EQ(0, connectorEnds.size());
+
+  auto labelShadowSources = shadowConstraintDrawer->sources;
+  EXPECT_EQ(4, labelShadowSources.size());
+  EXPECT_FLOAT_EQ(100.0f, labelShadowSources[0]);
+  EXPECT_FLOAT_EQ(50.0f, labelShadowSources[1]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowSources[2]);
+  EXPECT_FLOAT_EQ(50.0f, labelShadowSources[3]);
+
+  auto labelShadowStarts = shadowConstraintDrawer->starts;
+  EXPECT_EQ(4, labelShadowStarts.size());
+  EXPECT_FLOAT_EQ(120.0f, labelShadowStarts[0]);
+  EXPECT_FLOAT_EQ(140.0f, labelShadowStarts[1]);
+  EXPECT_FLOAT_EQ(120.0f, labelShadowStarts[2]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowStarts[3]);
+
+  auto labelShadowEnds = shadowConstraintDrawer->ends;
+  EXPECT_EQ(4, labelShadowEnds.size());
+  EXPECT_FLOAT_EQ(120.0f, labelShadowEnds[0]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowEnds[1]);
+  EXPECT_FLOAT_EQ(180.0f, labelShadowEnds[2]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowEnds[3]);
 }
 
