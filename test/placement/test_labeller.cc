@@ -2,11 +2,48 @@
 #include "../qimage_drawer_with_updating.h"
 #include "../../src/placement/labeller.h"
 #include "../../src/placement/constraint_updater.h"
+#include "../../src/placement/anchor_constraint_drawer.h"
+#include "../../src/placement/shadow_constraint_drawer.h"
+#include "../../src/placement/constraint_updater.h"
 #include "../../src/placement/persistent_constraint_updater.h"
 #include "../../src/placement/insertion_order_labels_arranger.h"
 #include "../../src/labelling/labels.h"
 #include "../../src/utils/image_persister.h"
 #include "../../src/utils/path_helper.h"
+
+class Mock_AnchorConstraintDrawer : public AnchorConstraintDrawer
+{
+ public:
+  Mock_AnchorConstraintDrawer(int width, int height)
+    : AnchorConstraintDrawer(width, height)
+  {
+  }
+
+  virtual void update(const std::vector<float> &anchors)
+  {
+  }
+  virtual void draw(float color, Eigen::Vector2f halfSize)
+  {
+  }
+  virtual void clear()
+  {
+  }
+};
+
+class Mock_ShadowConstraintDrawer : public ShadowConstraintDrawer
+{
+ public:
+  Mock_ShadowConstraintDrawer(int width, int height)
+    : ShadowConstraintDrawer(width, height){};
+
+  virtual void update(const std::vector<float> &anchors){};
+
+  virtual void update(const std::vector<float> &sources,
+                      const std::vector<float> &starts,
+                      const std::vector<float> &ends){};
+
+  virtual void clear(){};
+};
 
 class Test_PlacementLabeller : public ::testing::Test
 {
@@ -33,8 +70,15 @@ class Test_PlacementLabeller : public ::testing::Test
             width, height, constraintImage, byteChannelDesc);
     drawer = std::make_shared<QImageDrawerWithUpdating>(
         width, height, constraintTextureMapper);
-    auto constraintUpdater =
-        std::make_shared<ConstraintUpdater>(drawer, width, height);
+    auto anchorConstraintDrawer =
+        std::make_shared<Mock_AnchorConstraintDrawer>(width, height);
+    auto connectorShadowDrawer =
+        std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    auto shadowConstraintDrawer =
+        std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+        width, height, anchorConstraintDrawer, connectorShadowDrawer,
+        shadowConstraintDrawer);
     auto persistentConstraintUpdater =
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
@@ -91,8 +135,7 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   ASSERT_EQ(labels->count(), newPositions.size());
 
   std::vector<Eigen::Vector2f> expectedPositions = {
-    Eigen::Vector2f(0.1875f, 0.6953125f),
-    Eigen::Vector2f(0.335937f, 0.1875f),
+    Eigen::Vector2f(0.1875f, 0.6953125f), Eigen::Vector2f(0.335937f, 0.1875f),
     Eigen::Vector2f(0.83984375f, 0.44921875f),
     Eigen::Vector2f(-0.4296875f, 0.45703125f),
   };

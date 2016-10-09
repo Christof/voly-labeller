@@ -12,7 +12,6 @@
 #include "./labelling/labels.h"
 #include "./placement/occlusion_calculator.h"
 #include "./placement/constraint_updater.h"
-#include "./placement/constraint_updater_using_geometry_shader.h"
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
 #include "./placement/integral_costs_calculator.h"
@@ -63,22 +62,23 @@ void LabellingCoordinator::initialize(
           textureMapperManager->getOcclusionTextureMapper(),
           textureMapperManager->getSaliencyTextureMapper(),
           textureMapperManager->getIntegralCostsTextureMapper());
-  /*
-  auto constraintUpdater =
-      std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
-      */
+
   auto shaderManager = managers->getShaderManager();
-  auto anchorConstraintDrawer = std::make_shared<AnchorConstraintDrawer>(
-      width, height, gl, shaderManager);
+  auto anchorConstraintDrawer =
+      std::make_shared<AnchorConstraintDrawer>(width, height);
+  anchorConstraintDrawer->initialize(gl, shaderManager);
+
   auto connectorShadowDrawer = std::make_shared<ShadowConstraintDrawer>(
-      width, height, gl, shaderManager);
+      width, height);
+  connectorShadowDrawer->initialize(gl, shaderManager);
 
   auto shadowConstraintDrawer = std::make_shared<ShadowConstraintDrawer>(
-      width, height, gl, shaderManager);
-  auto constraintUpdater =
-      std::make_shared<ConstraintUpdaterUsingGeometryShader>(
-          bufferSize, bufferSize, anchorConstraintDrawer, connectorShadowDrawer,
-          shadowConstraintDrawer);
+      width, height);
+  shadowConstraintDrawer->initialize(gl, shaderManager);
+
+  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+      bufferSize, bufferSize, anchorConstraintDrawer, connectorShadowDrawer,
+      shadowConstraintDrawer);
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 

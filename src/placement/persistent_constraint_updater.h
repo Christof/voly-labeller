@@ -7,7 +7,7 @@
 #include <map>
 #include <vector>
 
-class ConstraintUpdaterBase;
+class ConstraintUpdater;
 
 /**
  * \brief Uses the ConstraintUpdater to draw constraints and stores each given
@@ -23,7 +23,7 @@ class PersistentConstraintUpdater
 {
  public:
   PersistentConstraintUpdater(
-      std::shared_ptr<ConstraintUpdaterBase> constraintUpdater);
+      std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
   void setAnchorPositions(std::vector<Eigen::Vector2i> anchorPositions);
   void updateConstraints(int labelId, Eigen::Vector2i anchorForBuffer,
@@ -39,7 +39,7 @@ class PersistentConstraintUpdater
     Eigen::Vector2i labelPosition;
   };
 
-  std::shared_ptr<ConstraintUpdaterBase> constraintUpdater;
+  std::shared_ptr<ConstraintUpdater> constraintUpdater;
 
   std::map<int, PlacedLabelInfo> placedLabels;
   std::vector<Eigen::Vector2i> anchorPositions;

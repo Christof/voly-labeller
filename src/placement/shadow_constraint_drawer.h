@@ -23,10 +23,11 @@ class ShaderManager;
 class ShadowConstraintDrawer
 {
  public:
-  ShadowConstraintDrawer(
-      int width, int height, Graphics::Gl *gl,
-      std::shared_ptr<Graphics::ShaderManager> shaderManager);
+  ShadowConstraintDrawer(int width, int height);
   virtual ~ShadowConstraintDrawer();
+
+  void initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::ShaderManager> shaderManager);
 
   virtual void update(const std::vector<float> &sources,
                       const std::vector<float> &starts,

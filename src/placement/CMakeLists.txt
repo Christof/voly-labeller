@@ -16,9 +16,7 @@ set(SOURCES
   cost_function_calculator.cu
   labeller.cpp
   cuda_texture_mapper.cpp
-  constraint_updater_base.h
   constraint_updater.cpp
-  constraint_updater_using_geometry_shader.cpp
   constraint_drawer.cpp
   anchor_constraint_drawer.cpp
   shadow_constraint_drawer.cpp

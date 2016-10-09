@@ -6,10 +6,8 @@
 #include "../graphics/vertex_array.h"
 #include "./constraint_drawer.h"
 
-AnchorConstraintDrawer::AnchorConstraintDrawer(
-    int width, int height, Graphics::Gl *gl,
-    std::shared_ptr<Graphics::ShaderManager> shaderManager)
-  : width(width), height(height), gl(gl)
+AnchorConstraintDrawer::AnchorConstraintDrawer(int width, int height)
+  : width(width), height(height)
 {
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -18,18 +16,23 @@ AnchorConstraintDrawer::AnchorConstraintDrawer(
 
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-
-  constraintDrawer = std::make_unique<ConstraintDrawer>(
-      gl, shaderManager, ":/shader/constraint.vert",
-      ":/shader/quad.geom");
-
-  const int maxLabelCount = 100;
-  vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(maxLabelCount, 2);
 }
 
 AnchorConstraintDrawer::~AnchorConstraintDrawer()
 {
+}
+
+void AnchorConstraintDrawer::initialize(
+    Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager)
+{
+  this->gl = gl;
+
+  constraintDrawer = std::make_unique<ConstraintDrawer>(
+      gl, shaderManager, ":/shader/constraint.vert", ":/shader/quad.geom");
+
+  const int maxLabelCount = 100;
+  vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
+  vertexArray->addStream(maxLabelCount, 2);
 }
 
 void AnchorConstraintDrawer::update(const std::vector<float> &anchors)

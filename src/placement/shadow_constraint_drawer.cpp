@@ -7,9 +7,8 @@
 #include "./constraint_drawer.h"
 
 ShadowConstraintDrawer::ShadowConstraintDrawer(
-    int width, int height, Graphics::Gl *gl,
-    std::shared_ptr<Graphics::ShaderManager> shaderManager)
-  : width(width), height(height), gl(gl)
+    int width, int height)
+  : width(width), height(height)
 {
   Eigen::Affine3f pixelToNDCTransform(
       Eigen::Translation3f(Eigen::Vector3f(-1, -1, 0)) *
@@ -18,6 +17,17 @@ ShadowConstraintDrawer::ShadowConstraintDrawer(
 
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
+
+}
+
+ShadowConstraintDrawer::~ShadowConstraintDrawer()
+{
+}
+
+void ShadowConstraintDrawer::initialize(Graphics::Gl *gl,
+                  std::shared_ptr<Graphics::ShaderManager> shaderManager)
+{
+  this->gl = gl;
 
   constraintDrawer = std::make_unique<ConstraintDrawer>(
       gl, shaderManager, ":/shader/line_constraint.vert",
@@ -28,10 +38,6 @@ ShadowConstraintDrawer::ShadowConstraintDrawer(
   vertexArray->addStream(maxLabelCount, 2);
   vertexArray->addStream(maxLabelCount, 2);
   vertexArray->addStream(maxLabelCount, 2);
-}
-
-ShadowConstraintDrawer::~ShadowConstraintDrawer()
-{
 }
 
 void ShadowConstraintDrawer::update(const std::vector<float> &sources,
