@@ -1,44 +1,7 @@
 #include "../test.h"
-#include "../image_comparer.h"
-#include <QFile>
 #include "../../src/placement/constraint_updater.h"
-#include "../../src/placement/anchor_constraint_drawer.h"
-#include "../../src/placement/shadow_constraint_drawer.h"
-#include "../../src/graphics/qimage_drawer.h"
-
-class Mock_AnchorConstraintDrawer : public AnchorConstraintDrawer
-{
- public:
-  Mock_AnchorConstraintDrawer(int width, int height)
-    : AnchorConstraintDrawer(width, height)
-  {
-  }
-
-  virtual void update(const std::vector<float> &anchors)
-  {
-  }
-  virtual void draw(float color, Eigen::Vector2f halfSize)
-  {
-  }
-  virtual void clear()
-  {
-  }
-};
-
-class Mock_ShadowConstraintDrawer : public ShadowConstraintDrawer
-{
- public:
-  Mock_ShadowConstraintDrawer(int width, int height)
-    : ShadowConstraintDrawer(width, height){};
-
-  virtual void update(const std::vector<float> &anchors){};
-
-  virtual void update(const std::vector<float> &sources,
-                      const std::vector<float> &starts,
-                      const std::vector<float> &ends){};
-
-  virtual void clear(){};
-};
+#include "./mock_anchor_constraint_drawer.h"
+#include "./mock_shadow_constraint_drawer.h"
 
 class Test_ConstraintUpdater : public ::testing::Test
 {
@@ -78,6 +41,7 @@ class Test_ConstraintUpdater : public ::testing::Test
     constraintUpdater->drawConstraintRegionFor(
         anchorPosition, labelSize, lastAnchorPosition, lastLabelPosition,
         lastLabelSize);
+    constraintUpdater->finish();
   }
 };
 
@@ -87,10 +51,46 @@ TEST_F(Test_ConstraintUpdater, DrawWithConnectorShadows)
 
   drawConstraintRegion();
 
-  /*
-  compareImages("expected-constraints-with-connectors.png",
-                "constraints-with-connectors.png", drawer->image.get());
-                */
+  auto anchors = anchorConstraintDrawer->anchors;
+  EXPECT_EQ(2, anchors.size());
+  EXPECT_FLOAT_EQ(100.0f, anchors[0]);
+  EXPECT_FLOAT_EQ(50.0f, anchors[1]);
+
+  auto connectorSources = connectorShadowDrawer->sources;
+  EXPECT_EQ(2, connectorSources.size());
+  EXPECT_FLOAT_EQ(100.0f, connectorSources[0]);
+  EXPECT_FLOAT_EQ(50.0f, connectorSources[1]);
+
+  auto connectorStarts = connectorShadowDrawer->starts;
+  EXPECT_EQ(2, connectorStarts.size());
+  EXPECT_FLOAT_EQ(200.0f, connectorStarts[0]);
+  EXPECT_FLOAT_EQ(70.0f, connectorStarts[1]);
+
+  auto connectorEnds = connectorShadowDrawer->ends;
+  EXPECT_EQ(2, connectorEnds.size());
+  EXPECT_FLOAT_EQ(150.0f, connectorEnds[0]);
+  EXPECT_FLOAT_EQ(120.0f, connectorEnds[1]);
+
+  auto labelShadowSources = shadowConstraintDrawer->sources;
+  EXPECT_EQ(4, labelShadowSources.size());
+  EXPECT_FLOAT_EQ(100.0f, labelShadowSources[0]);
+  EXPECT_FLOAT_EQ(50.0f, labelShadowSources[1]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowSources[2]);
+  EXPECT_FLOAT_EQ(50.0f, labelShadowSources[3]);
+
+  auto labelShadowStarts = shadowConstraintDrawer->starts;
+  EXPECT_EQ(4, labelShadowStarts.size());
+  EXPECT_FLOAT_EQ(120.0f, labelShadowStarts[0]);
+  EXPECT_FLOAT_EQ(140.0f, labelShadowStarts[1]);
+  EXPECT_FLOAT_EQ(120.0f, labelShadowStarts[2]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowStarts[3]);
+
+  auto labelShadowEnds = shadowConstraintDrawer->ends;
+  EXPECT_EQ(4, labelShadowEnds.size());
+  EXPECT_FLOAT_EQ(120.0f, labelShadowEnds[0]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowEnds[1]);
+  EXPECT_FLOAT_EQ(180.0f, labelShadowEnds[2]);
+  EXPECT_FLOAT_EQ(100.0f, labelShadowEnds[3]);
 }
 
 TEST_F(Test_ConstraintUpdater, DrawWithoutConnectorShadows)
@@ -99,9 +99,9 @@ TEST_F(Test_ConstraintUpdater, DrawWithoutConnectorShadows)
 
   drawConstraintRegion();
 
-  /*
-  compareImages("expected-constraints-without-connectors.png",
-                "constraints-without-connectors.png", drawer->image.get());
-                */
+  auto anchors = anchorConstraintDrawer->anchors;
+  EXPECT_EQ(2, anchors.size());
+  EXPECT_FLOAT_EQ(100.0f, anchors[0]);
+  EXPECT_FLOAT_EQ(50.0f, anchors[1]);
 }
 

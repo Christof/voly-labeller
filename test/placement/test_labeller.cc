@@ -10,40 +10,8 @@
 #include "../../src/labelling/labels.h"
 #include "../../src/utils/image_persister.h"
 #include "../../src/utils/path_helper.h"
-
-class Mock_AnchorConstraintDrawer : public AnchorConstraintDrawer
-{
- public:
-  Mock_AnchorConstraintDrawer(int width, int height)
-    : AnchorConstraintDrawer(width, height)
-  {
-  }
-
-  virtual void update(const std::vector<float> &anchors)
-  {
-  }
-  virtual void draw(float color, Eigen::Vector2f halfSize)
-  {
-  }
-  virtual void clear()
-  {
-  }
-};
-
-class Mock_ShadowConstraintDrawer : public ShadowConstraintDrawer
-{
- public:
-  Mock_ShadowConstraintDrawer(int width, int height)
-    : ShadowConstraintDrawer(width, height){};
-
-  virtual void update(const std::vector<float> &anchors){};
-
-  virtual void update(const std::vector<float> &sources,
-                      const std::vector<float> &starts,
-                      const std::vector<float> &ends){};
-
-  virtual void clear(){};
-};
+#include "./mock_anchor_constraint_drawer.h"
+#include "./mock_shadow_constraint_drawer.h"
 
 class Test_PlacementLabeller : public ::testing::Test
 {
@@ -68,8 +36,7 @@ class Test_PlacementLabeller : public ::testing::Test
     auto constraintTextureMapper =
         std::make_shared<CudaArrayMapper<unsigned char>>(
             width, height, constraintImage, byteChannelDesc);
-    drawer = std::make_shared<QImageDrawerWithUpdating>(
-        width, height, constraintTextureMapper);
+
     auto anchorConstraintDrawer =
         std::make_shared<Mock_AnchorConstraintDrawer>(width, height);
     auto connectorShadowDrawer =
@@ -79,6 +46,7 @@ class Test_PlacementLabeller : public ::testing::Test
     auto constraintUpdater = std::make_shared<ConstraintUpdater>(
         width, height, anchorConstraintDrawer, connectorShadowDrawer,
         shadowConstraintDrawer);
+
     auto persistentConstraintUpdater =
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
@@ -105,7 +73,6 @@ class Test_PlacementLabeller : public ::testing::Test
  public:
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Placement::Labeller> labeller;
-  std::shared_ptr<QImageDrawerWithUpdating> drawer;
 };
 
 TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
@@ -146,8 +113,6 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
     EXPECT_Vector2f_NEAR(expectedPositions[i], lastPlacementResult[i + 1],
                          1e-5f);
   }
-
-  drawer->image->save("Test_PlacementLabellerConstraints.png");
 }
 
 TEST(Test_PlacementLabellerWithoutFixture,
