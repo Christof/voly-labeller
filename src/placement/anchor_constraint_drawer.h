@@ -26,11 +26,11 @@ class AnchorConstraintDrawer
   AnchorConstraintDrawer(
       int width, int height, Graphics::Gl *gl,
       std::shared_ptr<Graphics::ShaderManager> shaderManager);
-  ~AnchorConstraintDrawer();
+  virtual ~AnchorConstraintDrawer();
 
-  void update(const std::vector<float> &anchors);
-  void draw(float color, Eigen::Vector2f halfSize);
-  void clear();
+  virtual void update(const std::vector<float> &anchors);
+  virtual void draw(float color, Eigen::Vector2f halfSize);
+  virtual void clear();
 
  private:
   int width;
