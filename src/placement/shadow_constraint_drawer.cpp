@@ -6,8 +6,7 @@
 #include "../graphics/vertex_array.h"
 #include "./constraint_drawer.h"
 
-ShadowConstraintDrawer::ShadowConstraintDrawer(
-    int width, int height)
+ShadowConstraintDrawer::ShadowConstraintDrawer(int width, int height)
   : width(width), height(height)
 {
   Eigen::Affine3f pixelToNDCTransform(
@@ -17,15 +16,14 @@ ShadowConstraintDrawer::ShadowConstraintDrawer(
 
   renderData.viewMatrix = pixelToNDC;
   renderData.viewProjectionMatrix = pixelToNDC;
-
 }
 
 ShadowConstraintDrawer::~ShadowConstraintDrawer()
 {
 }
 
-void ShadowConstraintDrawer::initialize(Graphics::Gl *gl,
-                  std::shared_ptr<Graphics::ShaderManager> shaderManager)
+void ShadowConstraintDrawer::initialize(
+    Graphics::Gl *gl, std::shared_ptr<Graphics::ShaderManager> shaderManager)
 {
   this->gl = gl;
 
