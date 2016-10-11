@@ -2,11 +2,16 @@
 #include "../qimage_drawer_with_updating.h"
 #include "../../src/placement/labeller.h"
 #include "../../src/placement/constraint_updater.h"
+#include "../../src/placement/anchor_constraint_drawer.h"
+#include "../../src/placement/shadow_constraint_drawer.h"
+#include "../../src/placement/constraint_updater.h"
 #include "../../src/placement/persistent_constraint_updater.h"
 #include "../../src/placement/insertion_order_labels_arranger.h"
 #include "../../src/labelling/labels.h"
 #include "../../src/utils/image_persister.h"
 #include "../../src/utils/path_helper.h"
+#include "./mock_anchor_constraint_drawer.h"
+#include "./mock_shadow_constraint_drawer.h"
 
 class Test_PlacementLabeller : public ::testing::Test
 {
@@ -31,10 +36,17 @@ class Test_PlacementLabeller : public ::testing::Test
     auto constraintTextureMapper =
         std::make_shared<CudaArrayMapper<unsigned char>>(
             width, height, constraintImage, byteChannelDesc);
-    drawer = std::make_shared<QImageDrawerWithUpdating>(
-        width, height, constraintTextureMapper);
-    auto constraintUpdater =
-        std::make_shared<ConstraintUpdater>(drawer, width, height);
+
+    anchorConstraintDrawer =
+        std::make_shared<Mock_AnchorConstraintDrawer>(width, height);
+    connectorShadowDrawer =
+        std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    shadowConstraintDrawer =
+        std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+        width, height, anchorConstraintDrawer, connectorShadowDrawer,
+        shadowConstraintDrawer);
+
     auto persistentConstraintUpdater =
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
@@ -61,7 +73,10 @@ class Test_PlacementLabeller : public ::testing::Test
  public:
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Placement::Labeller> labeller;
-  std::shared_ptr<QImageDrawerWithUpdating> drawer;
+
+  std::shared_ptr<Mock_AnchorConstraintDrawer> anchorConstraintDrawer;
+  std::shared_ptr<Mock_ShadowConstraintDrawer> connectorShadowDrawer;
+  std::shared_ptr<Mock_ShadowConstraintDrawer> shadowConstraintDrawer;
 };
 
 TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
@@ -84,17 +99,17 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   auto newPositions = labeller->update(frameData, false);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
-  EXPECT_FLOAT_EQ(0.74639916, labeller->getLastSumOfCosts());
+  EXPECT_FLOAT_EQ(0.62223798, labeller->getLastSumOfCosts());
 
   labeller->cleanup();
 
   ASSERT_EQ(labels->count(), newPositions.size());
 
   std::vector<Eigen::Vector2f> expectedPositions = {
-    Eigen::Vector2f(0.1875f, 0.6953125f),
-    Eigen::Vector2f(0.335937f, 0.1875f),
-    Eigen::Vector2f(0.83984375f, 0.44921875f),
-    Eigen::Vector2f(-0.4296875f, 0.45703125f),
+    Eigen::Vector2f(0.1796875f, 0.640625f),
+    Eigen::Vector2f(0.335937f, 0.20703125),
+    Eigen::Vector2f(0.27734375, 0.69921875f),
+    Eigen::Vector2f(0.1875, 0.63671875),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
@@ -104,7 +119,15 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
                          1e-5f);
   }
 
-  drawer->image->save("Test_PlacementLabellerConstraints.png");
+  EXPECT_EQ(8, anchorConstraintDrawer->anchors.size());
+
+  EXPECT_EQ(6, connectorShadowDrawer->sources.size());
+  EXPECT_EQ(6, connectorShadowDrawer->starts.size());
+  EXPECT_EQ(6, connectorShadowDrawer->ends.size());
+
+  EXPECT_EQ(12, shadowConstraintDrawer->sources.size());
+  EXPECT_EQ(12, shadowConstraintDrawer->starts.size());
+  EXPECT_EQ(12, shadowConstraintDrawer->ends.size());
 }
 
 TEST(Test_PlacementLabellerWithoutFixture,

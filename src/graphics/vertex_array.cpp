@@ -26,7 +26,17 @@ void VertexArray::addStream(std::vector<float> stream, int elementSize)
   data.push_back(new VertexBuffer(gl, stream, elementSize));
 }
 
-void VertexArray::draw()
+void VertexArray::addStream(size_t count, int elementSize)
+{
+  data.push_back(new VertexBuffer(gl, count, elementSize));
+}
+
+void VertexArray::updateStream(size_t index, std::vector<float> stream)
+{
+  data[index]->update(stream);
+}
+
+void VertexArray::draw() const
 {
   gl->glBindVertexArray(vertexArrayId);
 

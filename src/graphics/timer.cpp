@@ -1,5 +1,6 @@
 #include "./timer.h"
 #include <cassert>
+#include <thread>
 
 namespace Graphics
 {
@@ -51,8 +52,10 @@ double Timer::waitResult()
       return static_cast<double>(elapsedTime) * 1e-6;
 
     count++;
+    if (count % 100 == 0)
+      std::this_thread::yield();
 
-    if (count > 5000)
+    if (count > 5000000)
       return -1.0;
   }
 }

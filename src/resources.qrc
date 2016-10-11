@@ -24,6 +24,7 @@
         <file>shader/textureForRenderBuffer.frag</file>
         <file>shader/combineLayers.frag</file>
         <file>shader/positionRenderTarget.frag</file>
+        <file>shader/quad.geom</file>
         <file>shader/cube.geom</file>
         <file>shader/cube.vert</file>
         <file>shader/volume_cube.frag</file>
@@ -32,6 +33,8 @@
         <file>shader/distanceTransform.frag</file>
         <file>shader/textureImmediate.frag</file>
         <file>shader/constraint.vert</file>
+        <file>shader/line_constraint.vert</file>
+        <file>shader/constraint.geom</file>
         <file>shader/transparentOverlay.frag</file>
         <file>NumberTextSliderInput.qml</file>
         <file>ForcesTableView.qml</file>

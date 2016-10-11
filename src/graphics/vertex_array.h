@@ -32,9 +32,11 @@ class VertexArray
    * shaders defined in Scene
    *
    */
-  void draw();
+  void draw() const;
 
   void addStream(std::vector<float> stream, int elementSize = 3);
+  void addStream(size_t count, int elementSize = 3);
+  void updateStream(size_t index, std::vector<float> stream);
 
  private:
   Gl *gl;

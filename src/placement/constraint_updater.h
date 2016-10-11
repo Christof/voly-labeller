@@ -3,36 +3,29 @@
 #define SRC_PLACEMENT_CONSTRAINT_UPDATER_H_
 
 #include <Eigen/Core>
-#include <polyclipping/clipper.hpp>
 #include <vector>
-#include <utility>
 #include <memory>
-#include "../graphics/drawer.h"
+
+class ShadowConstraintDrawer;
+class AnchorConstraintDrawer;
 
 /**
- * \brief Updates the constraint buffer by drawing occupied regions for already
- * placed labels
+ * \brief ConstraintUpdaterBase implementation using a geometry shader
  *
- * Each placed label makes two regions unusable for future labels:
- * - A dilated shadow region which is created by using a virtual light position
- *   at the anchor point of the next placed label and using already placed
- *   label boxes as shadow casters.
- * - A dilated shadow region which is also created by using a virtual light
- *   position at the anchor point and using the line between an already placed
- *   label's anchor and the label box center.
- * The dilation size is determined by the new label size and a border.
- *
- *
- * For each newly placed label the already bound ConstraintBufferObject must
- * be cleared by calling #clear.
- * Afterwards #drawConstraintRegionFor must be called for each already placed
- * label.
+ * The dilation in the geometry shader `constraint.geom` is adapted from
+ * Hasselgren, J., Akenine-Möller, T., & Ohlsson, L. (2005).
+ * Conservative rasterization. GPU Gems, 2, 677–690. article.
+ * (http://http.developer.nvidia.com/GPUGems2/gpugems2_chapter42.html)
  */
 class ConstraintUpdater
 {
  public:
-  ConstraintUpdater(std::shared_ptr<Graphics::Drawer> drawer, int width,
-                    int height);
+  ConstraintUpdater(
+      int width, int height,
+      std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer,
+      std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer,
+      std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer);
+  virtual ~ConstraintUpdater();
 
   void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
                                Eigen::Vector2i labelSize,
@@ -43,29 +36,40 @@ class ConstraintUpdater
                              Eigen::Vector2i labelSize);
 
   void clear();
+  void finish();
   void setIsConnectorShadowEnabled(bool enabled);
 
  private:
-  std::shared_ptr<Graphics::Drawer> drawer;
   int width;
   int height;
-  bool isConnectorShadowEnabled = true;
+  std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer;
+  std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
+  std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer;
+
   float labelShadowColor;
   float connectorShadowColor;
   float anchorConstraintColor;
 
-  std::vector<float> positions;
+  std::vector<float> sources;
+  std::vector<float> starts;
+  std::vector<float> ends;
 
-  void drawConnectorShadowRegion(Eigen::Vector2i anchorPosition,
-                                 Eigen::Vector2i lastAnchorPosition,
-                                 Eigen::Vector2i lastLabelPosition,
-                                 const ClipperLib::Path &newLabel);
-  void drawLabelShadowRegion(Eigen::Vector2i anchorPosition,
-                             Eigen::Vector2i lastLabelPosition,
-                             Eigen::Vector2i lastLabelSize,
-                             const ClipperLib::Path &newLabel);
+  std::vector<float> anchors;
+  std::vector<float> connectorStart;
+  std::vector<float> connectorEnd;
 
-  void drawPolygon(ClipperLib::Path polygon);
+  Eigen::Vector2f labelSize;
+
+  bool isConnectorShadowEnabled = true;
+
+  void addConnectorShadow(Eigen::Vector2i anchor, Eigen::Vector2i start,
+                          Eigen::Vector2i end);
+  void addLabelShadow(Eigen::Vector2f anchor, Eigen::Vector2i lastLabelPosition,
+                      Eigen::Vector2f lastHalfSize);
+  void addLineShadow(Eigen::Vector2f anchor, Eigen::Vector2f start,
+                     Eigen::Vector2f end);
+  std::vector<Eigen::Vector2f> getCornersFor(Eigen::Vector2i position,
+                                             Eigen::Vector2f halfSize);
 };
 
 #endif  // SRC_PLACEMENT_CONSTRAINT_UPDATER_H_

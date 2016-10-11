@@ -17,6 +17,9 @@ set(SOURCES
   labeller.cpp
   cuda_texture_mapper.cpp
   constraint_updater.cpp
+  constraint_drawer.cpp
+  anchor_constraint_drawer.cpp
+  shadow_constraint_drawer.cpp
   persistent_constraint_updater.cpp
   labels_arranger.h
   insertion_order_labels_arranger.cpp

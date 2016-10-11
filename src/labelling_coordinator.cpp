@@ -7,6 +7,7 @@
 #include <QLoggingCategory>
 #include <map>
 #include <vector>
+#include <memory>
 #include "./labelling/clustering.h"
 #include "./labelling/labels.h"
 #include "./placement/occlusion_calculator.h"
@@ -19,6 +20,8 @@
 #include "./placement/insertion_order_labels_arranger.h"
 #include "./placement/randomized_labels_arranger.h"
 #include "./placement/apollonius_labels_arranger.h"
+#include "./placement/anchor_constraint_drawer.h"
+#include "./placement/shadow_constraint_drawer.h"
 #include "./graphics/buffer_drawer.h"
 #include "./nodes.h"
 #include "./math/eigen.h"
@@ -26,6 +29,7 @@
 #include "./texture_mapper_manager.h"
 #include "./utils/profiler.h"
 #include "./utils/profiling_statistics.h"
+#include "./graphics/managers.h"
 
 QLoggingCategory lcChan("LabellingCoordinator");
 
@@ -41,7 +45,9 @@ LabellingCoordinator::LabellingCoordinator(
 }
 
 void LabellingCoordinator::initialize(
-    int bufferSize, std::shared_ptr<Graphics::BufferDrawer> drawer,
+    Graphics::Gl *gl, int bufferSize,
+    std::shared_ptr<Graphics::BufferDrawer> drawer,
+    std::shared_ptr<Graphics::Managers> managers,
     std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
     int height)
 {
@@ -56,8 +62,23 @@ void LabellingCoordinator::initialize(
           textureMapperManager->getOcclusionTextureMapper(),
           textureMapperManager->getSaliencyTextureMapper(),
           textureMapperManager->getIntegralCostsTextureMapper());
-  auto constraintUpdater =
-      std::make_shared<ConstraintUpdater>(drawer, bufferSize, bufferSize);
+
+  auto shaderManager = managers->getShaderManager();
+  auto anchorConstraintDrawer =
+      std::make_shared<AnchorConstraintDrawer>(width, height);
+  anchorConstraintDrawer->initialize(gl, shaderManager);
+
+  auto connectorShadowDrawer = std::make_shared<ShadowConstraintDrawer>(
+      width, height);
+  connectorShadowDrawer->initialize(gl, shaderManager);
+
+  auto shadowConstraintDrawer = std::make_shared<ShadowConstraintDrawer>(
+      width, height);
+  shadowConstraintDrawer->initialize(gl, shaderManager);
+
+  auto constraintUpdater = std::make_shared<ConstraintUpdater>(
+      bufferSize, bufferSize, anchorConstraintDrawer, connectorShadowDrawer,
+      shadowConstraintDrawer);
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 
