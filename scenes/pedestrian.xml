@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>3</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>1.000000000e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>-0.000000000e+00</r0c3>
+				<r1c0>-0.000000000e+00</r1c0>
+				<r1c1>1.000000000e+00</r1c1>
+				<r1c2>4.371138829e-08</r1c2>
+				<r1c3>-0.000000000e+00</r1c3>
+				<r2c0>-0.000000000e+00</r2c0>
+				<r2c1>-4.371138829e-08</r2c1>
+				<r2c2>1.000000000e+00</r2c2>
+				<r2c3>-1.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.000925779e+00</r2c2>
+				<r2c3>-2.000925830e-03</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>0.000000000e+00</x>
+				<y>0.000000000e+00</y>
+				<z>0.000000000e+00</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>0</count>
+				<item_version>0</item_version>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id="6" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/fussgaenger_graz_iterative.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="7" class_name="MeshNode" tracking_level="1" version="0" object_id="_2">
+			<assetFilename>assets/models/RekoCT2_01-10.dae</assetFilename>
+			<meshIndex>0</meshIndex>
+			<transformation>
+				<r0c0>-7.452774048e-02</r0c0>
+				<r0c1>3.212970914e-03</r0c1>
+				<r0c2>1.903986931e-02</r0c2>
+				<r0c3>-6.943193078e-01</r0c3>
+				<r1c0>-1.505733002e-02</r1c0>
+				<r1c1>-5.719500035e-02</r1c1>
+				<r1c2>-4.928724840e-02</r1c2>
+				<r1c3>-6.499348283e-01</r1c3>
+				<r2c0>1.208787039e-02</r2c0>
+				<r2c1>-5.143572018e-02</r2c1>
+				<r2c2>5.599531159e-02</r2c2>
+				<r2c3>1.277447939e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
