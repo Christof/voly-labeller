@@ -65,15 +65,15 @@ void LabellingCoordinator::initialize(
 
   auto shaderManager = managers->getShaderManager();
   auto anchorConstraintDrawer =
-      std::make_shared<AnchorConstraintDrawer>(width, height);
+      std::make_shared<AnchorConstraintDrawer>(bufferSize, bufferSize);
   anchorConstraintDrawer->initialize(gl, shaderManager);
 
   auto connectorShadowDrawer = std::make_shared<ShadowConstraintDrawer>(
-      width, height);
+      bufferSize, bufferSize);
   connectorShadowDrawer->initialize(gl, shaderManager);
 
   auto shadowConstraintDrawer = std::make_shared<ShadowConstraintDrawer>(
-      width, height);
+      bufferSize, bufferSize);
   shadowConstraintDrawer->initialize(gl, shaderManager);
 
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
