@@ -119,8 +119,6 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
                          1e-5f);
   }
 
-  EXPECT_EQ(8, anchorConstraintDrawer->anchors.size());
-
   EXPECT_EQ(6, connectorShadowDrawer->sources.size());
   EXPECT_EQ(6, connectorShadowDrawer->starts.size());
   EXPECT_EQ(6, connectorShadowDrawer->ends.size());
