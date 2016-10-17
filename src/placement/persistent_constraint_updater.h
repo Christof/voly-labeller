@@ -30,6 +30,7 @@ class PersistentConstraintUpdater
                          Eigen::Vector2i labelSizeForBuffer);
   void setPosition(int labelId, Eigen::Vector2i position);
   void clear();
+  void save();
 
  private:
   struct PlacedLabelInfo
@@ -43,6 +44,8 @@ class PersistentConstraintUpdater
 
   std::map<int, PlacedLabelInfo> placedLabels;
   std::vector<Eigen::Vector2i> anchorPositions;
+  int index = 0;
+  bool saveConstraints = false;
 };
 
 #endif  // SRC_PLACEMENT_PERSISTENT_CONSTRAINT_UPDATER_H_
