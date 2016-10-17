@@ -33,7 +33,7 @@ FragmentData computeData()
   PhongMaterial material = materials[outDrawId];
   // display normals for debugging
   // color.rgb = outNormal * 0.5f + vec3(0.5f, 0.5f, 0.5f);
-  color.rgb = material.diffuseColor.rgb * max(dot(dir, outNormal), 0.0f) +
+  color.rgb = material.diffuseColor.rgb * abs(dot(dir, outNormal)) +
               material.ambientColor.rgb;
   vec3 specular = pow(max(dot(reflectionDir, cameraDir), 0.0),
                       0.3 * material.shininess) *

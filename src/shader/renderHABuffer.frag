@@ -121,7 +121,7 @@ vec3 calculateLighting(vec4 color, vec3 currentPos_eye, vec3 gradient)
   vec3 viewDir = -1.0f * normalize(currentPos_eye);
   vec3 normalizedGradient = normalize(gradient);
 
-  float dotNL = max(dot(normalizedGradient, lightDir), 0.0f);
+  float dotNL = abs(dot(normalizedGradient, lightDir));
   vec3 H = normalize(lightDir + viewDir);
   float dotNH = max(dot(normalizedGradient, H), 0.0f);
   const float ambient = 0.3;
