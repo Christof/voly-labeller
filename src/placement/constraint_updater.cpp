@@ -1,6 +1,7 @@
 #include "./constraint_updater.h"
 #include <Eigen/Geometry>
 #include <vector>
+#include <string>
 #include <memory>
 #include "./placement.h"
 #include "./shadow_constraint_drawer.h"

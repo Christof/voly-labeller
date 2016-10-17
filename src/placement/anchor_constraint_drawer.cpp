@@ -1,6 +1,7 @@
 #include "./anchor_constraint_drawer.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <string>
 #include <vector>
 #include "../utils/memory.h"
 #include "../utils/image_persister.h"
