@@ -38,6 +38,7 @@ class ConstraintUpdater
   void clear();
   void finish();
   void setIsConnectorShadowEnabled(bool enabled);
+  void save(std::string filename);
 
  private:
   int width;

@@ -172,3 +172,8 @@ ConstraintUpdater::getCornersFor(Eigen::Vector2i position,
 
   return corners;
 }
+
+void ConstraintUpdater::save(std::string filename)
+{
+  anchorConstraintDrawer->saveBufferTo(filename);
+}
