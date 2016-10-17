@@ -206,7 +206,7 @@
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
 			<volumePath>assets/datasets/heidelberg_sturzaushoehe_kopf_weich.mhd</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula3.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/transparent-bone-and-skin.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>3.999999762e+00</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
