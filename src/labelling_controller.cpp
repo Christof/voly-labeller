@@ -30,3 +30,8 @@ void LabellingController::saveOcclusion()
 {
   labellingCoordinator->saveOcclusion();
 }
+
+void LabellingController::saveConstraints()
+{
+  labellingCoordinator->saveConstraints();
+}

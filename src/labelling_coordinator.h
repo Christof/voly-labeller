@@ -75,6 +75,7 @@ class LabellingCoordinator
   void resize(int width, int height);
 
   void saveOcclusion();
+  void saveConstraints();
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
   bool forcesEnabled = true;
@@ -119,6 +120,7 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector3f>
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 
+  bool saveConstraintsInNextFrame = false;
   ProfilingStatistics profilingStatistics;
 };
 

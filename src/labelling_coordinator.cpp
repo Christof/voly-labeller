@@ -174,6 +174,12 @@ void LabellingCoordinator::updatePlacement()
 
   float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
+  if (saveConstraintsInNextFrame)
+  {
+    persistentConstraintUpdater->save();
+    saveConstraintsInNextFrame = false;
+  }
+
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusionCalculator->calculateFor(layerIndex);
@@ -230,6 +236,11 @@ void LabellingCoordinator::resize(int width, int height)
 void LabellingCoordinator::saveOcclusion()
 {
   occlusionCalculator->saveOcclusion();
+}
+
+void LabellingCoordinator::saveConstraints()
+{
+  saveConstraintsInNextFrame = true;
 }
 
 void LabellingCoordinator::setCostFunctionWeights(
