@@ -33,6 +33,8 @@ class AnchorConstraintDrawer
   virtual void draw(float color, Eigen::Vector2f halfSize);
   virtual void clear();
 
+  void saveBufferTo(std::string filename);
+
  private:
   int width;
   int height;
