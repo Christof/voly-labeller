@@ -46,7 +46,6 @@ LabellingCoordinator::LabellingCoordinator(
 
 void LabellingCoordinator::initialize(
     Graphics::Gl *gl, int bufferSize,
-    std::shared_ptr<Graphics::BufferDrawer> drawer,
     std::shared_ptr<Graphics::Managers> managers,
     std::shared_ptr<TextureMapperManager> textureMapperManager, int width,
     int height)
