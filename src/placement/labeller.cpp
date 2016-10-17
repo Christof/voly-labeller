@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <chrono>
+#include "../math/eigen.h"
 #include "../utils/cuda_array_provider.h"
 #include "../utils/logging.h"
 #include "./summed_area_table.h"
@@ -69,20 +70,9 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
   costSum = 0.0f;
   auto labelsInLayer = labelsArranger->getArrangement(frameData, labels);
 
-  std::vector<Eigen::Vector2i> anchorPositionsForBuffer;
   for (auto &label : labelsInLayer)
   {
-    auto anchor2D = frameData.project(label.anchorPosition);
-    Eigen::Vector2i anchorForBuffer = toPixel(anchor2D, bufferSize).cast<int>();
-
-    anchorPositionsForBuffer.push_back(anchorForBuffer);
-  }
-
-  constraintUpdater->setAnchorPositions(anchorPositionsForBuffer);
-
-  for (auto &label : labelsInLayer)
-  {
-    auto anchor2D = frameData.project(label.anchorPosition);
+    auto anchor2D = frameData.project(label.anchorPosition).head<2>();
 
     Eigen::Vector2i labelSizeForBuffer =
         label.size.cast<int>().cwiseProduct(bufferSize).cwiseQuotient(size);
@@ -95,9 +85,8 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
 
     ignoreOldPosition = ignoreOldPosition || !oldPositions.count(label.id);
     Eigen::Vector2f oldPositionPixel =
-        ignoreOldPosition
-            ? Eigen::Vector2f(0, 0)
-            : toPixel(oldPositions.at(label.id), size);
+        ignoreOldPosition ? Eigen::Vector2f(0, 0)
+                          : toPixel(oldPositions.at(label.id), size);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
@@ -143,21 +132,6 @@ std::map<int, Eigen::Vector2f> Labeller::getLastPlacementResult()
 float Labeller::getLastSumOfCosts()
 {
   return costSum;
-}
-
-Eigen::Vector2f Labeller::toPixel(Eigen::Vector2f ndc, Eigen::Vector2i size)
-{
-  const Eigen::Vector2f half(0.5f, 0.5f);
-
-  auto zeroToOne = ndc.head<2>().cwiseProduct(half) + half;
-
-  return zeroToOne.cwiseProduct(size.cast<float>());
-}
-
-Eigen::Vector2f Labeller::toPixel(Eigen::Vector3f ndc, Eigen::Vector2i size)
-{
-  Eigen::Vector2f ndc2d = ndc.head<2>();
-  return toPixel(ndc2d, size);
 }
 
 }  // namespace Placement
