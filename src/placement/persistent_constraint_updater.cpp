@@ -13,7 +13,7 @@ PersistentConstraintUpdater::PersistentConstraintUpdater(
 }
 
 void PersistentConstraintUpdater::setAnchorPositions(
-    std::vector<Eigen::Vector2i> anchorPositions)
+    std::vector<Eigen::Vector2f> anchorPositions)
 {
   this->anchorPositions = anchorPositions;
 }

@@ -25,7 +25,7 @@ class PersistentConstraintUpdater
   PersistentConstraintUpdater(
       std::shared_ptr<ConstraintUpdater> constraintUpdater);
 
-  void setAnchorPositions(std::vector<Eigen::Vector2i> anchorPositions);
+  void setAnchorPositions(std::vector<Eigen::Vector2f> anchorPositions);
   void updateConstraints(int labelId, Eigen::Vector2i anchorForBuffer,
                          Eigen::Vector2i labelSizeForBuffer);
   void setPosition(int labelId, Eigen::Vector2i position);
@@ -43,7 +43,7 @@ class PersistentConstraintUpdater
   std::shared_ptr<ConstraintUpdater> constraintUpdater;
 
   std::map<int, PlacedLabelInfo> placedLabels;
-  std::vector<Eigen::Vector2i> anchorPositions;
+  std::vector<Eigen::Vector2f> anchorPositions;
   int index = 0;
   bool saveConstraints = false;
 };

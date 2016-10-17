@@ -41,7 +41,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
 }
 
 void ConstraintUpdater::drawRegionsForAnchors(
-    std::vector<Eigen::Vector2i> anchorPositions, Eigen::Vector2i labelSize)
+    std::vector<Eigen::Vector2f> anchorPositions, Eigen::Vector2i labelSize)
 {
   std::vector<float> positions(anchorPositions.size() * 2);
   size_t index = 0;
