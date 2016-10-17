@@ -52,6 +52,7 @@ void LabellingCoordinator::initialize(
     int height)
 {
   qCInfo(lcChan) << "Initialize";
+  this->bufferSize = Eigen::Vector2f(bufferSize, bufferSize);
   saliency = std::make_shared<Placement::Saliency>(
       textureMapperManager->getAccumulatedLayersTextureMapper(),
       textureMapperManager->getSaliencyTextureMapper());
@@ -68,12 +69,12 @@ void LabellingCoordinator::initialize(
       std::make_shared<AnchorConstraintDrawer>(bufferSize, bufferSize);
   anchorConstraintDrawer->initialize(gl, shaderManager);
 
-  auto connectorShadowDrawer = std::make_shared<ShadowConstraintDrawer>(
-      bufferSize, bufferSize);
+  auto connectorShadowDrawer =
+      std::make_shared<ShadowConstraintDrawer>(bufferSize, bufferSize);
   connectorShadowDrawer->initialize(gl, shaderManager);
 
-  auto shadowConstraintDrawer = std::make_shared<ShadowConstraintDrawer>(
-      bufferSize, bufferSize);
+  auto shadowConstraintDrawer =
+      std::make_shared<ShadowConstraintDrawer>(bufferSize, bufferSize);
   shadowConstraintDrawer->initialize(gl, shaderManager);
 
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
@@ -179,6 +180,17 @@ void LabellingCoordinator::updatePlacement()
     persistentConstraintUpdater->save();
     saveConstraintsInNextFrame = false;
   }
+
+  std::vector<Eigen::Vector2f> anchorPositions(labels->count());
+  auto labelVector = labels->getLabels();
+  for (int index = 0; index < labels->count(); index++)
+  {
+    auto anchor2D =
+        labellerFrameData.project(labelVector[index].anchorPosition);
+    anchorPositions[index] = toPixel(anchor2D.head<2>(), bufferSize);
+  }
+
+  persistentConstraintUpdater->setAnchorPositions(anchorPositions);
 
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {

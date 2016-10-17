@@ -120,6 +120,8 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector3f>
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 
+  Eigen::Vector2f bufferSize;
+
   bool saveConstraintsInNextFrame = false;
   ProfilingStatistics profilingStatistics;
 };
