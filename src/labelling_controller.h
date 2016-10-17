@@ -23,6 +23,7 @@ class LabellingController : public QObject
   void toggleOptimizeOnIdle();
   void toggleApollonius();
   void saveOcclusion();
+  void saveConstraints();
 
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;

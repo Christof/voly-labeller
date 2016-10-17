@@ -4,6 +4,7 @@
 
 #include <Eigen/Core>
 #include <vector>
+#include <string>
 #include <memory>
 
 class ShadowConstraintDrawer;
@@ -32,12 +33,13 @@ class ConstraintUpdater
                                Eigen::Vector2i lastAnchorPosition,
                                Eigen::Vector2i lastLabelPosition,
                                Eigen::Vector2i lastLabelSize);
-  void drawRegionsForAnchors(std::vector<Eigen::Vector2i> anchorPositions,
+  void drawRegionsForAnchors(std::vector<Eigen::Vector2f> anchorPositions,
                              Eigen::Vector2i labelSize);
 
   void clear();
   void finish();
   void setIsConnectorShadowEnabled(bool enabled);
+  void save(std::string filename);
 
  private:
   int width;

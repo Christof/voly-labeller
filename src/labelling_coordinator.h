@@ -50,7 +50,6 @@ class LabellingCoordinator
                        std::shared_ptr<Nodes> nodes);
 
   void initialize(Graphics::Gl *gl, int bufferSize,
-                  std::shared_ptr<Graphics::BufferDrawer> drawer,
                   std::shared_ptr<Graphics::Managers> managers,
                   std::shared_ptr<TextureMapperManager> textureMapperManager,
                   int widht, int height);
@@ -75,6 +74,7 @@ class LabellingCoordinator
   void resize(int width, int height);
 
   void saveOcclusion();
+  void saveConstraints();
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
   bool forcesEnabled = true;
@@ -119,6 +119,9 @@ class LabellingCoordinator
   std::map<int, Eigen::Vector3f>
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 
+  Eigen::Vector2f bufferSize;
+
+  bool saveConstraintsInNextFrame = false;
   ProfilingStatistics profilingStatistics;
 };
 

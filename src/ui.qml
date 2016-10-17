@@ -173,6 +173,10 @@ FocusScope
         Menu {
           title: "Debug"
           MenuItem {
+            text: "Save constraints"
+            onTriggered: labelling.saveConstraints();
+          }
+          MenuItem {
             text: "Save occlusion"
             shortcut: "O"
             onTriggered: labelling.saveOcclusion();

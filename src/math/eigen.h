@@ -59,4 +59,18 @@ inline Eigen::Vector3f calculateWorldScale(Eigen::Vector4f sizeNDC,
   return Eigen::Vector3f(sizeWorld.x(), sizeWorld.y(), 1.0f);
 }
 
+inline Eigen::Vector2f toPixel(Eigen::Vector2f ndc, Eigen::Vector2f size)
+{
+  const Eigen::Vector2f half(0.5f, 0.5f);
+
+  auto zeroToOne = ndc.head<2>().cwiseProduct(half) + half;
+
+  return zeroToOne.cwiseProduct(size);
+}
+
+inline Eigen::Vector2f toPixel(Eigen::Vector2f ndc, Eigen::Vector2i size)
+{
+  return toPixel(ndc, static_cast<Eigen::Vector2f>(size.cast<float>()));
+}
+
 #endif  // SRC_MATH_EIGEN_H_

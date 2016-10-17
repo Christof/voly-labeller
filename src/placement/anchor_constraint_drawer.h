@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include "../graphics/render_data.h"
 
 class ConstraintDrawer;
@@ -32,6 +33,8 @@ class AnchorConstraintDrawer
   virtual void update(const std::vector<float> &anchors);
   virtual void draw(float color, Eigen::Vector2f halfSize);
   virtual void clear();
+
+  void saveBufferTo(std::string filename);
 
  private:
   int width;

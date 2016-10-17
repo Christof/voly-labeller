@@ -1,6 +1,7 @@
 #include "./constraint_updater.h"
 #include <Eigen/Geometry>
 #include <vector>
+#include <string>
 #include <memory>
 #include "./placement.h"
 #include "./shadow_constraint_drawer.h"
@@ -41,7 +42,7 @@ void ConstraintUpdater::drawConstraintRegionFor(
 }
 
 void ConstraintUpdater::drawRegionsForAnchors(
-    std::vector<Eigen::Vector2i> anchorPositions, Eigen::Vector2i labelSize)
+    std::vector<Eigen::Vector2f> anchorPositions, Eigen::Vector2i labelSize)
 {
   std::vector<float> positions(anchorPositions.size() * 2);
   size_t index = 0;
@@ -54,7 +55,8 @@ void ConstraintUpdater::drawRegionsForAnchors(
 
   anchorConstraintDrawer->update(positions);
 
-  Eigen::Vector2f constraintSize = 2.0f * labelSize.cast<float>();
+  Eigen::Vector2f borderPixel(1.0f, 1.0f);
+  Eigen::Vector2f constraintSize = borderPixel + labelSize.cast<float>();
   Eigen::Vector2f halfSize =
       constraintSize.cwiseQuotient(Eigen::Vector2f(width, height));
 
@@ -171,4 +173,9 @@ ConstraintUpdater::getCornersFor(Eigen::Vector2i position,
   };
 
   return corners;
+}
+
+void ConstraintUpdater::save(std::string filename)
+{
+  anchorConstraintDrawer->saveBufferTo(filename);
 }

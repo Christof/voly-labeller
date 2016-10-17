@@ -90,12 +90,8 @@ void Scene::initialize()
   textureMapperManager->resize(width, height);
   textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 
-  auto drawer = std::make_shared<Graphics::BufferDrawer>(
-      textureMapperManager->getBufferSize(),
-      textureMapperManager->getBufferSize(), gl, managers->getShaderManager());
-
   labellingCoordinator->initialize(gl, textureMapperManager->getBufferSize(),
-                                   drawer, managers, textureMapperManager,
+                                   managers, textureMapperManager,
                                    width, height);
 
   recordingAutomation->initialize(gl);

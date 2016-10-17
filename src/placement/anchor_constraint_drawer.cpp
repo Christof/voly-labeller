@@ -1,8 +1,10 @@
 #include "./anchor_constraint_drawer.h"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <string>
 #include <vector>
 #include "../utils/memory.h"
+#include "../utils/image_persister.h"
 #include "../graphics/vertex_array.h"
 #include "./constraint_drawer.h"
 
@@ -50,4 +52,12 @@ void AnchorConstraintDrawer::clear()
   gl->glViewport(0, 0, width, height);
   gl->glClearColor(0, 0, 0, 0);
   gl->glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void AnchorConstraintDrawer::saveBufferTo(std::string filename)
+{
+  std::vector<unsigned char> pixels(width * height);
+  gl->glReadPixels(0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE,
+                   pixels.data());
+  ImagePersister::saveR8I(pixels.data(), width, height, filename);
 }

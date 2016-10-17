@@ -13,7 +13,7 @@ PersistentConstraintUpdater::PersistentConstraintUpdater(
 }
 
 void PersistentConstraintUpdater::setAnchorPositions(
-    std::vector<Eigen::Vector2i> anchorPositions)
+    std::vector<Eigen::Vector2f> anchorPositions)
 {
   this->anchorPositions = anchorPositions;
 }
@@ -36,6 +36,9 @@ void PersistentConstraintUpdater::updateConstraints(
   }
 
   constraintUpdater->finish();
+  if (saveConstraints)
+    constraintUpdater->save("constraints_" + std::to_string(index++) + "_" +
+                            std::to_string(labelId) + ".png");
 
   placedLabels[labelId] = PlacedLabelInfo{ labelSizeForBuffer, anchorForBuffer,
                                            Eigen::Vector2i(-1, -1) };
@@ -54,6 +57,13 @@ void PersistentConstraintUpdater::setPosition(int labelId,
 
 void PersistentConstraintUpdater::clear()
 {
+  saveConstraints = false;
+  index = 0;
   placedLabels.clear();
+}
+
+void PersistentConstraintUpdater::save()
+{
+  saveConstraints = true;
 }
 
