@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>13</count>
+	<count>14</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -296,9 +296,9 @@
 				<label.id>1</label.id>
 				<label.text>bullet path (air)</label.text>
 				<label.anchorPosition>
-					<x>6.229477376e-02</x>
-					<y>2.869295888e-02</y>
-					<z>-1.027448475e-01</z>
+					<x>5.266331509e-02</x>
+					<y>3.377334401e-02</y>
+					<z>-9.841296822e-02</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
 					<x>2.000000000e+02</x>
@@ -313,9 +313,9 @@
 				<label.id>2</label.id>
 				<label.text>final projectile position</label.text>
 				<label.anchorPosition>
-					<x>6.981977820e-02</x>
-					<y>-1.697063446e-02</y>
-					<z>-7.549005002e-02</z>
+					<x>5.514545739e-02</x>
+					<y>-1.947502419e-02</y>
+					<z>-9.697234631e-02</z>
 				</label.anchorPosition>
 				<label.size>
 					<x>2.660000000e+02</x>
@@ -474,6 +474,30 @@
 				<r2c1>-1.926781493e-03</r2c1>
 				<r2c2>3.637891961e-03</r2c2>
 				<r2c3>4.674589634e-02</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="11" object_id="_12">
+			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/bullet_path.dae</assetFilename>
+			<meshIndex>0</meshIndex>
+			<transformation>
+				<r0c0>9.999999776e-03</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>9.999999776e-03</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>9.999999776e-03</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
