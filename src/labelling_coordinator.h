@@ -117,6 +117,7 @@ class LabellingCoordinator
   LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
   void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
+  void performInternalLabelling();
 
   std::map<int, Eigen::Vector3f>
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);

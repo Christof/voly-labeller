@@ -141,7 +141,6 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 {
   Profiler profiler("update", lcChan, &profilingStatistics);
 
-
   if (!labellingEnabled)
     return false;
 
@@ -150,22 +149,7 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
   if (internalLabellingEnabled)
   {
-    for (int layerIndex = 0; layerIndex < layerCount; layerIndex++)
-      labelsInLayer[layerIndex]->clear();
-
-    LabelPositions labelPositions;
-    auto container = labelsInLayer[0];
-    for (auto label : labels->getLabels())
-    {
-      auto ndc = labellerFrameData.project(label.anchorPosition);
-      labelPositions.update(label.id, ndc, label.anchorPosition);
-
-      container->add(label);
-      labelIdToLayerIndex[label.id] = 0;
-      labelIdToZValue[label.id] = 1.0f;
-    }
-
-    updateLabelPositionsInLabelNodes(labelPositions);
+    performInternalLabelling();
     return false;
   }
 
@@ -425,5 +409,25 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
   }
 
   return positions;
+}
+
+void LabellingCoordinator::performInternalLabelling()
+{
+  for (int layerIndex = 0; layerIndex < layerCount; layerIndex++)
+    labelsInLayer[layerIndex]->clear();
+
+  LabelPositions labelPositions;
+  auto container = labelsInLayer[0];
+  for (auto label : labels->getLabels())
+  {
+    auto ndc = labellerFrameData.project(label.anchorPosition);
+    labelPositions.update(label.id, ndc, label.anchorPosition);
+
+    container->add(label);
+    labelIdToLayerIndex[label.id] = 0;
+    labelIdToZValue[label.id] = 1.0f;
+  }
+
+  updateLabelPositionsInLabelNodes(labelPositions);
 }
 
