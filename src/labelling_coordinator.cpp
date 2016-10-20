@@ -141,11 +141,25 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 {
   Profiler profiler("update", lcChan, &profilingStatistics);
 
+
   if (!labellingEnabled)
     return false;
 
   this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
+
+  if (internalLabellingEnabled)
+  {
+    LabelPositions labelPositions;
+    for (auto label : labels->getLabels())
+    {
+      auto ndc = labellerFrameData.project(label.anchorPosition);
+      labelPositions.update(label.id, ndc, label.anchorPosition);
+    }
+
+    updateLabelPositionsInLabelNodes(labelPositions);
+    return false;
+  }
 
   saliency->runKernel();
 

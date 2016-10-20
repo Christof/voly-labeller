@@ -78,6 +78,7 @@ class LabellingCoordinator
   void saveConstraints();
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
+  bool internalLabellingEnabled = false;
   bool forcesEnabled = true;
   bool optimizeOnIdle = false;
   bool useApollonius = false;

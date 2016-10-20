@@ -11,6 +11,12 @@ LabellingController::LabellingController(
 {
 }
 
+void LabellingController::toggleInternalLabelling()
+{
+  labellingCoordinator->internalLabellingEnabled =
+      !labellingCoordinator->internalLabellingEnabled;
+}
+
 void LabellingController::toggleForces()
 {
   labellingCoordinator->forcesEnabled = !labellingCoordinator->forcesEnabled;

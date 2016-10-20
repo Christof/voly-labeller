@@ -130,6 +130,12 @@ FocusScope
             onTriggered: scene.toggleLabelling();
           }
           MenuItem {
+            text: "Internal labelling"
+            checkable: true
+            checked: false
+            onTriggered: labelling.toggleInternalLabelling();
+          }
+          MenuItem {
             text: "Update labels"
             shortcut: "Space"
             checkable: true
