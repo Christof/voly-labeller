@@ -150,11 +150,19 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
   if (internalLabellingEnabled)
   {
+    for (int layerIndex = 0; layerIndex < layerCount; layerIndex++)
+      labelsInLayer[layerIndex]->clear();
+
     LabelPositions labelPositions;
+    auto container = labelsInLayer[0];
     for (auto label : labels->getLabels())
     {
       auto ndc = labellerFrameData.project(label.anchorPosition);
       labelPositions.update(label.id, ndc, label.anchorPosition);
+
+      container->add(label);
+      labelIdToLayerIndex[label.id] = 0;
+      labelIdToZValue[label.id] = 1.0f;
     }
 
     updateLabelPositionsInLabelNodes(labelPositions);
@@ -239,7 +247,7 @@ void LabellingCoordinator::updatePlacement()
 
 std::vector<float> LabellingCoordinator::updateClusters()
 {
-  if (!labellingEnabled)
+  if (!labellingEnabled || internalLabellingEnabled)
     return std::vector<float>{ 1.0f };
 
   clustering.update(labellerFrameData.viewProjection);
