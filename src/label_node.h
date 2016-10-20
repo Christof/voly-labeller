@@ -45,6 +45,7 @@ class LabelNode : public Node
   int layerIndex = 0;
   float anchorSize = 10.0f;
   float alpha = 1.0f;
+  bool isAnchorVisible = true;
 
   virtual void setIsVisible(bool isVisible);
 
