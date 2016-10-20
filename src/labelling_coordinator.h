@@ -74,6 +74,8 @@ class LabellingCoordinator
 
   void resize(int width, int height);
 
+  void toggleAnchorVisibility();
+
   void saveOcclusion();
   void saveConstraints();
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);

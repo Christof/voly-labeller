@@ -17,6 +17,11 @@ void LabellingController::toggleInternalLabelling()
       !labellingCoordinator->internalLabellingEnabled;
 }
 
+void LabellingController::toggleAnchorVisibility()
+{
+  labellingCoordinator->toggleAnchorVisibility();
+}
+
 void LabellingController::toggleForces()
 {
   labellingCoordinator->forcesEnabled = !labellingCoordinator->forcesEnabled;

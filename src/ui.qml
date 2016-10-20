@@ -136,6 +136,12 @@ FocusScope
             onTriggered: labelling.toggleInternalLabelling();
           }
           MenuItem {
+            text: "Show anchors"
+            checkable: true
+            checked: true
+            onTriggered: labelling.toggleAnchorVisibility();
+          }
+          MenuItem {
             text: "Update labels"
             shortcut: "Space"
             checkable: true

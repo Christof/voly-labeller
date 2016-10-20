@@ -259,6 +259,12 @@ void LabellingCoordinator::resize(int width, int height)
   forcesLabeller->resize(width, height);
 }
 
+void LabellingCoordinator::toggleAnchorVisibility()
+{
+  for (auto node : nodes->getLabelNodes())
+    node->isAnchorVisible = !node->isAnchorVisible;
+}
+
 void LabellingCoordinator::saveOcclusion()
 {
   occlusionCalculator->saveOcclusion();

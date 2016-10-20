@@ -20,6 +20,7 @@ class LabellingController : public QObject
 
  public slots:
   void toggleInternalLabelling();
+  void toggleAnchorVisibility();
   void toggleForces();
   void toggleOptimizeOnIdle();
   void toggleApollonius();
