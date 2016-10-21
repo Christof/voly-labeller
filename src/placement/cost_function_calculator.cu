@@ -27,7 +27,7 @@ struct EvalResult
 
 __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 {
-  return (a.cost < b.cost);
+  return a.cost < b.cost;
 }
 
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
@@ -149,10 +149,7 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>  // NOLINT
 {
   __host__ __device__ T operator()(const T &x, const T &y) const
   {
-    T result;
-
-    result = x < y ? x : y;
-    return result;
+    return x < y ? x : y;
   }
 };
 
