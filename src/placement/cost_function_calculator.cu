@@ -126,9 +126,11 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    unsigned char labelShadow = constraintValue & labelShadowValue;
-    unsigned char connectorShadow = constraintValue & connectorShadowValue;
-    unsigned char anchorConstraint = constraintValue & anchorConstraintValue;
+    float labelShadow = constraintValue & labelShadowValue ? 1.0f : 0.0f;
+    float connectorShadow = constraintValue & connectorShadowValue ?
+      1.0f : 0.0f;
+    float anchorConstraint = constraintValue & anchorConstraintValue ?
+      1.0f : 0.0f;
 
     float cost = weights.labelShadowConstraint * labelShadow +
                  weights.connectorShadowConstraint * connectorShadow +
