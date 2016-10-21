@@ -77,6 +77,7 @@ class Application : public QObject
   std::shared_ptr<QStateMachine> stateMachine;
 
   void setupCommandLineParser();
+  int parseLayerCount();
   void setupWindow();
   void createAndStartStateMachine();
 

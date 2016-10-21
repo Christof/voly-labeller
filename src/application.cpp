@@ -50,8 +50,11 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
 
   labels = std::make_shared<Labels>();
   forcesLabeller = std::make_shared<Forces::Labeller>(labels);
+
+  int layerCount = parseLayerCount();
+
   auto labellingCoordinator = std::make_shared<LabellingCoordinator>(
-      LAYER_COUNT, forcesLabeller, labels, nodes);
+      layerCount, forcesLabeller, labels, nodes);
 
   bool synchronousCapturing = parser.isSet("offline");
   const float offlineFPS = 24;
@@ -73,7 +76,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
   textureMapperManagerController =
       std::make_unique<TextureMapperManagerController>(textureMapperManager);
-  scene = std::make_shared<Scene>(LAYER_COUNT, invokeManager, nodes, labels,
+  scene = std::make_shared<Scene>(layerCount, invokeManager, nodes, labels,
                                   labellingCoordinator, textureMapperManager,
                                   recordingAutomation);
 
@@ -161,6 +164,10 @@ void Application::setupCommandLineParser()
   QCommandLineOption offlineRenderingOption("offline",
                                             "Enables offline rendering");
   parser.addOption(offlineRenderingOption);
+
+  QCommandLineOption layersOption("layers", "Number of layers. Default is 4",
+                                  "layerCount", "4");
+  parser.addOption(layersOption);
 
   QCommandLineOption screenshotOption(
       QStringList() << "s"
@@ -272,5 +279,22 @@ void Application::onFocesLabellerModelIsVisibleChanged()
   {
     nodes->removeForcesVisualizerNode();
   }
+}
+
+int Application::parseLayerCount()
+{
+  int layerCount = 4;
+  if (parser.isSet("layers"))
+  {
+    bool gotLayerCount = true;
+    layerCount = parser.value("layers").toInt(&gotLayerCount);
+    if (!gotLayerCount)
+    {
+      layerCount = 4;
+      qWarning() << "Problem parsing layer count from" << parser.value("layers");
+    }
+  }
+
+  return layerCount;
 }
 
