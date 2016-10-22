@@ -18,6 +18,10 @@ void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   if (allLabels.size() == 0)
     return;
 
+  if (clusterCount == 0)
+    return;
+
+
   initializeClusters();
 
   recalculateCenters();
@@ -31,6 +35,9 @@ void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
 
 std::map<float, std::vector<int>> Clustering::getCentersWithLabelIds()
 {
+  if (clusterCount == 0)
+    return std::map<float, std::vector<int>>();
+
   int labelIndex = 0;
   std::map<float, std::vector<int>> result;
   for (auto &label : allLabels)
@@ -46,6 +53,9 @@ std::map<float, std::vector<int>> Clustering::getCentersWithLabelIds()
 std::map<float, std::vector<int>>
 Clustering::getFarthestClusterMembersWithLabelIds()
 {
+  if (clusterCount == 0)
+    return std::map<float, std::vector<int>>();
+
   std::map<float, std::vector<int>> result;
   std::map<int, std::vector<float>> clusterIndexToZValues;
   std::map<int, std::vector<int>> clusterIndexToLabelIds;
@@ -77,6 +87,9 @@ float median(std::vector<float> &vector)
 
 std::vector<float> Clustering::getMedianClusterMembers()
 {
+  if (clusterCount == 0)
+    return std::vector<float>();
+
   std::map<int, std::vector<float>> clusterIndexToZValues;
   for (size_t labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
   {

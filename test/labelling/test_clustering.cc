@@ -14,6 +14,21 @@ TEST(Test_Clustering, ForNoLabel)
   EXPECT_EQ(0, result.size());
 }
 
+TEST(Test_Clustering, ForClusterCountOf0)
+{
+  auto labels = std::make_shared<Labels>();
+  labels->add(Label(0, "Label 0", Eigen::Vector3f(0, 0, 1)));
+
+  Clustering clustering(labels, 0);
+
+  clustering.update(Eigen::Matrix4f::Identity());
+  EXPECT_EQ(0, clustering.getCentersWithLabelIds().size());
+  EXPECT_EQ(0, clustering.getMedianClusterMembers().size());
+  EXPECT_EQ(0, clustering.getFarthestClusterMembersWithLabelIds().size());
+
+  EXPECT_EQ(1, clustering.getMedianClusterMembersWithLabelIds().size());
+}
+
 TEST(Test_Clustering, ForAsManyLabelsAsClusters)
 {
   auto labels = std::make_shared<Labels>();
