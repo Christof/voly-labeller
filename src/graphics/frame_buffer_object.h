@@ -28,7 +28,7 @@ class Gl;
 class FrameBufferObject
 {
  public:
-  explicit FrameBufferObject(int layerCount);
+  explicit FrameBufferObject(unsigned int layerCount);
   ~FrameBufferObject();
 
   void initialize(Gl *gl, int width, int height);
@@ -49,18 +49,22 @@ class FrameBufferObject
   int getLayerCount();
 
  private:
-  int layerCount;
+  unsigned int layerCount;
   unsigned int framebuffer = 0;
-  std::vector<unsigned int> colorTextures;
+  unsigned int colorTexturesArray = 0;
   unsigned int depthTexture = 0;
   unsigned int accumulatedLayersTexture = 0;
   Gl *gl;
 
-  void resizeAndSetColorAttachment(int texture, int attachment, int width,
-                                   int height);
+  void resizeAndSetColorAttachment(unsigned int texture, int attachment,
+                                   int width, int height);
+  void resizeAndSetColorArrayAttachment(unsigned int texture,
+                                        unsigned int attachment, int width,
+                                        int height);
   void resizeAndSetDepthAttachment(int width, int height);
-  void resizeTexture(int texture, int width, int height, unsigned int component,
-                     unsigned int format, unsigned int type);
+  void resizeTexture(unsigned int texture, int width, int height,
+                     unsigned int component, unsigned int format,
+                     unsigned int type);
 };
 
 }  // namespace Graphics

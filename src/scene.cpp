@@ -275,14 +275,18 @@ void Scene::renderScreenQuad()
   if (activeLayerNumber == 0)
   {
     fbo->bindColorTexture(0, GL_TEXTURE0);
+    /*
     fbo->bindColorTexture(1, GL_TEXTURE1);
     fbo->bindColorTexture(2, GL_TEXTURE2);
     fbo->bindColorTexture(3, GL_TEXTURE3);
+    */
 
-    screenQuad->getShaderProgram()->setUniform("layer1", 0);
+    screenQuad->getShaderProgram()->setUniform("layers", 0);
+    /*
     screenQuad->getShaderProgram()->setUniform("layer2", 1);
     screenQuad->getShaderProgram()->setUniform("layer3", 2);
     screenQuad->getShaderProgram()->setUniform("layer4", 3);
+    */
     renderQuad(screenQuad, Eigen::Matrix4f::Identity());
 
     gl->glActiveTexture(GL_TEXTURE0);
