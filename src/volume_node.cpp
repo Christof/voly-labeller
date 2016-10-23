@@ -47,6 +47,7 @@ void VolumeNode::render(Graphics::Gl *gl,
 
   glAssert(gl->glActiveTexture(GL_TEXTURE0));
 
+  managers->getVolumeManager()->bind();
   managers->getObjectManager()->renderLater(cubeData);
 }
 
