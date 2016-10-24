@@ -38,8 +38,7 @@ class Scene : public AbstractScene
         std::shared_ptr<Nodes> nodes, std::shared_ptr<Labels> labels,
         std::shared_ptr<LabellingCoordinator> labellingCoordinator,
         std::shared_ptr<TextureMapperManager> textureMapperManager,
-        std::shared_ptr<RecordingAutomation>
-            recordingAutomationController);
+        std::shared_ptr<RecordingAutomation> recordingAutomationController);
   ~Scene();
 
   virtual void initialize();
@@ -66,6 +65,7 @@ class Scene : public AbstractScene
   std::shared_ptr<Graphics::ScreenQuad> positionQuad;
   std::shared_ptr<Graphics::ScreenQuad> distanceTransformQuad;
   std::shared_ptr<Graphics::ScreenQuad> transparentQuad;
+  std::shared_ptr<Graphics::ScreenQuad> sliceQuad;
   std::shared_ptr<Graphics::FrameBufferObject> fbo;
   std::shared_ptr<ConstraintBufferObject> constraintBufferObject;
   std::shared_ptr<Graphics::HABuffer> haBuffer;
@@ -87,6 +87,7 @@ class Scene : public AbstractScene
   void renderNodesWithHABufferIntoFBO();
   void renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
                   Eigen::Matrix4f modelMatrix);
+  void renderSliceIntoQuad(Eigen::Matrix4f modelMatrix, int slice);
   void renderScreenQuad();
 
   void renderDebuggingViews(const RenderData &renderData);

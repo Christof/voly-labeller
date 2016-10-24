@@ -65,6 +65,8 @@ void Scene::initialize()
       ":shader/pass.vert", ":shader/distanceTransform.frag");
   transparentQuad = std::make_shared<Graphics::ScreenQuad>(
       ":shader/pass.vert", ":shader/transparentOverlay.frag");
+  sliceQuad = std::make_shared<Graphics::ScreenQuad>(
+      ":shader/pass.vert", ":shader/textureSlice.frag");
 
   fbo->initialize(gl, width, height);
   picker = std::make_unique<Picker>(fbo, gl, labels, nodes);
@@ -81,6 +83,7 @@ void Scene::initialize()
   positionQuad->initialize(gl, managers);
   distanceTransformQuad->initialize(gl, managers);
   transparentQuad->initialize(gl, managers);
+  sliceQuad->initialize(gl, managers);
 
   managers->getTextureManager()->initialize(gl, true, 8);
 
@@ -91,8 +94,8 @@ void Scene::initialize()
   textureMapperManager->initialize(gl, fbo, constraintBufferObject);
 
   labellingCoordinator->initialize(gl, textureMapperManager->getBufferSize(),
-                                   managers, textureMapperManager,
-                                   width, height);
+                                   managers, textureMapperManager, width,
+                                   height);
 
   recordingAutomation->initialize(gl);
   recordingAutomation->resize(width, height);
@@ -217,7 +220,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
     auto transformation = Eigen::Affine3f(
         Eigen::Translation3f(Eigen::Vector3f(-0.8f + 0.4f * i, -0.4f, 0)) *
         Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
-    renderQuad(quad, transformation.matrix());
+    renderSliceIntoQuad(transformation.matrix(), i);
   }
 
   fbo->bindAccumulatedLayersTexture(GL_TEXTURE0);
@@ -270,6 +273,17 @@ void Scene::renderQuad(std::shared_ptr<Graphics::ScreenQuad> quad,
   quad->renderImmediately(gl, managers, renderData);
 }
 
+void Scene::renderSliceIntoQuad(Eigen::Matrix4f modelMatrix, int slice)
+{
+  RenderData renderData;
+  renderData.modelMatrix = modelMatrix;
+
+  sliceQuad->getShaderProgram()->bind();
+  sliceQuad->getShaderProgram()->setUniform("textureSampler", 0);
+  sliceQuad->getShaderProgram()->setUniform("slice", slice);
+  sliceQuad->renderImmediately(gl, managers, renderData);
+}
+
 void Scene::renderScreenQuad()
 {
   if (activeLayerNumber == 0)
@@ -299,7 +313,8 @@ void Scene::renderScreenQuad()
   else
   {
     fbo->bindColorTexture(activeLayerNumber - 1, GL_TEXTURE0);
-    renderQuad(quad, Eigen::Matrix4f::Identity());
+    renderSliceIntoQuad(Eigen::Matrix4f::Identity(),
+                        activeLayerNumber - 1);
   }
 }
 
