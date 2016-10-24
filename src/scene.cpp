@@ -242,14 +242,15 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
-  int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
   textureMapperManager->bindSaliencyTexture();
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0f, -0.8f, 0.0f)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(distanceTransformQuad, transformation.matrix());
 
-  textureMapperManager->bindApollonius(layerIndex);
+  int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
+  if (layerIndex < fbo->getLayerCount())
+    textureMapperManager->bindApollonius(layerIndex);
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.4f, -0.8f, 0.0f)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
@@ -313,8 +314,7 @@ void Scene::renderScreenQuad()
   else
   {
     fbo->bindColorTexture(activeLayerNumber - 1, GL_TEXTURE0);
-    renderSliceIntoQuad(Eigen::Matrix4f::Identity(),
-                        activeLayerNumber - 1);
+    renderSliceIntoQuad(Eigen::Matrix4f::Identity(), activeLayerNumber - 1);
   }
 }
 
