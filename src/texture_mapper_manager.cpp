@@ -41,7 +41,7 @@ void TextureMapperManager::initialize(
 {
   colorTextureMapper = std::shared_ptr<CudaTexture3DMapper>(
       CudaTexture3DMapper::createReadOnlyMapper(
-          fbo->getColorTextureId(0), width, height, mappersForLayers.size()));
+          fbo->getColorTextureId(), width, height, mappersForLayers.size()));
 
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);

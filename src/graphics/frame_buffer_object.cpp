@@ -80,7 +80,7 @@ void FrameBufferObject::unbind()
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, 0));
 }
 
-void FrameBufferObject::bindColorTexture(int index, unsigned int textureUnit)
+void FrameBufferObject::bindColorTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
   glAssert(gl->glBindTexture(GL_TEXTURE_3D, colorTexturesArray));
@@ -144,9 +144,8 @@ void FrameBufferObject::resizeTexture(unsigned int texture, int width,
                    nullptr);
 }
 
-unsigned int FrameBufferObject::getColorTextureId(int index)
+unsigned int FrameBufferObject::getColorTextureId()
 {
-  // TODO
   return colorTexturesArray;
 }
 

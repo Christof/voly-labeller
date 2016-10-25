@@ -214,9 +214,9 @@ void Scene::renderNodesWithHABufferIntoFBO()
 
 void Scene::renderDebuggingViews(const RenderData &renderData)
 {
+  fbo->bindColorTexture(GL_TEXTURE0);
   for (int i = 0; i < fbo->getLayerCount(); ++i)
   {
-    fbo->bindColorTexture(i, GL_TEXTURE0);
     auto transformation = Eigen::Affine3f(
         Eigen::Translation3f(Eigen::Vector3f(-0.8f + 0.4f * i, -0.4f, 0)) *
         Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
@@ -289,12 +289,7 @@ void Scene::renderScreenQuad()
 {
   if (activeLayerNumber == 0)
   {
-    fbo->bindColorTexture(0, GL_TEXTURE0);
-    /*
-    fbo->bindColorTexture(1, GL_TEXTURE1);
-    fbo->bindColorTexture(2, GL_TEXTURE2);
-    fbo->bindColorTexture(3, GL_TEXTURE3);
-    */
+    fbo->bindColorTexture(GL_TEXTURE0);
 
     screenQuad->getShaderProgram()->setUniform("layers", 0);
     /*
@@ -313,7 +308,7 @@ void Scene::renderScreenQuad()
   }
   else
   {
-    fbo->bindColorTexture(activeLayerNumber - 1, GL_TEXTURE0);
+    fbo->bindColorTexture(GL_TEXTURE0);
     renderSliceIntoQuad(Eigen::Matrix4f::Identity(), activeLayerNumber - 1);
   }
 }

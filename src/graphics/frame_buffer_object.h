@@ -38,11 +38,11 @@ class FrameBufferObject
   void bind();
   void unbind();
 
-  void bindColorTexture(int index, unsigned int textureUnit);
+  void bindColorTexture(unsigned int textureUnit);
   void bindAccumulatedLayersTexture(unsigned int textureUnit);
   void bindDepthTexture(unsigned int textureUnit);
 
-  unsigned int getColorTextureId(int index);
+  unsigned int getColorTextureId();
   unsigned int getAccumulatedLayersTextureId();
   unsigned int getDepthTextureId();
 
