@@ -30,7 +30,7 @@ void TextureMappersForLayer::initialize(
       bufferSize, bufferSize, GL_RGBA32F);
   apolloniusTexture->initialize(gl);
 
-  initializeMappers(fbo);
+  initializeMappers();
 }
 
 void TextureMappersForLayer::resize(int width, int height)
@@ -67,12 +67,6 @@ void TextureMappersForLayer::bindApollonius()
 }
 
 std::shared_ptr<CudaTextureMapper>
-TextureMappersForLayer::getColorTextureMapper()
-{
-  return colorTextureMapper;
-}
-
-std::shared_ptr<CudaTextureMapper>
 TextureMappersForLayer::getDistanceTransformTextureMapper()
 {
   return distanceTransformTextureMapper;
@@ -86,7 +80,6 @@ TextureMappersForLayer::getApolloniusTextureMapper()
 
 void TextureMappersForLayer::cleanup()
 {
-  colorTextureMapper.reset();
   distanceTransformTextureMapper.reset();
   apolloniusTextureMapper.reset();
 }
@@ -101,13 +94,8 @@ void TextureMappersForLayer::saveApollonius()
   saveApolloniusInNextFrame = true;
 }
 
-void TextureMappersForLayer::initializeMappers(
-    std::shared_ptr<Graphics::FrameBufferObject> fbo)
+void TextureMappersForLayer::initializeMappers()
 {
-  colorTextureMapper = std::shared_ptr<CudaTextureMapper>(
-      CudaTextureMapper::createReadWriteMapper(
-          fbo->getColorTextureId(layerIndex), width, height));
-
   distanceTransformTextureMapper = std::shared_ptr<CudaTextureMapper>(
       CudaTextureMapper::createReadWriteDiscardMapper(
           distanceTransformTexture->getId(),

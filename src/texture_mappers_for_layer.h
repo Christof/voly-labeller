@@ -36,7 +36,6 @@ class TextureMappersForLayer
   void bindDistanceTransform();
   void bindApollonius();
 
-  std::shared_ptr<CudaTextureMapper> getColorTextureMapper();
   std::shared_ptr<CudaTextureMapper> getDistanceTransformTextureMapper();
   std::shared_ptr<CudaTextureMapper> getApolloniusTextureMapper();
 
@@ -46,7 +45,6 @@ class TextureMappersForLayer
   void saveApollonius();
 
  private:
-  std::shared_ptr<CudaTextureMapper> colorTextureMapper;
   std::shared_ptr<CudaTextureMapper> distanceTransformTextureMapper;
   std::shared_ptr<CudaTextureMapper> apolloniusTextureMapper;
 
@@ -61,7 +59,7 @@ class TextureMappersForLayer
   bool saveDistanceTransformInNextFrame = false;
   bool saveApolloniusInNextFrame = false;
 
-  void initializeMappers(std::shared_ptr<Graphics::FrameBufferObject> fbo);
+  void initializeMappers();
 };
 
 #endif  // SRC_TEXTURE_MAPPERS_FOR_LAYER_H_
