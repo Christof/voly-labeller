@@ -8,7 +8,7 @@
 __global__ void occlusionKernel(cudaTextureObject_t positions,
                                 cudaSurfaceObject_t output,
                                 bool addToOutputValue, int width, int height,
-                                int widthScale, int heightScale)
+                                int widthScale, int heightScale, int layerIndex)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -20,8 +20,8 @@ __global__ void occlusionKernel(cudaTextureObject_t positions,
   {
     for (int j = 0; j < heightScale; ++j)
     {
-      float4 color = tex2D<float4>(positions, x * widthScale + 0.5f + i,
-                                   y * heightScale + 0.5f + j);
+      float4 color = tex3D<float4>(positions, x * widthScale + 0.5f + i,
+                                   y * heightScale + 0.5f + j, layerIndex);
       if (color.w > minTransparency)
         minTransparency = color.w;
     }
@@ -46,8 +46,10 @@ namespace Placement
 
 Occlusion::Occlusion(
     std::shared_ptr<CudaArrayProvider> colorProvider,
-    std::shared_ptr<CudaArrayProvider> outputProvider)
-  : colorProvider(colorProvider), outputProvider(outputProvider)
+    std::shared_ptr<CudaArrayProvider> outputProvider,
+    int layerIndex)
+  : colorProvider(colorProvider), outputProvider(outputProvider),
+  layerIndex(layerIndex)
 {
 }
 
@@ -86,7 +88,7 @@ void Occlusion::runKernel(bool addToOutputValue)
 
   occlusionKernel<<<dimGrid, dimBlock>>>(positions, output, addToOutputValue,
                                          outputWidth, outputHeight,
-                                         widthScale, heightScale);
+                                         widthScale, heightScale, layerIndex);
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }

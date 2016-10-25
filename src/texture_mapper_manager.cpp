@@ -6,6 +6,7 @@
 #include <string>
 #include "./utils/memory.h"
 #include "./placement/cuda_texture_mapper.h"
+#include "./placement/cuda_texture_3d_mapper.h"
 #include "./placement/distance_transform.h"
 #include "./placement/occlusion.h"
 #include "./placement/apollonius.h"
@@ -38,6 +39,10 @@ void TextureMapperManager::initialize(
     Graphics::Gl *gl, std::shared_ptr<Graphics::FrameBufferObject> fbo,
     std::shared_ptr<ConstraintBufferObject> constraintBufferObject)
 {
+  colorTextureMapper = std::shared_ptr<CudaTexture3DMapper>(
+      CudaTexture3DMapper::createReadOnlyMapper(
+          fbo->getColorTextureId(0), width, height, mappersForLayers.size()));
+
   for (auto mappersForLayer : mappersForLayers)
     mappersForLayer->initialize(gl, fbo);
 
@@ -119,10 +124,10 @@ void TextureMapperManager::bindApollonius(int layerIndex)
   mappersForLayers[layerIndex]->bindApollonius();
 }
 
-std::shared_ptr<CudaTextureMapper>
-TextureMapperManager::getColorTextureMapper(int layerIndex)
+std::shared_ptr<CudaTexture3DMapper>
+TextureMapperManager::getColorTextureMapper()
 {
-  return mappersForLayers[layerIndex]->getColorTextureMapper();
+  return colorTextureMapper;
 }
 
 std::shared_ptr<CudaTextureMapper>
@@ -169,6 +174,8 @@ TextureMapperManager::getIntegralCostsTextureMapper()
 
 void TextureMapperManager::cleanup()
 {
+  colorTextureMapper.reset();
+
   for (auto mappers : mappersForLayers)
     mappers->cleanup();
 

@@ -17,7 +17,7 @@ TEST(Test_Occlusion, Occlusion)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occlusion(colorProvider, outputProvider).calculateOcclusion();
+  Placement::Occlusion(colorProvider, outputProvider, 0).calculateOcclusion();
 
   auto result = outputProvider->copyDataFromGpu();
 
@@ -56,7 +56,7 @@ TEST(Test_Occlusion, OccupancyWithSamplingShouldUseMaxAlphaValue)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occlusion(colorProvider, outputProvider).calculateOcclusion();
+  Placement::Occlusion(colorProvider, outputProvider, 0).calculateOcclusion();
 
   auto result = outputProvider->copyDataFromGpu();
 
@@ -80,7 +80,7 @@ TEST(Test_Occlusion, AddOcclusionAddsUpTheAlhpaValuesAndLimitsThemTo1)
   auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
 
-  Placement::Occlusion occlusion(colorProvider, outputProvider);
+  Placement::Occlusion occlusion(colorProvider, outputProvider, 0);
   occlusion.calculateOcclusion();
   occlusion.addOcclusion();
 

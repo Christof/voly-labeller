@@ -23,13 +23,15 @@ class Occlusion
 {
  public:
   Occlusion(std::shared_ptr<CudaArrayProvider> colorProvider,
-            std::shared_ptr<CudaArrayProvider> outputProvider);
+            std::shared_ptr<CudaArrayProvider> outputProvider,
+            int layerIndex);
   ~Occlusion();
 
   void addOcclusion();
   void calculateOcclusion();
 
  private:
+  int layerIndex;
   void runKernel(bool addToOutputValue);
   std::shared_ptr<CudaArrayProvider> colorProvider;
   std::shared_ptr<CudaArrayProvider> outputProvider;
