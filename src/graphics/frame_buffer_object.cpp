@@ -58,6 +58,10 @@ void FrameBufferObject::resize(int width, int height)
 
   resizeAndSetDepthAttachment(width, height);
 
+  // TODO(all): investigate why deleting and generating a new texture is
+  // necessary. If this is not done, an GL_INVALID_OPERATION causes the
+  // application to crash.
+  // Before switching to a 3D texture for the colors, this was not necessary.
   gl->glDeleteTextures(1, &accumulatedLayersTexture);
   gl->glGenTextures(1, &accumulatedLayersTexture);
   resizeAndSetColorAttachment(accumulatedLayersTexture,
