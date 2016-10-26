@@ -21,7 +21,8 @@ __global__ void occlusionKernel(cudaTextureObject_t positions,
     for (int j = 0; j < heightScale; ++j)
     {
       float4 color = tex3D<float4>(positions, x * widthScale + 0.5f + i,
-                                   y * heightScale + 0.5f + j, layerIndex);
+                                   y * heightScale + 0.5f + j,
+                                   layerIndex + 0.5f);
       if (color.w > minTransparency)
         minTransparency = color.w;
     }
