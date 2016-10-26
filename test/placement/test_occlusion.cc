@@ -12,8 +12,8 @@ TEST(Test_Occlusion, Occlusion)
   std::vector<Eigen::Vector4f> data = {
     Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
     Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
-    Eigen::Vector4f(0, 0, 0, 0.9f), Eigen::Vector4f(0, 0, 0, 0.9f),
-    Eigen::Vector4f(0, 0, 0, 0.9f), Eigen::Vector4f(0, 0, 0, 0.9f)
+    Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f)
   };
   auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
       2, 2, 2, data, channelDesc);
@@ -29,6 +29,32 @@ TEST(Test_Occlusion, Occlusion)
   EXPECT_EQ(0.7f, result[1]);
   EXPECT_EQ(0.4f, result[2]);
   EXPECT_EQ(0.3f, result[3]);
+}
+
+TEST(Test_Occlusion, OcclusionForSecondLayer)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  std::vector<Eigen::Vector4f> data = {
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
+    Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f)
+  };
+  auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
+      2, 2, 2, data, channelDesc);
+  auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
+
+  Placement::Occlusion(colorProvider, outputProvider, 1).calculateOcclusion();
+
+  auto result = outputProvider->copyDataFromGpu();
+
+  ASSERT_EQ(4, result.size());
+  EXPECT_EQ(0.2f, result[0]);
+  EXPECT_EQ(0.6f, result[1]);
+  EXPECT_EQ(0.8f, result[2]);
+  EXPECT_EQ(0.9f, result[3]);
 }
 
 TEST(Test_Occlusion, OcclusionWithSamplingShouldUseMaxAlphaValue)
