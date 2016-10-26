@@ -22,6 +22,8 @@ FrameBufferObject::~FrameBufferObject()
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
 {
   this->gl = gl;
+  this->width = width;
+  this->height = height;
 
   glAssert(gl->glGenFramebuffers(1, &framebuffer));
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
@@ -54,6 +56,12 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
 
 void FrameBufferObject::resize(int width, int height)
 {
+  if (width == this->width && height == this->height)
+    return;
+
+  this->width = width;
+  this->height = height;
+
   bind();
 
   resizeAndSetDepthAttachment(width, height);
@@ -62,6 +70,8 @@ void FrameBufferObject::resize(int width, int height)
   // necessary. If this is not done, an GL_INVALID_OPERATION causes the
   // application to crash.
   // Before switching to a 3D texture for the colors, this was not necessary.
+  // This also causes problems with images derived from the accumulated layers
+  // texture using cuda, since the input texture is undefined after a resize.
   gl->glDeleteTextures(1, &accumulatedLayersTexture);
   gl->glGenTextures(1, &accumulatedLayersTexture);
   resizeAndSetColorAttachment(accumulatedLayersTexture,
