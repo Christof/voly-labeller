@@ -221,10 +221,11 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
 
   cudaDestroyTextureObject(constraints);
 
-  return CostFunctionResult {
-    Eigen::Vector2i(cost.x, cost.y),
-    cost.cost
-  };
+  if (isnan(cost.cost))
+    return CostFunctionResult{ Eigen::Vector2i(textureWidth - 1, 0),
+                               cost.cost };
+
+  return CostFunctionResult{ Eigen::Vector2i(cost.x, cost.y), cost.cost };
 }
 
 void CostFunctionCalculator::createTextureObject()
