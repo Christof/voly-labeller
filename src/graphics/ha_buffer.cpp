@@ -167,6 +167,8 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   renderShader->setUniform("inverseViewMatrix", inverseViewMatrix);
   renderShader->setUniform("projectionMatrix", renderData.projectionMatrix);
 
+  managers->getVolumeManager()->bind(GL_TEXTURE0);
+  renderShader->setUniform("volumeSampler", 0);
   Eigen::Vector3f textureAtlasSize =
       managers->getVolumeManager()->getVolumeAtlasSize().cast<float>();
   renderShader->setUniform("textureAtlasSize", textureAtlasSize);

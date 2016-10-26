@@ -135,8 +135,12 @@ void VolumeManager::add3dTexture(int volumeId, Eigen::Vector3i size,
   gl->glTexParameteri(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 }
 
-void VolumeManager::bind()
+void VolumeManager::bind(int textureUnit)
 {
+  if (gl == nullptr)
+    return;
+
+  gl->glActiveTexture(textureUnit);
   gl->glBindTexture(GL_TEXTURE_3D, texture);
 }
 
