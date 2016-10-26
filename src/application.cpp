@@ -291,7 +291,8 @@ int Application::parseLayerCount()
     if (!gotLayerCount)
     {
       layerCount = 4;
-      qWarning() << "Problem parsing layer count from" << parser.value("layers");
+      qWarning() << "Problem parsing layer count from"
+                 << parser.value("layers");
     }
   }
 
