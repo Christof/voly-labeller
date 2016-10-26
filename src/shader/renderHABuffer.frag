@@ -15,7 +15,7 @@ uniform vec3 textureAtlasSize;
 uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
-uniform int layerCount;
+uniform int outputColorsCount;
 uniform int planeCount;
 const int maxPlaneCount = 3;
 uniform vec4 layerPlanes[maxPlaneCount];
@@ -412,7 +412,7 @@ void main()
 
   setColorForLayer(layerIndex, finalColor);
 
-  for (++layerIndex; layerIndex < layerCount; ++layerIndex)
+  for (++layerIndex; layerIndex < outputColorsCount; ++layerIndex)
   {
     setColorForLayer(layerIndex, vec4(0));
   }

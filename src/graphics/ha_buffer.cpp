@@ -206,9 +206,10 @@ void HABuffer::render(std::shared_ptr<Graphics::Managers> managers,
   gl->glEnable(GL_BLEND);
 }
 
-void HABuffer::setLayerZValues(std::vector<float> layerZValues)
+void HABuffer::setLayerZValues(std::vector<float> layerZValues, int layerCount)
 {
   this->layerZValues = layerZValues;
+  this->layerCount = layerCount;
 }
 
 void HABuffer::setUniforms(std::shared_ptr<ShaderProgram> shader)
@@ -243,9 +244,8 @@ void HABuffer::setLayeringUniforms(std::shared_ptr<ShaderProgram> renderShader,
     return left.w() < right.w();
   });
 
-  int layerCount = static_cast<int>(layerZValues.size());
   int planeCount = static_cast<int>(layerPlanes.size());
-  renderShader->setUniform("layerCount", layerCount);
+  renderShader->setUniform("outputColorsCount", layerCount);
   renderShader->setUniformAsVec4Array("layerPlanes", layerPlanes.data(),
                                       planeCount);
   renderShader->setUniform("planeCount", planeCount);

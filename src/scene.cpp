@@ -204,7 +204,7 @@ void Scene::renderNodesWithHABufferIntoFBO()
 
   std::vector<float> zValues = labellingCoordinator->updateClusters();
 
-  haBuffer->setLayerZValues(zValues);
+  haBuffer->setLayerZValues(zValues, fbo->getLayerCount());
   haBuffer->render(managers, renderData);
 
   picker->doPick(renderData.viewProjectionMatrix);
