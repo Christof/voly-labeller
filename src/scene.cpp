@@ -292,11 +292,6 @@ void Scene::renderScreenQuad()
     fbo->bindColorTexture(GL_TEXTURE0);
 
     screenQuad->getShaderProgram()->setUniform("layers", 0);
-    /*
-    screenQuad->getShaderProgram()->setUniform("layer2", 1);
-    screenQuad->getShaderProgram()->setUniform("layer3", 2);
-    screenQuad->getShaderProgram()->setUniform("layer4", 3);
-    */
     renderQuad(screenQuad, Eigen::Matrix4f::Identity());
 
     gl->glActiveTexture(GL_TEXTURE0);
