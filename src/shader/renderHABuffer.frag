@@ -7,7 +7,8 @@
 in vec4 fragmentInputPosition;
 
 layout(location = 0) out vec4 accumulatedOutputColor;
-layout(location = 1) out vec4 outputColors[4];
+const int maxPlaneCount = 6;
+layout(location = 1) out vec4 outputColors[maxPlaneCount];
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;
@@ -17,7 +18,6 @@ uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
 uniform int outputColorsCount;
 uniform int planeCount;
-const int maxPlaneCount = 3;
 uniform vec4 layerPlanes[maxPlaneCount];
 uniform float planesZValuesNdc[maxPlaneCount];
 uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);

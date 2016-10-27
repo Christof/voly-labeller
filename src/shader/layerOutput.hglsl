@@ -1,24 +1,23 @@
 layout(location = 0) out vec4 accumulatedOutputColor;
-layout(location = 1) out vec4 outputColors[4];
+const int maxOutputColorsCount = 6;
+layout(location = 1) out vec4 outputColors[maxOutputColorsCount];
 layout(depth_any) out float gl_FragDepth;
 
 void setColorForLayer(int layerIndex, vec4 color)
 {
   accumulatedOutputColor = vec4(0);
-  outputColors[0] = vec4(0);
-  outputColors[1] = vec4(0);
-  outputColors[2] = vec4(0);
-  outputColors[3] = vec4(0);
+  for (int i = 0; i < maxOutputColorsCount; ++i)
+    outputColors[i] = vec4(0);
+
   outputColors[layerIndex] = color;
 }
 
 void setColorForLayerDebug(int layerIndex, vec4 color)
 {
   accumulatedOutputColor = vec4(0);
-  outputColors[0] = vec4(0);
-  outputColors[1] = vec4(0);
-  outputColors[2] = vec4(0);
-  outputColors[3] = vec4(0);
+  for (int i = 0; i < maxOutputColorsCount; ++i)
+    outputColors[i] = vec4(0);
+
   outputColors[layerIndex] = color;
 
   if (layerIndex == 0)
