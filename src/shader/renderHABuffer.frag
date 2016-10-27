@@ -6,8 +6,8 @@
 
 in vec4 fragmentInputPosition;
 
-layout(location = 0) out vec4 outputColors[4];
-layout(location = 4) out vec4 accumulatedOutputColor;
+layout(location = 0) out vec4 accumulatedOutputColor;
+layout(location = 1) out vec4 outputColors[4];
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;

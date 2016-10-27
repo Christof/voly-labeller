@@ -31,13 +31,13 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   glAssert(gl->glGenTextures(1, &depthTexture));
   resizeAndSetDepthAttachment(width, height);
 
-  glAssert(gl->glGenTextures(1, &colorTexturesArray));
-  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT0,
-                                   width, height);
-
   glAssert(gl->glGenTextures(1, &accumulatedLayersTexture));
   resizeAndSetColorAttachment(accumulatedLayersTexture,
-                              GL_COLOR_ATTACHMENT0 + layerCount, width, height);
+                              GL_COLOR_ATTACHMENT0, width, height);
+
+  glAssert(gl->glGenTextures(1, &colorTexturesArray));
+  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT1,
+                                   width, height);
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
@@ -75,9 +75,11 @@ void FrameBufferObject::resize(int width, int height)
   gl->glDeleteTextures(1, &accumulatedLayersTexture);
   gl->glGenTextures(1, &accumulatedLayersTexture);
   resizeAndSetColorAttachment(accumulatedLayersTexture,
-                              GL_COLOR_ATTACHMENT0 + layerCount, width, height);
-  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT0,
+                              GL_COLOR_ATTACHMENT0, width, height);
+
+  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT1,
                                    width, height);
+
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
