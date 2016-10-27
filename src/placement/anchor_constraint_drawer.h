@@ -17,9 +17,13 @@ class ShaderManager;
 }
 
 /**
- * \brief
+ * \brief Draws anchor constraints using a Graphics::VertexArray and a
+ * ConstraintDrawer
  *
+ * Before using an instance, it must be initialized by calling #initialize.
  *
+ * Certain methods are marked as virtual, which is just used for testing
+ * purposes.
  */
 class AnchorConstraintDrawer
 {
