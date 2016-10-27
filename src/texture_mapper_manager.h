@@ -9,6 +9,7 @@
 #include "./graphics/gl.h"
 
 class CudaTextureMapper;
+class CudaTexture3DMapper;
 class ConstraintBufferObject;
 class TextureMappersForLayer;
 namespace Graphics
@@ -42,8 +43,7 @@ class TextureMapperManager
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
 
-  std::shared_ptr<CudaTextureMapper>
-  getColorTextureMapper(int layerIndex);
+  std::shared_ptr<CudaTexture3DMapper> getColorTextureMapper();
   std::shared_ptr<CudaTextureMapper> getOcclusionTextureMapper();
   std::shared_ptr<CudaTextureMapper> getSaliencyTextureMapper();
   std::shared_ptr<CudaTextureMapper>
@@ -80,6 +80,8 @@ class TextureMapperManager
 
   std::shared_ptr<Graphics::StandardTexture2d> saliencyTexture;
   std::shared_ptr<CudaTextureMapper> saliencyTextureMapper;
+
+  std::shared_ptr<CudaTexture3DMapper> colorTextureMapper;
 };
 
 #endif  // SRC_TEXTURE_MAPPER_MANAGER_H_

@@ -32,6 +32,7 @@ class VolumeManager
 
   void add3dTexture(int volumeId, Eigen::Vector3i size, float *data,
                     int voxelZOffset);
+  void bind(int textureUnit);
 
  private:
   int nextVolumeId = 1;

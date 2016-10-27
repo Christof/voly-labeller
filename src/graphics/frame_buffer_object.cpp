@@ -6,8 +6,8 @@
 namespace Graphics
 {
 
-FrameBufferObject::FrameBufferObject(int layerCount)
-  : layerCount(layerCount), colorTextures(layerCount)
+FrameBufferObject::FrameBufferObject(unsigned int layerCount)
+  : layerCount(layerCount)
 {
 }
 
@@ -15,13 +15,15 @@ FrameBufferObject::~FrameBufferObject()
 {
   glAssert(gl->glDeleteBuffers(1, &framebuffer));
   glAssert(gl->glDeleteBuffers(1, &depthTexture));
-  glAssert(gl->glDeleteTextures(layerCount, colorTextures.data()));
+  glAssert(gl->glDeleteTextures(1, &colorTexturesArray));
   glAssert(gl->glDeleteTextures(1, &accumulatedLayersTexture));
 }
 
 void FrameBufferObject::initialize(Gl *gl, int width, int height)
 {
   this->gl = gl;
+  this->width = width;
+  this->height = height;
 
   glAssert(gl->glGenFramebuffers(1, &framebuffer));
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, framebuffer));
@@ -29,19 +31,18 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
   glAssert(gl->glGenTextures(1, &depthTexture));
   resizeAndSetDepthAttachment(width, height);
 
-  glAssert(gl->glGenTextures(layerCount, colorTextures.data()));
-  for (int i = 0; i < layerCount; ++i)
-    resizeAndSetColorAttachment(colorTextures[i], GL_COLOR_ATTACHMENT0 + i,
-                                width, height);
-
   glAssert(gl->glGenTextures(1, &accumulatedLayersTexture));
   resizeAndSetColorAttachment(accumulatedLayersTexture,
-                              GL_COLOR_ATTACHMENT0 + layerCount, width, height);
+                              GL_COLOR_ATTACHMENT0, width, height);
+
+  glAssert(gl->glGenTextures(1, &colorTexturesArray));
+  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT1,
+                                   width, height);
 
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
   std::vector<GLenum> drawBuffers(layerCount + 1);
-  for (int i = 0; i < layerCount + 1; ++i)
+  for (unsigned int i = 0; i < layerCount + 1; ++i)
     drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
   glAssert(gl->glDrawBuffers(layerCount + 1, drawBuffers.data()));
 
@@ -55,15 +56,32 @@ void FrameBufferObject::initialize(Gl *gl, int width, int height)
 
 void FrameBufferObject::resize(int width, int height)
 {
+  if (width == this->width && height == this->height)
+    return;
+
+  this->width = width;
+  this->height = height;
+
   bind();
 
-  for (int i = 0; i < layerCount; ++i)
-  {
-    resizeAndSetColorAttachment(colorTextures[i], GL_COLOR_ATTACHMENT0 + i,
-                                width, height);
-  }
-
   resizeAndSetDepthAttachment(width, height);
+
+  // TODO(all): investigate why deleting and generating a new texture is
+  // necessary. If this is not done, an GL_INVALID_OPERATION causes the
+  // application to crash.
+  // Before switching to a 3D texture for the colors, this was not necessary.
+  // This also causes problems with images derived from the accumulated layers
+  // texture using cuda, since the input texture is undefined after a resize.
+  gl->glDeleteTextures(1, &accumulatedLayersTexture);
+  gl->glGenTextures(1, &accumulatedLayersTexture);
+  resizeAndSetColorAttachment(accumulatedLayersTexture,
+                              GL_COLOR_ATTACHMENT0, width, height);
+
+  resizeAndSetColorArrayAttachment(colorTexturesArray, GL_COLOR_ATTACHMENT1,
+                                   width, height);
+
+
+  glAssert(gl->glBindTexture(GL_TEXTURE_2D, 0));
 
   unbind();
 }
@@ -78,10 +96,10 @@ void FrameBufferObject::unbind()
   glAssert(gl->glBindFramebuffer(GL_FRAMEBUFFER, 0));
 }
 
-void FrameBufferObject::bindColorTexture(int index, unsigned int textureUnit)
+void FrameBufferObject::bindColorTexture(unsigned int textureUnit)
 {
   glAssert(gl->glActiveTexture(textureUnit));
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, colorTextures[index]));
+  glAssert(gl->glBindTexture(GL_TEXTURE_3D, colorTexturesArray));
 }
 
 void FrameBufferObject::bindAccumulatedLayersTexture(unsigned int textureUnit)
@@ -96,12 +114,30 @@ void FrameBufferObject::bindDepthTexture(unsigned int textureUnit)
   glAssert(gl->glBindTexture(GL_TEXTURE_2D, depthTexture));
 }
 
-void FrameBufferObject::resizeAndSetColorAttachment(int texture, int attachment,
-                                                    int width, int height)
+void FrameBufferObject::resizeAndSetColorAttachment(unsigned int texture,
+                                                    int attachment, int width,
+                                                    int height)
 {
   resizeTexture(texture, width, height, GL_RGBA, GL_RGBA16F, GL_FLOAT);
   glAssert(gl->glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachment,
                                       GL_TEXTURE_2D, texture, 0));
+}
+
+void FrameBufferObject::resizeAndSetColorArrayAttachment(
+    unsigned int texture, unsigned int attachment, int width, int height)
+{
+  gl->glBindTexture(GL_TEXTURE_3D, texture);
+  gl->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  gl->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  gl->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA16F, width, height, layerCount, 0,
+                   GL_RGBA, GL_FLOAT, nullptr);
+
+  for (unsigned int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
+    glAssert(gl->glFramebufferTexture3D(GL_DRAW_FRAMEBUFFER,
+                                        attachment + layerIndex, GL_TEXTURE_3D,
+                                        texture, 0, layerIndex));
+
+  gl->glBindTexture(GL_TEXTURE_3D, 0);
 }
 
 void FrameBufferObject::resizeAndSetDepthAttachment(int width, int height)
@@ -113,22 +149,20 @@ void FrameBufferObject::resizeAndSetDepthAttachment(int width, int height)
                                       GL_TEXTURE_2D, depthTexture, 0));
 }
 
-void FrameBufferObject::resizeTexture(int texture, int width, int height,
-                                      unsigned int component,
+void FrameBufferObject::resizeTexture(unsigned int texture, int width,
+                                      int height, unsigned int component,
                                       unsigned int format, unsigned int type)
 {
-  glAssert(gl->glBindTexture(GL_TEXTURE_2D, texture));
-  glAssert(
-      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-  glAssert(
-      gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-  glAssert(gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-                            component, type, NULL));
+  gl->glBindTexture(GL_TEXTURE_2D, texture);
+  gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  gl->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  gl->glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, component, type,
+                   nullptr);
 }
 
-unsigned int FrameBufferObject::getColorTextureId(int index)
+unsigned int FrameBufferObject::getColorTextureId()
 {
-  return colorTextures[index];
+  return colorTexturesArray;
 }
 
 unsigned int FrameBufferObject::getAccumulatedLayersTextureId()

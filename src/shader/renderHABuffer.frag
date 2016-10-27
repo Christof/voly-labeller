@@ -6,11 +6,9 @@
 
 in vec4 fragmentInputPosition;
 
-layout(location = 0) out vec4 outputColor;
-layout(location = 1) out vec4 outputColor2;
-layout(location = 2) out vec4 outputColor3;
-layout(location = 3) out vec4 outputColor4;
-layout(location = 4) out vec4 accumulatedOutputColor;
+layout(location = 0) out vec4 accumulatedOutputColor;
+const int maxPlaneCount = 6;
+layout(location = 1) out vec4 outputColors[maxPlaneCount];
 layout(depth_any) out float gl_FragDepth;
 
 uniform mat4 projectionMatrix;
@@ -18,9 +16,8 @@ uniform vec3 textureAtlasSize;
 uniform int transferFunctionWidth;
 uniform vec3 sampleDistance;
 uniform float alphaThresholdForDepth = 0.1;
-uniform int layerCount;
+uniform int outputColorsCount;
 uniform int planeCount;
-const int maxPlaneCount = 3;
 uniform vec4 layerPlanes[maxPlaneCount];
 uniform float planesZValuesNdc[maxPlaneCount];
 uniform vec3 lightPos_eye = vec3(0.0f, 0.0f, 0.0f);
@@ -188,14 +185,7 @@ void setDepthFor(in vec4 positionInEyeSpace)
 
 void setColorForLayer(int layerIndex, vec4 color)
 {
-  if (layerIndex == 0)
-    outputColor = color;
-  else if (layerIndex == 1)
-    outputColor2 = color;
-  else if (layerIndex == 2)
-    outputColor3 = color;
-  else
-    outputColor4 = color;
+  outputColors[layerIndex] = color;
 }
 
 vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCount,
@@ -277,7 +267,7 @@ void main()
 
   if (pos.x >= screenSize || pos.y >= screenSize || pos.x < 0 || pos.y < 0)
   {
-    outputColor = vec4(1.0, 1.0, 0.3, 1.0);
+    outputColors[0] = vec4(1.0, 1.0, 0.3, 1.0);
     return;
   }
 
@@ -422,7 +412,7 @@ void main()
 
   setColorForLayer(layerIndex, finalColor);
 
-  for (++layerIndex; layerIndex < layerCount; ++layerIndex)
+  for (++layerIndex; layerIndex < outputColorsCount; ++layerIndex)
   {
     setColorForLayer(layerIndex, vec4(0));
   }

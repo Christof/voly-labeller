@@ -1,28 +1,25 @@
-/*
-
-Sylvain Lefebvre, Samuel Hornus, Anass Lasram - 2013
-
-This file contains the base implementation of the A-buffer techniques
-described in our GPUPro paper.
-
-NOTES:
-- atomicMax 64bits is emulated through a loop and a 64 bits atomicCAS.
-  This can be directly replaced by a native atomicMax64 when available.
-- Depth is currently encoded on 24 bits. This stems from the packing of
-  the data in 64 bits records when using hashing.
-
-Please visit http://www.antexel.com/research/gpupro5 for updates.
-
-*/
-// -------------------------------------------------
+/**
+ *
+ * Implementation taken from Sylvain Lefebvre, Samuel Hornus, Anass Lasram 2013.
+ * This file contains the base implementation of the A-buffer techniques
+ * described in their GPUPro paper.
+ *
+ * NOTES:
+ * - atomicMax 64bits is emulated through a loop and a 64 bits atomicCAS.
+ *   This can be directly replaced by a native atomicMax64 when available.
+ * - Depth is currently encoded on 24 bits. This stems from the packing of
+ *   the data in 64 bits records when using hashing.
+ *
+ * Further information is available at
+ * http://www.antexel.com/research/gpupro5.
+ *
+ */
 
 #extension GL_NV_shader_buffer_load : enable
 #extension GL_NV_gpu_shader5 : enable
 #extension GL_NV_shader_atomic_int64 : enable
 
 #define MAX_DEPTH (1u << 24u)  // limited to 24 bits
-
-// -------------------------------------------------
 
 /**
  * \brief Data for each fragment stored in the HABuffer
@@ -60,9 +57,9 @@ uint64_t atomicMax64(coherent uint64_t *ptr, uint64_t val)
 }
 #endif
 
-coherent uniform
-    uint64_t *records;  // all fragment records (<depth|pointer> pairs)
-coherent uniform uint32_t *counters;            // auxiliary counters
+coherent uniform uint64_t *records;   // all fragment records (<depth|pointer>
+                                      // pairs)
+coherent uniform uint32_t *counters;  // auxiliary counters
 coherent uniform FragmentData *fragmentData;  // RGBA color of fragments
 
 // global variable for temporary pointers
@@ -105,8 +102,6 @@ uint64_t Haddr(uvec2 l)
 {
   return uint64_t(l.x + l.y * tableSize);
 }
-
-// -------------------------------------------------
 
 bool insert_preopen(uint32_t depth, uvec2 ij, uint32_t data)
 {

@@ -71,7 +71,7 @@ class HABuffer
   void render(std::shared_ptr<Graphics::Managers> managers,
               const RenderData &renderData);
 
-  void setLayerZValues(std::vector<float> layerZValues);
+  void setLayerZValues(std::vector<float> layerZValues, int layerCount);
 
   bool wireframe = false;
 
@@ -113,6 +113,7 @@ class HABuffer
   Timer renderTimer;
 
   std::vector<float> layerZValues;
+  int layerCount;
 };
 
 }  // namespace Graphics

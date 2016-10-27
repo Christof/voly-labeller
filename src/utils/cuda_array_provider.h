@@ -42,9 +42,15 @@ class CudaArrayProvider
     return height;
   }
 
+  int getDepth()
+  {
+    return depth;
+  }
+
  protected:
   int width;
   int height;
+  int depth = 1;
 };
 
 #endif  // SRC_UTILS_CUDA_ARRAY_PROVIDER_H_

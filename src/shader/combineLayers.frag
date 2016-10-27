@@ -2,10 +2,8 @@
 
 in vec2 vertexTexCoord;
 
-uniform sampler2D layer1;
-uniform sampler2D layer2;
-uniform sampler2D layer3;
-uniform sampler2D layer4;
+uniform sampler3D layers;
+uniform int layerCount;
 uniform vec4 backgroundColor = vec4(1, 1, 1, 1);
 
 out vec4 outputColor;
@@ -18,11 +16,12 @@ vec4 blend(vec4 clr, vec4 srf)
 
 void main()
 {
-  vec4 color1 = texture(layer1, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
-  vec4 color2 = texture(layer2, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
-  vec4 color3 = texture(layer3, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
-  vec4 color4 = texture(layer4, vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y));
+  vec2 texCoord = vec2(vertexTexCoord.x, 1.0 - vertexTexCoord.y) *
+    textureSize(layers, 0).xy;
 
-  outputColor = blend(blend(blend(blend(color1, color2), color3), color4),
-                      backgroundColor);
+  vec4 color = texelFetch(layers, ivec3(texCoord, 0), 0);
+  for (int layerIndex = 1; layerIndex < layerCount; ++layerIndex)
+    color = blend(color, texelFetch(layers, ivec3(texCoord, layerIndex), 0));
+
+  outputColor = blend(color, backgroundColor);
 }
