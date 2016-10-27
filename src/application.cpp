@@ -33,8 +33,6 @@
 #include "./recording_automation.h"
 #include "./recording_automation_controller.h"
 
-const int LAYER_COUNT = 4;
-
 Application::Application(int &argc, char **argv) : application(argc, argv)
 {
   application.setApplicationName("voly-labeller");
@@ -294,6 +292,9 @@ int Application::parseLayerCount()
       qWarning() << "Problem parsing layer count from"
                  << parser.value("layers");
     }
+
+    if (layerCount < 1 || layerCount > 6)
+      qFatal("Layer count must be between 1 and 6");
   }
 
   return layerCount;
