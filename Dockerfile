@@ -46,7 +46,6 @@ WORKDIR /voly-labeller
 RUN /voly-labeller/scripts/install_dependencies.sh
 # Move to top
 RUN apt-get install unzip 
-RUN /voly-labeller/scripts/install_clipper.sh
 RUN apt-get install libinsighttoolkit4-dev -y
 
 CMD /bin/bash

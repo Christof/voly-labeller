@@ -243,10 +243,6 @@ if(UNIX)
 endif()
 list(APPEND LIBRARIES ${ImageMagick_LIBRARIES})
 
-find_package(Clipper REQUIRED)
-include_directories(${Clipper_INCLUDE_DIR})
-list(APPEND LIBRARIES ${Clipper_LIBRARIES})
-
 if(MSVC)
   try_run(CPU_TEST_RUN_RESULT_VAR CPU_TEST_COMPILE_RESULT_VAR
     ${CMAKE_BINARY_DIR}
