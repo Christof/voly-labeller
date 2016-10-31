@@ -22,11 +22,11 @@ struct CostFunctionWeights
 {
   float labelShadowConstraint = 1e2f;
   float integralCosts = 1.0f;
-  float distanceToAnchor = 1e-2f;
+  float distanceToAnchor = 0.5e-2f;
   float distanceToOldPosition = 1e5f;
   float favorHorizontalOrVerticalLines = 1.0f;
   float connectorShadowConstraint = 1e1f;
-  float anchorConstraint = 1e2f;
+  float anchorConstraint = 1e5f;
 };
 
 /**
