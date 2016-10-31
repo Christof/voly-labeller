@@ -69,7 +69,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   recordingAutomationController =
       std::make_unique<RecordingAutomationController>(recordingAutomation);
 
-  const int postProcessingTextureSize = 512;
+  const int postProcessingTextureSize = 1024;
   textureMapperManager =
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
   textureMapperManagerController =
