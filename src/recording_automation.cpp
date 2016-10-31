@@ -1,6 +1,9 @@
 #include "./recording_automation.h"
 #include <vector>
 #include <string>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
 #include "./labelling_coordinator.h"
 #include "./video_recorder.h"
 #include "./nodes.h"
@@ -29,6 +32,17 @@ void RecordingAutomation::resize(int width, int height)
   this->height = height;
 }
 
+std::string getTime()
+{
+  std::stringstream date;
+
+  std::time_t t = std::time(nullptr);
+  std::tm tm = *std::localtime(&t);
+  date << std::put_time(&tm, "%Y-%m-%d_%H:%M:%S");
+
+  return date.str();
+}
+
 void RecordingAutomation::update()
 {
   if (!takeScreenshot)
@@ -55,8 +69,11 @@ void RecordingAutomation::update()
     std::vector<unsigned char> pixels(width * height * 4);
     gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
                      pixels.data());
-    std::string filename = "screenshot_" + nodes->getSceneName() + "_" +
-                           cameraPositionName + ".png";
+    std::string detail =
+        cameraPositionName.size() ? cameraPositionName : getTime();
+
+    std::string filename =
+        "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
     ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
     takeScreenshot = false;
     qCWarning(recordingAutomationChan) << "Took screenshot:"
