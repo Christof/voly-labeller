@@ -76,9 +76,10 @@ void LabellingCoordinator::initialize(
       std::make_shared<ShadowConstraintDrawer>(bufferSize, bufferSize);
   shadowConstraintDrawer->initialize(gl, shaderManager);
 
+  float scaleFactor = bufferSize / width;
   auto constraintUpdater = std::make_shared<ConstraintUpdater>(
       bufferSize, bufferSize, anchorConstraintDrawer, connectorShadowDrawer,
-      shadowConstraintDrawer);
+      shadowConstraintDrawer, scaleFactor);
   persistentConstraintUpdater =
       std::make_shared<PersistentConstraintUpdater>(constraintUpdater);
 

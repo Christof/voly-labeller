@@ -8,18 +8,21 @@
 #include "./anchor_constraint_drawer.h"
 
 ConstraintUpdater::ConstraintUpdater(
-    int width, int height,
+    int bufferWidth, int bufferHeight,
     std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer,
     std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer,
-    std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer)
-  : width(width), height(height),
+    std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer,
+    float scaleFactor)
+  : width(bufferWidth), height(bufferHeight),
     anchorConstraintDrawer(anchorConstraintDrawer),
     connectorShadowDrawer(connectorShadowDrawer),
-    shadowConstraintDrawer(shadowConstraintDrawer)
+    shadowConstraintDrawer(shadowConstraintDrawer), scaleFactor(scaleFactor)
 {
   labelShadowColor = Placement::labelShadowValue / 255.0f;
   connectorShadowColor = Placement::connectorShadowValue / 255.0f;
   anchorConstraintColor = Placement::anchorConstraintValue / 255.0f;
+
+  borderPixel = scaleFactor * Eigen::Vector2f(4, 4);
 }
 
 ConstraintUpdater::~ConstraintUpdater()
@@ -55,7 +58,6 @@ void ConstraintUpdater::drawRegionsForAnchors(
 
   anchorConstraintDrawer->update(positions);
 
-  Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f constraintSize = borderPixel + labelSize.cast<float>();
   Eigen::Vector2f halfSize =
       constraintSize.cwiseQuotient(Eigen::Vector2f(width, height));
@@ -81,7 +83,6 @@ void ConstraintUpdater::finish()
   shadowConstraintDrawer->update(sources, starts, ends);
   connectorShadowDrawer->update(anchors, connectorStart, connectorEnd);
 
-  Eigen::Vector2f borderPixel(2.0f, 2.0f);
   Eigen::Vector2f sizeWithBorder = labelSize.cast<float>() + borderPixel;
   Eigen::Vector2f halfSize =
       sizeWithBorder.cwiseQuotient(Eigen::Vector2f(width, height));

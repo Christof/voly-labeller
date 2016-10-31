@@ -16,9 +16,10 @@ class Test_ConstraintUpdater : public ::testing::Test
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
     shadowConstraintDrawer =
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    float scaleFactor = 1.0f;
     constraintUpdater = std::make_shared<ConstraintUpdater>(
         width, height, anchorConstraintDrawer, connectorShadowDrawer,
-        shadowConstraintDrawer);
+        shadowConstraintDrawer, scaleFactor);
   }
 
  public:

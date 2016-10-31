@@ -22,10 +22,11 @@ class ConstraintUpdater
 {
  public:
   ConstraintUpdater(
-      int width, int height,
+      int bufferWidth, int bufferHeight,
       std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer,
       std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer,
-      std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer);
+      std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer,
+      float scaleFactor);
   virtual ~ConstraintUpdater();
 
   void drawConstraintRegionFor(Eigen::Vector2i anchorPosition,
@@ -47,6 +48,7 @@ class ConstraintUpdater
   std::shared_ptr<AnchorConstraintDrawer> anchorConstraintDrawer;
   std::shared_ptr<ShadowConstraintDrawer> connectorShadowDrawer;
   std::shared_ptr<ShadowConstraintDrawer> shadowConstraintDrawer;
+  float scaleFactor;
 
   float labelShadowColor;
   float connectorShadowColor;
@@ -61,6 +63,7 @@ class ConstraintUpdater
   std::vector<float> connectorEnd;
 
   Eigen::Vector2f labelSize;
+  Eigen::Vector2f borderPixel;
 
   bool isConnectorShadowEnabled = true;
 
