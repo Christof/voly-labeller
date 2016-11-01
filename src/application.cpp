@@ -174,6 +174,10 @@ void Application::setupCommandLineParser()
                                            "Simulate hard constraints");
   parser.addOption(hardConstraintsOption);
 
+  QCommandLineOption apolloniusOption(
+      "apollonius", "Use apollonius graph to determine label insertion order");
+  parser.addOption(apolloniusOption);
+
   QCommandLineOption screenshotOption(
       QStringList() << "s"
                     << "screenshot",
@@ -311,5 +315,8 @@ void Application::onInitializationDone()
 {
   if (parser.isSet("hard-constraints"))
     placementLabellerModel->simulateHardConstraints();
+
+  if (parser.isSet("apollonius"))
+    labellingController->toggleApollonius();
 }
 
