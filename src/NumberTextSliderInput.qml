@@ -1,5 +1,5 @@
-import QtQuick 2.1
-import QtQuick.Controls 1.2
+import QtQuick 2.7
+import QtQuick.Controls 1.4
 
 Item {
   id: root
