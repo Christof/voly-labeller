@@ -82,11 +82,14 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;
   window =
       std::make_unique<Window>(scene, videoRecorder, offlineRenderingFrameTime);
+  QObject::connect(window.get(), &Window::initializationDone, this,
+                   &Application::onInitializationDone);
 
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
       std::make_unique<PlacementLabellerModel>(labellingCoordinator);
+
   cameraPositionsModel = std::make_unique<CameraPositionsModel>(nodes);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
@@ -166,6 +169,10 @@ void Application::setupCommandLineParser()
   QCommandLineOption layersOption("layers", "Number of layers. Default is 4",
                                   "layerCount", "4");
   parser.addOption(layersOption);
+
+  QCommandLineOption hardConstraintsOption("hard-constraints",
+                                           "Simulate hard constraints");
+  parser.addOption(hardConstraintsOption);
 
   QCommandLineOption screenshotOption(
       QStringList() << "s"
@@ -298,5 +305,11 @@ int Application::parseLayerCount()
   }
 
   return layerCount;
+}
+
+void Application::onInitializationDone()
+{
+  if (parser.isSet("hard-constraints"))
+    placementLabellerModel->simulateHardConstraints();
 }
 

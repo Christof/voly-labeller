@@ -85,6 +85,9 @@ class Application : public QObject
   void onLabelChangedUpdateLabelNodes(Labels::Action action,
                                       const Label &label);
   void onFocesLabellerModelIsVisibleChanged();
+
+ private slots:
+   void onInitializationDone();
 };
 
 #endif  // SRC_APPLICATION_H_
