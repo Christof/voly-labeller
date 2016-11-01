@@ -225,6 +225,9 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
     return CostFunctionResult{ Eigen::Vector2i(textureWidth - 1, 0),
                                cost.cost };
 
+  if (cost.cost > 1e32)
+    return CostFunctionResult{ Eigen::Vector2i(0, 0), cost.cost };
+
   return CostFunctionResult{ Eigen::Vector2i(cost.x, cost.y), cost.cost };
 }
 
