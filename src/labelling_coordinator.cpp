@@ -305,11 +305,16 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
 void LabellingCoordinator::distributeLabelsToLayers()
 {
   auto centerWithLabelIds = clustering.getMedianClusterMembersWithLabelIds();
+  labelIdToLayerIndex.clear();
+  labelIdToZValue.clear();
+
+  for (auto& layerLabels : labelsInLayer)
+    layerLabels->clear();
+
   int layerIndex = 0;
   for (auto &pair : centerWithLabelIds)
   {
     auto &container = labelsInLayer[layerIndex];
-    container->clear();
 
     for (int labelId : pair.second)
     {
