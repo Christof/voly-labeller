@@ -50,6 +50,7 @@ signals:
   void averageFrameTimeUpdated();
   void uiGotFocus();
   void uiLostFocus();
+  void initializationDone();
 
  protected slots:
   void resizeOpenGL();
