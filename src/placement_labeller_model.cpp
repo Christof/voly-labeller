@@ -3,6 +3,7 @@
 #endif
 
 #include "./placement_labeller_model.h"
+#include <limits>
 #include "./labelling_coordinator.h"
 
 const int ROW_COUNT = 9;
