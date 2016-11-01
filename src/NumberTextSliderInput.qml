@@ -19,7 +19,7 @@ Item {
     validator: DoubleValidator {
       id: textInputValidator
       bottom: 0
-      top: 10
+      notation: DoubleValidator.ScientificNotation
     }
     inputMethodHints: Qt.ImhFormattedNumbersOnly
     horizontalAlignment: Qt.AlignRight
