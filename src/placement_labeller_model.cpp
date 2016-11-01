@@ -110,6 +110,17 @@ void PlacementLabellerModel::toggleVisibility()
   emit isVisibleChanged();
 }
 
+void PlacementLabellerModel::simulateHardConstraints()
+{
+  beginResetModel();
+
+  weights.connectorShadowConstraint = std::numeric_limits<float>::max();
+  weights.labelShadowConstraint = std::numeric_limits<float>::max();
+  coordinator->setCostFunctionWeights(weights);
+
+  endResetModel();
+}
+
 QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const
 {
   switch (rowIndex)

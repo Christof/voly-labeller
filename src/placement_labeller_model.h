@@ -45,6 +45,7 @@ class PlacementLabellerModel : public QAbstractTableModel
  public slots:
   void changeWeight(int row, QVariant newValue);
   void toggleVisibility();
+  void simulateHardConstraints();
 
  signals:
   void isVisibleChanged();

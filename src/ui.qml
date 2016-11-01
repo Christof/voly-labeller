@@ -155,6 +155,10 @@ FocusScope
             checked: false
             onTriggered: labelling.toggleApollonius();
           }
+          MenuItem {
+            text: "Simulate hard constraints"
+            onTriggered: placement.simulateHardConstraints();
+          }
         }
         Menu {
           title: "Video recorder"
