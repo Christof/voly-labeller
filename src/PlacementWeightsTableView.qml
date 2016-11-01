@@ -19,29 +19,22 @@ Item {
 
   Component {
     id: costFunctionWeightDelegate
-    Item {
-      Loader {
-        id: numberTextDelegate
-        source: "NumberTextSliderInput.qml"
-        onLoaded: {
-          item.minSliderValue = 0
-          item.maxSliderValue = 1e5
-          item.minTextValue = 0
-          item.maxTextValue = 1e5
-        }
+    TextInput {
+      x: 10
+      id: textInput
+      width: 30
+      rightPadding: 10
+      validator: DoubleValidator {
+        id: textInputValidator
+        bottom: 0
+        decimals: 5
+        top: Number.MAX_VALUE
+        notation: DoubleValidator.ScientificNotation
       }
-
-      Connections {
-        target: numberTextDelegate.item
-        onInputValueChanged: {
-          if (placement) placement.changeWeight(styleData.row, value);
-        }
-      }
-
-      Binding {
-        target: numberTextDelegate.item
-        property: "value"
-        value: styleData.value
+      horizontalAlignment: TextInput.AlignRight
+      text: styleData.value
+      onTextChanged: {
+        if (placement) placement.changeWeight(styleData.row, text);
       }
     }
   }
