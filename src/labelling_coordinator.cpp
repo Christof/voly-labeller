@@ -320,6 +320,19 @@ void LabellingCoordinator::distributeLabelsToLayers()
 
     layerIndex++;
   }
+
+  if (lcChan.isDebugEnabled())
+  {
+    std::stringstream output;
+    int layerIndex = 0;
+    for (auto layerLabels : labelsInLayer)
+    {
+      output << std::endl << "Layer " << layerIndex++ << "\t";
+      for (auto &label : layerLabels->getLabels())
+        output << "\"" << label.text << "\" (" << label.id << "), ";
+    }
+    qCDebug(lcChan) << "distributeLabelsToLayers: " << output.str().c_str();
+  }
 }
 
 void LabellingCoordinator::updateLabelPositionsInLabelNodes(
