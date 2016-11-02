@@ -185,7 +185,8 @@ void Application::setupCommandLineParser()
   QCommandLineOption screenshotOption(
       QStringList() << "s"
                     << "screenshot",
-      "Takes a screenshot of the given camera position", "Camera Position");
+      "Takes a screenshot of the given camera position. Characters after a '_' "
+      "are ignored but added to the filename", "Camera Position");
   parser.addOption(screenshotOption);
 }
 

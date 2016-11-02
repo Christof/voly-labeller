@@ -50,7 +50,8 @@ void RecordingAutomation::update()
 
   if (shouldMoveToPosition)
   {
-    moveToCameraPosition(cameraPositionName);
+    std::string name = cameraPositionName.substr(0, cameraPositionName.find("_"));
+    moveToCameraPosition(name);
     shouldMoveToPosition = false;
     return;
   }
