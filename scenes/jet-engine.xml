@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>13</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>7.646498680e-01</r0c0>
+				<r0c1>4.023313522e-07</r0c1>
+				<r0c2>-6.444460154e-01</r0c2>
+				<r0c3>-7.162792206e+00</r0c3>
+				<r1c0>-2.947217822e-01</r1c0>
+				<r1c1>8.892995119e-01</r1c1>
+				<r1c2>-3.496935368e-01</r1c2>
+				<r1c3>-2.811408997e+00</r1c3>
+				<r2c0>5.731053352e-01</r2c0>
+				<r2c1>4.573253691e-01</r2c1>
+				<r2c2>6.800028086e-01</r2c2>
+				<r2c3>-5.266942596e+01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.006878614e+00</r2c2>
+				<r2c3>-9.330197573e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>3.426046753e+01</x>
+				<y>2.612992668e+01</y>
+				<z>2.953619194e+01</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>5</count>
+				<item_version>0</item_version>
+				<item class_id="6" tracking_level="0" version="0">
+					<name>Position 0</name>
+					<viewMatrix>
+						<r0c0>7.646493316e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>-6.444466114e-01</r0c2>
+						<r0c3>-7.162744522e+00</r0c3>
+						<r1c0>-2.947220802e-01</r1c0>
+						<r1c1>8.892992139e-01</r1c1>
+						<r1c2>-3.496938944e-01</r1c2>
+						<r1c3>-2.811380386e+00</r1c3>
+						<r2c0>5.731058717e-01</r2c0>
+						<r2c1>4.573258162e-01</r2c1>
+						<r2c2>6.800020337e-01</r2c2>
+						<r2c3>-5.266943359e+01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S0</name>
+					<viewMatrix>
+						<r0c0>7.646491528e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>-6.444469094e-01</r0c2>
+						<r0c3>-7.162729263e+00</r0c3>
+						<r1c0>-2.947213352e-01</r1c0>
+						<r1c1>8.892999887e-01</r1c1>
+						<r1c2>-3.496927619e-01</r1c2>
+						<r1c3>-2.811460495e+00</r1c3>
+						<r2c0>5.731065869e-01</r2c0>
+						<r2c1>4.573244750e-01</r2c1>
+						<r2c2>6.800023913e-01</r2c2>
+						<r2c3>-5.266943359e+01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S1</name>
+					<viewMatrix>
+						<r0c0>9.303975105e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>-3.665522933e-01</r0c2>
+						<r0c3>-5.776052475e+00</r0c3>
+						<r1c0>-7.827897370e-02</r1c0>
+						<r1c1>9.769312143e-01</r1c1>
+						<r1c2>-1.986907870e-01</r1c2>
+						<r1c3>-3.586390018e+00</r1c3>
+						<r2c0>3.580963016e-01</r2c0>
+						<r2c1>2.135547251e-01</r2c1>
+						<r2c2>9.089342356e-01</r2c2>
+						<r2c3>-4.918867874e+01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S2</name>
+					<viewMatrix>
+						<r0c0>9.303975105e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>-3.665522933e-01</r0c2>
+						<r0c3>-5.776053905e+00</r0c3>
+						<r1c0>-7.827898115e-02</r1c0>
+						<r1c1>9.769312143e-01</r1c1>
+						<r1c2>-1.986908019e-01</r1c2>
+						<r1c3>-3.586389303e+00</r1c3>
+						<r2c0>3.580963016e-01</r2c0>
+						<r2c1>2.135547400e-01</r2c1>
+						<r2c2>9.089342356e-01</r2c2>
+						<r2c3>-1.475660324e+01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S4</name>
+					<viewMatrix>
+						<r0c0>4.269251525e-01</r0c0>
+						<r0c1>-7.450580597e-09</r0c1>
+						<r0c2>-9.042870402e-01</r0c2>
+						<r0c3>-2.021646500e+01</r0c3>
+						<r1c0>-2.961120009e-01</r1c0>
+						<r1c1>9.448673725e-01</r1c1>
+						<r1c2>-1.397981644e-01</r1c2>
+						<r1c3>-4.097043991e+00</r1c3>
+						<r2c0>8.544312119e-01</r2c0>
+						<r2c1>3.274535537e-01</r2c1>
+						<r2c2>4.033875763e-01</r2c2>
+						<r2c3>-2.044522285e+01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="7" class_name="MeshesNode" tracking_level="1" version="0" object_id="_1">
+			<assetFilename>assets/models/jet_engine.dae</assetFilename>
+			<transformation>
+				<r0c0>9.999998845e-03</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138729e-10</r1c1>
+				<r1c2>9.999999776e-03</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-9.999999776e-03</r2c1>
+				<r2c2>-4.371138729e-10</r2c2>
+				<r2c3>1.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="9" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>Fan</label.text>
+				<label.anchorPosition>
+					<x>-4.394367337e-02</x>
+					<y>7.883206844e+00</y>
+					<z>2.761157513e+00</z>
+				</label.anchorPosition>
+				<label.size class_id="10" tracking_level="0" version="0">
+					<x>5.000000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_3">
+			<label>
+				<label.id>2</label.id>
+				<label.text>LP shaft</label.text>
+				<label.anchorPosition>
+					<x>1.144468069e+00</x>
+					<y>1.048360825e+00</y>
+					<z>-1.979789734e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.080000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_4">
+			<label>
+				<label.id>3</label.id>
+				<label.text>HP compressor</label.text>
+				<label.anchorPosition>
+					<x>4.503624141e-01</x>
+					<y>4.113698959e+00</y>
+					<z>-1.564822769e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.780000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>HP shaft</label.text>
+				<label.anchorPosition>
+					<x>-4.207016528e-01</x>
+					<y>1.633023739e+00</y>
+					<z>-2.235687065e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.080000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_6">
+			<label>
+				<label.id>5</label.id>
+				<label.text>LP compressor</label.text>
+				<label.anchorPosition>
+					<x>1.735757947e+00</x>
+					<y>7.003161311e-01</y>
+					<z>-7.126433372e+00</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.780000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_7">
+			<label>
+				<label.id>6</label.id>
+				<label.text>Combustion Chamber</label.text>
+				<label.anchorPosition>
+					<x>-2.552790880e+00</x>
+					<y>1.883938551e+00</y>
+					<z>-2.353549004e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.480000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_8">
+			<label>
+				<label.id>7</label.id>
+				<label.text>HP turbine</label.text>
+				<label.anchorPosition>
+					<x>1.389626384e+00</x>
+					<y>2.090808868e+00</y>
+					<z>-3.206884766e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_9">
+			<label>
+				<label.id>8</label.id>
+				<label.text>LP turbine</label.text>
+				<label.anchorPosition>
+					<x>6.319871902e+00</x>
+					<y>4.870009422e+00</y>
+					<z>-3.716493988e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_10">
+			<label>
+				<label.id>9</label.id>
+				<label.text>Nozzle</label.text>
+				<label.anchorPosition>
+					<x>-2.268385887e+00</x>
+					<y>8.404424191e-01</y>
+					<z>-5.873600006e+01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>9.000000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_11">
+			<label>
+				<label.id>10</label.id>
+				<label.text>Turbofan engine</label.text>
+				<label.anchorPosition>
+					<x>-5.092501163e+00</x>
+					<y>1.562141228e+01</y>
+					<z>4.061645508e+00</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.900000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
