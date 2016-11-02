@@ -234,7 +234,7 @@ std::vector<float> LabellingCoordinator::updateClusters()
 
 bool LabellingCoordinator::haveLabelPositionsChanged()
 {
-  return hasChanges;
+  return labellingEnabled && hasChanges;
 }
 
 void LabellingCoordinator::resize(int width, int height)
