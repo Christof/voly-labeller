@@ -80,6 +80,17 @@ void addSponza(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
 }
 
+void addJetEngine(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/jet_engine.dae";
+  Eigen::Affine3f trans(
+      Eigen::Translation3f(Eigen::Vector3f(0, 0, 1)) * Eigen::Scaling(0.01f) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  Eigen::Matrix4f matrix = trans.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
+}
+
 void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   const std::string filename = "assets/models/artificial.dae";
