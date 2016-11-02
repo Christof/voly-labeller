@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <ctime>
+#include <chrono>
 #include "./labelling_coordinator.h"
 #include "./video_recorder.h"
 #include "./nodes.h"
@@ -50,7 +51,8 @@ void RecordingAutomation::update()
 
   if (shouldMoveToPosition)
   {
-    std::string name = cameraPositionName.substr(0, cameraPositionName.find("_"));
+    std::string name =
+        cameraPositionName.substr(0, cameraPositionName.find("_"));
     moveToCameraPosition(name);
     shouldMoveToPosition = false;
     return;
@@ -59,13 +61,17 @@ void RecordingAutomation::update()
   if (labellingCoordinator->haveLabelPositionsChanged())
   {
     unchangedCount = 0;
+    startTime = std::chrono::high_resolution_clock::now();
   }
   else
   {
     unchangedCount++;
   }
 
-  if (unchangedCount > 10)
+  auto endTime = std::chrono::high_resolution_clock::now();
+  auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(endTime -
+                                                                    startTime);
+  if (unchangedCount > 10 && diff.count() > 1500)
   {
     std::vector<unsigned char> pixels(width * height * 4);
     gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
