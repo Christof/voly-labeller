@@ -178,6 +178,10 @@ void Application::setupCommandLineParser()
       "apollonius", "Use apollonius graph to determine label insertion order");
   parser.addOption(apolloniusOption);
 
+  QCommandLineOption disableLabellingOption("disable-labelling",
+                                            "Disable drawing lables");
+  parser.addOption(disableLabellingOption);
+
   QCommandLineOption screenshotOption(
       QStringList() << "s"
                     << "screenshot",
@@ -318,5 +322,8 @@ void Application::onInitializationDone()
 
   if (parser.isSet("apollonius"))
     labellingController->toggleApollonius();
+
+  if (parser.isSet("disable-labelling"))
+    scene->enableLabelling(false);
 }
 
