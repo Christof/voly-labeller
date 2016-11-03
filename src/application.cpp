@@ -182,11 +182,16 @@ void Application::setupCommandLineParser()
                                             "Disable drawing lables");
   parser.addOption(disableLabellingOption);
 
+  QCommandLineOption optimizeOnIdleOption(
+      "optimize-on-idle", "Optimize costs when the camera is not moving");
+  parser.addOption(optimizeOnIdleOption);
+
   QCommandLineOption screenshotOption(
       QStringList() << "s"
                     << "screenshot",
       "Takes a screenshot of the given camera position. Characters after a '_' "
-      "are ignored but added to the filename", "Camera Position");
+      "are ignored but added to the filename",
+      "Camera Position");
   parser.addOption(screenshotOption);
 }
 
@@ -326,5 +331,8 @@ void Application::onInitializationDone()
 
   if (parser.isSet("disable-labelling"))
     scene->enableLabelling(false);
+
+  if (parser.isSet("optimize-on-idle"))
+    labellingController->toggleOptimizeOnIdle();
 }
 
