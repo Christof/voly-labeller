@@ -65,7 +65,7 @@ class Labeller
 
   std::map<int, Eigen::Vector2f> newPositions;
   std::map<int, Eigen::Vector2f> oldPositions;
-  float costSum;
+  float costSum = 0.0f;
 };
 
 }  // namespace Placement
