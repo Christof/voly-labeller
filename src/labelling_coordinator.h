@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <vector>
+#include <limits>
 #include "./placement/labeller.h"
 #include "./forces/labeller.h"
 #include "./labelling/labeller_frame_data.h"
@@ -104,7 +105,7 @@ class LabellingCoordinator
   bool firstFramesWithoutPlacement = true;
   LabellerFrameData labellerFrameData;
   Clustering clustering;
-  float sumOfCosts = 0.0f;
+  float sumOfCosts = std::numeric_limits<float>::max();
   bool preserveLastResult = false;
   bool labellingEnabled = true;
   std::map<int, Eigen::Vector2f> lastPlacementResult;
