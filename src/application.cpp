@@ -96,6 +96,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
   labellingController =
       std::make_unique<LabellingController>(labellingCoordinator);
+  if (parser.isSet("internal-labelling"))
+    labellingController->toggleInternalLabelling();
 }
 
 Application::~Application()
@@ -181,6 +183,8 @@ void Application::setupCommandLineParser()
   QCommandLineOption disableLabellingOption("disable-labelling",
                                             "Disable drawing lables");
   parser.addOption(disableLabellingOption);
+
+  parser.addOption({ "internal-labelling", "Enable internal labelling" });
 
   QCommandLineOption optimizeOnIdleOption(
       "optimize-on-idle", "Optimize costs when the camera is not moving");
