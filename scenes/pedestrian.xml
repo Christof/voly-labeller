@@ -187,7 +187,7 @@
 	</item>
 	<item>
 		<px class_id="8" class_name="MeshNode" tracking_level="1" version="0" object_id="_2">
-			<assetFilename>assets/models/RekoCT2_01-18.dae</assetFilename>
+			<assetFilename>assets/models/RekoCT2_01.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>-7.425790280e-02</r0c0>
