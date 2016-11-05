@@ -35,7 +35,11 @@ Mesh::Mesh(std::string filename, aiMesh *mesh, aiMaterial *material)
       loadVector4FromMaterial("$clr.diffuse", material);
   phongMaterial.specularColor =
       loadVector4FromMaterial("$clr.specular", material);
-  phongMaterial.shininess = loadFloatFromMaterial("$mat.shininess", material);
+  float readShininess;
+  phongMaterial.shininess =
+      loadFloatFromMaterialSave("$mat.shininess", material, readShininess)
+          ? readShininess
+          : 32.0f;
 
   float readAlpha;
   alpha = loadFloatFromMaterialSave("$mat.opacity", material, readAlpha)

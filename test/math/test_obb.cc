@@ -38,6 +38,14 @@ TEST(Test_Obb, CreationFromPoints)
   EXPECT_Vector3f_NEAR(Eigen::Vector3f(1, 1, -1), obb.corners[7], 1E-4);
 }
 
+TEST(Test_Obb, CreationFromEmptyPoints)
+{
+  Eigen::MatrixXf points;
+  Math::Obb obb(points);
+
+  EXPECT_FALSE(obb.isInitialized());
+}
+
 TEST(Test_Obb, CreationFromCenterHalfWidthsAndAxes)
 {
   Eigen::Vector3f center(1, 2, 3);

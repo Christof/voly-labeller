@@ -24,6 +24,24 @@ DefaultSceneCreator::DefaultSceneCreator(std::shared_ptr<Nodes> nodes,
 {
 }
 
+void addPedestrianNodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/fussgaenger_graz_iterative.mhd",
+      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
+
+  const std::string filename = "assets/models/RekoCT2_01-8.dae";
+  Importer importer;
+
+  unsigned int meshIndex = 0;
+  auto mesh = importer.import(filename, meshIndex);
+  auto transformation = importer.getTransformationFor(filename, meshIndex);
+  auto node = new MeshNode(filename, meshIndex, mesh, transformation);
+  sceneNodes.push_back(std::unique_ptr<MeshNode>(node));
+}
+
 void addLIDCIDRINodes(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   Eigen::Affine3f trans(
@@ -62,6 +80,26 @@ void addSponza(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
 }
 
+void addJetEngine(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/jet_engine.dae";
+  Eigen::Affine3f trans(
+      Eigen::Translation3f(Eigen::Vector3f(0, 0, 1)) * Eigen::Scaling(0.01f) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  Eigen::Matrix4f matrix = trans.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
+}
+
+void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/artificial.dae";
+  Eigen::Affine3f scaling(Eigen::Scaling(1.0f));
+  Eigen::Matrix4f scalingMatrix = scaling.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
+}
+
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
@@ -70,8 +108,8 @@ void DefaultSceneCreator::create()
   Eigen::Affine3f trans(
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/delikt_messer_256.mha",
-      "assets/transferfunctions/scapula4.gra", trans.matrix(), true));
+      "assets/datasets/dice.mha",
+      "assets/transferfunctions/dice4.gra", trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");

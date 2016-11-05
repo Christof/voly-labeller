@@ -8,6 +8,7 @@
 #include "./graphics/shader_program.h"
 #include "./importer.h"
 #include "./math/eigen.h"
+#include "./math/utils.h"
 #include "./labelling/labeller_frame_data.h"
 
 const Eigen::Vector4f color = { 0.85f, 0.85f, 0.85f, 1 };
@@ -184,24 +185,25 @@ void LabelNode::renderLabel(Graphics::Gl *gl,
 
   auto shaderId = labelQuad.getShaderProgramId();
   managers->getShaderManager()->bind(shaderId, renderData);
+  managers->getShaderManager()->getShader(shaderId)->setUniform(
+      "maxTextureCoord", maxTextureCoordinates);
 
   managers->getObjectManager()->renderImmediately(labelQuad);
 }
 
 QImage *LabelNode::renderLabelTextToQImage()
 {
-  int width = label.size.x() * 4;
-  int height = label.size.y() * 4;
-  QImage *image = new QImage(width, height, QImage::Format_ARGB32);
-  image->fill(Qt::GlobalColor::transparent);
+  int width = 4 * label.size.x();
+  int height = 4 * label.size.y();
+  int textureWidth = Math::computeNextPowerOfTwo(width);
+  int textureHeight = Math::computeNextPowerOfTwo(height);
+  QImage *image =
+      new QImage(textureWidth, textureHeight, QImage::Format_RGBA8888);
+  QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
+  image->fill(c);
 
   QPainter painter;
   painter.begin(image);
-
-  QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
-  painter.setBrush(QBrush(c));
-  painter.setPen(c);
-  painter.drawRect(QRectF(0, 0, width, height));
 
   painter.setPen(Qt::black);
   painter.setFont(QFont("Arial", 72));
@@ -211,6 +213,9 @@ QImage *LabelNode::renderLabelTextToQImage()
 
   textureText = label.text;
   labelSize = label.size;
+  maxTextureCoordinates =
+      Eigen::Vector2f(static_cast<float>(width) / textureWidth,
+                      static_cast<float>(height) / textureHeight);
 
   return image;
 }

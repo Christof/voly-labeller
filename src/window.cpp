@@ -109,6 +109,8 @@ void Window::handleLazyInitialization()
     scene->resize(size().width(), size().height());
     scene->initialize();
     initialized = true;
+
+    emit initializationDone();
   }
 }
 

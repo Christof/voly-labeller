@@ -1,5 +1,6 @@
 #include "./texture_space_description.h"
 #include <string>
+#include "../math/utils.h"
 
 namespace Graphics
 {
@@ -36,15 +37,6 @@ bool operator<(const TextureSpaceDescription &left,
   return false;
 }
 
-int computeNextPowerOfTwo(int value)
-{
-  int powerOfTwo = 1;
-  while (powerOfTwo < value)
-    powerOfTwo <<= 1;
-
-  return powerOfTwo;
-}
-
 void TextureSpaceDescription::growToValidSize(int minX, int minY)
 {
   if (width < minX)
@@ -52,8 +44,8 @@ void TextureSpaceDescription::growToValidSize(int minX, int minY)
   if (height < minY)
     height = minY;
 
-  width = computeNextPowerOfTwo(width);
-  height = computeNextPowerOfTwo(height);
+  width = Math::computeNextPowerOfTwo(width);
+  height = Math::computeNextPowerOfTwo(height);
 }
 
 std::string TextureSpaceDescription::toString() const

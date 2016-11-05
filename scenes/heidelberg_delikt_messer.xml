@@ -11,14 +11,14 @@
 				<r0c1>-4.547473509e-13</r0c1>
 				<r0c2>-8.367961273e-03</r0c2>
 				<r0c3>-1.862645149e-09</r0c3>
-				<r1c0>-4.842992439e-06</r1c0>
+				<r1c0>-4.842683666e-06</r1c0>
 				<r1c1>9.999998808e-01</r1c1>
-				<r1c2>-5.787339760e-04</r1c2>
-				<r1c3>1.362394642e-10</r1c3>
+				<r1c2>-5.786970723e-04</r1c2>
+				<r1c3>1.313935627e-10</r1c3>
 				<r2c0>8.367960341e-03</r2c0>
-				<r2c1>5.787542323e-04</r2c1>
+				<r2c1>5.787173286e-04</r2c1>
 				<r2c2>9.999648333e-01</r2c2>
-				<r2c3>-1.873431087e+00</r2c3>
+				<r2c3>-1.873430848e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>0.000000000e+00</r3c2>
@@ -35,8 +35,8 @@
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.689432383e+00</r2c2>
-				<r2c3>-2.056123495e+00</r2c3>
+				<r2c2>-1.689432144e+00</r2c2>
+				<r2c3>-2.056123018e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
@@ -184,7 +184,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/delikt_messer_256_extracted.mha</volumePath>
+			<volumePath>assets/datasets/heidelberg_delikt_messer_1_clipped.mhd</volumePath>
 			<transferFunctionPath>assets/transferfunctions/hb_messer_weichteilxy.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
@@ -217,7 +217,7 @@
 					<z>1.595781371e-02</z>
 				</label.anchorPosition>
 				<label.size class_id="10" tracking_level="0" version="0">
-					<x>1.280000000e+02</x>
+					<x>7.000000000e+01</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -258,7 +258,7 @@
 					<z>6.283749640e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.280000000e+02</x>
+					<x>1.200000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -275,7 +275,7 @@
 					<z>4.905659333e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>1.280000000e+02</x>
+					<x>8.000000000e+01</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -292,7 +292,7 @@
 					<z>5.270540342e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>1.500000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -309,7 +309,7 @@
 					<z>-3.841095790e-02</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.560000000e+02</x>
+					<x>1.900000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>

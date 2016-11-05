@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <string>
+#include <chrono>
 #include "./graphics/gl.h"
 
 class LabellingCoordinator;
@@ -51,6 +52,7 @@ class RecordingAutomation
   bool exitAfterScreenshot = false;
 
   int unchangedCount = 0;
+  std::chrono::high_resolution_clock::time_point startTime;
 
   void moveToCameraPosition(std::string name);
 };

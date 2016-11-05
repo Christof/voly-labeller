@@ -8,6 +8,9 @@ namespace Math
 
 Obb::Obb(Eigen::MatrixXf points)
 {
+  if (points.cols() == 0 || points.rows() == 0)
+    return;
+
   Eigen::Matrix3Xf centered = points.colwise() - points.rowwise().mean();
 
   Eigen::MatrixXf cov = centered * centered.adjoint();

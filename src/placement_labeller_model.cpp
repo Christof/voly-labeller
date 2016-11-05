@@ -3,6 +3,7 @@
 #endif
 
 #include "./placement_labeller_model.h"
+#include <limits>
 #include "./labelling_coordinator.h"
 
 const int ROW_COUNT = 9;
@@ -108,6 +109,17 @@ void PlacementLabellerModel::toggleVisibility()
 {
   isVisible = !isVisible;
   emit isVisibleChanged();
+}
+
+void PlacementLabellerModel::simulateHardConstraints()
+{
+  beginResetModel();
+
+  weights.connectorShadowConstraint = std::numeric_limits<float>::max();
+  weights.labelShadowConstraint = std::numeric_limits<float>::max();
+  coordinator->setCostFunctionWeights(weights);
+
+  endResetModel();
 }
 
 QString PlacementLabellerModel::getWeightNameForRowIndex(int rowIndex) const

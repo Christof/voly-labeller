@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>12</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.951584935e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>9.828359634e-02</r0c2>
+				<r0c3>2.469111979e-02</r0c3>
+				<r1c0>3.226697817e-02</r1c0>
+				<r1c1>9.445718527e-01</r1c1>
+				<r1c2>-3.267153502e-01</r1c2>
+				<r1c3>-1.338750869e-01</r1c3>
+				<r2c0>-9.283591062e-02</r2c0>
+				<r2c1>3.283048272e-01</r2c1>
+				<r2c2>9.399986267e-01</r2c2>
+				<r2c3>-1.973676801e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.350779414e+00</r2c2>
+				<r2c3>-1.204862475e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>-1.106440052e-01</x>
+				<y>4.461175203e-01</y>
+				<z>8.690891266e-01</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>4</count>
+				<item_version>0</item_version>
+				<item class_id="6" tracking_level="0" version="0">
+					<name>Position 0</name>
+					<viewMatrix>
+						<r0c0>9.951584935e-01</r0c0>
+						<r0c1>-1.862645149e-09</r0c1>
+						<r0c2>9.828358889e-02</r0c2>
+						<r0c3>2.469111979e-02</r0c3>
+						<r1c0>3.226697817e-02</r1c0>
+						<r1c1>9.445718527e-01</r1c1>
+						<r1c2>-3.267153502e-01</r1c2>
+						<r1c3>-1.338751316e-01</r1c3>
+						<r2c0>-9.283590317e-02</r2c0>
+						<r2c1>3.283048272e-01</r2c1>
+						<r2c2>9.399986267e-01</r2c2>
+						<r2c3>-1.973677039e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S1</name>
+					<viewMatrix>
+						<r0c0>9.977856278e-01</r0c0>
+						<r0c1>-1.862645149e-09</r0c1>
+						<r0c2>6.651281565e-02</r0c2>
+						<r0c3>1.839373261e-02</r0c3>
+						<r1c0>1.733616181e-02</r1c0>
+						<r1c1>9.654350877e-01</r1c1>
+						<r1c2>-2.600667477e-01</r1c2>
+						<r1c3>-3.967659771e-01</r1c3>
+						<r2c0>-6.421379745e-02</r2c0>
+						<r2c1>2.606438994e-01</r2c1>
+						<r2c2>9.632971287e-01</r2c2>
+						<r2c3>-5.120809674e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S2</name>
+					<viewMatrix>
+						<r0c0>9.999952912e-01</r0c0>
+						<r0c1>-5.820766091e-11</r0c1>
+						<r0c2>-3.088351572e-03</r0c2>
+						<r0c3>-7.958874106e-03</r0c3>
+						<r1c0>-6.155328010e-04</r1c0>
+						<r1c1>9.799370170e-01</r1c1>
+						<r1c2>-1.993069649e-01</r1c2>
+						<r1c3>3.699594140e-01</r1c3>
+						<r2c0>3.026389517e-03</r2c0>
+						<r2c1>1.993079036e-01</r2c1>
+						<r2c2>9.799322486e-01</r2c2>
+						<r2c3>-9.128274322e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S0</name>
+					<viewMatrix>
+						<r0c0>9.951584935e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>9.828359634e-02</r0c2>
+						<r0c3>2.469111979e-02</r0c3>
+						<r1c0>3.226697817e-02</r1c0>
+						<r1c1>9.445718527e-01</r1c1>
+						<r1c2>-3.267153502e-01</r1c2>
+						<r1c3>-1.338750869e-01</r1c3>
+						<r2c0>-9.283591062e-02</r2c0>
+						<r2c1>3.283048272e-01</r2c1>
+						<r2c2>9.399986267e-01</r2c2>
+						<r2c3>-1.973676801e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/heidelberg_motorcycle_1_clipped.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="9" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>Broken Femur</label.text>
+				<label.anchorPosition>
+					<x>-1.982851177e-01</x>
+					<y>-1.877507716e-01</y>
+					<z>-5.762549117e-03</z>
+				</label.anchorPosition>
+				<label.size class_id="10" tracking_level="0" version="0">
+					<x>1.700000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_3">
+			<label>
+				<label.id>2</label.id>
+				<label.text>Fractured Femur</label.text>
+				<label.anchorPosition>
+					<x>8.852390945e-02</x>
+					<y>-3.008373380e-01</y>
+					<z>-9.746429510e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.990000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_4">
+			<label>
+				<label.id>3</label.id>
+				<label.text>Broken Rib</label.text>
+				<label.anchorPosition>
+					<x>-1.282086819e-01</x>
+					<y>2.963563204e-01</y>
+					<z>-7.637134939e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.300000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_5">
+			<label>
+				<label.id>4</label.id>
+				<label.text>Broken Rib</label.text>
+				<label.anchorPosition>
+					<x>-1.438301802e-01</x>
+					<y>3.233600855e-01</y>
+					<z>-7.397625595e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.300000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_6">
+			<label>
+				<label.id>5</label.id>
+				<label.text>Broken Rib</label.text>
+				<label.anchorPosition>
+					<x>-1.241166368e-01</x>
+					<y>3.636669815e-01</y>
+					<z>-8.173254132e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.300000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_7">
+			<label>
+				<label.id>6</label.id>
+				<label.text>Broken Rib</label.text>
+				<label.anchorPosition>
+					<x>-1.072486266e-01</x>
+					<y>3.967701793e-01</y>
+					<z>-9.049212188e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.300000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_8">
+			<label>
+				<label.id>7</label.id>
+				<label.text>Belt</label.text>
+				<label.anchorPosition>
+					<x>7.207885385e-02</x>
+					<y>-8.910320699e-02</y>
+					<z>7.017911971e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.000000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_9">
+			<label>
+				<label.id>8</label.id>
+				<label.text>Broken Sternum</label.text>
+				<label.anchorPosition>
+					<x>3.333158325e-03</x>
+					<y>4.852338433e-01</y>
+					<z>6.239841133e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.850000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_10">
+			<label>
+				<label.id>9</label.id>
+				<label.text>Fractured Shoulder</label.text>
+				<label.anchorPosition>
+					<x>-6.586857140e-02</x>
+					<y>6.275455952e-01</y>
+					<z>-5.559984595e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.150000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+

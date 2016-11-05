@@ -43,9 +43,10 @@ class Test_PlacementLabeller : public ::testing::Test
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
     shadowConstraintDrawer =
         std::make_shared<Mock_ShadowConstraintDrawer>(width, height);
+    float scaleFactor = 1.0f;
     auto constraintUpdater = std::make_shared<ConstraintUpdater>(
         width, height, anchorConstraintDrawer, connectorShadowDrawer,
-        shadowConstraintDrawer);
+        shadowConstraintDrawer, scaleFactor);
 
     auto persistentConstraintUpdater =
         std::make_shared<PersistentConstraintUpdater>(constraintUpdater);

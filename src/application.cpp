@@ -69,7 +69,7 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   recordingAutomationController =
       std::make_unique<RecordingAutomationController>(recordingAutomation);
 
-  const int postProcessingTextureSize = 512;
+  const int postProcessingTextureSize = 1024;
   textureMapperManager =
       std::make_shared<TextureMapperManager>(postProcessingTextureSize);
   textureMapperManagerController =
@@ -82,11 +82,14 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       parser.isSet("offline") ? 1.0f / offlineFPS : 0.0f;
   window =
       std::make_unique<Window>(scene, videoRecorder, offlineRenderingFrameTime);
+  QObject::connect(window.get(), &Window::initializationDone, this,
+                   &Application::onInitializationDone);
 
   sceneController = std::make_unique<SceneController>(scene);
   labellerModel = std::make_unique<LabellerModel>(forcesLabeller);
   placementLabellerModel =
       std::make_unique<PlacementLabellerModel>(labellingCoordinator);
+
   cameraPositionsModel = std::make_unique<CameraPositionsModel>(nodes);
   mouseShapeController = std::make_unique<MouseShapeController>();
   pickingController = std::make_shared<PickingController>(scene);
@@ -167,10 +170,28 @@ void Application::setupCommandLineParser()
                                   "layerCount", "4");
   parser.addOption(layersOption);
 
+  QCommandLineOption hardConstraintsOption("hard-constraints",
+                                           "Simulate hard constraints");
+  parser.addOption(hardConstraintsOption);
+
+  QCommandLineOption apolloniusOption(
+      "apollonius", "Use apollonius graph to determine label insertion order");
+  parser.addOption(apolloniusOption);
+
+  QCommandLineOption disableLabellingOption("disable-labelling",
+                                            "Disable drawing lables");
+  parser.addOption(disableLabellingOption);
+
+  QCommandLineOption optimizeOnIdleOption(
+      "optimize-on-idle", "Optimize costs when the camera is not moving");
+  parser.addOption(optimizeOnIdleOption);
+
   QCommandLineOption screenshotOption(
       QStringList() << "s"
                     << "screenshot",
-      "Takes a screenshot of the given camera position", "Camera Position");
+      "Takes a screenshot of the given camera position. Characters after a '_' "
+      "are ignored but added to the filename",
+      "Camera Position");
   parser.addOption(screenshotOption);
 }
 
@@ -298,5 +319,20 @@ int Application::parseLayerCount()
   }
 
   return layerCount;
+}
+
+void Application::onInitializationDone()
+{
+  if (parser.isSet("hard-constraints"))
+    placementLabellerModel->simulateHardConstraints();
+
+  if (parser.isSet("apollonius"))
+    labellingController->toggleApollonius();
+
+  if (parser.isSet("disable-labelling"))
+    scene->enableLabelling(false);
+
+  if (parser.isSet("optimize-on-idle"))
+    labellingController->toggleOptimizeOnIdle();
 }
 
