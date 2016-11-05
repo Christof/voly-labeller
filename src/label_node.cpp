@@ -46,7 +46,7 @@ void LabelNode::render(Graphics::Gl *gl,
     initialize(gl, managers);
   }
 
-  if (isVisible)
+  if (isVisible && isAnchorVisible)
     renderAnchor(gl, managers, renderData);
 }
 

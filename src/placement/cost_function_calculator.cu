@@ -27,7 +27,7 @@ struct EvalResult
 
 __host__ __device__ bool operator<(const EvalResult &a, const EvalResult &b)
 {
-  return (a.cost < b.cost);
+  return a.cost < b.cost;
 }
 
 struct CostEvaluator : public thrust::unary_function<int, EvalResult>
@@ -126,9 +126,11 @@ struct CostEvaluator : public thrust::unary_function<int, EvalResult>
 
     float distanceToAnchor = lineLength(x, y);
 
-    unsigned char labelShadow = constraintValue & labelShadowValue;
-    unsigned char connectorShadow = constraintValue & connectorShadowValue;
-    unsigned char anchorConstraint = constraintValue & anchorConstraintValue;
+    float labelShadow = constraintValue & labelShadowValue ? 1.0f : 0.0f;
+    float connectorShadow = constraintValue & connectorShadowValue ?
+      1.0f : 0.0f;
+    float anchorConstraint = constraintValue & anchorConstraintValue ?
+      1.0f : 0.0f;
 
     float cost = weights.labelShadowConstraint * labelShadow +
                  weights.connectorShadowConstraint * connectorShadow +
@@ -149,10 +151,7 @@ struct MinimumCostOperator : public thrust::binary_function<T, T, T>  // NOLINT
 {
   __host__ __device__ T operator()(const T &x, const T &y) const
   {
-    T result;
-
-    result = x < y ? x : y;
-    return result;
+    return x < y ? x : y;
   }
 };
 

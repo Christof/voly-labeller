@@ -19,6 +19,8 @@ class LabellingController : public QObject
       std::shared_ptr<LabellingCoordinator> labellingCoordinator);
 
  public slots:
+  void toggleInternalLabelling();
+  void toggleAnchorVisibility();
   void toggleForces();
   void toggleOptimizeOnIdle();
   void toggleApollonius();

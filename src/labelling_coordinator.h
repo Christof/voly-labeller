@@ -74,10 +74,13 @@ class LabellingCoordinator
 
   void resize(int width, int height);
 
+  void toggleAnchorVisibility();
+
   void saveOcclusion();
   void saveConstraints();
   void setCostFunctionWeights(Placement::CostFunctionWeights weights);
 
+  bool internalLabellingEnabled = false;
   bool forcesEnabled = true;
   bool optimizeOnIdle = false;
   bool useApollonius = false;
@@ -114,6 +117,7 @@ class LabellingCoordinator
   LabelPositions getForcesPositions(LabelPositions placementPositions);
   void distributeLabelsToLayers();
   void updateLabelPositionsInLabelNodes(LabelPositions labelPositions);
+  void performInternalLabelling();
 
   std::map<int, Eigen::Vector3f>
   addDepthValueNDC(std::map<int, Eigen::Vector2f> positionsNDC);

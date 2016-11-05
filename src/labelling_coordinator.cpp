@@ -147,6 +147,12 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
   this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
 
+  if (internalLabellingEnabled)
+  {
+    performInternalLabelling();
+    return false;
+  }
+
   saliency->runKernel();
 
   auto positionsNDC2d = getPlacementPositions(activeLayerNumber);
@@ -225,7 +231,7 @@ void LabellingCoordinator::updatePlacement()
 
 std::vector<float> LabellingCoordinator::updateClusters()
 {
-  if (!labellingEnabled)
+  if (!labellingEnabled || internalLabellingEnabled)
     return std::vector<float>{ 1.0f };
 
   clustering.update(labellerFrameData.viewProjection);
@@ -243,6 +249,12 @@ void LabellingCoordinator::resize(int width, int height)
     placementLabeller->resize(width, height);
 
   forcesLabeller->resize(width, height);
+}
+
+void LabellingCoordinator::toggleAnchorVisibility()
+{
+  for (auto node : nodes->getLabelNodes())
+    node->isAnchorVisible = !node->isAnchorVisible;
 }
 
 void LabellingCoordinator::saveOcclusion()
@@ -397,5 +409,25 @@ std::map<int, Eigen::Vector3f> LabellingCoordinator::ndcPositionsTo3d(
   }
 
   return positions;
+}
+
+void LabellingCoordinator::performInternalLabelling()
+{
+  for (int layerIndex = 0; layerIndex < layerCount; layerIndex++)
+    labelsInLayer[layerIndex]->clear();
+
+  LabelPositions labelPositions;
+  auto container = labelsInLayer[0];
+  for (auto label : labels->getLabels())
+  {
+    auto ndc = labellerFrameData.project(label.anchorPosition);
+    labelPositions.update(label.id, ndc, label.anchorPosition);
+
+    container->add(label);
+    labelIdToLayerIndex[label.id] = 0;
+    labelIdToZValue[label.id] = 1.0f;
+  }
+
+  updateLabelPositionsInLabelNodes(labelPositions);
 }
 

@@ -96,6 +96,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   labelsModel = std::make_unique<LabelsModel>(labels, pickingController);
   labellingController =
       std::make_unique<LabellingController>(labellingCoordinator);
+  if (parser.isSet("internal-labelling"))
+    labellingController->toggleInternalLabelling();
 }
 
 Application::~Application()
@@ -162,37 +164,24 @@ void Application::setupCommandLineParser()
   parser.addVersionOption();
   parser.addPositionalArgument(
       "scene", QCoreApplication::translate("main", "Scene file to load."));
-  QCommandLineOption offlineRenderingOption("offline",
-                                            "Enables offline rendering");
-  parser.addOption(offlineRenderingOption);
 
-  QCommandLineOption layersOption("layers", "Number of layers. Default is 4",
-                                  "layerCount", "4");
-  parser.addOption(layersOption);
-
-  QCommandLineOption hardConstraintsOption("hard-constraints",
-                                           "Simulate hard constraints");
-  parser.addOption(hardConstraintsOption);
-
-  QCommandLineOption apolloniusOption(
-      "apollonius", "Use apollonius graph to determine label insertion order");
-  parser.addOption(apolloniusOption);
-
-  QCommandLineOption disableLabellingOption("disable-labelling",
-                                            "Disable drawing lables");
-  parser.addOption(disableLabellingOption);
-
-  QCommandLineOption optimizeOnIdleOption(
-      "optimize-on-idle", "Optimize costs when the camera is not moving");
-  parser.addOption(optimizeOnIdleOption);
-
-  QCommandLineOption screenshotOption(
-      QStringList() << "s"
-                    << "screenshot",
-      "Takes a screenshot of the given camera position. Characters after a '_' "
-      "are ignored but added to the filename",
-      "Camera Position");
-  parser.addOption(screenshotOption);
+  parser.addOption({ "offline", "Enables offline rendering" });
+  parser.addOption(
+      { "layers", "Number of layers. Default is 4", "layerCount", "4" });
+  parser.addOption({ "hard-constraints", "Simulate hard constraints" });
+  parser.addOption(
+      { "apollonius",
+        "Use apollonius graph to determine label insertion order" });
+  parser.addOption({ "disable-labelling", "Disable drawing lables" });
+  parser.addOption({ "internal-labelling", "Enable internal labelling" });
+  parser.addOption(
+      { "optimize-on-idle", "Optimize costs when the camera is not moving" });
+  parser.addOption({ QStringList() << "s"
+                                   << "screenshot",
+                     "Takes a screenshot of the given camera position. "
+                     "Characters after a '_' "
+                     "are ignored but added to the filename",
+                     "Camera Position" });
 }
 
 void Application::setupWindow()
