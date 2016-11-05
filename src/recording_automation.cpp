@@ -51,8 +51,9 @@ void RecordingAutomation::update()
 
   if (shouldMoveToPosition)
   {
-    std::string name =
-        cameraPositionName.substr(0, cameraPositionName.find("_"));
+    std::string firstPosition =
+        cameraPositionName.substr(0, cameraPositionName.find(","));
+    std::string name = firstPosition.substr(0, cameraPositionName.find("_"));
     moveToCameraPosition(name);
     shouldMoveToPosition = false;
     return;
@@ -76,8 +77,9 @@ void RecordingAutomation::update()
     std::vector<unsigned char> pixels(width * height * 4);
     gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
                      pixels.data());
-    std::string detail =
-        cameraPositionName.size() ? cameraPositionName : getTime();
+    int nextIndex = cameraPositionName.find(",");
+    std::string name = cameraPositionName.substr(0, nextIndex);
+    std::string detail = name.size() ? name : getTime();
 
     std::string filename =
         "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
@@ -85,6 +87,14 @@ void RecordingAutomation::update()
     takeScreenshot = false;
     qCWarning(recordingAutomationChan) << "Took screenshot:"
                                        << filename.c_str();
+
+    if (nextIndex > 0)
+    {
+      cameraPositionName = cameraPositionName.substr(nextIndex + 1);
+      shouldMoveToPosition = true;
+      takeScreenshot = true;
+      return;
+    }
 
     if (exitAfterScreenshot)
       exit(0);
