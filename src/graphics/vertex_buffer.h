@@ -52,9 +52,9 @@ class VertexBuffer
   void update(std::vector<float> data)
   {
     bind();
-    size = data.size();
     gl->glBufferSubData(GL_ARRAY_BUFFER, 0, data.size() * sizeof(float),
                         &data[0]);
+    size = data.size();
   }
 
   size_t getSize()
