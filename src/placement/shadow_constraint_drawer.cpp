@@ -33,9 +33,9 @@ void ShadowConstraintDrawer::initialize(
 
   const int maxLabelCount = 100;
   vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(maxLabelCount, 2);
-  vertexArray->addStream(maxLabelCount, 2);
-  vertexArray->addStream(maxLabelCount, 2);
+  vertexArray->addStream(maxLabelCount * 4, 2);
+  vertexArray->addStream(maxLabelCount * 4, 2);
+  vertexArray->addStream(maxLabelCount * 4, 2);
 }
 
 void ShadowConstraintDrawer::update(const std::vector<float> &sources,

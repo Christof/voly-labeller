@@ -34,7 +34,7 @@ void AnchorConstraintDrawer::initialize(
 
   const int maxLabelCount = 100;
   vertexArray = std::make_unique<Graphics::VertexArray>(gl, GL_POINTS, 2);
-  vertexArray->addStream(maxLabelCount, 2);
+  vertexArray->addStream(maxLabelCount * 2, 2);
 }
 
 void AnchorConstraintDrawer::update(const std::vector<float> &anchors)
