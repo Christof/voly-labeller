@@ -1,0 +1,1782 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>102</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.966400862e-01</r0c0>
+				<r0c1>4.656612873e-10</r0c1>
+				<r0c2>8.190632612e-02</r0c2>
+				<r0c3>-0.000000000e+00</r0c3>
+				<r1c0>-2.404120518e-03</r1c0>
+				<r1c1>9.995692372e-01</r1c1>
+				<r1c2>2.925344743e-02</r1c2>
+				<r1c3>-1.018634066e-10</r1c3>
+				<r2c0>-8.187103271e-02</r2c0>
+				<r2c1>-2.935206704e-02</r2c1>
+				<r2c2>9.962106347e-01</r2c2>
+				<r2c3>-6.482853889e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.001078367e+00</r2c2>
+				<r2c3>-2.001078334e-03</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>0.000000000e+00</x>
+				<y>0.000000000e+00</y>
+				<z>0.000000000e+00</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>0</count>
+				<item_version>0</item_version>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id="6" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/MANIX.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>0.000000000e+00</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="7" class_name="LabelNode" tracking_level="1" version="0" object_id="_2">
+			<label class_id="8" tracking_level="0" version="0">
+				<label.id>0</label.id>
+				<label.text>L 0</label.text>
+				<label.anchorPosition>
+					<x>1.022421271e-01</x>
+					<y>-1.473848820e-01</y>
+					<z>-1.999968737e-01</z>
+				</label.anchorPosition>
+				<label.size class_id="9" tracking_level="0" version="0">
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_3">
+			<label>
+				<label.id>1</label.id>
+				<label.text>L 1</label.text>
+				<label.anchorPosition>
+					<x>-1.124163270e-01</x>
+					<y>1.310689747e-02</y>
+					<z>-1.653994620e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_4">
+			<label>
+				<label.id>2</label.id>
+				<label.text>L 2</label.text>
+				<label.anchorPosition>
+					<x>7.171858847e-02</x>
+					<y>7.154588401e-02</y>
+					<z>-1.811821610e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_5">
+			<label>
+				<label.id>3</label.id>
+				<label.text>L 3</label.text>
+				<label.anchorPosition>
+					<x>7.766559720e-03</x>
+					<y>-4.659917951e-02</y>
+					<z>1.738771647e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_6">
+			<label>
+				<label.id>4</label.id>
+				<label.text>L 4</label.text>
+				<label.anchorPosition>
+					<x>-1.786153466e-01</x>
+					<y>-1.861711591e-01</y>
+					<z>1.323861331e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_7">
+			<label>
+				<label.id>5</label.id>
+				<label.text>L 5</label.text>
+				<label.anchorPosition>
+					<x>-1.969207227e-01</x>
+					<y>6.845976412e-02</y>
+					<z>1.188008487e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_8">
+			<label>
+				<label.id>6</label.id>
+				<label.text>L 6</label.text>
+				<label.anchorPosition>
+					<x>-3.300561011e-02</x>
+					<y>-1.732631028e-01</y>
+					<z>-4.663375020e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_9">
+			<label>
+				<label.id>7</label.id>
+				<label.text>L 7</label.text>
+				<label.anchorPosition>
+					<x>1.721745878e-01</x>
+					<y>3.559064865e-02</y>
+					<z>7.470907271e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_10">
+			<label>
+				<label.id>8</label.id>
+				<label.text>L 8</label.text>
+				<label.anchorPosition>
+					<x>-1.632140428e-01</x>
+					<y>1.077151299e-02</y>
+					<z>1.384667605e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_11">
+			<label>
+				<label.id>9</label.id>
+				<label.text>L 9</label.text>
+				<label.anchorPosition>
+					<x>8.047623932e-02</x>
+					<y>-3.360025585e-02</y>
+					<z>6.156758964e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_12">
+			<label>
+				<label.id>10</label.id>
+				<label.text>L 10</label.text>
+				<label.anchorPosition>
+					<x>-9.501880407e-02</x>
+					<y>1.048792154e-01</y>
+					<z>1.641283184e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_13">
+			<label>
+				<label.id>11</label.id>
+				<label.text>L 11</label.text>
+				<label.anchorPosition>
+					<x>-6.870630383e-02</x>
+					<y>9.443275630e-02</y>
+					<z>-1.810141951e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_14">
+			<label>
+				<label.id>12</label.id>
+				<label.text>L 12</label.text>
+				<label.anchorPosition>
+					<x>1.964149624e-01</x>
+					<y>1.025642008e-01</y>
+					<z>5.305542052e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_15">
+			<label>
+				<label.id>13</label.id>
+				<label.text>L 13</label.text>
+				<label.anchorPosition>
+					<x>1.930201203e-01</x>
+					<y>-1.011844501e-01</y>
+					<z>-5.386452377e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_16">
+			<label>
+				<label.id>14</label.id>
+				<label.text>L 14</label.text>
+				<label.anchorPosition>
+					<x>6.060744822e-02</x>
+					<y>1.013423353e-01</y>
+					<z>8.906416595e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_17">
+			<label>
+				<label.id>15</label.id>
+				<label.text>L 15</label.text>
+				<label.anchorPosition>
+					<x>1.538828760e-01</x>
+					<y>5.265389383e-02</y>
+					<z>-1.709256470e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_18">
+			<label>
+				<label.id>16</label.id>
+				<label.text>L 16</label.text>
+				<label.anchorPosition>
+					<x>1.065979153e-01</x>
+					<y>-2.543543279e-02</y>
+					<z>-9.091601521e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_19">
+			<label>
+				<label.id>17</label.id>
+				<label.text>L 17</label.text>
+				<label.anchorPosition>
+					<x>-9.003726393e-02</x>
+					<y>-1.048902273e-01</y>
+					<z>-8.907288313e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_20">
+			<label>
+				<label.id>18</label.id>
+				<label.text>L 18</label.text>
+				<label.anchorPosition>
+					<x>-5.393058062e-03</x>
+					<y>-1.333971322e-01</y>
+					<z>-5.629400909e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_21">
+			<label>
+				<label.id>19</label.id>
+				<label.text>L 19</label.text>
+				<label.anchorPosition>
+					<x>-1.757742763e-01</x>
+					<y>1.636832505e-01</y>
+					<z>1.590625197e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_22">
+			<label>
+				<label.id>20</label.id>
+				<label.text>L 20</label.text>
+				<label.anchorPosition>
+					<x>6.516784430e-03</x>
+					<y>1.809164882e-03</y>
+					<z>1.618612260e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_23">
+			<label>
+				<label.id>21</label.id>
+				<label.text>L 21</label.text>
+				<label.anchorPosition>
+					<x>-2.409324050e-03</x>
+					<y>1.946568638e-01</y>
+					<z>-7.238683105e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_24">
+			<label>
+				<label.id>22</label.id>
+				<label.text>L 22</label.text>
+				<label.anchorPosition>
+					<x>1.791057140e-01</x>
+					<y>-1.637068391e-01</y>
+					<z>-9.354219586e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_25">
+			<label>
+				<label.id>23</label.id>
+				<label.text>L 23</label.text>
+				<label.anchorPosition>
+					<x>-4.634313285e-02</x>
+					<y>2.828389406e-04</y>
+					<z>-1.705003679e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_26">
+			<label>
+				<label.id>24</label.id>
+				<label.text>L 24</label.text>
+				<label.anchorPosition>
+					<x>1.189894974e-02</x>
+					<y>1.655270010e-01</y>
+					<z>-8.916728944e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_27">
+			<label>
+				<label.id>25</label.id>
+				<label.text>L 25</label.text>
+				<label.anchorPosition>
+					<x>-1.799664050e-01</x>
+					<y>1.763919741e-01</y>
+					<z>-1.422166824e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_28">
+			<label>
+				<label.id>26</label.id>
+				<label.text>L 26</label.text>
+				<label.anchorPosition>
+					<x>1.311269253e-01</x>
+					<y>1.080818325e-01</y>
+					<z>1.046056896e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_29">
+			<label>
+				<label.id>27</label.id>
+				<label.text>L 27</label.text>
+				<label.anchorPosition>
+					<x>7.538212836e-02</x>
+					<y>-1.936529279e-01</y>
+					<z>-1.498538554e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_30">
+			<label>
+				<label.id>28</label.id>
+				<label.text>L 28</label.text>
+				<label.anchorPosition>
+					<x>9.448982775e-02</x>
+					<y>5.181737244e-02</y>
+					<z>1.472988576e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_31">
+			<label>
+				<label.id>29</label.id>
+				<label.text>L 29</label.text>
+				<label.anchorPosition>
+					<x>1.554289013e-01</x>
+					<y>1.997831613e-01</y>
+					<z>9.016479552e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_32">
+			<label>
+				<label.id>30</label.id>
+				<label.text>L 30</label.text>
+				<label.anchorPosition>
+					<x>-5.959390104e-02</x>
+					<y>-7.747127116e-02</y>
+					<z>-1.067220494e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_33">
+			<label>
+				<label.id>31</label.id>
+				<label.text>L 31</label.text>
+				<label.anchorPosition>
+					<x>1.383926123e-01</x>
+					<y>3.644542396e-02</y>
+					<z>5.309492350e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_34">
+			<label>
+				<label.id>32</label.id>
+				<label.text>L 32</label.text>
+				<label.anchorPosition>
+					<x>-9.227309376e-02</x>
+					<y>1.366042644e-01</y>
+					<z>-3.516769409e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_35">
+			<label>
+				<label.id>33</label.id>
+				<label.text>L 33</label.text>
+				<label.anchorPosition>
+					<x>-1.283304393e-02</x>
+					<y>1.492159069e-02</y>
+					<z>-3.384216130e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_36">
+			<label>
+				<label.id>34</label.id>
+				<label.text>L 34</label.text>
+				<label.anchorPosition>
+					<x>-1.385120153e-01</x>
+					<y>-1.286689192e-01</y>
+					<z>-8.511505276e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_37">
+			<label>
+				<label.id>35</label.id>
+				<label.text>L 35</label.text>
+				<label.anchorPosition>
+					<x>-1.867785007e-01</x>
+					<y>1.209622771e-01</y>
+					<z>2.866192162e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_38">
+			<label>
+				<label.id>36</label.id>
+				<label.text>L 36</label.text>
+				<label.anchorPosition>
+					<x>1.821442991e-01</x>
+					<y>-6.079524755e-04</y>
+					<z>1.377992332e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_39">
+			<label>
+				<label.id>37</label.id>
+				<label.text>L 37</label.text>
+				<label.anchorPosition>
+					<x>1.562949866e-01</x>
+					<y>2.183353901e-02</y>
+					<z>9.931705892e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_40">
+			<label>
+				<label.id>38</label.id>
+				<label.text>L 38</label.text>
+				<label.anchorPosition>
+					<x>-1.360929906e-01</x>
+					<y>1.368158311e-01</y>
+					<z>4.993972182e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_41">
+			<label>
+				<label.id>39</label.id>
+				<label.text>L 39</label.text>
+				<label.anchorPosition>
+					<x>-1.478291005e-01</x>
+					<y>8.588398993e-02</y>
+					<z>-1.148993969e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_42">
+			<label>
+				<label.id>40</label.id>
+				<label.text>L 40</label.text>
+				<label.anchorPosition>
+					<x>-1.988001615e-01</x>
+					<y>-9.016474336e-02</y>
+					<z>-1.636038721e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_43">
+			<label>
+				<label.id>41</label.id>
+				<label.text>L 41</label.text>
+				<label.anchorPosition>
+					<x>8.392785490e-02</x>
+					<y>-1.892494857e-01</y>
+					<z>-3.428269923e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_44">
+			<label>
+				<label.id>42</label.id>
+				<label.text>L 42</label.text>
+				<label.anchorPosition>
+					<x>-1.276416481e-01</x>
+					<y>-1.040356755e-01</y>
+					<z>1.751589328e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_45">
+			<label>
+				<label.id>43</label.id>
+				<label.text>L 43</label.text>
+				<label.anchorPosition>
+					<x>6.082345545e-02</x>
+					<y>1.547962576e-01</y>
+					<z>-7.298418880e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_46">
+			<label>
+				<label.id>44</label.id>
+				<label.text>L 44</label.text>
+				<label.anchorPosition>
+					<x>-4.567411542e-02</x>
+					<y>7.253850996e-02</y>
+					<z>-1.398659796e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_47">
+			<label>
+				<label.id>45</label.id>
+				<label.text>L 45</label.text>
+				<label.anchorPosition>
+					<x>-1.409868002e-01</x>
+					<y>-1.035928726e-04</y>
+					<z>-4.490986466e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_48">
+			<label>
+				<label.id>46</label.id>
+				<label.text>L 46</label.text>
+				<label.anchorPosition>
+					<x>3.604345024e-02</x>
+					<y>1.382302493e-01</y>
+					<z>3.487464786e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_49">
+			<label>
+				<label.id>47</label.id>
+				<label.text>L 47</label.text>
+				<label.anchorPosition>
+					<x>-1.407393813e-01</x>
+					<y>2.245846391e-02</y>
+					<z>1.821635216e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_50">
+			<label>
+				<label.id>48</label.id>
+				<label.text>L 48</label.text>
+				<label.anchorPosition>
+					<x>-1.432720870e-01</x>
+					<y>-3.649333119e-02</y>
+					<z>1.933220476e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_51">
+			<label>
+				<label.id>49</label.id>
+				<label.text>L 49</label.text>
+				<label.anchorPosition>
+					<x>-4.594177008e-03</x>
+					<y>-9.914944321e-02</y>
+					<z>2.595946193e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_52">
+			<label>
+				<label.id>50</label.id>
+				<label.text>L 50</label.text>
+				<label.anchorPosition>
+					<x>-1.495876759e-01</x>
+					<y>1.844380647e-01</y>
+					<z>-1.438778639e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_53">
+			<label>
+				<label.id>51</label.id>
+				<label.text>L 51</label.text>
+				<label.anchorPosition>
+					<x>5.170767009e-02</x>
+					<y>-7.230013609e-02</y>
+					<z>-1.200971231e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_54">
+			<label>
+				<label.id>52</label.id>
+				<label.text>L 52</label.text>
+				<label.anchorPosition>
+					<x>4.865360260e-02</x>
+					<y>6.050150096e-02</y>
+					<z>-1.493151337e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_55">
+			<label>
+				<label.id>53</label.id>
+				<label.text>L 53</label.text>
+				<label.anchorPosition>
+					<x>-9.427279234e-03</x>
+					<y>-1.008633003e-01</y>
+					<z>1.212291867e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_56">
+			<label>
+				<label.id>54</label.id>
+				<label.text>L 54</label.text>
+				<label.anchorPosition>
+					<x>-1.886499375e-01</x>
+					<y>-1.186998710e-01</y>
+					<z>-4.427433014e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_57">
+			<label>
+				<label.id>55</label.id>
+				<label.text>L 55</label.text>
+				<label.anchorPosition>
+					<x>-1.431915909e-01</x>
+					<y>-2.940103412e-02</y>
+					<z>1.606694013e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_58">
+			<label>
+				<label.id>56</label.id>
+				<label.text>L 56</label.text>
+				<label.anchorPosition>
+					<x>-1.475245953e-01</x>
+					<y>-3.587478399e-02</y>
+					<z>1.789947003e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_59">
+			<label>
+				<label.id>57</label.id>
+				<label.text>L 57</label.text>
+				<label.anchorPosition>
+					<x>-1.351205707e-01</x>
+					<y>-1.631305516e-01</y>
+					<z>1.542593390e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_60">
+			<label>
+				<label.id>58</label.id>
+				<label.text>L 58</label.text>
+				<label.anchorPosition>
+					<x>-9.877705574e-02</x>
+					<y>-5.386438966e-02</y>
+					<z>-1.715745777e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_61">
+			<label>
+				<label.id>59</label.id>
+				<label.text>L 59</label.text>
+				<label.anchorPosition>
+					<x>-1.787708700e-02</x>
+					<y>1.132612675e-01</y>
+					<z>-1.459562480e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_62">
+			<label>
+				<label.id>60</label.id>
+				<label.text>L 60</label.text>
+				<label.anchorPosition>
+					<x>1.235778481e-01</x>
+					<y>-1.907993853e-02</y>
+					<z>-6.019034982e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_63">
+			<label>
+				<label.id>61</label.id>
+				<label.text>L 61</label.text>
+				<label.anchorPosition>
+					<x>-1.139006540e-01</x>
+					<y>6.065843999e-02</y>
+					<z>1.726697832e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_64">
+			<label>
+				<label.id>62</label.id>
+				<label.text>L 62</label.text>
+				<label.anchorPosition>
+					<x>-9.994976968e-02</x>
+					<y>1.635687500e-01</y>
+					<z>7.183696330e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_65">
+			<label>
+				<label.id>63</label.id>
+				<label.text>L 63</label.text>
+				<label.anchorPosition>
+					<x>2.382352948e-03</x>
+					<y>-1.149506867e-02</y>
+					<z>1.443439275e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_66">
+			<label>
+				<label.id>64</label.id>
+				<label.text>L 64</label.text>
+				<label.anchorPosition>
+					<x>1.023374051e-01</x>
+					<y>1.270246059e-01</y>
+					<z>4.015748203e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_67">
+			<label>
+				<label.id>65</label.id>
+				<label.text>L 65</label.text>
+				<label.anchorPosition>
+					<x>5.309547484e-02</x>
+					<y>1.805469841e-01</y>
+					<z>-1.510199904e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_68">
+			<label>
+				<label.id>66</label.id>
+				<label.text>L 66</label.text>
+				<label.anchorPosition>
+					<x>7.559238374e-02</x>
+					<y>1.298789531e-01</y>
+					<z>-2.426788211e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_69">
+			<label>
+				<label.id>67</label.id>
+				<label.text>L 67</label.text>
+				<label.anchorPosition>
+					<x>1.817659587e-01</x>
+					<y>1.948582083e-01</y>
+					<z>8.088268340e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_70">
+			<label>
+				<label.id>68</label.id>
+				<label.text>L 68</label.text>
+				<label.anchorPosition>
+					<x>1.497030258e-02</x>
+					<y>-8.427351713e-02</y>
+					<z>1.405078620e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_71">
+			<label>
+				<label.id>69</label.id>
+				<label.text>L 69</label.text>
+				<label.anchorPosition>
+					<x>-3.438860178e-02</x>
+					<y>-1.586264372e-01</y>
+					<z>5.773872137e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_72">
+			<label>
+				<label.id>70</label.id>
+				<label.text>L 70</label.text>
+				<label.anchorPosition>
+					<x>-2.398453653e-02</x>
+					<y>1.506262869e-01</y>
+					<z>3.068666160e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_73">
+			<label>
+				<label.id>71</label.id>
+				<label.text>L 71</label.text>
+				<label.anchorPosition>
+					<x>8.625693619e-02</x>
+					<y>1.477054805e-01</y>
+					<z>9.189905226e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_74">
+			<label>
+				<label.id>72</label.id>
+				<label.text>L 72</label.text>
+				<label.anchorPosition>
+					<x>9.668637812e-02</x>
+					<y>8.261419833e-02</y>
+					<z>1.202881485e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_75">
+			<label>
+				<label.id>73</label.id>
+				<label.text>L 73</label.text>
+				<label.anchorPosition>
+					<x>9.994953871e-03</x>
+					<y>1.544124335e-01</y>
+					<z>-1.923630387e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_76">
+			<label>
+				<label.id>74</label.id>
+				<label.text>L 74</label.text>
+				<label.anchorPosition>
+					<x>8.536891639e-02</x>
+					<y>-1.739224494e-01</y>
+					<z>-1.467090845e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_77">
+			<label>
+				<label.id>75</label.id>
+				<label.text>L 75</label.text>
+				<label.anchorPosition>
+					<x>7.281963527e-02</x>
+					<y>6.707163155e-02</y>
+					<z>-4.422739148e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_78">
+			<label>
+				<label.id>76</label.id>
+				<label.text>L 76</label.text>
+				<label.anchorPosition>
+					<x>1.463530809e-01</x>
+					<y>1.666535586e-01</y>
+					<z>-1.201781034e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_79">
+			<label>
+				<label.id>77</label.id>
+				<label.text>L 77</label.text>
+				<label.anchorPosition>
+					<x>-1.443220079e-01</x>
+					<y>1.757931709e-02</y>
+					<z>1.560074836e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_80">
+			<label>
+				<label.id>78</label.id>
+				<label.text>L 78</label.text>
+				<label.anchorPosition>
+					<x>-1.137872115e-01</x>
+					<y>1.957450062e-01</y>
+					<z>-1.986102760e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_81">
+			<label>
+				<label.id>79</label.id>
+				<label.text>L 79</label.text>
+				<label.anchorPosition>
+					<x>5.863785744e-03</x>
+					<y>-7.370702922e-02</y>
+					<z>-2.159062028e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_82">
+			<label>
+				<label.id>80</label.id>
+				<label.text>L 80</label.text>
+				<label.anchorPosition>
+					<x>-1.298728585e-02</x>
+					<y>-2.410978079e-02</y>
+					<z>1.526016444e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_83">
+			<label>
+				<label.id>81</label.id>
+				<label.text>L 81</label.text>
+				<label.anchorPosition>
+					<x>-1.153924167e-01</x>
+					<y>-5.393677950e-02</y>
+					<z>1.226599663e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_84">
+			<label>
+				<label.id>82</label.id>
+				<label.text>L 82</label.text>
+				<label.anchorPosition>
+					<x>5.219532549e-02</x>
+					<y>-1.385582089e-01</y>
+					<z>1.996466666e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_85">
+			<label>
+				<label.id>83</label.id>
+				<label.text>L 83</label.text>
+				<label.anchorPosition>
+					<x>-1.996484101e-01</x>
+					<y>-1.997619867e-01</y>
+					<z>4.654014111e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_86">
+			<label>
+				<label.id>84</label.id>
+				<label.text>L 84</label.text>
+				<label.anchorPosition>
+					<x>-7.232895494e-02</x>
+					<y>9.093399346e-02</y>
+					<z>1.093408018e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_87">
+			<label>
+				<label.id>85</label.id>
+				<label.text>L 85</label.text>
+				<label.anchorPosition>
+					<x>7.222478092e-02</x>
+					<y>7.299770415e-02</y>
+					<z>-3.291051090e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_88">
+			<label>
+				<label.id>86</label.id>
+				<label.text>L 86</label.text>
+				<label.anchorPosition>
+					<x>8.356823027e-02</x>
+					<y>1.345679611e-01</y>
+					<z>-1.178952456e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_89">
+			<label>
+				<label.id>87</label.id>
+				<label.text>L 87</label.text>
+				<label.anchorPosition>
+					<x>-1.673049629e-01</x>
+					<y>-1.621804833e-01</y>
+					<z>1.314831823e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_90">
+			<label>
+				<label.id>88</label.id>
+				<label.text>L 88</label.text>
+				<label.anchorPosition>
+					<x>-1.144591272e-01</x>
+					<y>5.182875693e-02</y>
+					<z>1.056019217e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_91">
+			<label>
+				<label.id>89</label.id>
+				<label.text>L 89</label.text>
+				<label.anchorPosition>
+					<x>-4.447069764e-02</x>
+					<y>-1.675756872e-01</y>
+					<z>-1.145812795e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_92">
+			<label>
+				<label.id>90</label.id>
+				<label.text>L 90</label.text>
+				<label.anchorPosition>
+					<x>-4.405856133e-02</x>
+					<y>1.790180355e-01</y>
+					<z>1.808638722e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_93">
+			<label>
+				<label.id>91</label.id>
+				<label.text>L 91</label.text>
+				<label.anchorPosition>
+					<x>-8.638598770e-02</x>
+					<y>7.686759531e-02</y>
+					<z>-9.231410176e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_94">
+			<label>
+				<label.id>92</label.id>
+				<label.text>L 92</label.text>
+				<label.anchorPosition>
+					<x>-3.101608157e-02</x>
+					<y>1.135460883e-01</y>
+					<z>1.107463390e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_95">
+			<label>
+				<label.id>93</label.id>
+				<label.text>L 93</label.text>
+				<label.anchorPosition>
+					<x>-1.954735070e-01</x>
+					<y>-1.224130094e-01</y>
+					<z>-8.713765442e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_96">
+			<label>
+				<label.id>94</label.id>
+				<label.text>L 94</label.text>
+				<label.anchorPosition>
+					<x>-1.023783013e-01</x>
+					<y>1.932943016e-01</y>
+					<z>-1.232704669e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_97">
+			<label>
+				<label.id>95</label.id>
+				<label.text>L 95</label.text>
+				<label.anchorPosition>
+					<x>-4.074253142e-02</x>
+					<y>-1.454180181e-01</y>
+					<z>1.278904527e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_98">
+			<label>
+				<label.id>96</label.id>
+				<label.text>L 96</label.text>
+				<label.anchorPosition>
+					<x>1.313418895e-01</x>
+					<y>-1.292478442e-01</y>
+					<z>4.040403664e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_99">
+			<label>
+				<label.id>97</label.id>
+				<label.text>L 97</label.text>
+				<label.anchorPosition>
+					<x>-9.713254124e-02</x>
+					<y>1.951747984e-01</y>
+					<z>-1.369075328e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_100">
+			<label>
+				<label.id>98</label.id>
+				<label.text>L 98</label.text>
+				<label.anchorPosition>
+					<x>-1.122357473e-01</x>
+					<y>-1.593450457e-01</y>
+					<z>-1.065603271e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_101">
+			<label>
+				<label.id>99</label.id>
+				<label.text>L 99</label.text>
+				<label.anchorPosition>
+					<x>1.179079264e-01</x>
+					<y>7.840292156e-02</y>
+					<z>5.388699472e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>6.400000000e+01</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+

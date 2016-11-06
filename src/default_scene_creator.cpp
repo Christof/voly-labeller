@@ -3,6 +3,7 @@
 #include <Eigen/Geometry>
 #include <string>
 #include <vector>
+#include <random>
 #include "./importer.h"
 #include "./nodes.h"
 #include "./mesh_node.h"
@@ -98,6 +99,25 @@ void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
   Eigen::Matrix4f scalingMatrix = scaling.matrix();
 
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, scalingMatrix));
+}
+
+void add100Labels(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/MANIX.mhd", "assets/transferfunctions/scapula2.gra",
+      trans.matrix(), true));
+
+  std::default_random_engine gen;
+  std::uniform_real_distribution<float> dist(-0.2f, 0.2f);
+  for (int i = 0; i < 100; ++i)
+  {
+    auto label = Label(i, "L " + std::to_string(i),
+                       Eigen::Vector3f(dist(gen), dist(gen), dist(gen)));
+    label.size = Eigen::Vector2f(64, 32);
+    sceneNodes.push_back(std::make_shared<LabelNode>(label));
+  }
 }
 
 void DefaultSceneCreator::create()
