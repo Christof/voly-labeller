@@ -2,16 +2,16 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>10</count>
+	<count>12</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
 				<r0c0>9.977381825e-01</r0c0>
-				<r0c1>4.656612873e-10</r0c1>
+				<r0c1>0.000000000e+00</r0c1>
 				<r0c2>6.722037494e-02</r0c2>
 				<r0c3>-1.419365406e-02</r0c3>
-				<r1c0>6.662845146e-03</r1c0>
+				<r1c0>6.662845612e-03</r1c0>
 				<r1c1>9.950755835e-01</r1c1>
 				<r1c2>-9.889524430e-02</r1c2>
 				<r1c3>-6.539772451e-02</r1c3>
@@ -306,6 +306,40 @@
 				</label.anchorPosition>
 				<label.size>
 					<x>2.200000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="9" object_id="_9">
+			<label>
+				<label.id>7</label.id>
+				<label.text>Abrasion</label.text>
+				<label.anchorPosition>
+					<x>-7.446618378e-02</x>
+					<y>2.890402675e-01</y>
+					<z>1.535172909e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.080000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="9" object_id="_10">
+			<label>
+				<label.id>8</label.id>
+				<label.text>Abrasion</label.text>
+				<label.anchorPosition>
+					<x>2.008026093e-02</x>
+					<y>3.522580862e-01</y>
+					<z>1.128148288e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.080000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
