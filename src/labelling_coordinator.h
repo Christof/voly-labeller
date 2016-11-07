@@ -29,6 +29,7 @@ namespace Placement
 {
 class OcclusionCalculator;
 class IntegralCostsCalculator;
+class DirectIntegralCostsCalculator;
 class Saliency;
 class LabelsArranger;
 class ApolloniusLabelsArranger;
@@ -99,6 +100,8 @@ class LabellingCoordinator
   std::shared_ptr<Placement::OcclusionCalculator> occlusionCalculator;
   std::shared_ptr<Placement::Saliency> saliency;
   std::shared_ptr<Placement::IntegralCostsCalculator> integralCostsCalculator;
+  std::shared_ptr<Placement::DirectIntegralCostsCalculator>
+      directIntegralCostsCalculator;
   std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;

@@ -14,7 +14,9 @@
 #include "./placement/constraint_updater.h"
 #include "./placement/persistent_constraint_updater.h"
 #include "./placement/cuda_texture_mapper.h"
+#include "./placement/cuda_texture_3d_mapper.h"
 #include "./placement/integral_costs_calculator.h"
+#include "./placement/direct_integral_costs_calculator.h"
 #include "./placement/saliency.h"
 #include "./placement/labels_arranger.h"
 #include "./placement/insertion_order_labels_arranger.h"
@@ -57,9 +59,17 @@ void LabellingCoordinator::initialize(
       textureMapperManager->getSaliencyTextureMapper());
 
   occlusionCalculator->initialize(textureMapperManager);
+  /*
   integralCostsCalculator =
       std::make_shared<Placement::IntegralCostsCalculator>(
           textureMapperManager->getOcclusionTextureMapper(),
+          textureMapperManager->getSaliencyTextureMapper(),
+          textureMapperManager->getIntegralCostsTextureMapper());
+          */
+
+  directIntegralCostsCalculator =
+      std::make_shared<Placement::DirectIntegralCostsCalculator>(
+          textureMapperManager->getColorTextureMapper(),
           textureMapperManager->getSaliencyTextureMapper(),
           textureMapperManager->getIntegralCostsTextureMapper());
 
@@ -118,6 +128,7 @@ void LabellingCoordinator::cleanup()
   occlusionCalculator.reset();
   saliency.reset();
   integralCostsCalculator.reset();
+  directIntegralCostsCalculator.reset();
 
   for (auto apolloniusLabelsArranger : apolloniusLabelsArrangers)
     apolloniusLabelsArranger->cleanup();
@@ -201,7 +212,8 @@ void LabellingCoordinator::updatePlacement()
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
     occlusionCalculator->calculateFor(layerIndex);
-    integralCostsCalculator->runKernel();
+    // integralCostsCalculator->runKernel();
+    directIntegralCostsCalculator->runKernel(layerIndex, layerCount);
 
     auto labeller = placementLabellers[layerIndex];
     auto defaultArranger = useApollonius ? apolloniusLabelsArrangers[layerIndex]
