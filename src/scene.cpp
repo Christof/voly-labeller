@@ -245,7 +245,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
   transformation =
       Eigen::Affine3f(Eigen::Translation3f(Eigen::Vector3f(0.0f, -0.8f, 0.0f)) *
                       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
-  renderQuad(distanceTransformQuad, transformation.matrix());
+  renderQuad(quad, transformation.matrix());
 
   int layerIndex = activeLayerNumber == 0 ? 0 : activeLayerNumber - 1;
   if (layerIndex < fbo->getLayerCount())
