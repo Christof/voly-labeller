@@ -1,21 +1,34 @@
 #include "./direct_integral_costs_calculator.h"
 #include "../utils/cuda_helper.h"
 
-__global__ void integralCosts(cudaTextureObject_t colors,
-                                 float occlusionWeight,
-                                 cudaTextureObject_t saliency,
-                                 float saliencyWeight,
-                                 cudaSurfaceObject_t output, int width,
-                                 int height)
+__global__ void integralCosts(cudaTextureObject_t colors, float occlusionWeight,
+                              cudaTextureObject_t saliency,
+                              float saliencyWeight, cudaSurfaceObject_t output,
+                              int width, int height, int layerIndex,
+                              int layerCount)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= width || y >= height)
     return;
 
-  surf2Dwrite(1.0f, output, x * sizeof(float), y);
-}
+  float sum = 0.0f;
 
+  for (int layerIndexFront = 0; layerIndexFront <= layerIndex;
+       ++layerIndexFront)
+    sum += tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexFront + 0.5f).w;
+
+  float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
+
+  for (int layerIndexBehind = layerIndex + 1; layerIndexBehind < layerCount;
+       ++layerIndexBehind)
+  {
+    sum += saliencyValue *
+           tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexBehind + 0.5f).w;
+  }
+
+  surf2Dwrite(sum, output, x * sizeof(float), y);
+}
 
 namespace Placement
 {
@@ -39,7 +52,7 @@ DirectIntegralCostsCalculator::~DirectIntegralCostsCalculator()
     cudaDestroySurfaceObject(output);
 }
 
-void DirectIntegralCostsCalculator::runKernel()
+void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
 {
   if (!color)
     createSurfaceObjects();
@@ -51,9 +64,9 @@ void DirectIntegralCostsCalculator::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  integralCosts<<<dimGrid, dimBlock>>>(color, weights.occlusion,
-                                          saliency, weights.saliency, output,
-                                          outputWidth, outputHeight);
+  integralCosts<<<dimGrid, dimBlock>>>(color, weights.occlusion, saliency,
+                                       weights.saliency, output, outputWidth,
+                                       outputHeight, layerIndex, layerCount);
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }

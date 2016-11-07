@@ -4,7 +4,8 @@
 #include "../cuda_array_mapper.h"
 #include "../cuda_array_3d_mapper.h"
 
-TEST(Test_DirectIntegraclCostsCalculator, DirectIntegralCostsCalculator)
+TEST(Test_DirectIntegraclCostsCalculator,
+     DirectIntegralCostsCalculatorForFirstLayer)
 {
   cudaChannelFormatDesc channelDesc =
       cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
@@ -12,13 +13,15 @@ TEST(Test_DirectIntegraclCostsCalculator, DirectIntegralCostsCalculator)
     Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
     Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
     Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
-    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f)
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f),
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.8f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.2f)
   };
+  int layerCount = 3;
   auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
-      2, 2, 2, data, channelDesc);
-  std::vector<float> occlusionData = { 0.1f, 0.7f, 0.4f, 0.3f };
+      2, 2, layerCount, data, channelDesc);
 
-  std::vector<float> saliencyData = { 0.2e5f, 0.1e5f, 0.4e5f, 0.6e5f };
+  std::vector<float> saliencyData = { 0.5f, 0.1f, 0.4f, 0.6f };
   auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
       2, 2, saliencyData, cudaCreateChannelDesc<float>());
 
@@ -28,14 +31,95 @@ TEST(Test_DirectIntegraclCostsCalculator, DirectIntegralCostsCalculator)
   Placement::DirectIntegralCostsCalculator calculator(
       colorProvider, saliencyProvider, outputProvider);
   calculator.weights.occlusion = 1.0f;
-  calculator.weights.saliency = 1e-3f;
-  calculator.runKernel();
+  calculator.weights.saliency = 1.0f;
+  int layerIndex = 0;
+  calculator.runKernel(layerIndex, layerCount);
 
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_FLOAT_EQ(1.0f, result[0]);
-  EXPECT_FLOAT_EQ(1.0f, result[1]);
-  EXPECT_FLOAT_EQ(1.0f, result[2]);
-  EXPECT_FLOAT_EQ(1.0f, result[3]);
+  EXPECT_FLOAT_EQ(0.1f + 0.5f * (0.2f + 0.1f), result[0]);
+  EXPECT_FLOAT_EQ(0.7f + 0.1f * (0.6f + 0.8f), result[1]);
+  EXPECT_FLOAT_EQ(0.4f + 0.4f * (0.8f + 0.4f), result[2]);
+  EXPECT_FLOAT_EQ(0.3f + 0.6f * (0.9f + 0.2f), result[3]);
+}
+
+TEST(Test_DirectIntegraclCostsCalculator,
+     DirectIntegralCostsCalculatorForMiddleLayer)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  std::vector<Eigen::Vector4f> data = {
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
+    Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f),
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.8f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.2f)
+  };
+  int layerCount = 3;
+  auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
+      2, 2, layerCount, data, channelDesc);
+
+  std::vector<float> saliencyData = { 0.5f, 0.1f, 0.4f, 0.6f };
+  auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, saliencyData, cudaCreateChannelDesc<float>());
+
+  auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
+
+  Placement::DirectIntegralCostsCalculator calculator(
+      colorProvider, saliencyProvider, outputProvider);
+  calculator.weights.occlusion = 1.0f;
+  calculator.weights.saliency = 1.0f;
+  int layerIndex = 1;
+  calculator.runKernel(layerIndex, layerCount);
+
+  auto result = outputProvider->copyDataFromGpu();
+
+  ASSERT_EQ(4, result.size());
+  EXPECT_FLOAT_EQ(0.1f + 0.2f + 0.5f * 0.1f, result[0]);
+  EXPECT_FLOAT_EQ(0.7f + 0.6f + 0.1f * 0.8f, result[1]);
+  EXPECT_FLOAT_EQ(0.4f + 0.8f + 0.4f * 0.4f, result[2]);
+  EXPECT_FLOAT_EQ(0.3f + 0.9f + 0.6f * 0.2f, result[3]);
+}
+
+TEST(Test_DirectIntegraclCostsCalculator,
+     DirectIntegralCostsCalculatorForLastLayer)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  std::vector<Eigen::Vector4f> data = {
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
+    Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f),
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.8f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.2f)
+  };
+  int layerCount = 3;
+  auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
+      2, 2, layerCount, data, channelDesc);
+
+  std::vector<float> saliencyData = { 0.5f, 0.1f, 0.4f, 0.6f };
+  auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, saliencyData, cudaCreateChannelDesc<float>());
+
+  auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
+
+  Placement::DirectIntegralCostsCalculator calculator(
+      colorProvider, saliencyProvider, outputProvider);
+  calculator.weights.occlusion = 1.0f;
+  calculator.weights.saliency = 1.0f;
+  int layerIndex = 2;
+  calculator.runKernel(layerIndex, layerCount);
+
+  auto result = outputProvider->copyDataFromGpu();
+
+  ASSERT_EQ(4, result.size());
+  EXPECT_FLOAT_EQ(0.1f + 0.2f + 0.1f, result[0]);
+  EXPECT_FLOAT_EQ(0.7f + 0.6f + 0.8f, result[1]);
+  EXPECT_FLOAT_EQ(0.4f + 0.8f + 0.4f, result[2]);
+  EXPECT_FLOAT_EQ(0.3f + 0.9f + 0.2f, result[3]);
 }

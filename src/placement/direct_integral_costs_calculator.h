@@ -23,7 +23,7 @@ class DirectIntegralCostsCalculator
       std::shared_ptr<CudaArrayProvider> outputProvider);
   virtual ~DirectIntegralCostsCalculator();
 
-  void runKernel();
+  void runKernel(int layerIndex, int layerCount);
 
   IntegralCostsWeights weights;
 
