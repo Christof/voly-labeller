@@ -27,7 +27,7 @@ __global__ void integralCosts(cudaTextureObject_t colors, float occlusionWeight,
            tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexBehind + 0.5f).w;
   }
 
-  surf2Dwrite(sum, output, x * sizeof(float), y);
+  surf2Dwrite(sum / layerCount, output, x * sizeof(float), y);
 }
 
 namespace Placement

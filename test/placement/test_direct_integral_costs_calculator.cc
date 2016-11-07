@@ -38,10 +38,10 @@ TEST(Test_DirectIntegraclCostsCalculator,
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_FLOAT_EQ(0.1f + 0.5f * (0.2f + 0.1f), result[0]);
-  EXPECT_FLOAT_EQ(0.7f + 0.1f * (0.6f + 0.8f), result[1]);
-  EXPECT_FLOAT_EQ(0.4f + 0.4f * (0.8f + 0.4f), result[2]);
-  EXPECT_FLOAT_EQ(0.3f + 0.6f * (0.9f + 0.2f), result[3]);
+  EXPECT_FLOAT_EQ((0.1f + 0.5f * (0.2f + 0.1f)) / layerCount, result[0]);
+  EXPECT_FLOAT_EQ((0.7f + 0.1f * (0.6f + 0.8f)) / layerCount, result[1]);
+  EXPECT_FLOAT_EQ((0.4f + 0.4f * (0.8f + 0.4f)) / layerCount, result[2]);
+  EXPECT_FLOAT_EQ((0.3f + 0.6f * (0.9f + 0.2f)) / layerCount, result[3]);
 }
 
 TEST(Test_DirectIntegraclCostsCalculator,
@@ -78,10 +78,10 @@ TEST(Test_DirectIntegraclCostsCalculator,
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_FLOAT_EQ(0.1f + 0.2f + 0.5f * 0.1f, result[0]);
-  EXPECT_FLOAT_EQ(0.7f + 0.6f + 0.1f * 0.8f, result[1]);
-  EXPECT_FLOAT_EQ(0.4f + 0.8f + 0.4f * 0.4f, result[2]);
-  EXPECT_FLOAT_EQ(0.3f + 0.9f + 0.6f * 0.2f, result[3]);
+  EXPECT_FLOAT_EQ((0.1f + 0.2f + 0.5f * 0.1f) / layerCount, result[0]);
+  EXPECT_FLOAT_EQ((0.7f + 0.6f + 0.1f * 0.8f) / layerCount, result[1]);
+  EXPECT_FLOAT_EQ((0.4f + 0.8f + 0.4f * 0.4f) / layerCount, result[2]);
+  EXPECT_FLOAT_EQ((0.3f + 0.9f + 0.6f * 0.2f) / layerCount, result[3]);
 }
 
 TEST(Test_DirectIntegraclCostsCalculator,
@@ -118,8 +118,8 @@ TEST(Test_DirectIntegraclCostsCalculator,
   auto result = outputProvider->copyDataFromGpu();
 
   ASSERT_EQ(4, result.size());
-  EXPECT_FLOAT_EQ(0.1f + 0.2f + 0.1f, result[0]);
-  EXPECT_FLOAT_EQ(0.7f + 0.6f + 0.8f, result[1]);
-  EXPECT_FLOAT_EQ(0.4f + 0.8f + 0.4f, result[2]);
-  EXPECT_FLOAT_EQ(0.3f + 0.9f + 0.2f, result[3]);
+  EXPECT_FLOAT_EQ((0.1f + 0.2f + 0.1f) / layerCount, result[0]);
+  EXPECT_FLOAT_EQ((0.7f + 0.6f + 0.8f) / layerCount, result[1]);
+  EXPECT_FLOAT_EQ((0.4f + 0.8f + 0.4f) / layerCount, result[2]);
+  EXPECT_FLOAT_EQ((0.3f + 0.9f + 0.2f) / layerCount, result[3]);
 }
