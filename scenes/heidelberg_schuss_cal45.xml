@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>14</count>
+	<count>16</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -48,7 +48,7 @@
 				<z>-3.433194160e-01</z>
 			</origin>
 			<cameraPositions class_id="5" tracking_level="0" version="0">
-				<count>15</count>
+				<count>16</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
 					<name>Position 0</name>
@@ -365,6 +365,27 @@
 						<r3c3>1.000000000e+00</r3c3>
 					</viewMatrix>
 				</item>
+				<item>
+					<name>S5</name>
+					<viewMatrix>
+						<r0c0>-4.704604745e-01</r0c0>
+						<r0c1>-7.450581485e-09</r0c1>
+						<r0c2>-8.824210763e-01</r0c2>
+						<r0c3>-8.463487029e-05</r0c3>
+						<r1c0>2.447160929e-01</r1c0>
+						<r1c1>9.607765675e-01</r1c1>
+						<r1c2>-1.304697394e-01</r1c2>
+						<r1c3>-4.828438908e-02</r1c3>
+						<r2c0>8.478094935e-01</r2c0>
+						<r2c1>-2.773234844e-01</r2c1>
+						<r2c2>-4.520073831e-01</r2c2>
+						<r2c3>-1.212729588e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
 			</cameraPositions>
 		</px>
 	</item>
@@ -440,7 +461,7 @@
 					<z>8.901986293e-03</z>
 				</label.anchorPosition>
 				<label.size>
-					<x>2.000000000e+02</x>
+					<x>1.900000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
@@ -608,6 +629,40 @@
 				<r3c2>0.000000000e+00</r3c2>
 				<r3c3>1.000000000e+00</r3c3>
 			</transformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_13">
+			<label>
+				<label.id>8</label.id>
+				<label.text>splinters</label.text>
+				<label.anchorPosition>
+					<x>2.370434254e-02</x>
+					<y>4.856294394e-02</y>
+					<z>-4.150463268e-03</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.100000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_14">
+			<label>
+				<label.id>9</label.id>
+				<label.text>air bubble</label.text>
+				<label.anchorPosition>
+					<x>2.811867744e-02</x>
+					<y>7.493451238e-02</y>
+					<z>-2.366478182e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.280000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
 		</px>
 	</item>
 </data>
