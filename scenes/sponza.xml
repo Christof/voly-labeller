@@ -51,7 +51,7 @@
 				<count>5</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
-					<name>Position 0</name>
+					<name>S0</name>
 					<viewMatrix>
 						<r0c0>1.000000000e+00</r0c0>
 						<r0c1>0.000000000e+00</r0c1>
@@ -72,7 +72,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 1</name>
+					<name>S1</name>
 					<viewMatrix>
 						<r0c0>-3.356771469e-01</r0c0>
 						<r0c1>1.862645149e-09</r0c1>
@@ -93,7 +93,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 2</name>
+					<name>S2</name>
 					<viewMatrix>
 						<r0c0>-4.720740020e-01</r0c0>
 						<r0c1>3.725290298e-09</r0c1>
@@ -114,7 +114,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 3</name>
+					<name>S3</name>
 					<viewMatrix>
 						<r0c0>-5.066021681e-01</r0c0>
 						<r0c1>1.862645149e-09</r0c1>
@@ -135,7 +135,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 4</name>
+					<name>S4</name>
 					<viewMatrix>
 						<r0c0>4.287151396e-01</r0c0>
 						<r0c1>2.328306437e-10</r0c1>
