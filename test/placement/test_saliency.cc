@@ -23,8 +23,9 @@ TEST(Test_Saliency, Saliency)
 
   ASSERT_EQ(4, result.size());
 
-  EXPECT_FLOAT_EQ(184.53375f, result[0]);
-  EXPECT_FLOAT_EQ(314.61597f, result[1]);
-  EXPECT_FLOAT_EQ(387.13409f, result[2]);
-  EXPECT_FLOAT_EQ(178.69609f, result[3]);
+
+  EXPECT_FLOAT_EQ(0.25382909f, result[0]);
+  EXPECT_FLOAT_EQ(0.43275923f, result[1]);
+  EXPECT_FLOAT_EQ(0.53250909f, result[2]);
+  EXPECT_FLOAT_EQ(0.2457993f, result[3]);
 }
