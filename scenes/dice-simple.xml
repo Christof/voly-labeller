@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <!DOCTYPE boost_serialization>
-<boost_serialization signature="serialization::archive" version="13">
+<boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
 	<count>9</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
-		<px class_id="2" class_name="CameraNode" tracking_level="1" version="0" object_id="_0">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
 			<viewMatrix class_id="3" tracking_level="0" version="0">
 				<r0c0>9.526684880e-01</r0c0>
-				<r0c1>7.450580597e-09</r0c1>
-				<r0c2>3.040111959e-01</r0c2>
+				<r0c1>7.450581485e-09</r0c1>
+				<r0c2>3.040112257e-01</r0c2>
 				<r0c3>-1.490116119e-08</r0c3>
-				<r1c0>2.901548743e-01</r1c0>
-				<r1c1>2.984616160e-01</r1c1>
-				<r1c2>-9.092473984e-01</r1c2>
-				<r1c3>0.000000000e+00</r1c3>
-				<r2c0>-9.073567390e-02</r2c0>
-				<r2c1>9.544216394e-01</r2c1>
-				<r2c2>2.843349576e-01</r2c2>
+				<r1c0>2.901549041e-01</r1c0>
+				<r1c1>2.984614372e-01</r1c1>
+				<r1c2>-9.092474580e-01</r1c2>
+				<r1c3>2.011656761e-07</r1c3>
+				<r2c0>-9.073562175e-02</r2c0>
+				<r2c1>9.544216990e-01</r2c1>
+				<r2c2>2.843347788e-01</r2c2>
 				<r2c3>-1.681164265e+00</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
@@ -25,36 +25,82 @@
 				<r3c3>1.000000000e+00</r3c3>
 			</viewMatrix>
 			<projectionMatrix>
-				<r0c0>9.999999404e-01</r0c0>
+				<r0c0>2.414213419e+00</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
 				<r0c2>0.000000000e+00</r0c2>
 				<r0c3>0.000000000e+00</r0c3>
 				<r1c0>0.000000000e+00</r1c0>
-				<r1c1>9.999999404e-01</r1c1>
+				<r1c1>2.414213419e+00</r1c1>
 				<r1c2>0.000000000e+00</r1c2>
 				<r1c3>0.000000000e+00</r1c3>
 				<r2c0>0.000000000e+00</r2c0>
 				<r2c1>0.000000000e+00</r2c1>
-				<r2c2>-1.941774726e+00</r2c2>
-				<r2c3>-2.398654461e+00</r2c3>
+				<r2c2>-1.176057100e+00</r2c2>
+				<r2c3>-5.476530194e-01</r2c3>
 				<r3c0>0.000000000e+00</r3c0>
 				<r3c1>0.000000000e+00</r3c1>
 				<r3c2>-1.000000000e+00</r3c2>
 				<r3c3>0.000000000e+00</r3c3>
 			</projectionMatrix>
 			<origin class_id="4" tracking_level="0" version="0">
-				<x>0.000000000e+00</x>
-				<y>0.000000000e+00</y>
-				<z>0.000000000e+00</z>
+				<x>-6.180591136e-02</x>
+				<y>6.501179338e-01</y>
+				<z>1.936788857e-01</z>
 			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>2</count>
+				<item_version>0</item_version>
+				<item class_id="6" tracking_level="0" version="0">
+					<name>S0</name>
+					<viewMatrix>
+						<r0c0>9.526684880e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>3.040111959e-01</r0c2>
+						<r0c3>-0.000000000e+00</r0c3>
+						<r1c0>2.901548743e-01</r1c0>
+						<r1c1>2.984616160e-01</r1c1>
+						<r1c2>-9.092473984e-01</r1c2>
+						<r1c3>-0.000000000e+00</r1c3>
+						<r2c0>-9.073567390e-02</r2c0>
+						<r2c1>9.544216394e-01</r2c1>
+						<r2c2>2.843349576e-01</r2c2>
+						<r2c3>-1.681164265e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S1</name>
+					<viewMatrix>
+						<r0c0>9.526684880e-01</r0c0>
+						<r0c1>-7.450580597e-09</r0c1>
+						<r0c2>3.040111959e-01</r0c2>
+						<r0c3>7.450580597e-09</r0c3>
+						<r1c0>2.901548743e-01</r1c0>
+						<r1c1>2.984616160e-01</r1c1>
+						<r1c2>-9.092474580e-01</r1c2>
+						<r1c3>-2.235174179e-08</r1c3>
+						<r2c0>-9.073566645e-02</r2c0>
+						<r2c1>9.544216990e-01</r2c1>
+						<r2c2>2.843349576e-01</r2c2>
+						<r2c3>-1.194734335e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+			</cameraPositions>
 		</px>
 	</item>
 	<item>
 		<px class_id_reference="2" object_id_reference="_0"></px>
 	</item>
 	<item>
-		<px class_id="5" class_name="LabelNode" tracking_level="1" version="0" object_id="_1">
-			<label class_id="6" tracking_level="0" version="0">
+		<px class_id="7" class_name="LabelNode" tracking_level="1" version="0" object_id="_1">
+			<label class_id="8" tracking_level="0" version="0">
 				<label.id>1</label.id>
 				<label.text>N11</label.text>
 				<label.anchorPosition>
@@ -62,7 +108,7 @@
 					<y>2.820012532e-02</y>
 					<z>-4.842323363e-01</z>
 				</label.anchorPosition>
-				<label.size class_id="7" tracking_level="0" version="0">
+				<label.size class_id="9" tracking_level="0" version="0">
 					<x>1.280000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
@@ -70,7 +116,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="5" object_id="_2">
+		<px class_id_reference="7" object_id="_2">
 			<label>
 				<label.id>2</label.id>
 				<label.text>N21</label.text>
@@ -87,7 +133,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id="8" class_name="VolumeNode" tracking_level="1" version="0" object_id="_3">
+		<px class_id="10" class_name="VolumeNode" tracking_level="1" version="0" object_id="_3">
 			<volumePath>assets/datasets/dice.mha</volumePath>
 			<transferFunctionPath>assets/transferfunctions/dice4.gra</transferFunctionPath>
 			<overallTransformation>
@@ -111,7 +157,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="5" object_id="_4">
+		<px class_id_reference="7" object_id="_4">
 			<label>
 				<label.id>5</label.id>
 				<label.text>N31</label.text>
@@ -128,7 +174,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="5" object_id="_5">
+		<px class_id_reference="7" object_id="_5">
 			<label>
 				<label.id>8</label.id>
 				<label.text>N41</label.text>
@@ -145,7 +191,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="5" object_id="_6">
+		<px class_id_reference="7" object_id="_6">
 			<label>
 				<label.id>12</label.id>
 				<label.text>N51</label.text>
@@ -162,7 +208,7 @@
 		</px>
 	</item>
 	<item>
-		<px class_id_reference="5" object_id="_7">
+		<px class_id_reference="7" object_id="_7">
 			<label>
 				<label.id>17</label.id>
 				<label.text>N61</label.text>
