@@ -29,3 +29,27 @@ TEST(Test_Saliency, Saliency)
   EXPECT_FLOAT_EQ(0.53250909f, result[2]);
   EXPECT_FLOAT_EQ(0.2457993f, result[3]);
 }
+
+TEST(Test_Saliency, MaxSaliencyLessEqual1)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  std::default_random_engine gen;
+  std::uniform_real_distribution<float> dist(0, 1.0f);
+  std::vector<Eigen::Vector4f> data(100 * 100);
+  for (int i = 0; i < 100 * 100; ++i)
+    data[i] = Eigen::Vector4f(dist(gen), dist(gen), dist(gen), 1.0f);
+
+  auto inputProvider = std::make_shared<CudaArrayMapper<Eigen::Vector4f>>(
+      100, 100, data, channelDesc);
+  auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
+      100, 100, std::vector<float>(4), cudaCreateChannelDesc<float>());
+
+  Placement::Saliency(inputProvider, outputProvider).runKernel();
+
+  auto result = outputProvider->copyDataFromGpu();
+
+  auto maxElement = std::max_element(result.begin(), result.end());
+  EXPECT_LE(*maxElement, 1.0f);
+
+}
