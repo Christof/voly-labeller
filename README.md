@@ -15,8 +15,22 @@ Options:
   -h, --help                          Displays this help.
   -v, --version                       Displays version information.
   --offline                           Enables offline rendering
+  --layers <Layer Count>              Number of layers. Default is 4
+  --hard-constraints                  Simulate hard constraints
+  --apollonius                        Use apollonius graph to determine label
+                                      insertion order
+  --disable-labelling                 Disable drawing lables
+  --internal-labelling                Enable internal labelling
+  --optimize-on-idle                  Optimize costs when the camera is not
+                                      moving
   -s, --screenshot <Camera Position>  Takes a screenshot of the given camera
-                                      position
+                                      position. Characters after a '_' are
+                                      ignored but added to the filenameCamera
+                                      Position. Multiple camera positions for
+                                      multiple screenshots can be supplied with
+                                      ',' as separator. Camera Positions
+                                      containing a space character are not
+                                      supported!
 
 Arguments:
   scene                               Scene file to load.
