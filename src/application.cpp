@@ -167,7 +167,7 @@ void Application::setupCommandLineParser()
 
   parser.addOption({ "offline", "Enables offline rendering" });
   parser.addOption(
-      { "layers", "Number of layers. Default is 4", "layerCount", "4" });
+      { "layers", "Number of layers. Default is 4", "Layer Count", "4" });
   parser.addOption({ "hard-constraints", "Simulate hard constraints" });
   parser.addOption(
       { "apollonius",
@@ -176,12 +176,14 @@ void Application::setupCommandLineParser()
   parser.addOption({ "internal-labelling", "Enable internal labelling" });
   parser.addOption(
       { "optimize-on-idle", "Optimize costs when the camera is not moving" });
-  parser.addOption({ QStringList() << "s"
-                                   << "screenshot",
-                     "Takes a screenshot of the given camera position. "
-                     "Characters after a '_' "
-                     "are ignored but added to the filename",
-                     "Camera Position" });
+  parser.addOption(
+      { QStringList() << "s"
+                      << "screenshot",
+        "Takes a screenshot of the given camera position. "
+        "Characters after a '_' are ignored but added to the filename"
+        "Camera Position. Multiple camera positions for multiple screenshots "
+        "can be supplied with ',' as separator. Camera Positions containing a "
+        "space character are not supported!", "Camera Position" });
 }
 
 void Application::setupWindow()
