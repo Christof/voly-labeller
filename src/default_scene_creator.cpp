@@ -174,11 +174,14 @@ void DefaultSceneCreator::addLabelNodesTo(
 void DefaultSceneCreator::addMultiVolumeNodesTo(
     std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
+  Eigen::Affine3f trans(
+      Eigen::Translation3f(Eigen::Vector3f(0, 0.6f, 0)) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/GRCH_Abdomen.mhd",
-      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
+      "assets/transferfunctions/scapula2.gra", trans.matrix()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
       "assets/datasets/GRCH_Schaedel_fein_H31.mhd",
-      "assets/transferfunctions/scapula4.gra", Eigen::Matrix4f::Identity()));
+      "assets/transferfunctions/scapula2.gra", trans.matrix()));
 }
 
