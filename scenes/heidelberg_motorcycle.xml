@@ -2,7 +2,7 @@
 <!DOCTYPE boost_serialization>
 <boost_serialization signature="serialization::archive" version="12">
 <data class_id="0" tracking_level="0" version="0">
-	<count>12</count>
+	<count>13</count>
 	<item_version>1</item_version>
 	<item class_id="1" tracking_level="0" version="1">
 		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
@@ -143,7 +143,7 @@
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
 			<volumePath>assets/datasets/heidelberg_motorcycle_1_clipped.mhd</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
@@ -312,6 +312,23 @@
 				</label.anchorPosition>
 				<label.size>
 					<x>2.150000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_11">
+			<label>
+				<label.id>10</label.id>
+				<label.text>Crepitations</label.text>
+				<label.anchorPosition>
+					<x>-1.270951033e-01</x>
+					<y>5.752811432e-01</y>
+					<z>-8.316796273e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.380000000e+02</x>
 					<y>3.200000000e+01</y>
 				</label.size>
 			</label>
