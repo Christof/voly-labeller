@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!DOCTYPE boost_serialization>
+<boost_serialization signature="serialization::archive" version="12">
+<data class_id="0" tracking_level="0" version="0">
+	<count>16</count>
+	<item_version>1</item_version>
+	<item class_id="1" tracking_level="0" version="1">
+		<px class_id="2" class_name="CameraNode" tracking_level="1" version="1" object_id="_0">
+			<viewMatrix class_id="3" tracking_level="0" version="0">
+				<r0c0>9.874501824e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>1.579312533e-01</r0c2>
+				<r0c3>2.689413354e-02</r0c3>
+				<r1c0>1.411937922e-01</r1c0>
+				<r1c1>4.480259418e-01</r1c1>
+				<r1c2>-8.828007579e-01</r1c2>
+				<r1c3>4.016696662e-02</r1c3>
+				<r2c0>-7.075729221e-02</r2c0>
+				<r2c1>8.940205574e-01</r2c1>
+				<r2c2>4.424032271e-01</r2c2>
+				<r2c3>-6.536985636e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</viewMatrix>
+			<projectionMatrix>
+				<r0c0>2.414213419e+00</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>0.000000000e+00</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>2.414213419e+00</r1c1>
+				<r1c2>0.000000000e+00</r1c2>
+				<r1c3>0.000000000e+00</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>0.000000000e+00</r2c1>
+				<r2c2>-1.000925899e+00</r2c2>
+				<r2c3>-2.000926062e-03</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>-1.000000000e+00</r3c2>
+				<r3c3>0.000000000e+00</r3c3>
+			</projectionMatrix>
+			<origin class_id="4" tracking_level="0" version="0">
+				<x>-5.423156917e-02</x>
+				<y>2.600207627e-01</y>
+				<z>1.687876433e-01</z>
+			</origin>
+			<cameraPositions class_id="5" tracking_level="0" version="0">
+				<count>3</count>
+				<item_version>0</item_version>
+				<item class_id="6" tracking_level="0" version="0">
+					<name>S0</name>
+					<viewMatrix>
+						<r0c0>9.927154779e-01</r0c0>
+						<r0c1>1.862645149e-09</r0c1>
+						<r0c2>-1.204822659e-01</r0c2>
+						<r0c3>1.362711191e-04</r0c3>
+						<r1c0>-2.540048212e-02</r1c0>
+						<r1c1>9.775241613e-01</r1c1>
+						<r1c2>-2.092876434e-01</r1c2>
+						<r1c3>-3.008031100e-02</r1c3>
+						<r2c0>1.177743301e-01</r2c0>
+						<r2c1>2.108233869e-01</r2c1>
+						<r2c2>9.704033732e-01</r2c2>
+						<r2c3>-1.398937106e+00</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S1</name>
+					<viewMatrix>
+						<r0c0>9.952368736e-01</r0c0>
+						<r0c1>-3.725289854e-09</r0c1>
+						<r0c2>-9.748649597e-02</r0c2>
+						<r0c3>8.159939200e-03</r0c3>
+						<r1c0>8.108307421e-02</r1c0>
+						<r1c1>5.551707745e-01</r1c1>
+						<r1c2>8.277747631e-01</r1c2>
+						<r1c3>-4.024171829e-02</r1c3>
+						<r2c0>5.412165076e-02</r2c0>
+						<r2c1>-8.317364454e-01</r2c1>
+						<r2c2>5.525263548e-01</r2c2>
+						<r2c3>-9.525700212e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S2</name>
+					<viewMatrix>
+						<r0c0>9.874501824e-01</r0c0>
+						<r0c1>0.000000000e+00</r0c1>
+						<r0c2>1.579312533e-01</r0c2>
+						<r0c3>2.689413354e-02</r0c3>
+						<r1c0>1.411937922e-01</r1c0>
+						<r1c1>4.480259418e-01</r1c1>
+						<r1c2>-8.828007579e-01</r1c2>
+						<r1c3>4.016696662e-02</r1c3>
+						<r2c0>-7.075729221e-02</r2c0>
+						<r2c1>8.940205574e-01</r2c1>
+						<r2c2>4.424032271e-01</r2c2>
+						<r2c3>-6.536985636e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+			</cameraPositions>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="2" object_id_reference="_0"></px>
+	</item>
+	<item>
+		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
+			<volumePath>assets/datasets/GRCH_Abdomen.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>4.878937907e-04</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>-5.350005627e-02</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>1.245121509e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="7" object_id="_2">
+			<volumePath>assets/datasets/GRCH_Schaedel_fein_H31.mhd</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<overallTransformation>
+				<r0c0>9.999999404e-01</r0c0>
+				<r0c1>0.000000000e+00</r0c1>
+				<r0c2>0.000000000e+00</r0c2>
+				<r0c3>-9.762122296e-03</r0c3>
+				<r1c0>0.000000000e+00</r1c0>
+				<r1c1>-4.371138829e-08</r1c1>
+				<r1c2>1.000000000e+00</r1c2>
+				<r1c3>4.332000017e-01</r1c3>
+				<r2c0>0.000000000e+00</r2c0>
+				<r2c1>-1.000000000e+00</r2c1>
+				<r2c2>-4.371138829e-08</r2c2>
+				<r2c3>1.247621402e-01</r2c3>
+				<r3c0>0.000000000e+00</r3c0>
+				<r3c1>0.000000000e+00</r3c1>
+				<r3c2>0.000000000e+00</r3c2>
+				<r3c3>1.000000000e+00</r3c3>
+			</overallTransformation>
+		</px>
+	</item>
+	<item>
+		<px class_id="8" class_name="LabelNode" tracking_level="1" version="0" object_id="_3">
+			<label class_id="9" tracking_level="0" version="0">
+				<label.id>1</label.id>
+				<label.text>Fractured ribs</label.text>
+				<label.anchorPosition>
+					<x>1.242072508e-01</x>
+					<y>1.907648742e-01</y>
+					<z>1.570938677e-01</z>
+				</label.anchorPosition>
+				<label.size class_id="10" tracking_level="0" version="0">
+					<x>1.580000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_4">
+			<label>
+				<label.id>2</label.id>
+				<label.text>Fractured ribs</label.text>
+				<label.anchorPosition>
+					<x>-1.058993414e-01</x>
+					<y>1.158021092e-01</y>
+					<z>1.670307964e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.580000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_5">
+			<label>
+				<label.id>3</label.id>
+				<label.text>Sternum fracture</label.text>
+				<label.anchorPosition>
+					<x>1.849902980e-02</x>
+					<y>1.926689744e-01</y>
+					<z>1.937373877e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.900000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_6">
+			<label>
+				<label.id>4</label.id>
+				<label.text>Fractured shoulder</label.text>
+				<label.anchorPosition>
+					<x>-1.361920089e-01</x>
+					<y>2.762055397e-01</y>
+					<z>9.350949526e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.100000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_7">
+			<label>
+				<label.id>5</label.id>
+				<label.text>Fractured spinal processes</label.text>
+				<label.anchorPosition>
+					<x>-8.790949360e-03</x>
+					<y>2.788099349e-01</y>
+					<z>1.256715208e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.980000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_8">
+			<label>
+				<label.id>6</label.id>
+				<label.text>Fractured larynx</label.text>
+				<label.anchorPosition>
+					<x>-4.481805954e-03</x>
+					<y>3.320637941e-01</y>
+					<z>1.745940596e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>1.880000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_9">
+			<label>
+				<label.id>7</label.id>
+				<label.text>Tongue bone fracture</label.text>
+				<label.anchorPosition>
+					<x>-3.037121706e-02</x>
+					<y>3.528724313e-01</y>
+					<z>1.351141036e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.380000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_10">
+			<label>
+				<label.id>8</label.id>
+				<label.text>Compression fracture</label.text>
+				<label.anchorPosition>
+					<x>2.564362064e-02</x>
+					<y>-2.588999458e-02</y>
+					<z>1.200011745e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.380000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_11">
+			<label>
+				<label.id>9</label.id>
+				<label.text>Fractured transverse process</label.text>
+				<label.anchorPosition>
+					<x>3.175675124e-02</x>
+					<y>-9.529978037e-02</y>
+					<z>9.612645209e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>3.300000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_12">
+			<label>
+				<label.id>10</label.id>
+				<label.text>Fractured pubic ramus</label.text>
+				<label.anchorPosition>
+					<x>1.796134049e-03</x>
+					<y>-3.331084251e-01</y>
+					<z>1.534855068e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.500000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_13">
+			<label>
+				<label.id>11</label.id>
+				<label.text>Fractured ischium</label.text>
+				<label.anchorPosition>
+					<x>1.119558420e-02</x>
+					<y>-3.309766054e-01</y>
+					<z>1.199089959e-01</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.100000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+	<item>
+		<px class_id_reference="8" object_id="_14">
+			<label>
+				<label.id>12</label.id>
+				<label.text>Burst fracture system</label.text>
+				<label.anchorPosition>
+					<x>-5.702003371e-03</x>
+					<y>5.417201519e-01</y>
+					<z>8.564946055e-02</z>
+				</label.anchorPosition>
+				<label.size>
+					<x>2.400000000e+02</x>
+					<y>3.200000000e+01</y>
+				</label.size>
+			</label>
+		</px>
+	</item>
+</data>
+</boost_serialization>
+
