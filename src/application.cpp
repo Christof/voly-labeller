@@ -183,10 +183,11 @@ void Application::setupCommandLineParser()
         "space character are not supported!",
         "Camera Position" });
 
-  parser.addOption(
-      { "video", "Take a video of the given camera positions. "
-                 "The camera positions must be supplied with ',' as separator.",
-        "Camera Positions" });
+  parser.addOption({ "video", "Take a video of the given camera positions. "
+                              "The camera positions must be supplied with ',' "
+                              "as separator. After a '_' the duration to the "
+                              "specified position can be specified in seconds.",
+                     "Camera Positions" });
 }
 
 void Application::setupWindow()

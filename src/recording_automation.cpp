@@ -51,10 +51,9 @@ void RecordingAutomation::update()
 
   if (shouldMoveToPosition)
   {
-    std::string firstPosition =
+    std::string nextPosition =
         cameraPositionName.substr(0, cameraPositionName.find(","));
-    std::string name = firstPosition.substr(0, cameraPositionName.find("_"));
-    moveToCameraPosition(name);
+    moveToCameraPosition(nextPosition);
     shouldMoveToPosition = false;
     return;
   }
@@ -83,7 +82,7 @@ void RecordingAutomation::update()
     {
       cameraPositionName = cameraPositionName.substr(nextIndex + 1);
       shouldMoveToPosition = true;
-      shouldTakeScreenshot = true;
+      shouldTakeScreenshot = !takeVideo;
       return;
     }
 
@@ -146,13 +145,15 @@ void RecordingAutomation::takeScreenshot(std::string name)
 
 void RecordingAutomation::moveToCameraPosition(std::string name)
 {
+  int lodashIndex = name.find("_");
+  std::string positionName = name.substr(0, lodashIndex);
   auto cameraNode = nodes->getCameraNode();
   auto cameraPositions = cameraNode->cameraPositions;
 
   auto cameraPosition =
       std::find_if(cameraPositions.begin(), cameraPositions.end(),
-                   [name](const CameraPosition &cameraPosition) {
-                     return cameraPosition.name == name;
+                   [positionName](const CameraPosition &cameraPosition) {
+                     return cameraPosition.name == positionName;
                    });
 
   if (cameraPosition == cameraPositions.end())
@@ -163,7 +164,10 @@ void RecordingAutomation::moveToCameraPosition(std::string name)
   }
 
   auto target = cameraPosition->viewMatrix;
-  float duration = takeVideo ? 4.0f : 1e-9f;
+  float duration = 1e-9f;
+  if (takeVideo)
+    duration = lodashIndex > 0 ? std::stof(name.substr(lodashIndex + 1)) : 4;
+
   cameraNode->getCamera()->startAnimation(target, duration);
 }
 
