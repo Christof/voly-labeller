@@ -38,6 +38,7 @@ class RecordingAutomation
   void takeScreenshotOfPositionAndExit(std::string cameraPositionName);
 
   void startVideo(std::string positions);
+  void startVideoAndExit(std::string positions);
 
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;

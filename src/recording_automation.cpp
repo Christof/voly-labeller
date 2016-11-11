@@ -134,6 +134,12 @@ void RecordingAutomation::startVideo(std::string positions)
   takeVideo = true;
 }
 
+void RecordingAutomation::startVideoAndExit(std::string positions)
+{
+  exitAfterScreenshot = true;
+  startVideo(positions);
+}
+
 void RecordingAutomation::moveToCameraPosition(std::string name)
 {
   auto cameraNode = nodes->getCameraNode();

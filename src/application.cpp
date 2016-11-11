@@ -62,9 +62,6 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
       std::make_unique<VideoRecorderController>(videoRecorder);
   recordingAutomation = std::make_shared<RecordingAutomation>(
       labellingCoordinator, nodes, videoRecorder);
-  if (parser.isSet("screenshot"))
-    recordingAutomation->takeScreenshotOfPositionAndExit(
-        parser.value("screenshot").toStdString());
 
   recordingAutomationController =
       std::make_unique<RecordingAutomationController>(recordingAutomation);
@@ -179,11 +176,17 @@ void Application::setupCommandLineParser()
   parser.addOption(
       { QStringList() << "s"
                       << "screenshot",
-        "Takes a screenshot of the given camera position. "
+        "Takes a screenshot of the given camera position."
         "Characters after a '_' are ignored but added to the filename"
-        "Camera Position. Multiple camera positions for multiple screenshots "
+        "Multiple camera positions for multiple screenshots "
         "can be supplied with ',' as separator. Camera Positions containing a "
-        "space character are not supported!", "Camera Position" });
+        "space character are not supported!",
+        "Camera Position" });
+
+  parser.addOption(
+      { "video", "Take a video of the given camera positions. "
+                 "The camera positions must be supplied with ',' as separator.",
+        "Camera Positions" });
 }
 
 void Application::setupWindow()
@@ -325,5 +328,12 @@ void Application::onInitializationDone()
 
   if (parser.isSet("optimize-on-idle"))
     labellingController->toggleOptimizeOnIdle();
+
+  if (parser.isSet("screenshot"))
+    recordingAutomation->takeScreenshotOfPositionAndExit(
+        parser.value("screenshot").toStdString());
+
+  if (parser.isSet("video"))
+    recordingAutomation->startVideoAndExit(parser.value("video").toStdString());
 }
 
