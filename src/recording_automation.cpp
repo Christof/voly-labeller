@@ -46,7 +46,7 @@ std::string getTime()
 
 void RecordingAutomation::update()
 {
-  if (!takeScreenshot)
+  if (!takeScreenshot && !takeVideo)
     return;
 
   if (shouldMoveToPosition)
@@ -74,19 +74,22 @@ void RecordingAutomation::update()
                                                                     startTime);
   if (unchangedCount > 10 && diff.count() > 1500)
   {
-    std::vector<unsigned char> pixels(width * height * 4);
-    gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-                     pixels.data());
     int nextIndex = cameraPositionName.find(",");
     std::string name = cameraPositionName.substr(0, nextIndex);
-    std::string detail = name.size() ? name : getTime();
 
-    std::string filename =
-        "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
-    ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
-    takeScreenshot = false;
-    qCWarning(recordingAutomationChan) << "Took screenshot:"
-                                       << filename.c_str();
+    if (takeScreenshot)
+    {
+      std::string detail = name.size() ? name : getTime();
+      std::string filename =
+          "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
+      std::vector<unsigned char> pixels(width * height * 4);
+      gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
+                       pixels.data());
+      ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
+      takeScreenshot = false;
+      qCWarning(recordingAutomationChan) << "Took screenshot:"
+                                         << filename.c_str();
+    }
 
     if (nextIndex > 0)
     {
@@ -120,6 +123,17 @@ void RecordingAutomation::takeScreenshotOfPositionAndExit(
   takeScreenshotOf(cameraPositionName);
 }
 
+void RecordingAutomation::startVideo(std::string positions)
+{
+  std::string filename =
+      "video_" + nodes->getSceneName() + "_" + getTime() + ".mpeg";
+  videoRecorder->createNewVideo(filename);
+  videoRecorder->startRecording();
+  cameraPositionName = positions;
+  shouldMoveToPosition = true;
+  takeVideo = true;
+}
+
 void RecordingAutomation::moveToCameraPosition(std::string name)
 {
   auto cameraNode = nodes->getCameraNode();
@@ -139,6 +153,7 @@ void RecordingAutomation::moveToCameraPosition(std::string name)
   }
 
   auto target = cameraPosition->viewMatrix;
-  cameraNode->getCamera()->startAnimation(target, 1e-9f);
+  float duration = takeVideo ? 4.0f : 1e-9f;
+  cameraNode->getCamera()->startAnimation(target, duration);
 }
 
