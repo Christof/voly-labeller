@@ -136,7 +136,6 @@ void Scene::update(double frameTime)
 
 void Scene::render()
 {
-  qInfo() << "Scene::render";
   auto camera = getCamera();
 
   if (shouldResize)
