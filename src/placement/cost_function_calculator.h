@@ -20,7 +20,7 @@ namespace Placement
  */
 struct CostFunctionWeights
 {
-  float labelShadowConstraint = 1e2f;
+  float labelShadowConstraint = 1e3f;
   float integralCosts = 5e1f;
   float distanceToAnchor = 0.5e-2f;
   float distanceToOldPosition = 1e5f;
