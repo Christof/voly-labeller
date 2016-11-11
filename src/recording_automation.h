@@ -49,7 +49,7 @@ class RecordingAutomation
   int width;
   int height;
 
-  bool takeScreenshot = false;
+  bool shouldTakeScreenshot = false;
   bool takeVideo = false;
   bool shouldMoveToPosition = false;
   std::string cameraPositionName;
@@ -59,6 +59,7 @@ class RecordingAutomation
   int unchangedCount = 0;
   std::chrono::high_resolution_clock::time_point startTime;
 
+  void takeScreenshot(std::string name);
   void moveToCameraPosition(std::string name);
 };
 

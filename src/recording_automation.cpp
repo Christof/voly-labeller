@@ -46,7 +46,7 @@ std::string getTime()
 
 void RecordingAutomation::update()
 {
-  if (!takeScreenshot && !takeVideo)
+  if (!shouldTakeScreenshot && !takeVideo)
     return;
 
   if (shouldMoveToPosition)
@@ -77,25 +77,13 @@ void RecordingAutomation::update()
     int nextIndex = cameraPositionName.find(",");
     std::string name = cameraPositionName.substr(0, nextIndex);
 
-    if (takeScreenshot)
-    {
-      std::string detail = name.size() ? name : getTime();
-      std::string filename =
-          "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
-      std::vector<unsigned char> pixels(width * height * 4);
-      gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
-                       pixels.data());
-      ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
-      takeScreenshot = false;
-      qCWarning(recordingAutomationChan) << "Took screenshot:"
-                                         << filename.c_str();
-    }
+    takeScreenshot(name);
 
     if (nextIndex > 0)
     {
       cameraPositionName = cameraPositionName.substr(nextIndex + 1);
       shouldMoveToPosition = true;
-      takeScreenshot = true;
+      shouldTakeScreenshot = true;
       return;
     }
 
@@ -106,14 +94,14 @@ void RecordingAutomation::update()
 
 void RecordingAutomation::takeScreenshotOfNextFrame()
 {
-  takeScreenshot = true;
+  shouldTakeScreenshot = true;
 }
 
 void RecordingAutomation::takeScreenshotOf(std::string cameraPositionName)
 {
   this->cameraPositionName = cameraPositionName;
   shouldMoveToPosition = true;
-  takeScreenshot = true;
+  shouldTakeScreenshot = true;
 }
 
 void RecordingAutomation::takeScreenshotOfPositionAndExit(
@@ -138,6 +126,22 @@ void RecordingAutomation::startVideoAndExit(std::string positions)
 {
   exitAfterScreenshot = true;
   startVideo(positions);
+}
+
+void RecordingAutomation::takeScreenshot(std::string name)
+{
+  if (!shouldTakeScreenshot)
+    return;
+
+  std::string detail = name.size() ? name : getTime();
+  std::string filename =
+      "screenshot_" + nodes->getSceneName() + "_" + detail + ".png";
+  std::vector<unsigned char> pixels(width * height * 4);
+  gl->glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE,
+                   pixels.data());
+  ImagePersister::flipAndSaveRGBA8I(pixels.data(), width, height, filename);
+  shouldTakeScreenshot = false;
+  qCWarning(recordingAutomationChan) << "Took screenshot:" << filename.c_str();
 }
 
 void RecordingAutomation::moveToCameraPosition(std::string name)
