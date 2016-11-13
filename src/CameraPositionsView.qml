@@ -20,7 +20,7 @@ Item {
     x: 570; y: 250
     spacing: 4
     width: 430
-    height: 170
+    height: 280
     visible: cameraPositions.isVisible
 
     TableView {
@@ -70,6 +70,22 @@ Item {
         onClicked: {
           if (cameraPositions) cameraPositions.setTo(cameraPositionsTableView.currentRow);
         }
+      }
+    }
+    Row {
+      spacing: 10
+      Button {
+          text: "Record video"
+          onClicked: {
+              if (automation) automation.startVideo(positions.text);
+          }
+      }
+
+      TextField {
+          id: positions
+          width: 310
+          height: 24
+          placeholderText: qsTr("Positions separated by ','")
       }
     }
   }

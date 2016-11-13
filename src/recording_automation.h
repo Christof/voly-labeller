@@ -37,6 +37,9 @@ class RecordingAutomation
   void takeScreenshotOf(std::string cameraPositionName);
   void takeScreenshotOfPositionAndExit(std::string cameraPositionName);
 
+  void startVideo(std::string positions);
+  void startVideoAndExit(std::string positions);
+
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;
   std::shared_ptr<Nodes> nodes;
@@ -46,14 +49,17 @@ class RecordingAutomation
   int width;
   int height;
 
-  bool takeScreenshot = false;
+  bool shouldTakeScreenshot = false;
+  bool takeVideo = false;
   bool shouldMoveToPosition = false;
   std::string cameraPositionName;
   bool exitAfterScreenshot = false;
+  std::string remainingVideoSteps;
 
   int unchangedCount = 0;
   std::chrono::high_resolution_clock::time_point startTime;
 
+  void takeScreenshot(std::string name);
   void moveToCameraPosition(std::string name);
 };
 
