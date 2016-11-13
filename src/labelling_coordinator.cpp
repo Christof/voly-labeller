@@ -182,7 +182,7 @@ void LabellingCoordinator::updatePlacement()
     return;
 
   bool optimize = isIdle && optimizeOnIdle;
-  bool ignoreOldPosition = !isIdle;
+  bool ignoreOldPosition = firstFramesWithoutPlacement || isIdle;
 
   float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
