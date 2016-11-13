@@ -88,14 +88,14 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
-    ignoreOldPosition = ignoreOldPosition || !oldPositions.count(label.id);
+    bool ignoreOldLabel = ignoreOldPosition || !oldPositions.count(label.id);
     Eigen::Vector2f oldPositionPixel =
-        ignoreOldPosition ? Eigen::Vector2f(0, 0)
+        ignoreOldLabel ? Eigen::Vector2f(0, 0)
                           : toPixel(oldPositions.at(label.id), size);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldPosition,
+        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldLabel,
         oldPositionPixel.x(), oldPositionPixel.y());
 
     constraintUpdater->setPosition(label.id, result.position);
