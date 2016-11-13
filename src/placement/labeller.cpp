@@ -53,12 +53,17 @@ void Labeller::cleanup()
 }
 
 std::map<int, Eigen::Vector2f>
-Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
+Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
+                 const LabelPositions &oldLabelPositions)
 {
   if (labels->count() == 0)
     return std::map<int, Eigen::Vector2f>();
 
-  oldPositions = newPositions;
+  oldPositions.clear();
+  for (auto &pair : newPositions)
+    oldPositions[pair.first] =
+        frameData.project2d(oldLabelPositions.get3dFor(pair.first));
+
   newPositions.clear();
   if (!integralCosts.get())
     return newPositions;
@@ -105,6 +110,8 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
         2.0f * relativeResult - Eigen::Vector2f(1.0f, 1.0f);
     newPositions[label.id] = newNDC2d;
   }
+
+  oldViewProjectionMatrix = frameData.viewProjection;
 
   return newPositions;
 }

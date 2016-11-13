@@ -126,6 +126,7 @@ class LabellingCoordinator
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 
   Eigen::Vector2f bufferSize;
+  LabelPositions oldLabelPositions;
 
   bool saveConstraintsInNextFrame = false;
   ProfilingStatistics profilingStatistics;

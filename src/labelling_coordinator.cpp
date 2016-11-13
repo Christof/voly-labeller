@@ -165,6 +165,8 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
   if (forcesEnabled)
     labelPositions = getForcesPositions(labelPositions);
 
+  oldLabelPositions = labelPositions;
+
   distributeLabelsToLayers();
 
   updateLabelPositionsInLabelNodes(labelPositions);
@@ -213,7 +215,8 @@ void LabellingCoordinator::updatePlacement()
                                          : insertionOrderLabelsArranger;
     labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
                                          : defaultArranger);
-    labeller->update(labellerFrameData, ignoreOldPosition);
+    labeller->update(labellerFrameData, ignoreOldPosition,
+                     oldLabelPositions);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
 

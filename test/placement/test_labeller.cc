@@ -71,6 +71,17 @@ class Test_PlacementLabeller : public ::testing::Test
     createLabeller();
   }
 
+  LabelPositions getOldLabelPositions()
+  {
+    LabelPositions labelPositions;
+    labelPositions.update(1, Eigen::Vector3f(0.1796875f, 0.640625f, 0.0f), Eigen::Vector3f(0.174f, 0.55f, 0.034f));
+    labelPositions.update(2, Eigen::Vector3f(0.335937f, 0.20703125, 0.0f), Eigen::Vector3f(0.34f, 0.322f, -0.007f));
+    labelPositions.update(3, Eigen::Vector3f(0.27734375, 0.69921875f, 0.0f), Eigen::Vector3f(0.262f, 0.422f, 0.058f));
+    labelPositions.update(3, Eigen::Vector3f(0.1875f, 0.63671875f, 0.0f), Eigen::Vector3f(0.034f, 0.373f, 0.141f));
+
+    return labelPositions;
+  }
+
  public:
   std::shared_ptr<Labels> labels;
   std::shared_ptr<Placement::Labeller> labeller;
@@ -97,7 +108,7 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   view(2, 3) = -1.94522f;
   view(3, 2) = -1.0f;
   LabellerFrameData frameData(0.02f, projection, view);
-  auto newPositions = labeller->update(frameData, false);
+  auto newPositions = labeller->update(frameData, false, getOldLabelPositions());
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
   EXPECT_FLOAT_EQ(0.62223798, labeller->getLastSumOfCosts());
@@ -109,8 +120,8 @@ TEST_F(Test_PlacementLabeller, UpdateCalculatesPositionsFromRealData)
   std::vector<Eigen::Vector2f> expectedPositions = {
     Eigen::Vector2f(0.1796875f, 0.640625f),
     Eigen::Vector2f(0.335937f, 0.20703125),
-    Eigen::Vector2f(0.27734375, 0.69921875f),
-    Eigen::Vector2f(0.1875, 0.63671875),
+    Eigen::Vector2f(0.27734375f, 0.69921875f),
+    Eigen::Vector2f(0.1875f, 0.63671875f),
   };
 
   for (size_t i = 0; i < newPositions.size(); ++i)
@@ -137,7 +148,8 @@ TEST(Test_PlacementLabellerWithoutFixture,
   LabellerFrameData frameData(0.02f, Eigen::Matrix4f::Identity(),
                               Eigen::Matrix4f::Identity());
 
-  auto newPositions = labeller->update(frameData, false);
+  LabelPositions oldLabelPositions;
+  auto newPositions = labeller->update(frameData, false, oldLabelPositions);
   auto lastPlacementResult = labeller->getLastPlacementResult();
 
   EXPECT_EQ(0, newPositions.size());

@@ -8,6 +8,7 @@
 #include <map>
 #include "../labelling/labels_container.h"
 #include "../labelling/labeller_frame_data.h"
+#include "../labelling/label_positions.h"
 #include "./cost_function_calculator.h"
 
 class CudaArrayProvider;
@@ -39,8 +40,9 @@ class Labeller
    * \brief Calculates new label positions via global minimization and returns
    * them as NDC coordinates.
    */
-  std::map<int, Eigen::Vector2f> update(const LabellerFrameData &frameData,
-                                        bool ignoreOldPosition);
+  std::map<int, Eigen::Vector2f>
+  update(const LabellerFrameData &frameData, bool ignoreOldPosition,
+         const LabelPositions &oldLabelPositions);
 
   std::map<int, Eigen::Vector2f> getLastPlacementResult();
   float getLastSumOfCosts();
@@ -65,6 +67,7 @@ class Labeller
 
   std::map<int, Eigen::Vector2f> newPositions;
   std::map<int, Eigen::Vector2f> oldPositions;
+  Eigen::Matrix4f oldViewProjectionMatrix;
   float costSum = 0.0f;
 };
 
