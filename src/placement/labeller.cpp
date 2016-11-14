@@ -61,8 +61,11 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
 
   oldPositions.clear();
   for (auto &pair : newPositions)
-    oldPositions[pair.first] =
-        frameData.project2d(oldLabelPositions.get3dFor(pair.first));
+  {
+    if (pair.first != -1)
+      oldPositions[pair.first] =
+          frameData.project2d(oldLabelPositions.get3dFor(pair.first));
+  }
 
   newPositions.clear();
   if (!integralCosts.get())
@@ -91,7 +94,7 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
     bool ignoreOldLabel = ignoreOldPosition || !oldPositions.count(label.id);
     Eigen::Vector2f oldPositionPixel =
         ignoreOldLabel ? Eigen::Vector2f(0, 0)
-                          : toPixel(oldPositions.at(label.id), size);
+                       : toPixel(oldPositions.at(label.id), size);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
