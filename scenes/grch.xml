@@ -121,7 +121,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/GRCH_Abdomen.mhd</volumePath>
+			<volumePath>assets/datasets/GRCH_Abdomen_optimized.mha</volumePath>
 			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
