@@ -143,7 +143,7 @@
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
 			<volumePath>assets/datasets/GRCH_Abdomen_optimized.mha</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<transferFunctionPath>assets/transferfunctions/scapula3.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
@@ -166,8 +166,8 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_2">
-			<volumePath>assets/datasets/GRCH_Schaedel_fein_H31.mhd</volumePath>
-			<transferFunctionPath>assets/transferfunctions/scapula2.gra</transferFunctionPath>
+			<volumePath>assets/datasets/GRCH_Schaedel_fein_H31_optimized.mha</volumePath>
+			<transferFunctionPath>assets/transferfunctions/scapula3.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
