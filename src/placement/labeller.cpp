@@ -62,7 +62,7 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
   oldPositions.clear();
   for (auto &pair : newPositions)
   {
-    if (pair.first != -1)
+    if (oldLabelPositions.count(pair.first))
       oldPositions[pair.first] =
           frameData.project2d(oldLabelPositions.get3dFor(pair.first));
   }
