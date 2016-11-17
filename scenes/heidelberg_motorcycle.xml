@@ -142,7 +142,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/heidelberg_motorcycle_1_clipped.mhd</volumePath>
+			<volumePath>assets/datasets/heidelberg_motorcycle_rescaled_extracted_masked.mha</volumePath>
 			<transferFunctionPath>assets/transferfunctions/scapula4.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
