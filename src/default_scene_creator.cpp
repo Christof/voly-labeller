@@ -92,6 +92,17 @@ void addJetEngine(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
 }
 
+void addPlane(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/plane.dae";
+  Eigen::Affine3f trans(
+      Eigen::Scaling(0.5f) *
+      Eigen::AngleAxisf(-M_PI, Eigen::Vector3f::UnitY()));
+  Eigen::Matrix4f matrix = trans.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
+}
+
 void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   const std::string filename = "assets/models/artificial.dae";
