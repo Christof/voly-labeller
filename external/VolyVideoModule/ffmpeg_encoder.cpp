@@ -55,7 +55,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
 
   /* put sample parameters */
   //m_context->bit_rate = 100000000;
-  m_context->bit_rate =  10000000;
+  m_context->bit_rate =  20000000;
 
   /* resolution must be a multiple of two */
   m_context->width = (m_width/2)*2;
@@ -94,7 +94,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
     m_context->pix_fmt = AV_PIX_FMT_RGB24;
     m_context->level = 30;
     av_opt_set(m_context->priv_data,"subq","6",0);
-    av_opt_set(m_context->priv_data,"crf","20.0",0);
+    av_opt_set(m_context->priv_data,"crf","15.0",0);
     av_opt_set(m_context->priv_data,"weighted_p_pred","0",0);
     av_opt_set(m_context->priv_data,"profile","high",AV_OPT_SEARCH_CHILDREN);
     //The setting below can be used to adjust CPU usage: fast -> lower CPU usage, bigger files
