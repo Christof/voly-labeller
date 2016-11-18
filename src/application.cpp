@@ -174,6 +174,8 @@ void Application::setupCommandLineParser()
   parser.addOption(
       { "optimize-on-idle", "Optimize costs when the camera is not moving" });
   parser.addOption(
+      { "show-buffers", "Show buffers for debugging" });
+  parser.addOption(
       { QStringList() << "s"
                       << "screenshot",
         "Takes a screenshot of the given camera position."
@@ -329,6 +331,9 @@ void Application::onInitializationDone()
 
   if (parser.isSet("optimize-on-idle"))
     labellingController->toggleOptimizeOnIdle();
+
+  if (parser.isSet("show-buffers"))
+    sceneController->toggleBufferViews();
 
   if (parser.isSet("screenshot"))
     recordingAutomation->takeScreenshotOfPositionAndExit(
