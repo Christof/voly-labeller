@@ -21,7 +21,6 @@ void Clustering::update(Eigen::Matrix4f viewProjectionMatrix)
   if (clusterCount == 0)
     return;
 
-
   initializeClusters();
 
   recalculateCenters();
@@ -107,7 +106,7 @@ std::vector<float> Clustering::getMedianClusterMembers()
 }
 
 std::map<float, std::vector<int>>
-Clustering::getMedianClusterMembersWithLabelIds()
+Clustering::getMedianClusterMembersWithLabelIdsInFront()
 {
   std::vector<float> medians = getMedianClusterMembers();
   std::sort(medians.begin(), medians.end());

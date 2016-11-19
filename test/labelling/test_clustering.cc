@@ -26,7 +26,7 @@ TEST(Test_Clustering, ForClusterCountOf0)
   EXPECT_EQ(0, clustering.getMedianClusterMembers().size());
   EXPECT_EQ(0, clustering.getFarthestClusterMembersWithLabelIds().size());
 
-  EXPECT_EQ(1, clustering.getMedianClusterMembersWithLabelIds().size());
+  EXPECT_EQ(1, clustering.getMedianClusterMembersWithLabelIdsInFront().size());
 }
 
 TEST(Test_Clustering, ForAsManyLabelsAsClusters)
@@ -146,7 +146,7 @@ TEST(Test_Clustering, ForAsMoreLabelsThanClustersWhereLabelsAreAtTheFarEnd)
   EXPECT_EQ(5, indices[1]);
 }
 
-TEST(Test_Clustering, UpdateAndReturnFarthestZValueForAsMoreLabelsThanClusters)
+TEST(Test_Clustering, UpdateAndReturnFarthestZValueForMoreLabelsThanClusters)
 {
   auto labels = std::make_shared<Labels>();
 
@@ -231,7 +231,7 @@ TEST(Test_Clustering, UpdateAndCheckClustersCreatedByMedian)
   Clustering clustering(labels, 3);
 
   clustering.update(Eigen::Matrix4f::Identity());
-  auto result = clustering.getMedianClusterMembersWithLabelIds();
+  auto result = clustering.getMedianClusterMembersWithLabelIdsInFront();
 
   ASSERT_EQ(4, result.size());
 

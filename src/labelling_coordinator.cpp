@@ -215,8 +215,7 @@ void LabellingCoordinator::updatePlacement()
                                          : insertionOrderLabelsArranger;
     labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
                                          : defaultArranger);
-    labeller->update(labellerFrameData, ignoreOldPosition,
-                     oldLabelPositions);
+    labeller->update(labellerFrameData, ignoreOldPosition, oldLabelPositions);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
 
@@ -325,7 +324,8 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
 
 void LabellingCoordinator::distributeLabelsToLayers()
 {
-  auto centerWithLabelIds = clustering.getMedianClusterMembersWithLabelIds();
+  auto centerWithLabelIds =
+      clustering.getMedianClusterMembersWithLabelIdsInFront();
   labelIdToLayerIndex.clear();
   labelIdToZValue.clear();
 
