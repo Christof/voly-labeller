@@ -30,6 +30,27 @@ __global__ void integralCosts(cudaTextureObject_t colors, float occlusionWeight,
   surf2Dwrite(sum / layerCount, output, x * sizeof(float), y);
 }
 
+__global__ void integralCostsSingleLayer(cudaTextureObject_t colors,
+                                         float occlusionWeight,
+                                         cudaTextureObject_t saliency,
+                                         float saliencyWeight,
+                                         cudaSurfaceObject_t output, int width,
+                                         int height, int layerIndex)
+{
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+  if (x >= width || y >= height)
+    return;
+
+  float occlusion = tex3D<float4>(colors, x + 0.5f, y + 0.5f, 0.5f).w;
+  float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
+
+
+  float sum = occlusionWeight * occlusion + saliencyWeight * saliencyValue;
+
+  surf2Dwrite(sum, output, x * sizeof(float), y);
+}
+
 namespace Placement
 {
 
@@ -64,9 +85,18 @@ void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  integralCosts<<<dimGrid, dimBlock>>>(color, weights.occlusion, saliency,
-                                       weights.saliency, output, outputWidth,
-                                       outputHeight, layerIndex, layerCount);
+  if (layerCount == 1)
+  {
+    integralCostsSingleLayer<<<dimGrid, dimBlock>>>(
+        color, weights.occlusion, saliency, weights.saliency, output,
+        outputWidth, outputHeight, layerIndex);
+  }
+  else
+  {
+    integralCosts<<<dimGrid, dimBlock>>>(color, weights.occlusion, saliency,
+                                         weights.saliency, output, outputWidth,
+                                         outputHeight, layerIndex, layerCount);
+  }
 
   HANDLE_ERROR(cudaThreadSynchronize());
 }
