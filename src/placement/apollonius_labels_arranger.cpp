@@ -36,8 +36,9 @@ std::vector<Label> ApolloniusLabelsArranger::getArrangement(
                         labelsSeed, labels->count());
   apollonius.run();
 
+  std::vector<int> apolloniusOrder = apollonius.calculateOrdering();
   std::vector<Label> result;
-  for (int id : apollonius.calculateOrdering())
+  for (int id : apolloniusOrder)
   {
     result.push_back(labels->getById(id));
   }
