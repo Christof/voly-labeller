@@ -173,8 +173,10 @@ void Application::setupCommandLineParser()
   parser.addOption({ "internal-labelling", "Enable internal labelling" });
   parser.addOption(
       { "optimize-on-idle", "Optimize costs when the camera is not moving" });
-  parser.addOption(
-      { "show-buffers", "Show buffers for debugging" });
+  parser.addOption({ "show-buffers", "Show buffers for debugging" });
+  parser.addOption({ "decoret", "Change parameters to simulate Stein & Décoret "
+                                "algorithm: 1 layer, using apollonius graph "
+                                "and hard constraints" });
   parser.addOption(
       { QStringList() << "s"
                       << "screenshot",
@@ -299,6 +301,9 @@ void Application::onFocesLabellerModelIsVisibleChanged()
 
 int Application::parseLayerCount()
 {
+  if (parser.isSet("decoret"))
+    return 1;
+
   int layerCount = 4;
   if (parser.isSet("layers"))
   {
@@ -320,10 +325,10 @@ int Application::parseLayerCount()
 
 void Application::onInitializationDone()
 {
-  if (parser.isSet("hard-constraints"))
+  if (parser.isSet("hard-constraints") || parser.isSet("decoret"))
     placementLabellerModel->simulateHardConstraints();
 
-  if (parser.isSet("apollonius"))
+  if (parser.isSet("apollonius") || parser.isSet("decoret"))
     labellingController->toggleApollonius();
 
   if (parser.isSet("disable-labelling"))
