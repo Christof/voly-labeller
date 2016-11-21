@@ -230,7 +230,8 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   float sampleSteps = segmentTextureLength * STEP_FACTOR;
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
 
-  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / sampleSteps;
+  // use sampleSteps + 1 because of noiseOffset
+  vec4 step_eye = (endPos_eye - segmentStartPos_eye) / (sampleSteps + 1);
 
   vec2 tc = vec2(gl_FragCoord.xy * 4.0f / 1000.0f + 0.5f);
   float noiseOffset = Texture(noiseAddresses[0], tc).x;
