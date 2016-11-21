@@ -22,8 +22,8 @@ TEST(Test_Clustering, ForClusterCountOf0)
   Clustering clustering(labels, 0);
 
   clustering.update(Eigen::Matrix4f::Identity());
-  EXPECT_EQ(0, clustering.getCentersWithLabelIds().size());
-  EXPECT_EQ(0, clustering.getMedianClusterMembers().size());
+  EXPECT_EQ(1, clustering.getCentersWithLabelIds().size());
+  EXPECT_EQ(1, clustering.getMedianClusterMembers().size());
   EXPECT_EQ(0, clustering.getFarthestClusterMembersWithLabelIds().size());
 
   EXPECT_EQ(1, clustering.getMedianClusterMembersWithLabelIdsInFront().size());
