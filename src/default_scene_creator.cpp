@@ -131,6 +131,19 @@ void add100Labels(std::vector<std::shared_ptr<Node>> &sceneNodes)
   }
 }
 
+void addKnife(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::Translation3f(Eigen::Vector3f(0, -1.4, 0)) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/heidelberg_delikt_messer_masked3.mha",
+      "assets/transferfunctions/Siemens_Pulmo3D_scapula.gra", trans.matrix(), false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/heidelberg_delikt_messer_air2.mha",
+      "assets/transferfunctions/air_cavities_6.gra", trans.matrix(), false));
+}
+
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
