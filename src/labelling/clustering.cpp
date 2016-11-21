@@ -37,8 +37,8 @@ std::map<float, std::vector<int>> Clustering::getCentersWithLabelIds()
   if (clusterCount == 0)
   {
     std::map<float, std::vector<int>> result;
-    for (unsigned int labelIndex = 0; labelIndex < allLabels.size(); ++labelIndex)
-      result[1.0].push_back(labelIndex);
+    for (auto &label : allLabels)
+      result[1.0].push_back(label.id);
 
     return result;
   }
