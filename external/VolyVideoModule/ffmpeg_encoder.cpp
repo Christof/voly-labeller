@@ -220,7 +220,7 @@ void ffmpeg_encoder::addFrame(unsigned char* buffer)
 
   if (got_output)
   {
-    printf("writing frame %3d (size=%5d)\n", m_framecount, m_packet.size);
+    // printf("writing frame %3d (size=%5d)\n", m_framecount, m_packet.size);
     fwrite(m_packet.data, 1, m_packet.size, m_file);
     av_packet_unref(&m_packet);
   }
