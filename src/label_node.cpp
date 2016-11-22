@@ -136,6 +136,7 @@ void LabelNode::renderConnector(Graphics::Gl *gl,
                                 std::shared_ptr<Graphics::Managers> managers,
                                 RenderData renderData)
 {
+  gl->glLineWidth(2.0f);
   Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
   auto length = anchorToPosition.norm();
   auto rotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitX(),
