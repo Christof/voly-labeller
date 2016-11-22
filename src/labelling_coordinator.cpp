@@ -54,6 +54,7 @@ void LabellingCoordinator::initialize(
 {
   qCInfo(lcChan) << "Initialize";
   this->bufferSize = Eigen::Vector2f(bufferSize, bufferSize);
+  this->textureMapperManager = textureMapperManager;
   saliency = std::make_shared<Placement::Saliency>(
       textureMapperManager->getAccumulatedLayersTextureMapper(),
       textureMapperManager->getSaliencyTextureMapper());
@@ -209,6 +210,9 @@ void LabellingCoordinator::updatePlacement()
       occlusionCalculator->calculateFor(layerIndex);
 
     directIntegralCostsCalculator->runKernel(layerIndex, layerCount);
+    if (saveIntegralCostsInNextFrame)
+      textureMapperManager->saveIntegralCostsImage(
+          "integralCostsForLayer" + std::to_string(layerIndex) + ".tiff");
 
     auto labeller = placementLabellers[layerIndex];
     auto defaultArranger = useApollonius ? apolloniusLabelsArrangers[layerIndex]
@@ -218,6 +222,8 @@ void LabellingCoordinator::updatePlacement()
     labeller->update(labellerFrameData, ignoreOldPosition, oldLabelPositions);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
+
+  saveIntegralCostsInNextFrame = false;
 
   if (optimize)
   {
@@ -266,6 +272,7 @@ void LabellingCoordinator::toggleAnchorVisibility()
 
 void LabellingCoordinator::saveOcclusion()
 {
+  saveIntegralCostsInNextFrame = true;
   occlusionCalculator->saveOcclusion();
 }
 
