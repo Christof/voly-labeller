@@ -191,6 +191,11 @@ void TextureMapperManager::saveOcclusion(std::string filename)
   occlusionTexture->save(filename);
 }
 
+void TextureMapperManager::saveIntegralCostsImage(std::string filename)
+{
+  integralCostsImage->save(filename);
+}
+
 void TextureMapperManager::saveSaliency()
 {
   saveSaliencyInNextFrame = true;
