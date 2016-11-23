@@ -12,6 +12,7 @@ struct IntegralCostsWeights
 {
   float occlusion = 1.0f;
   float saliency = 1e-3f;
+  float fixOcclusionPart = 0.2f;
 };
 
 }  // namespace Placement

@@ -32,6 +32,7 @@ TEST(Test_DirectIntegraclCostsCalculator,
       colorProvider, saliencyProvider, outputProvider);
   calculator.weights.occlusion = 1.0f;
   calculator.weights.saliency = 1.0f;
+  calculator.weights.fixOcclusionPart = 0.2f;
   int layerIndex = 0;
   calculator.runKernel(layerIndex, layerCount);
 
@@ -76,6 +77,7 @@ TEST(Test_DirectIntegraclCostsCalculator,
       colorProvider, saliencyProvider, outputProvider);
   calculator.weights.occlusion = 1.0f;
   calculator.weights.saliency = 1.0f;
+  calculator.weights.fixOcclusionPart = 0.2f;
   int layerIndex = 1;
   calculator.runKernel(layerIndex, layerCount);
 
@@ -120,6 +122,7 @@ TEST(Test_DirectIntegraclCostsCalculator,
       colorProvider, saliencyProvider, outputProvider);
   calculator.weights.occlusion = 1.0f;
   calculator.weights.saliency = 1.0f;
+  calculator.weights.fixOcclusionPart = 0.2f;
   int layerIndex = 2;
   calculator.runKernel(layerIndex, layerCount);
 

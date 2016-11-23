@@ -94,10 +94,9 @@ void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
   }
   else
   {
-    float fixOcclusionPart = 0.2f;
-    integralCosts<<<dimGrid, dimBlock>>>(color, saliency, fixOcclusionPart,
-                                         output, outputWidth, outputHeight,
-                                         layerIndex, layerCount);
+    integralCosts<<<dimGrid, dimBlock>>>(
+        color, saliency, weights.fixOcclusionPart, output, outputWidth,
+        outputHeight, layerIndex, layerCount);
   }
 
   HANDLE_ERROR(cudaThreadSynchronize());
