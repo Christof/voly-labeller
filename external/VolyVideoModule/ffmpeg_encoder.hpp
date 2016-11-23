@@ -24,7 +24,7 @@ extern "C" {
 class VOLYVIDEOMODULE_API ffmpeg_encoder
 {
 public:
-  ffmpeg_encoder(int width, int height, const QString &filename, const double fps);
+  ffmpeg_encoder(int width, int height, const QString &filename, const int fps);
   virtual ~ffmpeg_encoder();
 
   void addFrame(unsigned char* buffer);
@@ -34,6 +34,7 @@ private:
   int m_width;
   int m_height;
   QString m_filename;
+  int fps;
   int m_framecount;
   AVCodec * m_codec;
   AVCodecContext * m_context;

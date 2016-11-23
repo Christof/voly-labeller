@@ -20,10 +20,11 @@ extern "C" {
 
 bool ffmpeg_encoder::isStaticInit = false;
 
-ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, const double fps) :
+ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, const int fps) :
     m_width(width),
     m_height(height),
     m_filename(filename),
+    fps(fps),
     m_framecount(0),
     m_codec(NULL),
     m_context(NULL),
@@ -63,7 +64,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
   printf("capture size: %d x %d of (%d x %d)\n", m_context->width, m_context->height, m_width, m_height);
 
   /* frames per second */
-  m_context->time_base= (AVRational){1,25};
+  m_context->time_base= (AVRational){1, fps};
 
   m_context->gop_size = 12; /* emit one intra frame every twelve frames */
   m_context->max_b_frames=1;
