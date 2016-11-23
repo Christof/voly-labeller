@@ -4,7 +4,7 @@
 
 #include <memory>
 #include "../utils/cuda_array_provider.h"
-#include "./integral_costs_calculator.h"
+#include "./integral_costs_weights.h"
 
 namespace Placement
 {
