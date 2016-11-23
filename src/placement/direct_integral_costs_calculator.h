@@ -10,9 +10,18 @@ namespace Placement
 {
 
 /**
- * \brief
+ * \brief Computes the integral costs directly from layer colors and saliency
  *
+ * The occlusion is calculated on the fly from the layer colors. The occlusion
+ * is partly weighted by the saliency as controled by
+ * IntegralCostsWeights#fixOcclusionPart \f$\beta\f$:
  *
+ * \f$\sum_{i=0}^l \texttt{alpha}_i + [(1 - \beta) \cdot
+ * \texttt{saliencyValue} + \beta] \cdot
+ * \sum_{i=l+1}^{n-1} \texttt{alpha}_i\f$.
+ *
+ * Where \f$l\f$ is the current layer index, \f$n\f$ is the number of layers
+ * and \f$\texttt{alpha}\f$ is the alpha value from layer color.
  */
 class DirectIntegralCostsCalculator
 {

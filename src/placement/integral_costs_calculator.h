@@ -14,6 +14,9 @@ namespace Placement
  *
  * The integral costs constist of:
  * - occlusion
+ * - saliency
+ *
+ * These values are combined as weighted sum.
  */
 class IntegralCostsCalculator
 {
