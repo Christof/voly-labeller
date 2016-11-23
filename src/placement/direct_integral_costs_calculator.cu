@@ -1,11 +1,11 @@
 #include "./direct_integral_costs_calculator.h"
 #include "../utils/cuda_helper.h"
 
-__global__ void integralCosts(cudaTextureObject_t colors, float occlusionWeight,
+__global__ void integralCosts(cudaTextureObject_t colors,
                               cudaTextureObject_t saliency,
-                              float saliencyWeight, cudaSurfaceObject_t output,
-                              int width, int height, int layerIndex,
-                              int layerCount)
+                              float fixOcclusionPart,
+                              cudaSurfaceObject_t output, int width, int height,
+                              int layerIndex, int layerCount)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -19,11 +19,13 @@ __global__ void integralCosts(cudaTextureObject_t colors, float occlusionWeight,
     sum += tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexFront + 0.5f).w;
 
   float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
+  float occlusionFactor =
+      (1.0f - fixOcclusionPart) * saliencyValue + fixOcclusionPart;
 
   for (int layerIndexBehind = layerIndex + 1; layerIndexBehind < layerCount;
        ++layerIndexBehind)
   {
-    sum += saliencyValue *
+    sum += occlusionFactor *
            tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexBehind + 0.5f).w;
   }
 
@@ -44,7 +46,6 @@ __global__ void integralCostsSingleLayer(cudaTextureObject_t colors,
 
   float occlusion = tex3D<float4>(colors, x + 0.5f, y + 0.5f, 0.5f).w;
   float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
-
 
   float sum = occlusionWeight * occlusion + saliencyWeight * saliencyValue;
 
@@ -93,9 +94,10 @@ void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
   }
   else
   {
-    integralCosts<<<dimGrid, dimBlock>>>(color, weights.occlusion, saliency,
-                                         weights.saliency, output, outputWidth,
-                                         outputHeight, layerIndex, layerCount);
+    float fixOcclusionPart = 0.2f;
+    integralCosts<<<dimGrid, dimBlock>>>(color, saliency, fixOcclusionPart,
+                                         output, outputWidth, outputHeight,
+                                         layerIndex, layerCount);
   }
 
   HANDLE_ERROR(cudaThreadSynchronize());
