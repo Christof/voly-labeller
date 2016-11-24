@@ -3,25 +3,20 @@
 #define SRC_PLACEMENT_INTEGRAL_COSTS_CALCULATOR_H_
 
 #include <memory>
+#include "./integral_costs_weights.h"
 #include "../utils/cuda_array_provider.h"
 
 namespace Placement
 {
 
 /**
- * \brief Weights for integral costs.
- */
-struct IntegralCostsWeights
-{
-  float occlusion = 1.0f;
-  float saliency = 1e-3f;
-};
-
-/**
  * \brief Computes the weighted sum of the integral costs
  *
  * The integral costs constist of:
  * - occlusion
+ * - saliency
+ *
+ * These values are combined as weighted sum.
  */
 class IntegralCostsCalculator
 {

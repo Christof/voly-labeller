@@ -11,7 +11,9 @@ set(SOURCES
   apollonius.cu
   occlusion.cu
   occlusion_calculator.cpp
+  integral_costs_weights.h
   integral_costs_calculator.cu
+  direct_integral_costs_calculator.cu
   saliency.cu
   cost_function_calculator.cu
   labeller.cpp
