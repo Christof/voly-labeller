@@ -59,13 +59,6 @@ void LabellingCoordinator::initialize(
       textureMapperManager->getSaliencyTextureMapper());
 
   occlusionCalculator->initialize(textureMapperManager);
-  /*
-  integralCostsCalculator =
-      std::make_shared<Placement::IntegralCostsCalculator>(
-          textureMapperManager->getOcclusionTextureMapper(),
-          textureMapperManager->getSaliencyTextureMapper(),
-          textureMapperManager->getIntegralCostsTextureMapper());
-          */
 
   directIntegralCostsCalculator =
       std::make_shared<Placement::DirectIntegralCostsCalculator>(
@@ -127,7 +120,6 @@ void LabellingCoordinator::cleanup()
 {
   occlusionCalculator.reset();
   saliency.reset();
-  integralCostsCalculator.reset();
   directIntegralCostsCalculator.reset();
 
   for (auto apolloniusLabelsArranger : apolloniusLabelsArrangers)
@@ -211,8 +203,9 @@ void LabellingCoordinator::updatePlacement()
 
   for (int layerIndex = 0; layerIndex < layerCount; ++layerIndex)
   {
-    occlusionCalculator->calculateFor(layerIndex);
-    // integralCostsCalculator->runKernel();
+    if (useApollonius)
+      occlusionCalculator->calculateFor(layerIndex);
+
     directIntegralCostsCalculator->runKernel(layerIndex, layerCount);
 
     auto labeller = placementLabellers[layerIndex];
@@ -333,7 +326,7 @@ void LabellingCoordinator::distributeLabelsToLayers()
   labelIdToLayerIndex.clear();
   labelIdToZValue.clear();
 
-  for (auto& layerLabels : labelsInLayer)
+  for (auto &layerLabels : labelsInLayer)
     layerLabels->clear();
 
   int layerIndex = 0;
