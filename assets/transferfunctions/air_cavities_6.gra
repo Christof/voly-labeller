@@ -4,10 +4,10 @@
   <colorData r="0" a="0" b="0" g="0"/>
  </stopData>
  <stopData position="0.01">
-  <colorData r="255" a="59" b="0" g="0"/>
+  <colorData r="255" a="69" b="0" g="0"/>
  </stopData>
- <stopData position="0.0698324">
-  <colorData r="255" a="21" b="0" g="181"/>
+ <stopData position="0.1698324">
+  <colorData r="255" a="21" b="40" g="221"/>
  </stopData>
  <stopData position="0.170391">
   <colorData r="0" a="0" b="0" g="0"/>
