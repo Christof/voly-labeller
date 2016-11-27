@@ -352,7 +352,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="VolumeNode" tracking_level="1" version="0" object_id="_1">
-			<volumePath>assets/datasets/heidelberg_delikt_messer_masked5.mha</volumePath>
+			<volumePath>assets/datasets/heidelberg_delikt_messer_masked6.mha</volumePath>
 			<transferFunctionPath>assets/transferfunctions/Siemens_Pulmo3D_scapula.gra</transferFunctionPath>
 			<overallTransformation>
 				<r0c0>9.999999404e-01</r0c0>
