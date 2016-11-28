@@ -13,6 +13,7 @@ cd $script_directory
 ./take-screenshots-in-modes.sh ../scenes/sponza.xml "S0,S1,S2,S3,S4"
 ./take-screenshots-in-modes.sh ../scenes/plane.xml "S0,S1,S2,S3"
 ./take-screenshots-in-modes.sh ../scenes/human.xml "P0,P1,P2,P3,P4,S0"
+./take-screenshots-in-modes.sh ../scenes/100-labels.xml "S0,S1,S2"
 
 LUNG=""
 for ((i=0; i<=15; i++)); do
