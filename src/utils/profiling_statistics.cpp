@@ -13,7 +13,8 @@ ProfilingStatistics::~ProfilingStatistics()
   for (auto &pair : profilersResults)
   {
     qCInfo(channel) << "\t" << pair.first.c_str() << "took on average"
-                    << pair.second.average() << "ms";
+                    << pair.second.average() << "ms"
+                    << " (" << pair.second.counter << "measurements)";
   }
 }
 
