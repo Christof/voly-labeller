@@ -20,4 +20,4 @@ for ((i=0; i<=15; i++)); do
   LUNG+="S$i,"
 done
 LUNG_ALL=${LUNG:0:${#LUNG}-1}
-./take-screenshots-in-modes.sh ../scenes/LIDC-IDRI_0469.xml "$LUNG_ALL"
+./take-screenshots-in-modes.sh ../scenes/LIDC-IDRI_0469.xml "$LUNG_ALL,L0,L1,L2"
