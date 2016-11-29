@@ -128,6 +128,19 @@ void RecordingAutomation::startVideoAndExit(std::string positions)
   startVideo(positions);
 }
 
+void RecordingAutomation::startMovement(std::string positions)
+{
+  cameraPositionName = positions;
+  shouldMoveToPosition = true;
+  takeVideo = true;
+}
+
+void RecordingAutomation::startMovementAndExit(std::string positions)
+{
+  exitAfterScreenshot = true;
+  startMovement(positions);
+}
+
 void RecordingAutomation::takeScreenshot(std::string name)
 {
   if (!shouldTakeScreenshot)

@@ -193,6 +193,13 @@ void Application::setupCommandLineParser()
                               "as separator. After a '_' the duration to the "
                               "specified position can be specified in seconds.",
                      "Camera Positions" });
+
+  parser.addOption({ "movement",
+                     "Move to the specified camera positions. "
+                     "The camera positions must be supplied with ',' "
+                     "as separator. After a '_' the duration to the "
+                     "specified position can be specified in seconds.",
+                     "Camera Positions" });
 }
 
 void Application::setupWindow()
@@ -347,5 +354,9 @@ void Application::onInitializationDone()
 
   if (parser.isSet("video"))
     recordingAutomation->startVideoAndExit(parser.value("video").toStdString());
+
+  if (parser.isSet("movement"))
+    recordingAutomation->startMovementAndExit(
+        parser.value("movement").toStdString());
 }
 

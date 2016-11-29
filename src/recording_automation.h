@@ -42,6 +42,9 @@ class RecordingAutomation
   void startVideo(std::string positions);
   void startVideoAndExit(std::string positions);
 
+  void startMovement(std::string positions);
+  void startMovementAndExit(std::string positions);
+
  private:
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;
   std::shared_ptr<Nodes> nodes;
