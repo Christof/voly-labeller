@@ -61,7 +61,8 @@ Application::Application(int &argc, char **argv) : application(argc, argv)
   videoRecorderController =
       std::make_unique<VideoRecorderController>(videoRecorder);
   recordingAutomation = std::make_shared<RecordingAutomation>(
-      labellingCoordinator, nodes, videoRecorder);
+      labellingCoordinator, nodes, videoRecorder,
+      [this]() { this->application.quit(); });
 
   recordingAutomationController =
       std::make_unique<RecordingAutomationController>(recordingAutomation);

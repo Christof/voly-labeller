@@ -3,6 +3,7 @@
 #define SRC_RECORDING_AUTOMATION_H_
 
 #include <memory>
+#include <functional>
 #include <string>
 #include <chrono>
 #include "./graphics/gl.h"
@@ -24,7 +25,8 @@ class RecordingAutomation
   RecordingAutomation(
       std::shared_ptr<LabellingCoordinator> labellingCoordinator,
       std::shared_ptr<Nodes> nodes,
-      std::shared_ptr<VideoRecorder> videoRecorder);
+      std::shared_ptr<VideoRecorder> videoRecorder,
+      std::function<void()> quit);
 
   void update();
 
@@ -44,6 +46,7 @@ class RecordingAutomation
   std::shared_ptr<LabellingCoordinator> labellingCoordinator;
   std::shared_ptr<Nodes> nodes;
   std::shared_ptr<VideoRecorder> videoRecorder;
+  std::function<void()> quit;
 
   Graphics::Gl *gl;
   int width;

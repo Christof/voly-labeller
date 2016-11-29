@@ -16,9 +16,10 @@ QLoggingCategory recordingAutomationChan("RecordingAutomation");
 
 RecordingAutomation::RecordingAutomation(
     std::shared_ptr<LabellingCoordinator> labellingCoordinator,
-    std::shared_ptr<Nodes> nodes, std::shared_ptr<VideoRecorder> videoRecorder)
+    std::shared_ptr<Nodes> nodes, std::shared_ptr<VideoRecorder> videoRecorder,
+    std::function<void()> quit)
   : labellingCoordinator(labellingCoordinator), nodes(nodes),
-    videoRecorder(videoRecorder)
+    videoRecorder(videoRecorder), quit(quit)
 {
 }
 
@@ -87,7 +88,7 @@ void RecordingAutomation::update()
     }
 
     if (exitAfterScreenshot)
-      exit(0);
+      quit();
   }
 }
 
