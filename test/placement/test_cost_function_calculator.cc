@@ -18,6 +18,17 @@ TEST(Test_CostFunctionCalculator, TestForFirstLabelWithoutConstraints)
   calculator.resize(2 * side, 2 * side);
   calculator.setTextureSize(side, side);
 
+  Placement::CostFunctionWeights weights;
+  weights.labelShadowConstraint = 1e3f;
+  weights.integralCosts = 5e1f;
+  weights.distanceToAnchor = 0.5e-2f;
+  weights.distanceToOldPosition = 1.0f;
+  weights.favorHorizontalOrVerticalLines = 1.0f;
+  weights.connectorShadowConstraint = 1e2f;
+  weights.anchorConstraint = 1e5f;
+
+  calculator.weights = weights;
+
   thrust::host_vector<float> integralCosts;
   for (int y = 0; y < side; ++y)
   {

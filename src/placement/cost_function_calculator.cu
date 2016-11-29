@@ -188,11 +188,13 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
   float widthFactor = static_cast<float>(textureWidth) / width;
   float heightFactor = static_cast<float>(textureHeight) / height;
 
+  CostFunctionWeights usedWeights = weights;
+
   if (ignoreOldPosition)
-    weights.distanceToOldPosition = 0.0f;
+    usedWeights.distanceToOldPosition = 0.0f;
 
   CostEvaluator costEvaluator(
-      textureWidth, textureHeight, weights, Placement::labelShadowValue,
+      textureWidth, textureHeight, usedWeights, Placement::labelShadowValue,
       Placement::connectorShadowValue, Placement::anchorConstraintValue);
   costEvaluator.anchorX = anchorX * widthFactor;
   costEvaluator.anchorY = anchorY * heightFactor;

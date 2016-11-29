@@ -92,6 +92,16 @@ void addJetEngine(std::vector<std::shared_ptr<Node>> &sceneNodes)
   sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
 }
 
+void addPlane(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  const std::string filename = "assets/models/plane.dae";
+  Eigen::Affine3f trans(Eigen::Scaling(0.5f) *
+                        Eigen::AngleAxisf(-M_PI, Eigen::Vector3f::UnitY()));
+  Eigen::Matrix4f matrix = trans.matrix();
+
+  sceneNodes.push_back(std::make_shared<MeshesNode>(filename, matrix));
+}
+
 void addArtificial(std::vector<std::shared_ptr<Node>> &sceneNodes)
 {
   const std::string filename = "assets/models/artificial.dae";
@@ -120,6 +130,20 @@ void add100Labels(std::vector<std::shared_ptr<Node>> &sceneNodes)
   }
 }
 
+void addKnife(std::vector<std::shared_ptr<Node>> &sceneNodes)
+{
+  Eigen::Affine3f trans(
+      Eigen::Translation3f(Eigen::Vector3f(0, -1.4, 0)) *
+      Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/heidelberg_delikt_messer_masked3.mha",
+      "assets/transferfunctions/Siemens_Pulmo3D_scapula.gra", trans.matrix(),
+      false));
+  sceneNodes.push_back(std::make_shared<VolumeNode>(
+      "assets/datasets/heidelberg_delikt_messer_air2.mha",
+      "assets/transferfunctions/air_cavities_6.gra", trans.matrix(), false));
+}
+
 void DefaultSceneCreator::create()
 {
   std::vector<std::shared_ptr<Node>> sceneNodes;
@@ -128,8 +152,8 @@ void DefaultSceneCreator::create()
   Eigen::Affine3f trans(
       Eigen::AngleAxisf(-0.5 * M_PI, Eigen::Vector3f::UnitX()));
   sceneNodes.push_back(std::make_shared<VolumeNode>(
-      "assets/datasets/dice.mha",
-      "assets/transferfunctions/dice4.gra", trans.matrix(), true));
+      "assets/datasets/dice.mha", "assets/transferfunctions/dice4.gra",
+      trans.matrix(), true));
   // addMultiVolumeNodesTo(sceneNodes);
 
   Persister::save(sceneNodes, "config/scene.xml");

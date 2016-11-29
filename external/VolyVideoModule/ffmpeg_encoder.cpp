@@ -20,10 +20,11 @@ extern "C" {
 
 bool ffmpeg_encoder::isStaticInit = false;
 
-ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, const double fps) :
+ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, const int fps) :
     m_width(width),
     m_height(height),
     m_filename(filename),
+    fps(fps),
     m_framecount(0),
     m_codec(NULL),
     m_context(NULL),
@@ -55,7 +56,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
 
   /* put sample parameters */
   //m_context->bit_rate = 100000000;
-  m_context->bit_rate =  10000000;
+  m_context->bit_rate =  20000000;
 
   /* resolution must be a multiple of two */
   m_context->width = (m_width/2)*2;
@@ -63,7 +64,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
   printf("capture size: %d x %d of (%d x %d)\n", m_context->width, m_context->height, m_width, m_height);
 
   /* frames per second */
-  m_context->time_base= (AVRational){1,25};
+  m_context->time_base= (AVRational){1, fps};
 
   m_context->gop_size = 12; /* emit one intra frame every twelve frames */
   m_context->max_b_frames=1;
@@ -94,7 +95,7 @@ ffmpeg_encoder::ffmpeg_encoder(int width, int height, const QString &filename, c
     m_context->pix_fmt = AV_PIX_FMT_RGB24;
     m_context->level = 30;
     av_opt_set(m_context->priv_data,"subq","6",0);
-    av_opt_set(m_context->priv_data,"crf","20.0",0);
+    av_opt_set(m_context->priv_data,"crf","15.0",0);
     av_opt_set(m_context->priv_data,"weighted_p_pred","0",0);
     av_opt_set(m_context->priv_data,"profile","high",AV_OPT_SEARCH_CHILDREN);
     //The setting below can be used to adjust CPU usage: fast -> lower CPU usage, bigger files
@@ -220,7 +221,7 @@ void ffmpeg_encoder::addFrame(unsigned char* buffer)
 
   if (got_output)
   {
-    printf("writing frame %3d (size=%5d)\n", m_framecount, m_packet.size);
+    // printf("writing frame %3d (size=%5d)\n", m_framecount, m_packet.size);
     fwrite(m_packet.data, 1, m_packet.size, m_file);
     av_packet_unref(&m_packet);
   }

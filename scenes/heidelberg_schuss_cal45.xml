@@ -51,7 +51,7 @@
 				<count>16</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
-					<name>Position 0</name>
+					<name>P0</name>
 					<viewMatrix>
 						<r0c0>8.749333024e-01</r0c0>
 						<r0c1>0.000000000e+00</r0c1>
@@ -72,7 +72,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 1</name>
+					<name>P1</name>
 					<viewMatrix>
 						<r0c0>9.029995203e-01</r0c0>
 						<r0c1>1.490116119e-08</r0c1>
@@ -93,7 +93,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 2</name>
+					<name>P2</name>
 					<viewMatrix>
 						<r0c0>9.434582591e-01</r0c0>
 						<r0c1>-2.980232594e-08</r0c1>
@@ -114,7 +114,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 3</name>
+					<name>P3</name>
 					<viewMatrix>
 						<r0c0>9.894438386e-01</r0c0>
 						<r0c1>0.000000000e+00</r0c1>
@@ -135,7 +135,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 4</name>
+					<name>P4</name>
 					<viewMatrix>
 						<r0c0>9.999981523e-01</r0c0>
 						<r0c1>-5.820766091e-11</r0c1>
@@ -156,7 +156,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 5</name>
+					<name>P5</name>
 					<viewMatrix>
 						<r0c0>9.963234067e-01</r0c0>
 						<r0c1>9.313226856e-10</r0c1>
@@ -177,7 +177,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 6</name>
+					<name>P6</name>
 					<viewMatrix>
 						<r0c0>4.343051612e-01</r0c0>
 						<r0c1>-1.862645149e-09</r0c1>
@@ -198,7 +198,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 7</name>
+					<name>P7</name>
 					<viewMatrix>
 						<r0c0>-3.862473071e-01</r0c0>
 						<r0c1>1.490116119e-08</r0c1>
@@ -219,7 +219,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 8</name>
+					<name>P8</name>
 					<viewMatrix>
 						<r0c0>4.257054329e-01</r0c0>
 						<r0c1>-7.450581485e-09</r0c1>
@@ -240,7 +240,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 9</name>
+					<name>P9</name>
 					<viewMatrix>
 						<r0c0>9.234867692e-01</r0c0>
 						<r0c1>7.450580597e-09</r0c1>
@@ -261,7 +261,7 @@
 					</viewMatrix>
 				</item>
 				<item>
-					<name>Position 10</name>
+					<name>P10</name>
 					<viewMatrix>
 						<r0c0>-6.743363142e-01</r0c0>
 						<r0c1>0.000000000e+00</r0c1>

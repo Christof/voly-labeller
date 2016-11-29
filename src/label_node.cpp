@@ -11,7 +11,7 @@
 #include "./math/utils.h"
 #include "./labelling/labeller_frame_data.h"
 
-const Eigen::Vector4f color = { 0.85f, 0.85f, 0.85f, 1 };
+const Eigen::Vector4f color = { 1, 0, 0, 1 };
 
 LabelNode::LabelNode(Label label) : label(label)
 {
@@ -136,6 +136,7 @@ void LabelNode::renderConnector(Graphics::Gl *gl,
                                 std::shared_ptr<Graphics::Managers> managers,
                                 RenderData renderData)
 {
+  gl->glLineWidth(2.0f);
   Eigen::Vector3f anchorToPosition = labelPosition - label.anchorPosition;
   auto length = anchorToPosition.norm();
   auto rotation = Eigen::Quaternionf::FromTwoVectors(Eigen::Vector3f::UnitX(),
@@ -199,13 +200,13 @@ QImage *LabelNode::renderLabelTextToQImage()
   int textureHeight = Math::computeNextPowerOfTwo(height);
   QImage *image =
       new QImage(textureWidth, textureHeight, QImage::Format_RGBA8888);
-  QColor c = QColor::fromRgbF(color.x(), color.y(), color.z(), color.w());
+  QColor c = QColor::fromRgbF(color.z(), color.y(), color.x(), color.w());
   image->fill(c);
 
   QPainter painter;
   painter.begin(image);
 
-  painter.setPen(Qt::black);
+  painter.setPen(QColor::fromRgbF(0, 1, 0, 1));
   painter.setFont(QFont("Arial", 72));
   painter.drawText(QRectF(0, 0, width, height), Qt::AlignCenter,
                    label.text.c_str());

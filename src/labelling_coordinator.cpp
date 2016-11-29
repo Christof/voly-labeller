@@ -54,6 +54,7 @@ void LabellingCoordinator::initialize(
 {
   qCInfo(lcChan) << "Initialize";
   this->bufferSize = Eigen::Vector2f(bufferSize, bufferSize);
+  this->textureMapperManager = textureMapperManager;
   saliency = std::make_shared<Placement::Saliency>(
       textureMapperManager->getAccumulatedLayersTextureMapper(),
       textureMapperManager->getSaliencyTextureMapper());
@@ -165,6 +166,8 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
   if (forcesEnabled)
     labelPositions = getForcesPositions(labelPositions);
 
+  oldLabelPositions = labelPositions;
+
   distributeLabelsToLayers();
 
   updateLabelPositionsInLabelNodes(labelPositions);
@@ -180,7 +183,7 @@ void LabellingCoordinator::updatePlacement()
     return;
 
   bool optimize = isIdle && optimizeOnIdle;
-  bool ignoreOldPosition = !isIdle;
+  bool ignoreOldPosition = firstFramesWithoutPlacement || isIdle;
 
   float newSumOfCosts = 0.0f;
   persistentConstraintUpdater->clear();
@@ -207,15 +210,20 @@ void LabellingCoordinator::updatePlacement()
       occlusionCalculator->calculateFor(layerIndex);
 
     directIntegralCostsCalculator->runKernel(layerIndex, layerCount);
+    if (saveIntegralCostsInNextFrame)
+      textureMapperManager->saveIntegralCostsImage(
+          "integralCostsForLayer" + std::to_string(layerIndex) + ".tiff");
 
     auto labeller = placementLabellers[layerIndex];
     auto defaultArranger = useApollonius ? apolloniusLabelsArrangers[layerIndex]
                                          : insertionOrderLabelsArranger;
     labeller->setLabelsArranger(optimize ? randomizedLabelsArranger
                                          : defaultArranger);
-    labeller->update(labellerFrameData, ignoreOldPosition);
+    labeller->update(labellerFrameData, ignoreOldPosition, oldLabelPositions);
     newSumOfCosts += labeller->getLastSumOfCosts();
   }
+
+  saveIntegralCostsInNextFrame = false;
 
   if (optimize)
   {
@@ -264,6 +272,7 @@ void LabellingCoordinator::toggleAnchorVisibility()
 
 void LabellingCoordinator::saveOcclusion()
 {
+  saveIntegralCostsInNextFrame = true;
   occlusionCalculator->saveOcclusion();
 }
 
@@ -322,7 +331,8 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
 
 void LabellingCoordinator::distributeLabelsToLayers()
 {
-  auto centerWithLabelIds = clustering.getMedianClusterMembersWithLabelIds();
+  auto centerWithLabelIds =
+      clustering.getMedianClusterMembersWithLabelIdsInFront();
   labelIdToLayerIndex.clear();
   labelIdToZValue.clear();
 

@@ -56,6 +56,7 @@ class TextureMapperManager
   void cleanup();
 
   void saveOcclusion(std::string filename);
+  void saveIntegralCostsImage(std::string filename);
   void saveDistanceTransform();
   void saveApollonius();
   void saveSaliency();

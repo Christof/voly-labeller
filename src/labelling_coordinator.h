@@ -100,6 +100,7 @@ class LabellingCoordinator
   std::shared_ptr<Placement::Saliency> saliency;
   std::shared_ptr<Placement::DirectIntegralCostsCalculator>
       directIntegralCostsCalculator;
+  std::shared_ptr<TextureMapperManager> textureMapperManager;
   std::shared_ptr<PersistentConstraintUpdater> persistentConstraintUpdater;
   std::vector<std::shared_ptr<Placement::Labeller>> placementLabellers;
   std::vector<std::shared_ptr<LabelsContainer>> labelsInLayer;
@@ -126,8 +127,10 @@ class LabellingCoordinator
   ndcPositionsTo3d(std::map<int, Eigen::Vector3f> positionsNDC);
 
   Eigen::Vector2f bufferSize;
+  LabelPositions oldLabelPositions;
 
   bool saveConstraintsInNextFrame = false;
+  bool saveIntegralCostsInNextFrame = false;
   ProfilingStatistics profilingStatistics;
 };
 

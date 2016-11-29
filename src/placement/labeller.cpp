@@ -53,12 +53,20 @@ void Labeller::cleanup()
 }
 
 std::map<int, Eigen::Vector2f>
-Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
+Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
+                 const LabelPositions &oldLabelPositions)
 {
   if (labels->count() == 0)
     return std::map<int, Eigen::Vector2f>();
 
-  oldPositions = newPositions;
+  oldPositions.clear();
+  for (auto &pair : newPositions)
+  {
+    if (oldLabelPositions.count(pair.first))
+      oldPositions[pair.first] =
+          frameData.project2d(oldLabelPositions.get3dFor(pair.first));
+  }
+
   newPositions.clear();
   if (!integralCosts.get())
     return newPositions;
@@ -83,14 +91,14 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
     constraintUpdater->updateConstraints(label.id, anchorForBuffer,
                                          labelSizeForBuffer);
 
-    ignoreOldPosition = ignoreOldPosition || !oldPositions.count(label.id);
+    bool ignoreOldLabel = ignoreOldPosition || !oldPositions.count(label.id);
     Eigen::Vector2f oldPositionPixel =
-        ignoreOldPosition ? Eigen::Vector2f(0, 0)
-                          : toPixel(oldPositions.at(label.id), size);
+        ignoreOldLabel ? Eigen::Vector2f(0, 0)
+                       : toPixel(oldPositions.at(label.id), size);
 
     auto result = costFunctionCalculator->calculateForLabel(
         integralCosts->getResults(), label.id, anchorPixels.x(),
-        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldPosition,
+        anchorPixels.y(), label.size.x(), label.size.y(), ignoreOldLabel,
         oldPositionPixel.x(), oldPositionPixel.y());
 
     constraintUpdater->setPosition(label.id, result.position);
@@ -105,6 +113,8 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition)
         2.0f * relativeResult - Eigen::Vector2f(1.0f, 1.0f);
     newPositions[label.id] = newNDC2d;
   }
+
+  oldViewProjectionMatrix = frameData.viewProjection;
 
   return newPositions;
 }
