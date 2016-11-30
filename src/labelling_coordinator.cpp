@@ -150,6 +150,29 @@ bool LabellingCoordinator::update(double frameTime, bool isIdle,
 
   this->isIdle = isIdle;
   labellerFrameData = LabellerFrameData(frameTime, projection, view);
+  if (!isIdle)
+  {
+    std::cout << "Is not idle" << std::endl;
+    LabelPositions labelPositions;
+    for (auto &label : labels->getLabels())
+    {
+      if (oldLabelPositions.count(label.id) == 0)
+      {
+        std::cout << "Label " << label.text << " not found in oldPos" << std::endl;
+        continue;
+      }
+
+      Eigen::Vector3f position3d = oldLabelPositions.get3dFor(label.id);
+      Eigen::Vector3f positionNDC =
+          project(labellerFrameData.viewProjection, position3d);
+      labelPositions.update(label.id, positionNDC, position3d);
+    }
+    oldLabelPositions = labelPositions;
+    updateLabelPositionsInLabelNodes(labelPositions);
+    hasChanges = true;
+    forcesLabeller->setPositions(labellerFrameData, labelPositions);
+    return true;
+  }
 
   if (internalLabellingEnabled)
   {
@@ -179,7 +202,7 @@ void LabellingCoordinator::updatePlacement()
 {
   Profiler profiler("updatePlacement", lcChan, &profilingStatistics);
 
-  if (!labellingEnabled)
+  if (!labellingEnabled || !isIdle)
     return;
 
   bool optimize = isIdle && optimizeOnIdle;
@@ -322,7 +345,7 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
   if (firstFramesWithoutPlacement && placementPositions.size())
   {
     firstFramesWithoutPlacement = false;
-    forcesLabeller->overallForceFactor = isIdle ? 6.0f : 3.0f;
+    forcesLabeller->overallForceFactor = isIdle ? 26.0f : 3.0f;
     forcesLabeller->setPositions(labellerFrameData, placementPositions);
   }
 

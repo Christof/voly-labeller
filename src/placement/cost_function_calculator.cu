@@ -190,7 +190,7 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
 
   CostFunctionWeights usedWeights = weights;
 
-  if (ignoreOldPosition)
+  //if (ignoreOldPosition)
     usedWeights.distanceToOldPosition = 0.0f;
 
   CostEvaluator costEvaluator(

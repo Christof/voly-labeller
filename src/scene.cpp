@@ -126,7 +126,7 @@ void Scene::update(double frameTime)
                                    frustumOptimizer.getFar());
 
   RenderData newRenderData = createRenderData();
-  bool isIdle =
+  isIdle =
       newRenderData.viewProjectionMatrix == renderData.viewProjectionMatrix;
   renderData = newRenderData;
 
@@ -201,9 +201,13 @@ void Scene::renderNodesWithHABufferIntoFBO()
 
   managers->getObjectManager()->render(renderData);
 
-  std::vector<float> zValues = labellingCoordinator->updateClusters();
+  if (isIdle)
+  {
+    std::vector<float> zValues = labellingCoordinator->updateClusters();
 
-  haBuffer->setLayerZValues(zValues, fbo->getLayerCount());
+    haBuffer->setLayerZValues(zValues, fbo->getLayerCount());
+  }
+
   haBuffer->render(managers, renderData);
 
   picker->doPick(renderData.viewProjectionMatrix);

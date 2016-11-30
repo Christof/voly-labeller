@@ -97,6 +97,7 @@ class Scene : public AbstractScene
   std::shared_ptr<TextureMapperManager> textureMapperManager;
   std::shared_ptr<RecordingAutomation> recordingAutomation;
   RenderData renderData;
+  bool isIdle = false;
 };
 
 #endif  // SRC_SCENE_H_
