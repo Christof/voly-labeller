@@ -24,6 +24,8 @@ time ./voly-labeller ../scenes/plane.xml $1 $PARAMETERS\
   --video="S0,S1,S2,S3"
 time ./voly-labeller ../scenes/human.xml $1 $PARAMETERS\
   --video="P0,P1,P2"
+time ./voly-labeller ../scenes/100-labels.xml $1 $PARAMETERS\
+  --video="S0,S1,S2"
 
 LUNG=""
 for ((i=0; i<=15; i++)); do
