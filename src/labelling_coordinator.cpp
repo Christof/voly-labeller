@@ -244,6 +244,8 @@ void LabellingCoordinator::updatePlacement()
 
 std::vector<float> LabellingCoordinator::updateClusters()
 {
+  Profiler profiler("updateClusters", lcChan, &profilingStatistics);
+
   if (!labellingEnabled || internalLabellingEnabled)
     return std::vector<float>{ 1.0f };
 
