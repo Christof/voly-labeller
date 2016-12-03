@@ -324,9 +324,9 @@ LabellingCoordinator::getForcesPositions(LabelPositions placementPositions)
   if (firstFramesWithoutPlacement && placementPositions.size())
   {
     firstFramesWithoutPlacement = false;
-    forcesLabeller->overallForceFactor = isIdle ? 6.0f : 3.0f;
     forcesLabeller->setPositions(labellerFrameData, placementPositions);
   }
+  forcesLabeller->overallForceFactor = isIdle ? 15.0f : 10.0f;
 
   return forcesLabeller->update(labellerFrameData, placementPositions);
 }

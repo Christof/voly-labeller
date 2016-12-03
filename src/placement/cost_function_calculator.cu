@@ -192,6 +192,8 @@ CostFunctionResult CostFunctionCalculator::calculateForLabel(
 
   if (ignoreOldPosition)
     usedWeights.distanceToOldPosition = 0.0f;
+  else
+    usedWeights.distanceToAnchor = 0.04f;
 
   CostEvaluator costEvaluator(
       textureWidth, textureHeight, usedWeights, Placement::labelShadowValue,
