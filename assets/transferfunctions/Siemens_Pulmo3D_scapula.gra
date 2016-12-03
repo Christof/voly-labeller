@@ -3,8 +3,8 @@
  <stopData position="0.024414063">
   <colorData b="0" g="45" r="0" a="0"/>
  </stopData>
- <stopData position="0.111572266">
-  <colorData b="0" g="128" r="0" a="3.188"/>
+ <stopData position="0.0911572266">
+  <colorData b="0" g="128" r="0" a="13.188"/>
  </stopData>
  <stopData position="0.139404297">
   <colorData b="196" g="255" r="255" a="27"/>
