@@ -9,7 +9,7 @@ time ./voly-labeller ../scenes/heidelberg_motorcycle.xml $1 $PARAMETERS\
 time ./voly-labeller ../scenes/heidelberg_schuss_cal45.xml $1 $PARAMETERS\
   --video="P0,P1,P2,P3,P4,P5,P6,P7,S2,S3,S4,S5"
 time ./voly-labeller ../scenes/jet-engine.xml $1 $PARAMETERS\
-  --video="S0,S1,S2,S4"
+  --video="S0,S1,S2,S4,S5"
 time ./voly-labeller ../scenes/pedestrian.xml $1 $PARAMETERS\
   --video="S0,S1,S2,S3"
 time ./voly-labeller ../scenes/heidelberg_delikt_messer2.xml $1 $PARAMETERS\
