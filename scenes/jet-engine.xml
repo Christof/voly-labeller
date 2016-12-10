@@ -184,7 +184,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="MeshesNode" tracking_level="1" version="0" object_id="_1">
-			<assetFilename>assets/models/jet_engine.dae</assetFilename>
+			<assetFilename>assets/models/jet_engine1.dae</assetFilename>
 			<transformation>
 				<r0c0>9.999998845e-03</r0c0>
 				<r0c1>0.000000000e+00</r0c1>
