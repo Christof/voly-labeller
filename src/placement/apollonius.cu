@@ -108,12 +108,12 @@ __global__ void apolloniusStep(cudaTextureObject_t distances, int *data,
  */
 __device__ float4 rgb(int maxValue, int value)
 {
-    float ratio = 2.0f * value / maxValue;
-    float b = max(0.0f, 1 - ratio);  // NOLINT
-    float r = max(0.0f, ratio - 1);  // NOLINT
-    float g = max(0.0f, 1.0f - b - r);  // NOLINT
+  float ratio = 2.0f * value / maxValue;
+  float b = max(0.0f, 1 - ratio);     // NOLINT
+  float r = max(0.0f, ratio - 1);     // NOLINT
+  float g = max(0.0f, 1.0f - b - r);  // NOLINT
 
-    return make_float4(r, g, b, 1.0);
+  return make_float4(r, g, b, 1.0);
 }
 
 __global__ void gather(cudaSurfaceObject_t output, int imageSize,
@@ -138,8 +138,8 @@ __global__ void gather(cudaSurfaceObject_t output, int imageSize,
     }
   }
 
-  float4 color = labelId == -1 ?
-    make_float4(1, 1, 1, 1) : rgb(labelCount, labelId);
+  float4 color =
+      labelId == -1 ? make_float4(1, 1, 1, 1) : rgb(labelCount, labelId);
 
   surf2Dwrite(color, output, x * sizeof(float4), y);
 }
@@ -157,8 +157,7 @@ __global__ void copyBorderIndex(int imageSize, int *source, int *destination)
   destination[index] = source[index];
 
   // right border from top to bottom
-  destination[imageSize + index] =
-      source[(imageSize - 1) + index * imageSize];
+  destination[imageSize + index] = source[(imageSize - 1) + index * imageSize];
 
   // bottom border from right to left
   destination[imageSize * 2 + index] = source[maxIndex - index];
@@ -178,22 +177,22 @@ void Apollonius::runSeedKernel()
   int *indicesPtr = thrust::raw_pointer_cast(seedIndices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
-  seed << <dimGrid, dimBlock >> >(outputSurface, imageSize, labelCount,
-    seedBufferPtr, computePtr, idPtr, indicesPtr);
+  seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
+                              seedBufferPtr, computePtr, idPtr, indicesPtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
 void Apollonius::runStepsKernels()
 {
-  apolloniusStep << <dimGrid, dimBlock >> >
-    (distancesTexture, thrust::raw_pointer_cast(computeVector.data()),
-    1, imageSize, imageSize);
+  apolloniusStep<<<dimGrid, dimBlock>>>(
+      distancesTexture, thrust::raw_pointer_cast(computeVector.data()), 1,
+      imageSize, imageSize);
 
   for (int k = (imageSize / 2); k > 0; k /= 2)
   {
-    apolloniusStep << <dimGrid, dimBlock >> >
-      (distancesTexture, thrust::raw_pointer_cast(computeVector.data()),
-      k, imageSize, imageSize);
+    apolloniusStep<<<dimGrid, dimBlock>>>(
+        distancesTexture, thrust::raw_pointer_cast(computeVector.data()), k,
+        imageSize, imageSize);
   }
   HANDLE_ERROR(cudaThreadSynchronize());
 }
@@ -203,8 +202,8 @@ void Apollonius::runGatherKernel()
   int *computePtr = thrust::raw_pointer_cast(computeVector.data());
   int *seedIdsPtr = thrust::raw_pointer_cast(seedIds.data());
   int *seedIndicesPtr = thrust::raw_pointer_cast(seedIndices.data());
-  gather << <dimGrid, dimBlock >> >(outputSurface, imageSize, labelCount,
-    computePtr, seedIdsPtr, seedIndicesPtr);
+  gather<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
+                                computePtr, seedIdsPtr, seedIndicesPtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
@@ -213,158 +212,156 @@ void Apollonius::runGatherKernel()
 namespace Placement
 {
 
-  Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
-    std::shared_ptr<CudaArrayProvider> outputImage,
-    std::vector<Eigen::Vector4f> labelPositions,
-    int labelCount)
-    : distancesImage(distancesImage), outputImage(outputImage),
+Apollonius::Apollonius(std::shared_ptr<CudaArrayProvider> distancesImage,
+                       std::shared_ptr<CudaArrayProvider> outputImage,
+                       std::vector<Eigen::Vector4f> labelPositions,
+                       int labelCount)
+  : distancesImage(distancesImage), outputImage(outputImage),
     labelCount(labelCount), seedBuffer(labelCount)
+{
+  imageSize = outputImage->getWidth();
+
+  for (size_t i = 0; i < seedBuffer.size(); ++i)
   {
-    imageSize = outputImage->getWidth();
-
-    for (size_t i = 0; i < seedBuffer.size(); ++i)
-    {
-      auto labelPosition = labelPositions[i];
-      seedBuffer[i] = make_float4(labelPosition.x(), labelPosition.y(),
-        labelPosition.z(), labelPosition.w());
-      int index = static_cast<int>(labelPosition.y()) +
-        static_cast<int>(labelPosition.z()) * imageSize;
-      pixelIndexToLabelId[index] = labelPosition.x();
-    }
-
-    pixelCount = imageSize * imageSize;
-
-    distancesImage->map();
-    auto resDesc = distancesImage->getResourceDesc();
-
-    struct cudaTextureDesc texDesc;
-    memset(&texDesc, 0, sizeof(texDesc));
-    texDesc.addressMode[0] = cudaAddressModeWrap;
-    texDesc.addressMode[1] = cudaAddressModeWrap;
-    texDesc.filterMode = cudaFilterModeLinear;
-    texDesc.readMode = cudaReadModeElementType;
-    texDesc.normalizedCoords = 0;
-
-    cudaCreateTextureObject(&distancesTexture, &resDesc, &texDesc, NULL);
-
-    distancesImage->unmap();
+    auto labelPosition = labelPositions[i];
+    seedBuffer[i] = make_float4(labelPosition.x(), labelPosition.y(),
+                                labelPosition.z(), labelPosition.w());
+    int index = static_cast<int>(labelPosition.y()) +
+                static_cast<int>(labelPosition.z()) * imageSize;
+    pixelIndexToLabelId[index] = labelPosition.x();
   }
 
-  void Apollonius::run()
+  pixelCount = imageSize * imageSize;
+
+  distancesImage->map();
+  auto resDesc = distancesImage->getResourceDesc();
+
+  struct cudaTextureDesc texDesc;
+  memset(&texDesc, 0, sizeof(texDesc));
+  texDesc.addressMode[0] = cudaAddressModeWrap;
+  texDesc.addressMode[1] = cudaAddressModeWrap;
+  texDesc.filterMode = cudaFilterModeLinear;
+  texDesc.readMode = cudaReadModeElementType;
+  texDesc.normalizedCoords = 0;
+
+  cudaCreateTextureObject(&distancesTexture, &resDesc, &texDesc, NULL);
+
+  distancesImage->unmap();
+}
+
+void Apollonius::run()
+{
+  resize();
+  outputImage->map();
+  auto resDesc = outputImage->getResourceDesc();
+  cudaCreateSurfaceObject(&outputSurface, &resDesc);
+
+  dimBlock = dim3(32, 32, 1);
+  dimGrid = dim3(divUp(imageSize, dimBlock.x), divUp(imageSize, dimBlock.y), 1);
+
+  runSeedKernel();
+  runStepsKernels();
+  runGatherKernel();
+
+  outputImage->unmap();
+}
+
+thrust::device_vector<int> &Apollonius::getIds()
+{
+  return seedIds;
+}
+
+std::vector<int> Apollonius::calculateOrdering()
+{
+  extractUniqueBoundaryIndices();
+  updateLabelSeeds();
+
+  size_t iterationCount = 0;
+  size_t labelCount = pixelIndexToLabelId.size();
+  while (extractedIndices.size() < labelCount && iterationCount < labelCount)
   {
-    resize();
-    outputImage->map();
-    auto resDesc = outputImage->getResourceDesc();
-    cudaCreateSurfaceObject(&outputSurface, &resDesc);
-
-    dimBlock = dim3(32, 32, 1);
-    dimGrid = dim3(divUp(imageSize, dimBlock.x),
-        divUp(imageSize, dimBlock.y), 1);
-
-    runSeedKernel();
-    runStepsKernels();
-    runGatherKernel();
-
-    outputImage->unmap();
-  }
-
-  thrust::device_vector<int> &Apollonius::getIds()
-  {
-    return seedIds;
-  }
-
-  std::vector<int> Apollonius::calculateOrdering()
-  {
+    run();
     extractUniqueBoundaryIndices();
     updateLabelSeeds();
 
-    size_t iterationCount = 0;
-    size_t labelCount = pixelIndexToLabelId.size();
-    while (extractedIndices.size() < labelCount && iterationCount < labelCount)
-    {
-      run();
-      extractUniqueBoundaryIndices();
-      updateLabelSeeds();
-
-      ++iterationCount;
-    }
-
-    return std::vector<int>(insertionOrder.begin(), insertionOrder.end());
+    ++iterationCount;
   }
 
-  void Apollonius::resize()
-  {
-    if (computeVector.size() != static_cast<unsigned long>(pixelCount))
-    {
-      computeVector.resize(pixelCount, pixelCount);
-    }
+  return std::vector<int>(insertionOrder.begin(), insertionOrder.end());
+}
 
-    if (seedIds.size() != labelCount || seedIndices.size() != labelCount)
-    {
-      seedIds.resize(labelCount, -1);
-      seedIndices.resize(labelCount, -1);
-    }
+void Apollonius::resize()
+{
+  if (computeVector.size() != static_cast<unsigned long>(pixelCount))
+  {
+    computeVector.resize(pixelCount, pixelCount);
   }
 
-
-  void Apollonius::extractUniqueBoundaryIndices()
+  if (seedIds.size() != labelCount || seedIndices.size() != labelCount)
   {
-    const unsigned int borderSize = 4 * imageSize;
+    seedIds.resize(labelCount, -1);
+    seedIndices.resize(labelCount, -1);
+  }
+}
 
-    if (orderedIndices.size() < borderSize)
-    {
-      orderedIndices.resize(borderSize);
-    }
+void Apollonius::extractUniqueBoundaryIndices()
+{
+  const unsigned int borderSize = 4 * imageSize;
 
-    dim3 dimBlock(32, 1, 1);
-    dim3 dimGrid(divUp(imageSize, dimBlock.x), 1, 1);
+  if (orderedIndices.size() < borderSize)
+  {
+    orderedIndices.resize(borderSize);
+  }
 
-    int *computePtr = thrust::raw_pointer_cast(computeVector.data());
-    int *orderedIndicesPtr = thrust::raw_pointer_cast(orderedIndices.data());
+  dim3 dimBlock(32, 1, 1);
+  dim3 dimGrid(divUp(imageSize, dimBlock.x), 1, 1);
 
-    copyBorderIndex << <dimGrid, dimBlock >> >(imageSize, computePtr,
-      orderedIndicesPtr);
+  int *computePtr = thrust::raw_pointer_cast(computeVector.data());
+  int *orderedIndicesPtr = thrust::raw_pointer_cast(orderedIndices.data());
 
-    HANDLE_ERROR(cudaThreadSynchronize());
+  copyBorderIndex<<<dimGrid, dimBlock>>>(imageSize, computePtr,
+                                         orderedIndicesPtr);
 
-    thrust::device_vector<int>::iterator it_found =
+  HANDLE_ERROR(cudaThreadSynchronize());
+
+  thrust::device_vector<int>::iterator it_found =
       thrust::unique(orderedIndices.begin(), orderedIndices.end());
-    thrust::host_vector<int> uniqueIndices(orderedIndices.begin(), it_found);
+  thrust::host_vector<int> uniqueIndices(orderedIndices.begin(), it_found);
 
-    for (unsigned int i = 0; i < uniqueIndices.size(); i++)
+  for (unsigned int i = 0; i < uniqueIndices.size(); i++)
+  {
+    const int uniqueIndex = uniqueIndices[i];
+    if (uniqueIndex > 0)
     {
-      const int uniqueIndex = uniqueIndices[i];
-      if (uniqueIndex > 0)
+      if (extractedIndices.insert(uniqueIndex).second)
       {
-        if (extractedIndices.insert(uniqueIndex).second)
-        {
-          insertionOrder.push_front(pixelIndexToLabelId[uniqueIndex]);
-        }
+        insertionOrder.push_front(pixelIndexToLabelId[uniqueIndex]);
       }
     }
   }
+}
 
-  void Apollonius::updateLabelSeeds()
+void Apollonius::updateLabelSeeds()
+{
+  thrust::host_vector<float4> labelsSeed = seedBuffer;
+  for (size_t index = 0; index < labelsSeed.size(); ++index)
   {
-    thrust::host_vector<float4> labelsSeed = seedBuffer;
-    for (size_t index = 0; index < labelsSeed.size(); ++index)
-    {
-      float4 seed = labelsSeed[index];
-      const uint cindex =
+    float4 seed = labelsSeed[index];
+    const uint cindex =
         static_cast<int>(seed.y) + static_cast<int>(seed.z) * imageSize;
 
-      if (extractedIndices.find(cindex) != extractedIndices.end())
+    if (extractedIndices.find(cindex) != extractedIndices.end())
+    {
+      if (seed.x > 0)
       {
-        if (seed.x > 0)
-        {
-          seed.x = -seed.x;
-          labelsSeed[index] = seed;
-        }
+        seed.x = -seed.x;
+        labelsSeed[index] = seed;
       }
     }
-
-    seedBuffer = labelsSeed;
   }
+
+  seedBuffer = labelsSeed;
+}
 
 }  // namespace Placement
 
