@@ -67,14 +67,16 @@ void HABuffer::initializeBufferHash()
                static_cast<uint>(ceil(sqrt(static_cast<float>(recordCount)))));
   tableElementCount = habufferTableSize * habufferTableSize;
   habufferCountsSize = habufferScreenSize * habufferScreenSize + 1;
-  qCDebug(channel, "Screen size: %d %d\n# records: %d (%d x %d)\n", size.x(),
-          size.y(), tableElementCount, habufferTableSize, habufferTableSize);
+  int bufferSize = tableElementCount * sizeof(uint) * 2;
+  qCInfo(channel, "Screen size: %d %d\n# records: %d (%d x %d) %dMB\n",
+         size.x(), size.y(), tableElementCount, habufferTableSize,
+         habufferTableSize, bufferSize / 1024 / 1024);
 
   // HA-Buffer records
   if (!recordsBuffer.isInitialized())
-    recordsBuffer.initialize(gl, tableElementCount * sizeof(uint) * 2);
+    recordsBuffer.initialize(gl, bufferSize);
   else
-    recordsBuffer.resize(tableElementCount * sizeof(uint) * 2);
+    recordsBuffer.resize(bufferSize);
 
   if (!countsBuffer.isInitialized())
     countsBuffer.initialize(gl, habufferCountsSize * sizeof(uint));
@@ -91,13 +93,13 @@ void HABuffer::initializeBufferHash()
 
   gl->glMemoryBarrier(GL_ALL_BARRIER_BITS);
 
-  qCDebug(channel) << "Memory usage:"
-                   << ((tableElementCount * sizeof(uint) * 2 +
-                        tableElementCount * FRAGMENT_DATA_SIZE +
-                        (habufferScreenSize * habufferScreenSize + 1) *
-                            sizeof(uint)) /
-                       1024) /
-                          1024.0f << "MB";
+  qCInfo(channel) << "Memory usage:"
+                  << ((bufferSize + tableElementCount * FRAGMENT_DATA_SIZE +
+                       (habufferScreenSize * habufferScreenSize + 1) *
+                           sizeof(uint)) /
+                      1024) /
+                         1024.0f
+                  << "MB";
 }
 
 void HABuffer::clearAndPrepare(std::shared_ptr<Graphics::Managers> managers)
