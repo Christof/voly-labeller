@@ -225,7 +225,7 @@ vec4 calculateSampleColor(in uint remainingActiveObjects, in int activeObjectCou
 vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
     in vec4 segmentStartPos_eye, in vec4 endPos_eye, in vec4 fragmentColor)
 {
-  float segmentTextureLength  = calculateSegmentTextureLength(activeObjectCount,
+  float segmentTextureLength = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
   float sampleSteps = segmentTextureLength * STEP_FACTOR;
   sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
