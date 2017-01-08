@@ -12,9 +12,8 @@
 #include <vector>
 #include "../utils/cuda_helper.h"
 
-__global__ void seed(cudaSurfaceObject_t output, int imageSize, int labelCount,
-                     float4 *seedBuffer, int *computePtr, int *idPtr,
-                     int *indicesPtr)
+__global__ void seed(int imageSize, int labelCount, float4 *seedBuffer,
+                     int *computePtr, int *idPtr, int *indicesPtr)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -177,8 +176,8 @@ void Apollonius::runSeedKernel()
   int *indicesPtr = thrust::raw_pointer_cast(seedIndices.data());
   float4 *seedBufferPtr = thrust::raw_pointer_cast(seedBuffer.data());
 
-  seed<<<dimGrid, dimBlock>>>(outputSurface, imageSize, labelCount,
-                              seedBufferPtr, computePtr, idPtr, indicesPtr);
+  seed<<<dimGrid, dimBlock>>>(imageSize, labelCount, seedBufferPtr, computePtr,
+                              idPtr, indicesPtr);
   HANDLE_ERROR(cudaThreadSynchronize());
 }
 
