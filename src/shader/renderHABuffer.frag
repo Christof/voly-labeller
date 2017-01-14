@@ -228,7 +228,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   float segmentTextureLength = calculateSegmentTextureLength(activeObjectCount,
       activeObjects, segmentStartPos_eye, endPos_eye);
   float sampleSteps = segmentTextureLength * STEP_FACTOR;
-  sampleSteps = clamp(sampleSteps, 1, MAX_SAMPLES - 1);
+  sampleSteps = clamp(sampleSteps, 1.0f, MAX_SAMPLES - 1.0f);
 
   // use sampleSteps + 1 because of noiseOffset
   vec4 step_eye = (endPos_eye - segmentStartPos_eye) / (sampleSteps + 1);
