@@ -239,7 +239,7 @@ vec4 calculateColorOfVolumes(in int activeObjects, in int activeObjectCount,
   vec4 currentPos_eye = segmentStartPos_eye + noiseOffset * step_eye;
 
   // sample ray segment
-  for (int stepIndex = 0; stepIndex < sampleSteps; stepIndex++)
+  for (int stepIndex = 0; stepIndex < sampleSteps; ++stepIndex)
   {
     vec4 sampleColor = calculateSampleColor(activeObjects,
         activeObjectCount, currentPos_eye);
@@ -311,7 +311,7 @@ void main()
       break;
   }
 
-  for (--age; age < maxAge; age++)  // all fragments
+  for (--age; age < maxAge; ++age)  // all fragments
   {
     currentFragment = nextFragment;
     vec4 segmentStartPos_eye = endPos_eye;
