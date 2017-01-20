@@ -104,8 +104,9 @@ Labeller::update(const LabellerFrameData &frameData, bool ignoreOldPosition,
     constraintUpdater->setPosition(label.id, result.position);
     costSum += result.cost;
 
-    qCDebug(plChan) << label.id << "\t" << result.position.x() << "|"
-                    << result.position.y() << result.cost;
+    qCDebug(plChan) << label.id << " :" << label.text.c_str() << "\t"
+                    << result.position.x() << "|" << result.position.y()
+                    << result.cost;
 
     auto relativeResult =
         result.position.cast<float>().cwiseQuotient(bufferSize.cast<float>());
