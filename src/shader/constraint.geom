@@ -126,10 +126,10 @@ void drawConnectorConstraint(in vec2 anchor, in vec2 connectorStart,
                              in vec2 connectorEnd)
 {
   const vec2 anchorToStart = normalize(connectorStart - anchor);
-  const vec2 connectorStartShadow = connectorStart + 2.0f * anchorToStart;
+  const vec2 connectorStartShadow = connectorStart + 200.0f * anchorToStart;
 
   const vec2 anchorToEnd = normalize(connectorEnd - anchor);
-  const vec2 connectorEndShadow = connectorEnd + 2.0f * anchorToEnd;
+  const vec2 connectorEndShadow = connectorEnd + 200.0f * anchorToEnd;
 
   // Triangle: connectorStart, connectorEnd, connectorStartShadow
   vec2 v = connectorEnd - connectorStart;
