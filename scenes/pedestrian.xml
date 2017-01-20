@@ -48,7 +48,7 @@
 				<z>1.351181030e+00</z>
 			</origin>
 			<cameraPositions class_id="5" tracking_level="0" version="0">
-				<count>5</count>
+				<count>6</count>
 				<item_version>0</item_version>
 				<item class_id="6" tracking_level="0" version="0">
 					<name>Position 0</name>
@@ -149,6 +149,27 @@
 						<r2c1>4.684616625e-01</r2c1>
 						<r2c2>7.489674091e-01</r2c2>
 						<r2c3>-7.262617350e-01</r2c3>
+						<r3c0>0.000000000e+00</r3c0>
+						<r3c1>0.000000000e+00</r3c1>
+						<r3c2>0.000000000e+00</r3c2>
+						<r3c3>1.000000000e+00</r3c3>
+					</viewMatrix>
+				</item>
+				<item>
+					<name>S4</name>
+					<viewMatrix>
+						<r0c0>-3.236432001e-02</r0c0>
+						<r0c1>-3.259629233e-09</r0c1>
+						<r0c2>9.994761348e-01</r0c2>
+						<r0c3>9.381317347e-02</r0c3>
+						<r1c0>-1.727828085e-01</r1c0>
+						<r1c1>9.849440455e-01</r1c1>
+						<r1c2>-5.594925955e-03</r1c2>
+						<r1c3>5.275873542e-01</r1c3>
+						<r2c0>-9.844280481e-01</r2c0>
+						<r2c1>-1.728733778e-01</r2c1>
+						<r2c2>-3.187704086e-02</r2c2>
+						<r2c3>-2.083533257e-01</r2c3>
 						<r3c0>0.000000000e+00</r3c0>
 						<r3c1>0.000000000e+00</r3c1>
 						<r3c2>0.000000000e+00</r3c2>

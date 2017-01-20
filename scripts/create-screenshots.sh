@@ -6,7 +6,7 @@ cd $script_directory
 ./take-screenshots-in-modes.sh ../scenes/heidelberg_motorcycle.xml "S0,S1,S2"
 ./take-screenshots-in-modes.sh ../scenes/heidelberg_schuss_cal45.xml "S1,S2,S3,S4,S5"
 ./take-screenshots-in-modes.sh ../scenes/jet-engine.xml "S0,S1,S2,S4,S5"
-./take-screenshots-in-modes.sh ../scenes/pedestrian.xml "S0,S1,S2,S3"
+./take-screenshots-in-modes.sh ../scenes/pedestrian.xml "S0,S1,S2,S3,S4"
 ./take-screenshots-in-modes.sh ../scenes/heidelberg_delikt_messer2.xml "S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11"
 ./take-screenshots-in-modes.sh ../scenes/heidelberg_sturz2.xml "S0,S1,S2,S3,S4,s5"
 ./take-screenshots-in-modes.sh ../scenes/grch.xml "S0,S1,S2"
