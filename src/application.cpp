@@ -140,6 +140,7 @@ int Application::execute()
     sceneCreator.create();
   }
 
+  handleLabelScaling();
   createAndStartStateMachine();
 
   window->show();
@@ -178,6 +179,7 @@ void Application::setupCommandLineParser()
   parser.addOption({ "decoret", "Change parameters to simulate Stein & Décoret "
                                 "algorithm: 1 layer, using apollonius graph "
                                 "and hard constraints" });
+  parser.addOption({ "scale", "Scaling for all labels", "Label scale", "1.0" });
   parser.addOption(
       { QStringList() << "s"
                       << "screenshot",
@@ -360,3 +362,17 @@ void Application::onInitializationDone()
         parser.value("movement").toStdString());
 }
 
+void Application::handleLabelScaling()
+{
+  if (!parser.isSet("scale"))
+    return;
+  bool gotScale = true;
+  float scale = parser.value("scale").toFloat(&gotScale);
+  if (!gotScale)
+    return;
+
+  for (auto &labelNode : nodes->getLabelNodes())
+  {
+    labelNode->label.size *= scale;
+  }
+}
