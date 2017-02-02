@@ -77,6 +77,7 @@ class Nodes
   std::vector<std::shared_ptr<Node>> nodes;
   bool showBoundingVolumes = false;
   std::vector<std::shared_ptr<Node>> obbNodes;
+  std::vector<std::shared_ptr<LabelNode>> labelNodes;
   std::shared_ptr<Node> coordinateSystemNode;
   std::shared_ptr<Node> forcesVisualizerNode;
   std::shared_ptr<MeshNode> cameraOriginVisualizerNode;

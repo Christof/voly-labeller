@@ -30,21 +30,17 @@ Nodes::~Nodes()
 
 std::vector<std::shared_ptr<LabelNode>> Nodes::getLabelNodes()
 {
-  std::vector<std::shared_ptr<LabelNode>> result;
-  for (auto &node : nodes)
-  {
-    std::shared_ptr<LabelNode> labelNode =
-        std::dynamic_pointer_cast<LabelNode>(node);
-    if (labelNode.get())
-      result.push_back(labelNode);
-  }
-
-  return result;
+  return labelNodes;
 }
 
 void Nodes::addNode(std::shared_ptr<Node> node)
 {
   nodes.push_back(node);
+
+  std::shared_ptr<LabelNode> labelNode =
+      std::dynamic_pointer_cast<LabelNode>(node);
+  if (labelNode.get())
+    labelNodes.push_back(labelNode);
 
   if (onNodeAdded)
     onNodeAdded(node);
@@ -53,6 +49,8 @@ void Nodes::addNode(std::shared_ptr<Node> node)
 void Nodes::removeNode(std::shared_ptr<Node> node)
 {
   nodes.erase(std::remove(nodes.begin(), nodes.end(), node), nodes.end());
+  labelNodes.erase(std::remove(labelNodes.begin(), labelNodes.end(), node),
+                   labelNodes.end());
 }
 
 std::vector<std::shared_ptr<Node>> Nodes::getNodes()
@@ -179,6 +177,7 @@ void Nodes::clear()
 void Nodes::clearForShutdown()
 {
   nodes.clear();
+  labelNodes.clear();
   obbNodes.clear();
 }
 
