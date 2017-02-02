@@ -207,7 +207,9 @@ QImage *LabelNode::renderLabelTextToQImage()
   painter.begin(image);
 
   painter.setPen(QColor::fromRgbF(0, 1, 0, 1));
-  painter.setFont(QFont("Arial", 72));
+  QFont font("Arial");
+  font.setPixelSize(0.75 * height);
+  painter.setFont(font);
   painter.drawText(QRectF(0, 0, width, height), Qt::AlignCenter,
                    label.text.c_str());
   painter.end();
