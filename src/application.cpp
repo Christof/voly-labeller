@@ -106,6 +106,8 @@ int Application::execute()
 {
   qInfo() << "Application start";
 
+  setLabelScale();
+
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&Application::onLabelChangedUpdateLabelNodes, this,
                 std::placeholders::_1, std::placeholders::_2));
@@ -139,8 +141,6 @@ int Application::execute()
     DefaultSceneCreator sceneCreator(nodes, labels);
     sceneCreator.create();
   }
-
-  handleLabelScaling();
   createAndStartStateMachine();
 
   window->show();
@@ -259,7 +259,9 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   if (labelNode.get())
   {
     labelNode->anchorSize = nodesController->getAnchorSize();
-    labels->add(labelNode->label);
+    auto label = labelNode->label;
+    label.size *= labelScale;
+    labels->add(label);
   }
 
   std::shared_ptr<CameraNode> cameraNode =
@@ -362,7 +364,7 @@ void Application::onInitializationDone()
         parser.value("movement").toStdString());
 }
 
-void Application::handleLabelScaling()
+void Application::setLabelScale()
 {
   if (!parser.isSet("scale"))
     return;
@@ -371,8 +373,5 @@ void Application::handleLabelScaling()
   if (!gotScale)
     return;
 
-  for (auto &labelNode : nodes->getLabelNodes())
-  {
-    labelNode->label.size *= scale;
-  }
+  labelScale = scale;
 }

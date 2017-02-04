@@ -76,6 +76,8 @@ class Application : public QObject
   std::unique_ptr<LabelsModel> labelsModel;
   std::shared_ptr<QStateMachine> stateMachine;
 
+  float labelScale = 1.0f;
+
   void setupCommandLineParser();
   int parseLayerCount();
   void setupWindow();
@@ -85,10 +87,10 @@ class Application : public QObject
   void onLabelChangedUpdateLabelNodes(Labels::Action action,
                                       const Label &label);
   void onFocesLabellerModelIsVisibleChanged();
-  void handleLabelScaling();
+  void setLabelScale();
 
  private slots:
-   void onInitializationDone();
+  void onInitializationDone();
 };
 
 #endif  // SRC_APPLICATION_H_
