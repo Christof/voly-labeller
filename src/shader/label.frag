@@ -22,6 +22,6 @@ void main()
   vec4 color = Texture(address, vertexTexCoord.xy);
   color = mix(vec4(0), color, alpha[vertexDrawId]);
   int layerIndex = address.dummy;
-  setColorForLayer(layerIndex, color);
+  setColorForLayerModified(layerIndex, color);
 }
 
