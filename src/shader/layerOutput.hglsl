@@ -13,7 +13,7 @@ void setColorForLayer(int layerIndex, vec4 color)
   color.a *= alphaFactors[layerIndex];
 
   const vec4 fontColor = vec4(0.12, 0.12, 0.12, color.a);
-  const vec3 base = (1.8 - 0.2 * layerIndex) * vec3(1, 0.463, 0);
+  const vec3 base = (1.6 - 0.17 * layerIndex) * vec3(0.463, 0.463, 0.463);
   const vec4 baseColor = vec4(base, color.a);
   outputColors[layerIndex] = color.r * baseColor + color.g * fontColor;
 }
