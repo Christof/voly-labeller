@@ -106,6 +106,8 @@ int Application::execute()
 {
   qInfo() << "Application start";
 
+  setLabelScale();
+
   auto unsubscribeLabelChanges = labels->subscribe(
       std::bind(&Application::onLabelChangedUpdateLabelNodes, this,
                 std::placeholders::_1, std::placeholders::_2));
@@ -139,7 +141,6 @@ int Application::execute()
     DefaultSceneCreator sceneCreator(nodes, labels);
     sceneCreator.create();
   }
-
   createAndStartStateMachine();
 
   window->show();
@@ -178,6 +179,7 @@ void Application::setupCommandLineParser()
   parser.addOption({ "decoret", "Change parameters to simulate Stein & Décoret "
                                 "algorithm: 1 layer, using apollonius graph "
                                 "and hard constraints" });
+  parser.addOption({ "scale", "Scaling for all labels", "Label scale", "1.0" });
   parser.addOption(
       { QStringList() << "s"
                       << "screenshot",
@@ -257,7 +259,9 @@ void Application::onNodeAdded(std::shared_ptr<Node> node)
   if (labelNode.get())
   {
     labelNode->anchorSize = nodesController->getAnchorSize();
-    labels->add(labelNode->label);
+    auto label = labelNode->label;
+    label.size *= labelScale;
+    labels->add(label);
   }
 
   std::shared_ptr<CameraNode> cameraNode =
@@ -360,3 +364,14 @@ void Application::onInitializationDone()
         parser.value("movement").toStdString());
 }
 
+void Application::setLabelScale()
+{
+  if (!parser.isSet("scale"))
+    return;
+  bool gotScale = true;
+  float scale = parser.value("scale").toFloat(&gotScale);
+  if (!gotScale)
+    return;
+
+  labelScale = scale;
+}
