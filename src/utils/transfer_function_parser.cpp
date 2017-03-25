@@ -1,5 +1,4 @@
 #include "./transfer_function_parser.h"
-#include <iostream>
 #include <QFile>
 #include <QGradient>
 #include <QGradientStops>
@@ -7,6 +6,7 @@
 #include <QXmlInputSource>
 #include <QMetaEnum>
 #include <QException>
+#include <iostream>
 
 class QGradientContentHandler : public QXmlDefaultHandler
 {
@@ -18,13 +18,13 @@ class QGradientContentHandler : public QXmlDefaultHandler
   QColor stopColor;
 
  public:
-  QGradientContentHandler()
-    : QXmlDefaultHandler(){
+  QGradientContentHandler() : QXmlDefaultHandler()
+  {
+  }
 
-      };
-  ~QGradientContentHandler(){
-
-  };
+  ~QGradientContentHandler()
+  {
+  }
 
   QGradient *getQGradientInstance()
   {

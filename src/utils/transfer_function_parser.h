@@ -1,6 +1,6 @@
-#ifndef SRC_TRANSFER_FUNCTION_PARSER_H_
+#ifndef SRC_UTILS_TRANSFER_FUNCTION_PARSER_H_
 
-#define SRC_TRANSFER_FUNCTION_PARSER_H_
+#define SRC_UTILS_TRANSFER_FUNCTION_PARSER_H_
 
 #include <QGradient>
 #include <QString>
@@ -15,7 +15,7 @@ class QGradientContentHandler;
 class TransferFunctionParser
 {
  public:
-  TransferFunctionParser(QString path);
+  explicit TransferFunctionParser(QString path);
 
   QGradient *parse();
 
@@ -25,4 +25,4 @@ class TransferFunctionParser
   QGradientContentHandler *handler;
 };
 
-#endif  // SRC_TRANSFER_FUNCTION_PARSER_H_
+#endif  // SRC_UTILS_TRANSFER_FUNCTION_PARSER_H_
