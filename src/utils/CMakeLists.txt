@@ -11,6 +11,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/project_root.h.cmake ${CMAKE_CURRENT_
 
 set(SOURCES
   persister.h
+  transfer_function_parser.cpp
   gradient_utils.cpp
   profiler.cpp
   profiling_statistics.cpp

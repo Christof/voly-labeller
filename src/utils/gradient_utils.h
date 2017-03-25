@@ -9,13 +9,10 @@
 /**
  * \brief Util functions to load gradient files
  *
- * Basic functionality is taken from the [Qt source]
- * (https://github.com/qtproject/qttools/tree/dev/src/shared/qtgradienteditor).
  */
 class GradientUtils
 {
  public:
-  static QGradient loadGradient(QString path);
   static QImage gradientToImage(const QGradient &gradient, QSize size);
   static QImage loadGradientAsImage(QString path, QSize size);
   static std::vector<float> loadGradientAsFloats(const QGradient &gradient,
