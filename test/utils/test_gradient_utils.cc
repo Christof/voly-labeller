@@ -2,15 +2,6 @@
 #include "../../src/utils/gradient_utils.h"
 #include <QGradient>
 
-TEST(Test_GradientUtils, LoadFromFile)
-{
-  QGradient gradient =
-      GradientUtils::loadGradient("../assets/transferfunctions/scapula1.gra");
-
-  EXPECT_EQ(6, gradient.stops().size());
-  EXPECT_EQ(QGradient::Type::LinearGradient, gradient.type());
-}
-
 TEST(Test_GradientUtils, LoadFromFileAsImage)
 {
   QImage image = GradientUtils::loadGradientAsImage(
