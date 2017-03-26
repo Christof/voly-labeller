@@ -6,7 +6,9 @@
 #include <QXmlInputSource>
 #include <QMetaEnum>
 #include <QException>
-#include <iostream>
+#include <QLoggingCategory>
+
+QLoggingCategory tfpChan("Utils.TransferFunctionParser");
 
 /**
  * \brief Helper class to parse QGradients by implementing a QXmlDefaultHandler
@@ -37,8 +39,7 @@ class QGradientContentHandler : public QXmlDefaultHandler
 
   bool fatalError(const QXmlParseException &exception)
   {
-    std::cout << "Fatal error on line" << exception.message().toStdString()
-              << std::endl;
+    qCCritical(tfpChan) << "Fatal error on line" << exception.message();
 
     return false;
   }
@@ -123,7 +124,10 @@ class QGradientContentHandler : public QXmlDefaultHandler
   bool startElement(const QString &namespaceURI, const QString &localName,
                     const QString &qName, const QXmlAttributes &atts)
   {
-    std::cout << "Read Start Tag : " << localName.toStdString() << std::endl;
+    Q_UNUSED(namespaceURI);
+    Q_UNUSED(qName);
+    qCDebug(tfpChan) << "Read Start Tag" << localName;
+
     if (localName.compare("gradientData") == 0)
       parseGradientAttributes(atts);
     if (localName.compare("stopData") == 0)
@@ -131,18 +135,19 @@ class QGradientContentHandler : public QXmlDefaultHandler
     if (localName.compare("colorData") == 0)
       parseColorData(atts);
 
-    std::cout << "------------------------" << std::endl;
     return true;
   }
 
   bool endElement(const QString &namespaceURI, const QString &localName,
                   const QString &qName)
   {
-    std::cout << "Read End Element Tag : " << localName.toStdString()
-              << std::endl;
+    Q_UNUSED(namespaceURI);
+    Q_UNUSED(qName);
+    qCDebug(tfpChan) << "Read End Element Tag";
+
     if (localName.compare("gradientData") == 0)
     {
-      std::cout << "Setting Stops with size: " << stops.size() << std::endl;
+      qCDebug(tfpChan) << "Setting Stops with size:" << stops.size();
       instance->setStops(stops);
     }
     else if (localName.compare("colorData") == 0)
@@ -154,7 +159,8 @@ class QGradientContentHandler : public QXmlDefaultHandler
 
 TransferFunctionParser::TransferFunctionParser(QString path)
 {
-  std::cout << "Testing path: " << path.toStdString() << std::endl;
+  qCInfo(tfpChan) << "Create parser for" << path;
+
   xmlReader = new QXmlSimpleReader();
   source = new QXmlInputSource(new QFile(path));
   handler = new QGradientContentHandler();
@@ -167,7 +173,9 @@ QGradient *TransferFunctionParser::parse()
   bool ok = xmlReader->parse(source);
 
   if (!ok)
-    std::cout << "Parsing failed." << std::endl;
+  {
+    qCCritical(tfpChan) << "Parsing failed!";
+  }
 
   return handler->getQGradientInstance();
 }
