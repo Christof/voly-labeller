@@ -8,6 +8,10 @@
 #include <QException>
 #include <iostream>
 
+/**
+ * \brief Helper class to parse QGradients by implementing a QXmlDefaultHandler
+ *
+ */
 class QGradientContentHandler : public QXmlDefaultHandler
 {
  private:
