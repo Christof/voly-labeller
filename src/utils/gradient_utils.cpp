@@ -26,11 +26,8 @@ QImage GradientUtils::gradientToImage(const QGradient &gradient, QSize size)
 QImage GradientUtils::loadGradientAsImage(QString path, QSize size)
 {
   TransferFunctionParser parser(path);
-  QGradient *gradient = parser.parse();
-  QImage result = gradientToImage(*gradient, size);
-  delete gradient;
-
-  return result;
+  QGradient gradient = parser.parse();
+  return gradientToImage(gradient, size);
 }
 
 Eigen::Vector4f toEigen(QColor color)
@@ -109,10 +106,7 @@ std::vector<float> GradientUtils::loadGradientAsFloats(QString path, int length,
                                                        bool preMultiply)
 {
   TransferFunctionParser parser(path);
-  QGradient *gradient = parser.parse();
-  auto result = loadGradientAsFloats(*gradient, length, preMultiply);
-  delete gradient;
-
-  return result;
+  QGradient gradient = parser.parse();
+  return loadGradientAsFloats(gradient, length, preMultiply);
 }
 

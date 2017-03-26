@@ -17,7 +17,7 @@ QLoggingCategory tfpChan("Utils.TransferFunctionParser");
 class QGradientContentHandler : public QXmlDefaultHandler
 {
  private:
-  QGradient *instance;
+  QGradient instance;
 
   QGradientStops stops;
   double stopPosition;
@@ -32,7 +32,7 @@ class QGradientContentHandler : public QXmlDefaultHandler
   {
   }
 
-  QGradient *getQGradientInstance()
+  QGradient getQGradientInstance()
   {
     return instance;
   }
@@ -77,7 +77,7 @@ class QGradientContentHandler : public QXmlDefaultHandler
       auto endX = atts.value("endX").toDouble();
       auto endY = atts.value("endY").toDouble();
 
-      instance = new QLinearGradient(startX, startY, endX, endY);
+      instance = QLinearGradient(startX, startY, endX, endY);
     }
     else if (atts.value("type").compare("RadialGradient") == 0)
     {
@@ -87,7 +87,7 @@ class QGradientContentHandler : public QXmlDefaultHandler
       auto fX = atts.value("fX").toDouble();
       auto fY = atts.value("fY").toDouble();
 
-      instance = new QRadialGradient(centerX, centerY, radius, fX, fY);
+      instance = QRadialGradient(centerX, centerY, radius, fX, fY);
     }
     else if (atts.value("type").compare("ConicalGradient") == 0)
     {
@@ -95,13 +95,13 @@ class QGradientContentHandler : public QXmlDefaultHandler
       auto centerY = atts.value("centerY").toDouble();
       auto startAngle = atts.value("startAngle").toDouble();
 
-      instance = new QConicalGradient(centerX, centerY, startAngle);
+      instance = QConicalGradient(centerX, centerY, startAngle);
     }
     else
       throw new QString("gradient type not supported!");
 
-    instance->setSpread(parseSpread(atts.value("spread")));
-    instance->setCoordinateMode(
+    instance.setSpread(parseSpread(atts.value("spread")));
+    instance.setCoordinateMode(
         parseCoordinateMode(atts.value("coordinateMode")));
 
     // reset stops here
@@ -148,7 +148,7 @@ class QGradientContentHandler : public QXmlDefaultHandler
     if (localName.compare("gradientData") == 0)
     {
       qCDebug(tfpChan) << "Setting Stops with size:" << stops.size();
-      instance->setStops(stops);
+      instance.setStops(stops);
     }
     else if (localName.compare("colorData") == 0)
       stops.append(qMakePair(stopPosition, stopColor));
@@ -168,7 +168,7 @@ TransferFunctionParser::TransferFunctionParser(QString path)
   xmlReader->setErrorHandler(handler);
 }
 
-QGradient *TransferFunctionParser::parse()
+QGradient TransferFunctionParser::parse()
 {
   bool ok = xmlReader->parse(source);
 

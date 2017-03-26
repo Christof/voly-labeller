@@ -17,7 +17,7 @@ class TransferFunctionParser
  public:
   explicit TransferFunctionParser(QString path);
 
-  QGradient *parse();
+  QGradient parse();
 
  private:
   QXmlSimpleReader *xmlReader;
