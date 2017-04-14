@@ -1,6 +1,7 @@
 #include "./labeller.h"
 #include <Eigen/LU>
 #include <map>
+#include <deque>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -133,6 +134,17 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
       if (onPlacementResult)
         continue;
     }
+
+    auto history = oldPositions[label.id];
+    history.push_front(label.labelPosition2D);
+    if (history.size() > 10)
+      history.pop_back();
+
+    Eigen::Vector2f sum(0, 0);
+    for (auto pos : history)
+      sum += pos;
+
+    label.labelPosition2D = sum / history.size();
 
     Eigen::Vector3f positionNDC(label.labelPosition2D.x(),
                                 label.labelPosition2D.y(),

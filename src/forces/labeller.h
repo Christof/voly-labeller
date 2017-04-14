@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <deque>
 #include <memory>
 #include <functional>
 #include "./label_state.h"
@@ -55,6 +56,8 @@ class Labeller
   std::shared_ptr<Labels> labels;
   std::vector<LabelState> labelStates;
   std::function<void()> unsubscribeLabelChanges;
+
+  std::map<int, std::deque<Eigen::Vector2f>> oldPositions;
 
   template <class T> void addForce(T *force, bool enabled = true);
   void setLabel(Labels::Action action, const Label &label);
