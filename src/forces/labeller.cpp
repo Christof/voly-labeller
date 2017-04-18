@@ -137,7 +137,7 @@ LabelPositions Labeller::update(const LabellerFrameData &frameData,
 
     auto history = oldPositions[label.id];
     history.push_front(label.labelPosition2D);
-    if (history.size() > 10)
+    if (history.size() > 20)
       history.pop_back();
 
     Eigen::Vector2f sum(0, 0);
