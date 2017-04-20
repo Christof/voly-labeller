@@ -819,7 +819,7 @@
 	</item>
 	<item>
 		<px class_id_reference="11" object_id="_12">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/bullet_path.dae</assetFilename>
+			<assetFilename>assets/models/bullet_path.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>9.999999776e-03</r0c0>
