@@ -58,7 +58,7 @@ void ConstraintUpdater::drawRegionsForAnchors(
 
   anchorConstraintDrawer->update(positions);
 
-  Eigen::Vector2f constraintSize = borderPixel + labelSize.cast<float>();
+  Eigen::Vector2f constraintSize = 4 * borderPixel + labelSize.cast<float>();
   Eigen::Vector2f halfSize =
       constraintSize.cwiseQuotient(Eigen::Vector2f(width, height));
 
