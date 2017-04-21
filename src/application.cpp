@@ -172,6 +172,7 @@ void Application::setupCommandLineParser()
       { "apollonius",
         "Use apollonius graph to determine label insertion order" });
   parser.addOption({ "disable-labelling", "Disable drawing lables" });
+  parser.addOption({ "disable-forces", "Disable usage of forces" });
   parser.addOption({ "internal-labelling", "Enable internal labelling" });
   parser.addOption(
       { "optimize-on-idle", "Optimize costs when the camera is not moving" });
@@ -345,6 +346,9 @@ void Application::onInitializationDone()
 
   if (parser.isSet("disable-labelling"))
     scene->enableLabelling(false);
+
+  if (parser.isSet("disable-forces"))
+    labellingController->toggleForces();
 
   if (parser.isSet("optimize-on-idle"))
     labellingController->toggleOptimizeOnIdle();
