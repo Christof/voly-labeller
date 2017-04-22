@@ -23,7 +23,7 @@ __global__ void integralCosts(cudaTextureObject_t colors,
     sum += tex3D<float4>(colors, colorX, colorY, layerIndexFront + 0.5f).w;
 
   float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
-  float occlusionFactor =
+  float occlusionFactor = (1 - sum) *
       (1.0f - fixOcclusionPart) * saliencyValue + fixOcclusionPart;
 
   for (int layerIndexBehind = layerIndex + 1; layerIndexBehind < layerCount;
