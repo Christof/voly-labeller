@@ -10,8 +10,6 @@ void setColorForLayerModified(int layerIndex, vec4 color)
   for (int i = 0; i < maxOutputColorsCount; ++i)
     outputColors[i] = vec4(0);
 
-  // color.a *= alphaFactors[layerIndex];
-
   const vec4 fontColor = vec4(0.12, 0.12, 0.12, color.a);
   const vec3 base = (1.6 - 0.17 * layerIndex) * vec3(0.463, 0.463, 0.463);
   const vec4 baseColor = vec4(base, color.a);
@@ -24,7 +22,6 @@ void setColorForLayer(int layerIndex, vec4 color)
   for (int i = 0; i < maxOutputColorsCount; ++i)
     outputColors[i] = vec4(0);
 
-  const vec4 baseColor = vec4(1, 0.317647059, 0.02745098, color.a);
   outputColors[layerIndex] = color;
 }
 
