@@ -39,6 +39,7 @@ class TextureMapperManager
   void update();
 
   void bindOcclusionTexture();
+  void bindIntegralCostsTexture();
   void bindSaliencyTexture();
   void bindDistanceTransform(int layerIndex);
   void bindApollonius(int layerIndex);
