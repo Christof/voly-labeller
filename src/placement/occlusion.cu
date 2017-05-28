@@ -8,7 +8,7 @@
 __global__ void occlusionKernel(cudaTextureObject_t positions,
                                 cudaSurfaceObject_t output,
                                 bool addToOutputValue, int width, int height,
-                                int widthScale, int heightScale, int layerIndex)
+                                float widthScale, float heightScale, int layerIndex)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -84,8 +84,8 @@ void Occlusion::runKernel(bool addToOutputValue)
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  int widthScale = colorProvider->getWidth() / outputWidth;
-  int heightScale = colorProvider->getHeight() / outputHeight;
+  float widthScale = colorProvider->getWidth() / outputWidth;
+  float heightScale = colorProvider->getHeight() / outputHeight;
 
   occlusionKernel<<<dimGrid, dimBlock>>>(positions, output, addToOutputValue,
                                          outputWidth, outputHeight,
