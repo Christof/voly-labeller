@@ -109,6 +109,11 @@ void TextureMapperManager::bindOcclusionTexture()
   occlusionTexture->bind();
 }
 
+void TextureMapperManager::bindIntegralCostsTexture()
+{
+  integralCostsImage->bind();
+}
+
 void TextureMapperManager::bindSaliencyTexture()
 {
   saliencyTexture->bind();
