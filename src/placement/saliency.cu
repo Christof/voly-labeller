@@ -85,7 +85,7 @@ __device__ float3 rgbaToLab(float4 rgba)
 
 __global__ void saliencyKernel(cudaTextureObject_t input,
                                cudaSurfaceObject_t output, int width,
-                               int height, int widthScale, int heightScale)
+                               int height, float widthScale, float heightScale)
 {
   int xOutput = blockIdx.x * blockDim.x + threadIdx.x;
   int yOutput = blockIdx.y * blockDim.y + threadIdx.y;
@@ -148,8 +148,8 @@ void Saliency::runKernel()
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
                1);
 
-  int widthScale = inputProvider->getWidth() / outputWidth;
-  int heightScale = inputProvider->getHeight() / outputHeight;
+  float widthScale = inputProvider->getWidth() / outputWidth;
+  float heightScale = inputProvider->getHeight() / outputHeight;
 
   saliencyKernel<<<dimGrid, dimBlock>>>(input, output,
       outputWidth, outputHeight, widthScale, heightScale);
