@@ -235,7 +235,7 @@ void Scene::renderDebuggingViews(const RenderData &renderData)
       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
   renderQuad(quad, transformation.matrix());
 
-  textureMapperManager->bindOcclusionTexture();
+  textureMapperManager->bindIntegralCostsTexture();
   transformation = Eigen::Affine3f(
       Eigen::Translation3f(Eigen::Vector3f(-0.4f, -0.8f, 0.0f)) *
       Eigen::Scaling(Eigen::Vector3f(0.2f, 0.2f, 1.0f)));
