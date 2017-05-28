@@ -136,6 +136,51 @@ TEST(Test_DirectIntegraclCostsCalculator,
 }
 
 TEST(Test_DirectIntegraclCostsCalculator,
+     DirectIntegralCostsCalculatorForLastLayerDownscaling)
+{
+  cudaChannelFormatDesc channelDesc =
+      cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+  std::vector<Eigen::Vector4f> data = {
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.7f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.3f),
+    Eigen::Vector4f(0, 0, 0, 0.2f), Eigen::Vector4f(0, 0, 0, 0.6f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f),
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.8f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.2f),
+    Eigen::Vector4f(0, 0, 0, 0.8f), Eigen::Vector4f(0, 0, 0, 0.9f),
+    Eigen::Vector4f(0, 0, 0, 0.1f), Eigen::Vector4f(0, 0, 0, 0.8f),
+    Eigen::Vector4f(0, 0, 0, 0.4f), Eigen::Vector4f(0, 0, 0, 0.2f)
+  };
+  int layerCount = 2;
+  auto colorProvider = std::make_shared<CudaArray3DMapper<Eigen::Vector4f>>(
+      3, 3, layerCount, data, channelDesc);
+
+  std::vector<float> saliencyData = { 0.5f, 0.1f, 0.4f, 0.6f };
+  auto saliencyProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, saliencyData, cudaCreateChannelDesc<float>());
+
+  auto outputProvider = std::make_shared<CudaArrayMapper<float>>(
+      2, 2, std::vector<float>(4), cudaCreateChannelDesc<float>());
+
+  Placement::DirectIntegralCostsCalculator calculator(
+      colorProvider, saliencyProvider, outputProvider);
+  calculator.weights.occlusion = 1.0f;
+  calculator.weights.saliency = 1.0f;
+  calculator.weights.fixOcclusionPart = 0.2f;
+  int layerIndex = 1;
+  calculator.runKernel(layerIndex, layerCount);
+
+  auto result = outputProvider->copyDataFromGpu();
+
+  ASSERT_EQ(4, result.size());
+  EXPECT_FLOAT_EQ(0.45f, result[0]);
+  EXPECT_FLOAT_EQ(0.425f, result[1]);
+  EXPECT_FLOAT_EQ(0.675f, result[2]);
+  EXPECT_FLOAT_EQ(0.425f, result[3]);
+}
+
+
+TEST(Test_DirectIntegraclCostsCalculator,
      DirectIntegralCostsCalculatorForSingleLayerReturnsWeightedSum)
 {
   cudaChannelFormatDesc channelDesc =

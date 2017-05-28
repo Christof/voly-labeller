@@ -5,18 +5,22 @@ __global__ void integralCosts(cudaTextureObject_t colors,
                               cudaTextureObject_t saliency,
                               float fixOcclusionPart,
                               cudaSurfaceObject_t output, int width, int height,
-                              int layerIndex, int layerCount)
+                              int layerIndex, int layerCount,
+                              float widthScale, float heightScale)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= width || y >= height)
     return;
 
+  float colorX = x * widthScale + 0.5f;
+  float colorY = y * heightScale + 0.5f;
+
   float sum = 0.0f;
 
   for (int layerIndexFront = 0; layerIndexFront <= layerIndex;
        ++layerIndexFront)
-    sum += tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexFront + 0.5f).w;
+    sum += tex3D<float4>(colors, colorX, colorY, layerIndexFront + 0.5f).w;
 
   float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
   float occlusionFactor =
@@ -26,7 +30,7 @@ __global__ void integralCosts(cudaTextureObject_t colors,
        ++layerIndexBehind)
   {
     sum += occlusionFactor *
-           tex3D<float4>(colors, x + 0.5f, y + 0.5f, layerIndexBehind + 0.5f).w;
+           tex3D<float4>(colors, colorX, colorY, layerIndexBehind + 0.5f).w;
   }
 
   surf2Dwrite(sum / layerCount, output, x * sizeof(float), y);
@@ -36,15 +40,20 @@ __global__ void integralCostsSingleLayer(cudaTextureObject_t colors,
                                          float occlusionWeight,
                                          cudaTextureObject_t saliency,
                                          float saliencyWeight,
-                                         cudaSurfaceObject_t output, int width,
-                                         int height, int layerIndex)
+                                         cudaSurfaceObject_t output,
+                                         int width, int height,
+                                         float widthScale, float heightScale,
+                                         int layerIndex)
 {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x >= width || y >= height)
     return;
 
-  float occlusion = tex3D<float4>(colors, x + 0.5f, y + 0.5f, 0.5f).w;
+  float colorX = x * widthScale + 0.5f;
+  float colorY = y * heightScale + 0.5f;
+  float occlusion = tex3D<float4>(colors, colorX, colorY, 0.5f).w;
+
   float saliencyValue = tex2D<float>(saliency, x + 0.5f, y + 0.5f);
 
   float sum = occlusionWeight * occlusion + saliencyWeight * saliencyValue;
@@ -79,8 +88,12 @@ void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
   if (!color)
     createSurfaceObjects();
 
-  int outputWidth = outputProvider->getWidth();
-  int outputHeight = outputProvider->getHeight();
+  float outputWidth = outputProvider->getWidth();
+  float outputHeight = outputProvider->getHeight();
+
+  float widthScale = colorProvider->getWidth() / outputWidth;
+  float heightScale = colorProvider->getHeight() / outputHeight;
+
 
   dim3 dimBlock(32, 32, 1);
   dim3 dimGrid(divUp(outputWidth, dimBlock.x), divUp(outputHeight, dimBlock.y),
@@ -90,13 +103,13 @@ void DirectIntegralCostsCalculator::runKernel(int layerIndex, int layerCount)
   {
     integralCostsSingleLayer<<<dimGrid, dimBlock>>>(
         color, weights.occlusion, saliency, weights.saliency, output,
-        outputWidth, outputHeight, layerIndex);
+        outputWidth, outputHeight, widthScale, heightScale, layerIndex);
   }
   else
   {
     integralCosts<<<dimGrid, dimBlock>>>(
         color, saliency, weights.fixOcclusionPart, output, outputWidth,
-        outputHeight, layerIndex, layerCount);
+        outputHeight, layerIndex, layerCount, widthScale, heightScale);
   }
 
   HANDLE_ERROR(cudaThreadSynchronize());
