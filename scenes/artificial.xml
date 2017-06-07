@@ -247,7 +247,7 @@
 	</item>
 	<item>
 		<px class_id="7" class_name="MeshNode" tracking_level="1" version="0" object_id="_1">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>0</meshIndex>
 			<transformation>
 				<r0c0>1.803237915e+00</r0c0>
@@ -271,7 +271,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_2">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>1</meshIndex>
 			<transformation>
 				<r0c0>4.000000060e-01</r0c0>
@@ -295,7 +295,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_3">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>2</meshIndex>
 			<transformation>
 				<r0c0>8.750233054e-02</r0c0>
@@ -319,7 +319,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_4">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>3</meshIndex>
 			<transformation>
 				<r0c0>5.851880908e-01</r0c0>
@@ -343,7 +343,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_5">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>4</meshIndex>
 			<transformation>
 				<r0c0>4.000000060e-01</r0c0>
@@ -367,7 +367,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_6">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>5</meshIndex>
 			<transformation>
 				<r0c0>8.750233054e-02</r0c0>
@@ -391,7 +391,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_7">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>6</meshIndex>
 			<transformation>
 				<r0c0>5.851880908e-01</r0c0>
@@ -415,7 +415,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_8">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>7</meshIndex>
 			<transformation>
 				<r0c0>8.317984939e-01</r0c0>
@@ -439,7 +439,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_9">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>8</meshIndex>
 			<transformation>
 				<r0c0>8.317984939e-01</r0c0>
@@ -463,7 +463,7 @@
 	</item>
 	<item>
 		<px class_id_reference="7" object_id="_10">
-			<assetFilename>/home/christof/Documents/master/voly-labeller/assets/models/artificial.dae</assetFilename>
+			<assetFilename>assets/models/artificial.dae</assetFilename>
 			<meshIndex>9</meshIndex>
 			<transformation>
 				<r0c0>2.036608011e-01</r0c0>
